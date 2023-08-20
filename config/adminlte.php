@@ -290,6 +290,27 @@ return [
     */
 
     'menu' => [
+
+        [
+            'type'           => 'darkmode-widget',
+            'topnav_right'   => true, // Or "topnav => true" to place on the left.
+            // 'icon_enabled'   => 'fas fa-moon',
+            // 'icon_disabled'  => 'fas fa-sun',
+            // 'color_enabled'  => 'white',
+            // 'color_disabled' => 'yellow'
+        ],
+        [
+            'text' => 'Home',
+            'url'  => 'home',
+            'icon' => 'fas fa-home',
+        ],
+        [
+            'text' => 'Dashboard',
+            'url'  => 'dashboard',
+            'icon' => 'fas fa-tachometer-alt',
+            //'can'  => 'is_admin',
+        ],
+        /*
         // Navbar items:
         [
             'type'         => 'navbar-search',
@@ -318,6 +339,7 @@ return [
             'label'       => 4,
             'label_color' => 'success',
         ],
+        /*
         ['header' => 'account_settings'],
         [
             'text' => 'profile',
@@ -382,7 +404,7 @@ return [
             'text'       => 'information',
             'icon_color' => 'cyan',
             'url'        => '#',
-        ],
+        ],*/
     ],
 
     /*
