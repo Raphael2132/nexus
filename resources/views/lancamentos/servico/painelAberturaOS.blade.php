@@ -1002,7 +1002,6 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
             <x-adminlte-button class="btn_incluir_tmo" type="button" onclick="document.querySelector('.btn_hide_incluir_tmo').click()" label="Incluir" theme="info" icon="fa-solid fa-plus"/>
             <x-adminlte-button class="btn_atualizar_tmo" type="button" onclick="document.querySelector('.btn_hide_atualizar_tmo').click()" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
 
-
             <!--
             <x-adminlte-button label="Orçamento" theme="info" icon="fas fa-user-plus" type="submit"/>
             <x-adminlte-button label="Totais" theme="info" icon="fas fa-user-plus" type="submit"/>
@@ -1012,7 +1011,6 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
             <x-adminlte-button label="Concluir" theme="info" icon="fas fa-user-plus" type="submit"/>
             -->
         </x-slot>
-
     </x-adminlte-card><!-- Fechamento do Painel Principal da Abertura de OS -->
 
 </div>
