@@ -21,6 +21,19 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'usuario_codigo',
+        'usuario_status',
+        'usuario_tipo',
+        'usuario_altera_permissoes_acesso',
+        'usuario_acesso_pararametros',
+        'usuario_acesso_cadastros',
+        'usuario_cpf',
+        'usuario_rg',
+        'usuario_data_nascimento',
+        'usuario_sexo',
+        'usuario_tel_residencial',
+        'usuario_tel_celular',
+        'usuario_tipo_email'
     ];
 
     /**

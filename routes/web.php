@@ -15,12 +15,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/home', function () {
+    return view('home');
+})->middleware(['auth', 'verified'])->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -29,3 +29,216 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/homePrincipal', [App\Http\Controllers\HomeController::class, 'indexInicial'])->name('homePrinciapl');
+Route::get('fiscal', [App\Http\Controllers\HomeController::class, 'fiscal'])->name('fiscal');
+Route::get('bancos', [App\Http\Controllers\HomeController::class, 'bancos'])->name('bancos');
+
+/*
+|--------------------------------------------------------------------------
+| Área de Parâmetros do Sistema
+|--------------------------------------------------------------------------
+|
+| Área destina as rotas envolvidas na parâmetrização do sistema.
+|
+*/
+
+/* ********** Rotas ligadas a parte de módulos do sistema ********** */
+Route::get('/parametros/sistema/homeParametrosSistemaModulos', [App\Http\Controllers\HomeController::class, 'homeParSisModulo'])->name('home.parSisModulo');
+Route::get('/parametros/sistema/homeParametrosSistemaModulos/{dadosModulo}', [App\Http\Controllers\ParametrosSistemaModuloController::class, 'editar'])->name('parametrosSistemaModulos.editarCadastro');
+Route::post('/parametros/sistema/editarParametrosSistemaModulos/{empresa}', [App\Http\Controllers\ParametrosSistemaModuloController::class, 'update'])->name('parametrosSistemaModulos.atualizar');
+
+/* ********** Rotas ligadas a parte de áreas do sistema ********** */
+Route::get('/parametros/sistema/homeParametrosSistemaAreas', [App\Http\Controllers\HomeController::class, 'homeParSisArea'])->name('home.parSisArea');
+Route::get('/parametros/sistema/cadastroParametrosSistemaAreas', [App\Http\Controllers\ParametrosSistemaAreaController::class, 'cadastro'])->name('parametrosSistemaAreas.cadastro');
+Route::get('/parametros/sistema/editarParametrosSistemaAreas/{area}', [App\Http\Controllers\ParametrosSistemaAreaController::class, 'editar'])->name('parametrosSistemaAreas.editarCadastro');
+Route::post('/parametros/sistema/editarParametrosSistemaAreas/{area}', [App\Http\Controllers\ParametrosSistemaAreaController::class, 'update'])->name('parametrosSistemaAreas.atualizar');
+Route::post('/parametros/sistema/editarParametrosSistemaAreas', [App\Http\Controllers\ParametrosSistemaAreaController::class, 'inserir'])->name('parametrosSistemaAreas.inserir');
+Route::delete('/parametros/sistema/{area}/destroy', [App\Http\Controllers\ParametrosSistemaAreaController::class, 'destroy'])->name('parametrosSistemaAreas.destroy');
+
+/* ********** Rotas ligadas a parte de grupos e serviços da nfs-e ********** */
+Route::get('/parametros/sistema/homeParametrosSistemaServicos', [App\Http\Controllers\HomeController::class, 'homeParSisServico'])->name('home.parSisServico');
+
+/* Grupo do Serviço */
+Route::get('/parametros/sistema/editarParametrosSistemaGrpServicos/{dadosGrupo}', [App\Http\Controllers\ParametrosSistemaServicoGrupoController::class, 'editar'])->name('parametrosSistemaGrpServico.editarCadastro');
+Route::get('/parametros/sistema/cadastroGrpServicos', [App\Http\Controllers\ParametrosSistemaServicoGrupoController::class, 'cadastro'])->name('parametrosSistemaGrpServico.cadastro');
+Route::post('/parametros/sistema/editarParametrosSistemaGrpServicos/{grupo}', [App\Http\Controllers\ParametrosSistemaServicoGrupoController::class, 'update'])->name('parametrosSistemaGrpServico.atualizar');
+Route::post('/parametros/sistema/editarParametrosSistemaGrpServicos', [App\Http\Controllers\ParametrosSistemaServicoGrupoController::class, 'inserir'])->name('parametrosSistemaGrpServico.inserir');
+Route::delete('/parametros/sistema/servicoGrupo/{grupo}/destroy', [App\Http\Controllers\ParametrosSistemaServicoGrupoController::class, 'destroy'])->name('parametrosSistemaGrpServico.destroy');
+
+/* Serviço */
+Route::get('/parametros/sistema/editarParametrosSistemaServicos/{grupo}/{servico}', [App\Http\Controllers\ParametrosSistemaServicoController::class, 'editar'])->name('parametrosSistemaServico.editarCadastro');
+Route::get('/parametros/sistema/cadastroServicos', [App\Http\Controllers\ParametrosSistemaServicoController::class, 'cadastro'])->name('parametrosSistemaServico.cadastro');
+Route::post('/parametros/sistema/editarParametrosSistemaServicos/{grupo}/{servico}', [App\Http\Controllers\ParametrosSistemaServicoController::class, 'update'])->name('parametrosSistemaServico.atualizar');
+Route::post('/parametros/sistema/editarParametrosSistemaServicos', [App\Http\Controllers\ParametrosSistemaServicoController::class, 'inserir'])->name('parametrosSistemaServico.inserir');
+Route::delete('/parametros/sistema/servico/{servico}/destroy', [App\Http\Controllers\ParametrosSistemaServicoController::class, 'destroy'])->name('parametrosSistemaServico.destroy');
+
+/*
+|--------------------------------------------------------------------------
+| Área de Parâmetros Gerais
+|--------------------------------------------------------------------------
+|
+| Área destina as rotas envolvidas na parâmetrização geral do sistema.
+|
+*/
+
+/* ********** Rotas ligadas a parte de faturamento de nfs ********** */
+Route::get('/parametros/faturamento/nfs/homeParametroFatNfs', [App\Http\Controllers\HomeController::class, 'homeParFatNfs'])->name('home.parFatNfs');
+
+/* Provedor */
+Route::get('/parametros/faturamento/nfs/parametrosNfsProvedor', [App\Http\Controllers\ParametrosFatNfsProvedoresController::class, 'provedor'])->name('parametrosNfsProvedor');
+Route::post('/parametros/faturamento/nfs/parametrosNfsProvedor', [App\Http\Controllers\ParametrosFatNfsProvedoresController::class, 'inserir'])->name('parametrosNfsProvedor.inserir');
+
+/* Conexão */
+Route::get('/parametros/faturamento/nfs/parametrosNfsConexao', [App\Http\Controllers\ParametrosFatNfsConexoesController::class, 'conexao'])->name('parametrosNfsConexao');
+Route::get('/parametros/faturamento/nfs/editarParametrosNfsConexao/{dadosConexao}/{appOrigem}', [App\Http\Controllers\ParametrosFatNfsConexoesController::class, 'editar'])->name('parmetrosNfsCon.editarCadastro');
+Route::post('/parametros/faturamento/nfs/editarParametrosNfsConexao/{empresa}', [App\Http\Controllers\ParametrosFatNfsConexoesController::class, 'update'])->name('parmetrosNfsCon.atualizar');
+
+/* Emissao */
+Route::get('/parametros/faturamento/nfs/parametrosNfsEmissao', [App\Http\Controllers\ParametrosFatNfsController::class, 'emissao'])->name('parametrosNfsEmissao');
+Route::get('/parametros/faturamento/nfs/editarParametrosNfsEmissao/{dadosEmissao}/{appOrigem}', [App\Http\Controllers\ParametrosFatNfsController::class, 'editar'])->name('parmetrosNfsEmi.editarCadastro');
+Route::post('/parametros/faturamento/nfs/editarParametrosNfsEmissao/{empresa}', [App\Http\Controllers\ParametrosFatNfsController::class, 'update'])->name('parmetrosNfsEmi.atualizar');
+
+/* ********** Rotas ligadas a parte de lançamento de serviços ********** */
+
+/* Categorias de Atendimento */
+Route::get('/parametros/servico/homeLancamentosServicoCategoria', [App\Http\Controllers\HomeController::class, 'homeLancSrvCategoria'])->name('home.lancSrvCategoria');
+Route::get('/parametros/servico/homeLancamentosServicoCategoria/ajax', [App\Http\Controllers\LancamentoSrvCategoriasController::class, 'homeAjax'])->name('lancamentosSrvCategoria.homeAjax');
+
+Route::get('/parametros/servico/formularioLancamentosServicoCategoria', [App\Http\Controllers\LancamentoSrvCategoriasController::class, 'cadastro'])->name('lancamentosSrvCategoria.cadastro');
+Route::get('/parametros/servico/formularioLancamentosServicoCategoria/{codigo}', [App\Http\Controllers\LancamentoSrvCategoriasController::class, 'editar'])->name('lancamentosSrvCategoria.editarCadastro');
+Route::post('/parametros/servico/formularioLancamentosServicoCategoria/insert', [App\Http\Controllers\LancamentoSrvCategoriasController::class, 'insert'])->name('lancamentosSrvCategoria.insert');
+Route::post('/parametros/servico/formularioLancamentosServicoCategoria/update', [App\Http\Controllers\LancamentoSrvCategoriasController::class, 'update'])->name('lancamentosSrvCategoria.update');
+Route::delete('/parametros/servico/categoria/{categoria}/{origem}/destroy', [App\Http\Controllers\LancamentoSrvCategoriasController::class, 'destroy'])->name('lancamentosSrvCategoria.destroy');
+
+/* Etapas de Atendimento */
+Route::get('/parametros/servico/homeLancamentosServicoEtapas', [App\Http\Controllers\HomeController::class, 'homeLancSrvEtapas'])->name('home.lancSrvEtapas');
+Route::get('/parametros/servico/homeLancamentosServicoEtapas/ajax', [App\Http\Controllers\LancamentoSrvEtapaAtendimentoController::class, 'homeAjax'])->name('lancamentosSrvEtapas.homeAjax');
+
+Route::get('/parametros/servico/formularioLancamentosServicoEtapas/ajax/{empresa}/{categoria}', [App\Http\Controllers\LancamentoSrvEtapaAtendimentoController::class, 'carregaTipoServAjax'])->name('lancamentosSrvEtapas.carregaTipoServAjax');
+Route::get('/parametros/servico/formularioLancamentosServicoEtapas/ajax/{empresa}/{categoria}/{tipo}', [App\Http\Controllers\LancamentoSrvEtapaAtendimentoController::class, 'carregaSetAreAjax'])->name('lancamentosSrvEtapas.carregaSetAreAjax');
+
+Route::get('/parametros/servico/formularioLancamentosServicoEtapas', [App\Http\Controllers\LancamentoSrvEtapaAtendimentoController::class, 'cadastro'])->name('lancamentosSrvEtapas.cadastro');
+Route::get('/parametros/servico/formularioLancamentosServicoEtapas/{codigo}/{empresa}', [App\Http\Controllers\LancamentoSrvEtapaAtendimentoController::class, 'editar'])->name('lancamentosSrvEtapas.editarCadastro');
+Route::post('/parametros/servico/formularioLancamentosServicoEtapas/insert', [App\Http\Controllers\LancamentoSrvEtapaAtendimentoController::class, 'insert'])->name('lancamentosSrvEtapas.insert');
+Route::post('/parametros/servico/formularioLancamentosServicoEtapas/update', [App\Http\Controllers\LancamentoSrvEtapaAtendimentoController::class, 'update'])->name('lancamentosSrvEtapas.update');
+Route::delete('/parametros/servico/etapas/{etapa}/{origem}/destroy', [App\Http\Controllers\LancamentoSrvEtapaAtendimentoController::class, 'destroy'])->name('lancamentosSrvEtapas.destroy');
+
+/* Tipo de Serviço */
+Route::get('/parametros/servico/homeLancamentosServicoTipo', [App\Http\Controllers\HomeController::class, 'homeLancSrvTipo'])->name('home.lancSrvTipo');
+Route::get('/parametros/servico/homeLancamentosServicoTipo/ajax', [App\Http\Controllers\LancamentoSrvTipoServicoController::class, 'homeAjax'])->name('lancamentosSrvTipo.homeAjax');
+
+Route::get('/parametros/servico/formularioLancamentosServicoTipo', [App\Http\Controllers\LancamentoSrvTipoServicoController::class, 'cadastro'])->name('lancamentosSrvTipo.cadastro');
+Route::get('/parametros/servico/formularioLancamentosServicoTipo/{codigo}/{empresa}', [App\Http\Controllers\LancamentoSrvTipoServicoController::class, 'editar'])->name('lancamentosSrvTipo.editarCadastro');
+Route::post('/parametros/servico/formularioLancamentosServicoTipo/insert', [App\Http\Controllers\LancamentoSrvTipoServicoController::class, 'insert'])->name('lancamentosSrvTipo.insert');
+Route::post('/parametros/servico/formularioLancamentosServicoTipo/update', [App\Http\Controllers\LancamentoSrvTipoServicoController::class, 'update'])->name('lancamentosSrvTipo.update');
+Route::delete('/parametros/servico/tipo/{tipo}/{origem}/destroy', [App\Http\Controllers\LancamentoSrvTipoServicoController::class, 'destroy'])->name('lancamentosSrvTipo.destroy');
+
+/* Setor */
+Route::get('/parametros/servico/homeParametrosServicoSetor', [App\Http\Controllers\HomeController::class, 'homeParSrvSetor'])->name('home.parSrvSetor');
+Route::get('/parametros/servico/homeParametrosServicoSetor/ajax', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'homeAjax'])->name('parametrosSrvSetor.homeAjax');
+
+Route::get('/parametros/servico/formularioParametrosServicoSetor', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'cadastro'])->name('parametrosSrvSetor.cadastro');
+Route::get('/parametros/servico/formularioParametrosServicoSetor/{codigo}/{empresa}/{area}', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'editar'])->name('parametrosSrvSetor.editarCadastro');
+Route::post('/parametros/servico/formularioParametrosServicoSetor/insert', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'insert'])->name('parametrosSrvSetor.insert');
+Route::post('/parametros/servico/formularioParametrosServicoSetor/update', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'update'])->name('parametrosSrvSetor.update');
+Route::delete('/parametros/servico/setor/{setor}/{origem}/destroy', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'destroy'])->name('parametrosSrvSetor.destroy');
+
+/* Tarefas de mão de obra */
+Route::get('/parametros/servico/homeParametrosServicoTMO', [App\Http\Controllers\HomeController::class, 'homeParSrvTMO'])->name('home.parSrvTMO');
+Route::get('/parametros/servico/homeParametrosServicoTMO/ajax', [App\Http\Controllers\ParametrosSrvTmoController::class, 'homeAjax'])->name('parametrosSrvTMO.homeAjax');
+
+Route::get('/parametros/servico/formularioParametrosServicoTMO', [App\Http\Controllers\ParametrosSrvTmoController::class, 'cadastro'])->name('parametrosSrvTMO.cadastro');
+Route::get('/parametros/servico/formularioParametrosServicoTMO/{empresa}/{setor}/{codigo}', [App\Http\Controllers\ParametrosSrvTmoController::class, 'editar'])->name('parametrosSrvTMO.editarCadastro');
+Route::get('/parametros/servico/formularioParametrosServicoTMO/{codigo}', [App\Http\Controllers\ParametrosSrvTmoController::class, 'carregaCodSrvAjax'])->name('parametrosSrvTMO.carregaCodSrvAjax');
+Route::post('/parametros/servico/formularioParametrosServicoTMO/insert', [App\Http\Controllers\ParametrosSrvTmoController::class, 'insert'])->name('parametrosSrvTMO.insert');
+Route::post('/parametros/servico/formularioParametrosServicoTMO/update', [App\Http\Controllers\ParametrosSrvTmoController::class, 'update'])->name('parametrosSrvTMO.update');
+Route::delete('/parametros/servico/tmo/{tarefa}/{origem}/destroy', [App\Http\Controllers\ParametrosSrvTmoController::class, 'destroy'])->name('parametrosSrvTMO.destroy');
+
+/*
+|--------------------------------------------------------------------------
+| Área de Cadastros do Sistema
+|--------------------------------------------------------------------------
+|
+| Área destina as rotas envolvidas no cadastramento de informações de empresa, clientes, usuarios, bancos e produtos.
+|
+*/
+
+/* ********** Rotas de Cadastro de Clientes ********** */
+Route::get('/cadastros/cliente/homeClientes', [App\Http\Controllers\HomeController::class, 'homeClientes'])->name('home.clientes');
+Route::get('/cadastros/cliente/clientes/{tipo}', [App\Http\Controllers\CadastroClienteController::class, 'clientes'])->name('clientes');
+Route::get('/cadastros/cliente/cadastroCliente', [App\Http\Controllers\CadastroClienteController::class, 'cadastro'])->name('cliente.cadastro');
+Route::get('/cadastros/cliente/editarCadastroCliente/{dadosCliente}/{tipo}', [App\Http\Controllers\CadastroClienteController::class, 'editar'])->name('cliente.editarCadastro');
+Route::get('/cadastros/cliente/editarCadastroCliente/{endereco}/{cliente_cod}/{tipo}', [App\Http\Controllers\CadastroClienteEnderecoController::class, 'principal'])->name('enderecoCliente.principal');
+
+Route::post('/cadastros/cliente/cadastroCliente', [App\Http\Controllers\CadastroClienteController::class, 'inserir'])->name('cliente.inserir');
+Route::post('/cadastros/cliente/editarCadastroCliente/{cliente}/{cliente_cod}/{atualiza}/{tipo}', [App\Http\Controllers\CadastroClienteController::class, 'update'])->name('cliente.atualizar');
+Route::post('/cadastros/cliente/editarCadastroCliente/{tipo}', [App\Http\Controllers\CadastroClienteEnderecoController::class, 'inserir'])->name('enderecoCliente.inserir');
+
+Route::delete('/cliente/{cliente}/destroy', [App\Http\Controllers\CadastroClienteController::class, 'destroy'])->name('cliente.destroy');
+Route::delete('/cliente/editarCadastroCliente/{endereco}/{tipo}/destroy', [App\Http\Controllers\CadastroClienteEnderecoController::class, 'destroy'])->name('enderecoCliente.destroy');
+
+/* ********** Rotas de Cadastro de Usuarios ********** */
+Route::get('/cadastros/usuario/homeUsuarios', [App\Http\Controllers\HomeController::class, 'homeUsuarios'])->name('home.usuarios');
+Route::get('/cadastros/usuario/usuarios/{tipo}', [App\Http\Controllers\CadastroUsuarioController::class, 'usuarios'])->name('usuarios');
+Route::get('/cadastros/usuario/cadastroUsuario/{tipo}', [App\Http\Controllers\CadastroUsuarioController::class, 'cadastro'])->name('usuario.cadastro');
+Route::get('/cadastros/usuario/editarCadastroUsuario/{dadosUsuario}/{tipo}', [App\Http\Controllers\CadastroUsuarioController::class, 'editar'])->name('usuario.editarCadastro');
+Route::get('/cadastros/usuario/editarCadastroUsuario/{endereco}/{usuario_cod}/{tipo}', [App\Http\Controllers\CadastroUsuarioEnderecoController::class, 'principal'])->name('enderecoUsuario.principal');
+
+Route::post('/cadastros/usuario/cadastroUsuario/{tipo}', [App\Http\Controllers\CadastroUsuarioController::class, 'inserir'])->name('usuario.inserir');
+Route::post('/cadastros/usuario/editarCadastroUsuario/{usuario}/{usuario_cod}/{atualiza}/{tipo}', [App\Http\Controllers\CadastroUsuarioController::class, 'update'])->name('usuario.atualizar');
+Route::post('/cadastros/usuario/editarCadastroUsuario/{tipo}', [App\Http\Controllers\CadastroUsuarioEnderecoController::class, 'inserir'])->name('enderecoUsuario.inserir');
+
+Route::delete('/usuario/{usuario}/destroy', [App\Http\Controllers\CadastroUsuarioController::class, 'destroy'])->name('usuario.destroy');
+Route::delete('/usuario/editarCadastroUsuario/{endereco}/{tipo}/destroy', [App\Http\Controllers\CadastroUsuarioEnderecoController::class, 'destroy'])->name('enderecoUsuario.destroy');
+
+/* ********** Rotas de Cadastro de Empresas ********** */
+Route::get('/cadastros/empresa/homeEmpresa', [App\Http\Controllers\HomeController::class, 'homeEmpresa'])->name('home.empresa');
+Route::get('/cadastros/empresa/cadastroEmpresa', [App\Http\Controllers\CadastroEmpresaController::class, 'cadastro'])->name('empresa.cadastro');
+Route::get('/cadastros/empresa/editarCadastroEmpresa/{dadosEmpresa}', [App\Http\Controllers\CadastroEmpresaController::class, 'editar'])->name('empresa.editarCadastro');
+Route::get('/cadastros/empresa/editarCadastroEmpresa/{endereco}/{empresa_cod}', [App\Http\Controllers\CadastroEmpresaEnderecoController::class, 'principal'])->name('enderecoEmpresa.principal');
+
+Route::post('/cadastros/empresa/cadastroEmpresa', [App\Http\Controllers\CadastroEmpresaController::class, 'inserir'])->name('empresa.inserir');
+Route::post('/cadastros/empresa/editarCadastroEmpresa/{empresa}/{empresa_cod}/{atualiza}', [App\Http\Controllers\CadastroEmpresaController::class, 'update'])->name('empresa.atualizar');
+Route::post('/cadastros/empresa/editarCadastroEmpresa', [App\Http\Controllers\CadastroEmpresaEnderecoController::class, 'inserir'])->name('enderecoEmpresa.inserir');
+
+Route::delete('/empresa/editarCadastroEmpresa/{endereco}/destroy', [App\Http\Controllers\CadastroEmpresaEnderecoController::class, 'destroy'])->name('enderecoEmpresa.destroy');
+Route::delete('/empresa/{empresa}/destroy', [App\Http\Controllers\CadastroEmpresaController::class, 'destroy'])->name('empresa.destroy');
+
+/*
+|--------------------------------------------------------------------------
+| Área de Lançamentos
+|--------------------------------------------------------------------------
+|
+| Área destina as rotas envolvidas no lançamento de informações.
+|
+*/
+
+/* ********** Rotas de Emissao de OS ********** */
+Route::get('/lancamentos/servico/homeEmissaoOS', [App\Http\Controllers\HomeController::class, 'homeEmissaoOS'])->name('home.emissaoOS');
+
+Route::post('/lancamentos/servico/controleAberturaOS', [App\Http\Controllers\LancamentoSrvOsController::class, 'inicio'])->name('emissaoOS.inicio');
+Route::post('/lancamentos/servico/painelAberturaOS/{empresa}/{cliente}', [App\Http\Controllers\LancamentoSrvOsController::class, 'abreOS'])->name('emissaoOS.abreOS');
+
+/* ********** Rotas de Situação de OS ********** */
+Route::get('/lancamentos/servico/homeSituacaoOS', [App\Http\Controllers\HomeController::class, 'homeSituacaoOS'])->name('home.situacaoOS');
+
+Route::get('/lancamentos/servico/consultaSituacaoOS/{statusOS}', [App\Http\Controllers\LancamentoSrvOsController::class, 'consultaSituacaoOS'])->name('situacaoOS.consulta');
+Route::get('/lancamentos/servico/consultaSituacaoOS/painelAberturaOS/{empresa}/{cliente}/{nos}/{estagioAPP}', [App\Http\Controllers\LancamentoSrvOsController::class, 'carregaOS'])->name('situacaoOS.carregaOS');
+
+/* ********** Rotas do painel de Abertura de OS - Contrele Utilizado: PainelAberturaOSController ********** */
+Route::get('/lancamentos/servico/painelAberturaOS/requisicao/consulta/{empresa}/{nos}/{estagioAPP}/{requisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'consultaRequisicao'])->name('painelOS.consultaRequisicao');
+Route::get('/lancamentos/servico/painelAberturaOS/requisicao/abrir/{empresa}/{nos}/{estagioAPP}/{glo_eat_cod}', [App\Http\Controllers\PainelAberturaOSController::class, 'abreRequisicao'])->name('painelOS.abreRequisicao');
+Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/abrir/{empresa}/{setor}/{estagioAPP}/{subEstagioRequisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'abrirServicoRequisicao'])->name('painelOS.abrirServicoRequisicao');
+Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/consulta/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}/{estagioAPP}/{subEstagioRequisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'consultaServicoRequisicao'])->name('painelOS.consultaServicoRequisicao');
+Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/selecionar/{empresa}/{setor}/{codigo}/{estagioAPP}/{subEstagioRequisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'selecionarTMO'])->name('painelOS.selecionarTMO');
+
+/* ********** Rotas do painel de Abertura de OS - Contrele Utilizado: LancamentoSrvOsRequisicoesController ********** */
+Route::post('/lancamentos/servico/painelAberturaOS/requisicao/inserir/{empresa}/{numOS}/{glo_eat_cod}', [App\Http\Controllers\LancamentoSrvOsRequisicoesController::class, 'inserir'])->name('requisicaoOS.inserir');
+
+/* ********** Rotas do painel de Abertura de OS - Contrele Utilizado: LancamentoSrvOsServicoController ********** */
+Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/inserir/{empresa}/{numOS}/{requisicao}/{codTMO}/{estagioAPP}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'inserir'])->name('servicoOS.inserir');
+Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/atualizar/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}/{estagioAPP}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'update'])->name('servicoOS.atualizar');

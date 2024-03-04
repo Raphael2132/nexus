@@ -1,0 +1,671 @@
+@extends('adminlte::page')
+
+@section('title', 'Manutenção de Usuarios')
+
+@section('content_header')
+<div class="row mb-2">
+        <div class="col-sm-6">
+            <h1>Cadastros</h1>
+        </div>
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item active">
+                    <a href="{{route('home.usuarios')}}">Usuários</a>
+                </li>
+                @if($tipo != 'newCad' && $tipo != 'editCad')
+                    <li class="breadcrumb-item active">
+                        <a href="{{route('usuarios', ['tipo' => $tipo])}}">Usuários Cadastrados</a>
+                    </li>
+                @endif
+                <li class="breadcrumb-item active">Manutenção do Usuário</li>
+            </ol>
+        </div>
+    </div>
+@stop
+
+@section('content')
+@php
+    $altera_permissoes_acesso = Auth::user()->usuario_altera_permissoes_acesso;
+@endphp
+<div class="col-12 col-sm-12">
+    
+    <!-- Criação do Card com Abas -->
+    <div class="card card-navy card-tabs">
+        <div class="card-header p-0 pt-1">
+            <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
+                <li class="pt-2 px-3"><h3 class="card-title">Manutenção de Usuários</h3></li>
+                <li class="nav-item">
+                    <a class="nav-link active" id="custom-tabs-two-dados-gerais-tab" data-toggle="pill" href="#custom-tabs-two-dados-gerais" role="tab" aria-controls="custom-tabs-two-dados-gerais" aria-selected="true">Dados Gerais</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-endereco-tab" data-toggle="pill" href="#custom-tabs-two-endereco" role="tab" aria-controls="custom-tabs-two-endereco" aria-selected="false">Endereco</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-permissoes-tab" data-toggle="pill" href="#custom-tabs-two-permissoes" role="tab" aria-controls="custom-tabs-two-permissoes" aria-selected="false">Permissões</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="tab-content" id="custom-tabs-two-tabContent">
+
+                <!-- Aba Dados Gerais -->
+                <div class="tab-pane fade show active" id="custom-tabs-two-dados-gerais" role="tabpanel" aria-labelledby="custom-tabs-two-dados-gerais-tab">
+                    <form method="post" action="{{route('usuario.atualizar', ['usuario' => $dadosUsuario[0]['id'], 'usuario_cod' => $dadosUsuario[0]['usuario_codigo'], 'atualiza' => 'dados', 'tipo' => $tipo])}}" id="quickForm" novalidate="novalidate">
+                    @csrf 
+                    @method('post')
+                        <div class="row">
+                            <!-- Tipo Usuario -->
+                            <x-adminlte-select name="tipoUsuario" label="Tipo de Usuário" fgroup-class="col-md-6" disabled>
+                                <x-adminlte-options :options="['A' => 'Administrador', 'P' => 'Padrão']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_tipo']}}"/>
+                            </x-adminlte-select>
+
+                            <!-- Status do Usuario -->
+                            <x-adminlte-select name="statusUsuario" label="Status" fgroup-class="col-md-6">
+                                <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_status']}}"/>
+                            </x-adminlte-select>
+                        </div>
+                
+                        <div class="row">
+
+                            <!-- Nome -->
+                            <x-adminlte-input name="codigo" label="Código" type="text" fgroup-class="col-md-3" value="{{$dadosUsuario[0]['usuario_codigo']}}" readonly/>
+
+                            <!-- Nome -->
+                            <x-adminlte-input name="nome" label="Nome" type="text" placeholder="Nome" fgroup-class="col-md-6" value="{{$dadosUsuario[0]['name']}}"/>
+
+                            <!-- CPF / CNPJ -->
+                            <x-adminlte-input name="cpf" type="text" label="CPF" fgroup-class="col-md-3" value="{{$dadosUsuario[0]['usuario_cpf'] }}"></x-adminlte-input>
+                        </div>
+
+                        <div class="row">
+                            <!-- RG -->
+                            <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosUsuario[0]['usuario_rg'] }}"></x-adminlte-input>
+
+                            @php
+                                $config = [
+                                    "singleDatePicker" => true,
+                                    "showDropdowns" => true,
+                                    "startDate" => "js:moment()",
+                                    "minYear" => 1900,
+                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
+                                    "timePicker" => false,
+                                    "timePicker24Hour" => false,
+                                    "timePickerSeconds" => false,
+                                    "cancelButtonClasses" => "btn-danger",
+                                    "locale" => ["format" => "DD/MM/YYYY"],
+                                ];
+                                if(!empty($dadosUsuario[0]['usuario_data_nascimento'])){
+                                    $data_nascimento = date('d/m/Y', strtotime($dadosUsuario[0]['usuario_data_nascimento']));
+                                }else{
+                                    $data_nascimento = '';
+                                }
+                            @endphp
+                            <!-- Data de Nascimento -->
+                            <x-adminlte-date-range name="dataNascimento" label="Data de Nascimento" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
+                                <x-slot name="prependSlot">
+                                <div class="input-group-text">
+                                        <i class="far fa-lg fa-calendar-alt"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-date-range>
+                            @push('js')<script>$(() => $("#dataNascimento").val('{{ $data_nascimento }}'))</script>@endpush
+
+                            <!-- Sexo -->
+                            <x-adminlte-select name="sexo" label="Sexo" fgroup-class="col-md-4">
+                                <x-adminlte-options :options="['M' => 'Masculino', 'F' => 'Feminino']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_sexo'] }}" />
+                            </x-adminlte-select>
+                        </div>
+
+                        <div class="row">
+                            <!-- Telefone Residencial -->
+                            <x-adminlte-input name="telResidencial" type="text" label="Telefone Residencial" fgroup-class="col-md-6" value="{{$dadosUsuario[0]['usuario_tel_residencial'] }}">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
+
+                            <!-- Telefone Celular -->
+                            <x-adminlte-input name="telCelular" type="text" label="Telefone Celular" fgroup-class="col-md-6" value="{{$dadosUsuario[0]['usuario_tel_celular'] }}">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text">
+                                        <i class="fa-solid fa-mobile-retro"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
+                        </div>
+
+                        <div class="row">
+                            <!-- Tipo do Email -->
+                            <x-adminlte-select name="tipoEmail" label="Tipo do Email" fgroup-class="col-md-4">
+                                <x-adminlte-options :options="['P' => 'Pessoal', 'C' => 'Comercial']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_tipo_email']}}"/>
+                            </x-adminlte-select>
+
+                            <!-- Email -->
+                            <x-adminlte-input name="email" type="email" label="Email" placeholder="email@exemplo.com" fgroup-class="col-md-8" value="{{$dadosUsuario[0]['email']}}">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text">
+                                        <i class="fa-solid fa-envelope"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
+                        </div>
+
+                        <div class="d-flex justify-content-center">
+                            <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Aba dos dados do Endereço do usuario -->
+                <div class="tab-pane fade" id="custom-tabs-two-endereco" role="tabpanel" aria-labelledby="custom-tabs-two-endereco-tab">
+                    <div class="main col-md-12" style="display: flex;flex-direction: column;"> 
+
+                        @php
+                            //Busca os dados dos endereços cadastrados do usuario
+                            $data = DB::table('cadastro_usuario_enderecos')->where('endereco_usuario_codigo','=',$dadosUsuario[0]['usuario_codigo'])->orderBy('endereco_principal', 'desc')->orderBy('endereco_seq', 'asc')->get();
+
+                            if(empty($data[0])){
+                        @endphp
+                        <!-- Se ainda não foi cadastrado endereço para o usuario cria card vazio -->
+                        <div class="col-md-4">
+                            <x-adminlte-card theme="navy" theme-mode="outline" title="Endereço">
+                                <i>Registros não encontrados</i>
+                            </x-adminlte-card>
+                        </div>
+                        @php
+                            }else{
+                                $cnt_end = 0;
+                        @endphp
+                        <!-- Cria os cards com os endereços cadastrados -->
+                        <div class="col-md-12">
+                            @foreach ($data as $endereco)
+
+                                @php
+                                    $cnt_end += 1;
+                                
+                                    if($endereco->endereco_principal == "S"){
+                                        $titulo = "Endereço ".$cnt_end." - Principal";
+                                        $icone = 'fa-solid fa-location-dot';
+                                    }else{
+                                        $titulo = "Endereço ".$cnt_end;
+                                        $icone = '';
+                                    }
+                                    
+                                    $cep = substr($endereco->endereco_cep,0,5).'-'.substr($endereco->endereco_cep,-3,3);
+
+                                    if(empty($endereco->endereco_numero)){
+                                        $numero = 'S/N';
+                                    }else{
+                                        $numero = $endereco->endereco_numero;
+                                    }
+                                @endphp
+                                <div class="col-md-4" style="float: left;">
+                                    <!-- Card do Endereço do usuario -->
+                                    <x-adminlte-card theme="navy" theme-mode="outline" :title="$titulo" :icon="$icone">
+                                        <i>{{ $endereco->endereco_logradouro }}, {{ $numero }}</br>
+                                            @php
+                                                if(!empty($endereco->endereco_complemento)){
+                                            @endphp
+                                            Complemento: {{ $endereco->endereco_complemento }}</br>
+                                            @php
+                                                }
+                                            @endphp
+                                            {{ $cep }}</br>
+                                            {{ $endereco->endereco_bairro }}</br>
+                                            {{ $endereco->endereco_cidade }} - {{ $endereco->endereco_uf }}</br>
+                                            {{ $endereco->endereco_pais }}
+                                        </i>
+                                        <!-- Gera a div dos botões do card -->
+                                        <div style="padding: 10px; height:30px;">
+                                            <form method="post" action="{{ route('enderecoUsuario.destroy', ['endereco' => $endereco->endereco_id, 'tipo' => $tipo]) }}" style="float: left;" >
+                                            @csrf 
+                                            @method('delete')
+                                                <x-adminlte-button class="btn-sm" theme="danger" icon="fa fa-lg fa-fw fa-trash" type="submit" style="margin-right: 5px;"/>
+                                            </form>
+                                            @php
+                                                if($endereco->endereco_principal == "N"){
+                                                    $endPrincipal = json_encode($endereco);
+                                            @endphp
+                                            <form method="get" action="{{ route('enderecoUsuario.principal', ['endereco' => $endereco->endereco_id, 'usuario_cod' => $endereco->endereco_usuario_codigo, 'tipo' => $tipo]) }}" style="float: left;">
+                                            @csrf 
+                                            @method('get')
+                                                <x-adminlte-button class="btn-sm" label="Tornar Principal" theme="success" icon="fa-solid fa-location-dot" type="submit"/>
+                                            </form>
+                                            @php 
+                                                }
+                                            @endphp
+                                        </div>
+                                    </x-adminlte-card>
+                                </div>
+                            @endforeach
+                        </div>
+                        <!-- Fecha o else da montagem dos cards do endereço -->
+                        @php
+                            }
+                        @endphp
+                           
+                        <!-- Gera o Modal com os campos da inserção dos dados do endereço do usuario -->
+                        <div>
+                            <form method="post" action="{{route('enderecoUsuario.inserir', ['tipo' => $tipo])}}" id="quickForm3" novalidate="novalidate">
+                            @csrf 
+                            @method('post')    
+                                <!-- Criação do Modal -->                           
+                                <x-adminlte-modal id="modalCustom" title="Novo Endereço" size="lg" theme="navy" icon="" v-centered static-backdrop scrollable>
+                                    <div style="height:400px;">
+                                        <!-- Campos escondidoscom o id e codigo do usuario para o request -->  
+                                        <input type="hidden" value="{{ $dadosUsuario[0]['usuario_codigo'] }}" name="usuario_codigo">
+                                    
+                                        <!-- CEP -->
+                                        <x-adminlte-input name="cep" type="text" label="CEP" fgroup-class="col-md-4">
+                                            <x-slot name="prependSlot">
+                                                <div class="input-group-text">
+                                                    <i class="fa-solid fa-location-dot"></i>
+                                                </div>
+                                            </x-slot>
+                                        </x-adminlte-input>
+
+                                        <div class="row">
+                                            <!-- Logradouro -->
+                                            <x-adminlte-input name="logradouro" type="text" label="Logradouro" fgroup-class="col-md-9">
+                                                <x-slot name="prependSlot">
+                                                    <div class="input-group-text">
+                                                        <i class="fa-solid fa-address-book"></i>
+                                                    </div>
+                                                </x-slot>
+                                            </x-adminlte-input>
+
+                                            <!-- Numero -->
+                                            <x-adminlte-input name="numero" type="number" label="Número" fgroup-class="col-md-3">
+                                                <x-slot name="prependSlot">
+                                                    <div class="input-group-text">
+                                                        <i class="fa-solid fa-hashtag"></i>
+                                                    </div>
+                                                </x-slot>
+                                            </x-adminlte-input>
+                                        </div>
+                                            
+                                        <div class="row">
+                                            <!-- Complemento -->
+                                            <x-adminlte-input name="complemento" type="text" label="Complemento" fgroup-class="col-md-6"></x-adminlte-input>
+
+                                            <!-- Bairro -->
+                                            <x-adminlte-input name="bairro" type="text" label="Bairro" fgroup-class="col-md-6"></x-adminlte-input>
+                                        </div>
+
+                                        <div class="row">
+                                            <!-- Cidade -->
+                                            <x-adminlte-input name="cidade" type="text" label="Cidade" fgroup-class="col-md-6">
+                                                <x-slot name="prependSlot">
+                                                    <div class="input-group-text">
+                                                        <i class="fa-solid fa-city"></i>
+                                                    </div>
+                                                </x-slot>
+                                            </x-adminlte-input>
+
+                                            <!-- Estado -->
+                                            <x-adminlte-select name="uf" label="UF" fgroup-class="col-md-3">
+                                                <x-adminlte-options :options="['SP' => 'São Paulo', 'MG' => 'Minas Gerais']"
+                                                    empty-option="Selecione..."/>
+                                            </x-adminlte-select>
+
+                                            <!-- Pais -->
+                                            <x-adminlte-input name="pais" type="text" label="Pais" fgroup-class="col-md-3"></x-adminlte-input>
+                                        </div>
+                                        <!-- Criação dos botões do Modal -->  
+                                        <x-slot name="footerSlot">
+                                            <x-adminlte-button class="mr-auto" theme="success" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
+                                            <x-adminlte-button theme="danger" label="Voltar" data-dismiss="modal"/>
+                                        </x-slot>
+                                    </div>
+                                </x-adminlte-modal>
+                            </form>
+                            <!-- Botão de chamada do Modal -->  
+                            <div class="d-flex justify-content-center">
+                                <x-adminlte-button label="Novo Endereço" data-toggle="modal" data-target="#modalCustom" class="bg-info" icon="fa-solid fa-address-book"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aba das permissões do usuario -->
+                <div class="tab-pane fade" id="custom-tabs-two-permissoes" role="tabpanel" aria-labelledby="custom-tabs-two-permissoes-tab">
+                    <form method="post" action="{{route('usuario.atualizar', ['usuario' => $dadosUsuario[0]['id'], 'usuario_cod' => $dadosUsuario[0]['usuario_codigo'], 'atualiza' => 'permissao', 'tipo' => $tipo])}}" id="quickForm2" novalidate="novalidate">
+                    @csrf 
+                    @method('post')
+
+                        <!-- Usuario tem acesso aos cadastros -->
+                        <x-adminlte-select name="acessoCadastros" label="Acessa Área de Cadastros" fgroup-class="col-md-6">
+                            <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_cadastros']}}"/>
+                        </x-adminlte-select>
+
+                        <!-- Usuario tem permissão de alterar permissoes -->
+                        <x-adminlte-select name="altPerAcesso" label="Altera Permissões de Acesso dos Usuários" fgroup-class="col-md-6">
+                            <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_altera_permissoes_acesso']}}"/>
+                        </x-adminlte-select>
+
+                        <!-- Usuario tem acesso aos parametros gerais -->
+                        <x-adminlte-select name="acessoParametros" label="Acessa Área de Parametrização Geral" fgroup-class="col-md-6">
+                            <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_pararametros']}}"/>
+                        </x-adminlte-select>
+
+                        <div class="d-flex justify-content-center">
+                            <x-adminlte-button id="btn-submit-permissao" class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <form method="get" action="{{ route('usuario.cadastro', ['tipo' => $tipo]) }}" style="float: left; margin-right: 2px;">
+            @csrf 
+                <x-adminlte-button label="Novo Usuário" theme="info" icon="fas fa-user-plus" type="submit"/>
+            </form>
+            <form method="post" action="{{ route('usuario.destroy', ['usuario' => $dadosUsuario[0]]) }}" style="float: left;margin-left: 2px;">
+            @csrf 
+            @method('delete')
+                <x-adminlte-button label="Excluir Usuário" theme="info" icon="fa-solid fa-user-xmark" type="submit"/>
+            </form>
+        </div>
+    </div>
+</div>
+
+@stop
+
+@section('css')
+@stop
+
+<!-- Chamada dos Plugins usados na app -->  
+@section('plugins.Select2', true)
+@section('plugins.Sweetalert2', true)
+@section('plugins.toastr', true)
+@section('plugins.jqueryValidation', true)
+@section('plugins.DateRangePicker', true)
+@section('plugins.Inputmask', true)
+
+@section('js')
+<script>
+    $(document).ready(function() {
+
+        // Init input mask on the target element.
+
+        $('#telCelular').inputmask({
+            "mask": "(99) 9 9999-9999",
+             // Specify other options...
+        });
+
+        $('#telResidencial').inputmask({
+            "mask": "(99) 9999-9999",
+            // Specify other options...
+        });
+
+        $('#cep').inputmask({
+            "mask": "99999-999",
+            // Specify other options...
+        });
+
+        $('#cpf').inputmask({
+            "mask": "999.999.999-99",
+            // Specify other options...
+        });
+
+        $('#rg').inputmask({
+            "mask": "99.999.999-9",
+            // Specify other options...
+        });
+
+        $("#acessoCadastros").change(function(){
+
+            if($("#acessoCadastros").val() == 'N'){
+                $("#altPerAcesso").val('N');
+                $("#altPerAcesso").attr("disabled", true);
+            }else{
+                $("#altPerAcesso").val('NS');
+                $("#altPerAcesso").attr("disabled", false);
+            }
+        });
+
+        //Verifica se o usuario logado pode alterar as permissões
+        var altera_permissoes_acesso = {!! json_encode($altera_permissoes_acesso) !!};
+
+        if(altera_permissoes_acesso == 'N'){
+            $("#btn-submit-permissao").hide();
+            $("#acessoCadastros").attr("disabled", true);
+            $("#altPerAcesso").attr("disabled", true);
+            $("#acessoParametros").attr("disabled", true);
+        }
+
+        // Busca os dados do CEP informado
+        $("#cep").blur(function(){
+
+            // Remove tudo o que não é número para fazer a pesquisa
+            var cep = this.value.replace(/[^0-9]/, "");
+
+            // Validação do CEP; caso o CEP não possua 8 números, então cancela
+            // a consulta
+            if(cep.length != 8){
+                return false;
+            }
+
+            // A url de pesquisa consiste no endereço do webservice + o cep que
+            // o usuário informou + o tipo de retorno desejado (entre "json",
+            // "jsonp", "xml", "piped" ou "querty")
+            var url = "https://viacep.com.br/ws/"+cep+"/json/";
+
+            // Faz a pesquisa do CEP, tratando o retorno com try/catch para que
+            // caso ocorra algum erro (o cep pode não existir, por exemplo) a
+            // usabilidade não seja afetada, assim o usuário pode continuar//
+            // preenchendo os campos normalmente
+            $.getJSON(url, function(dadosRetorno){
+                try{
+                    // Preenche os campos de acordo com o retorno da pesquisa
+                    $("#logradouro").val(dadosRetorno.logradouro);
+                    $("#bairro").val(dadosRetorno.bairro);
+                    $("#cidade").val(dadosRetorno.localidade);
+                    $("#uf").val(dadosRetorno.uf);
+                    $("#complemento").val(dadosRetorno.complemento);
+                    $("#numero").focus();
+                }catch(ex){}
+            });
+        });
+    });
+</script>
+
+<script>
+$(function () {
+    $('#quickForm').validate({
+        rules: {
+            statusUsuario: {
+                required: true
+            },
+            nome: {
+                required: true,
+                minlength: 5
+            },
+            email: {
+                required: true,
+                email: true
+            },
+            tipoEmail: {
+                required: true,
+            },
+        },
+        messages: {
+            statusUsuario: {
+                required: "Por Favor informe um Tipo de Cadastro"
+            },
+            nome: {
+                required: "Por Favor informe o Nome do Usuario",
+                minlength: "Infome no mínimo 5 caracteres"
+            },
+            email: {
+                required: "Por Favor informe um Email",
+                email: "Informe um email válido"
+            },
+            tipoEmail: {
+                required: "Por Favor informe o Tipo do Email"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+});
+</script>
+
+<script>
+$(function () {
+    $('#quickForm2').validate({
+        rules: {
+            acessoCadastros: {
+                required: true
+            },
+            altPerAcesso: {
+                required: true
+            },
+            acessoParametros: {
+                required: true
+            },
+        },
+        messages: {
+            acessoCadastros: {
+                required: "Por Favor informe o Acesso da Área de Cadastros"
+            },
+            altPerAcesso: {
+                required: "Por Favor informe se o Usuário Altera Permissões de Acesso"
+            },
+            acessoParametros: {
+                required: "Por Favor informe o Acesso da Área de Parametrização Geral"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+});
+</script>
+
+<script>
+$(function () {
+  $('#quickForm3').validate({
+    rules: {
+      cep: {
+        required: true
+      },
+      logradouro: {
+        required: true,
+        maxlength: 100
+      },
+	  numero: {
+		maxlength: 5
+      },
+	  complemento: {
+		maxlength: 60
+      },
+      bairro: {
+		required: true,
+        maxlength: 60
+      },
+      cidade: {
+		required: true,
+        maxlength: 80
+      },
+      uf: {
+		required: true
+      },
+      pais: {
+		required: true,
+        maxlength: 40
+      },
+    },
+    messages: {
+      cep: {
+        required: "Por Favor informe um CEP para o Endereço"
+      },
+      logradouro: {
+        required: "Por Favor informe um Logradouro para o Endereço",
+        maxlength: "Informe no máximo 100 caracteres para o Logradouro"
+      },
+	  numero: {
+		maxlength: "Informe no máximo 5 dígitos no Número"
+      },
+	  complemento: {
+		maxlength: "Informe no máximo 60 caracteres no Complemento"
+      },
+      bairro: {
+		required: "Por Favor informe um Bairro para o Endereço",
+        maxlength: "Informe no máximo 60 caracteres no Email"
+      },
+      cidade: {
+		required: "Por Favor informe uma Cidade para o Endereço",
+        maxlength: "Informe no máximo 80 caracteres no Email"
+      },
+      uf: {
+		required: "Por Favor informe uma UF para o Endereço"
+      },
+      pais: {
+		required: "Por Favor informe um País para o Endereço",
+        maxlength: "Informe no máximo 40 caracteres no Email"
+      },
+    },
+    errorElement: 'span',
+    errorPlacement: function (error, element) {
+      error.addClass('invalid-feedback');
+      element.closest('.form-group').append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+      $(element).addClass('is-invalid');
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).removeClass('is-invalid');
+    }
+  });
+});
+</script>
+
+<script>
+    @if(Session::has('success'))
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "success",
+            title: "{{ session('success') }}"
+        });
+    @endif
+
+    @if(Session::has('error'))
+        Swal.fire({
+        confirmButtonColor: "#007bff",
+        title: "Erro!!!",
+        text: "{{ session('error') }}",
+        icon: "error"
+    });
+    @endif
+</script>
+@stop
