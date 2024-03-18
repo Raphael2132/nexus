@@ -50,4 +50,52 @@ class LancamentoSrvOsRequisicoesController extends Controller
 
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $sequencia]))->with('success', 'Requisição aberta com sucesso!');
     }
+
+    //Metodo de finalização da requisição
+    public function finalizarRequisicao($empresa, $numOS, $requisicao)
+    {        
+        $cnt_srv_aberto = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$numOS)->where('srv_req',$requisicao)->wherein('srv_sts',['A','E'])->count();
+        if($cnt_srv_aberto > 0){
+            return redirect()->back()->with('info', 'A requisição contém serviço(s) em aberto e ela não pode ser finalizada!');
+        }
+
+        $cnt_srv_susp = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$numOS)->where('srv_req',$requisicao)->where('srv_sts','S')->count();
+        if($cnt_srv_susp > 0){
+            return redirect()->back()->with('info', 'A requisição contém serviço(s) suspenso(s), primeiro finalize ou cancele o serviço para continuar!');
+        }
+
+        $dataHora = date('Y-m-d H:i:s');
+
+        $atualiaServico = DB::table('lancamento_srv_os_requisicoes')
+            ->where('req_emp', $empresa)
+            ->where('req_nos', $numOS)
+            ->where('req_seq', $requisicao)
+            ->update(['req_sts' => 'F',
+                'req_dhf' => $dataHora]);   
+        
+        return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'Requisição finalizada com sucesso!');
+    }
+
+    //Metodo de reabertura da requisição
+    public function reabrirRequisicao($empresa, $numOS, $requisicao)
+    {
+        $dataHora = date('Y-m-d H:i:s');
+
+        $atualiaServico = DB::table('lancamento_srv_os_requisicoes')
+            ->where('req_emp', $empresa)
+            ->where('req_nos', $numOS)
+            ->where('req_seq', $requisicao)
+            ->update(['req_sts' => 'A',
+                'req_dhf' => null]);   
+        
+        return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'Requisição reaberta com sucesso!');
+    }
+
+    //Metodo de excluir requisição
+    public function destroy(LancamentoSrvOsRequisicoes $requisicaoOS, $empresa, $cliente, $numOS){
+
+        $requisicaoOS->delete();
+        
+        return redirect(route('situacaoOS.carregaOS', ['empresa' => $empresa, 'cliente' => $cliente, 'nos' => $numOS, 'estagioAPP' => 'PRINCIPAL']))->with('success', 'Requisição excluída com sucesso!');
+    }
 }

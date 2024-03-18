@@ -8,10 +8,12 @@ use App\Models\LancamentoSrvOs;
 use App\Models\LancamentoSrvOsRequisicoes;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
+use App\Http\Helpers\Helper;
 
 class LancamentoSrvOsController extends Controller
 {
     protected $lancamentoOS;
+    protected $requisicoesOS;
     
     public function __construct(LancamentoSrvOs $lancamentoOS, LancamentoSrvOsRequisicoes $requisicoesOS)
     {
@@ -102,5 +104,58 @@ class LancamentoSrvOsController extends Controller
         session(['glo_os_estagioAPP' => $estagioAPP]);
 
         return view('/lancamentos/servico/painelAberturaOS');
+    }
+
+    //Metodo de controle de carregamento da OS na pagina principal
+    public function abrirOrcamento(Request $request, $empresa, $numOS)
+    {
+        if($request->novoOrcamento == 'S' || ($request->novoOrcamento == 'N' && $request->orcamento == 'Não Gerado')){
+            $nextval=DB::select("SELECT nextval('sq_num_orcamento')")[0]->nextval;
+            $num = $nextval;
+
+            $data = date('Y-m-d');
+
+            $atualiaServico = DB::table('lancamento_srv_os')
+            ->where('os_emp', $empresa)
+            ->where('os_nos', $numOS)
+            ->update(['os_dt_orc' => $data,
+            'os_num_orc' => $num]);  
+        }
+        
+        $empresaEndereco = DB::table('cadastro_empresa_enderecos')->where('endereco_empresa_codigo', $empresa)->where('endereco_principal', 'S')->get();
+        $requisicoesOS = DB::table('lancamento_srv_os_requisicoes')->where('req_emp', $empresa)->where('req_nos', $numOS)->orderby('req_seq', 'asc')->get();
+        $servicosOS = DB::table('lancamento_srv_os_servicos')->where('srv_emp', $empresa)->where('srv_nos', $numOS)->orderby('srv_req', 'asc')->orderby('srv_seq', 'asc')->get();
+        $dadosOS = DB::table('lancamento_srv_os')->where('os_emp', $empresa)->where('os_nos', $numOS)->get();
+
+        session(['glo_os_dadosEmpresaEndereco' => $empresaEndereco]);
+        session(['glo_os_dadosRequisicoes' => $requisicoesOS]);
+        session(['glo_os_dadosOS' => $dadosOS]);
+        session(['glo_os_dadosServicos' => $servicosOS]);
+        session(['glo_os_estagioAPP' => 'ORCAMENTO_OS_IMPRESSAO']);
+        session(['glo_os_subEstagioRequisicao' => '']);
+        session(['glo_os_dadosServicoSelecionado' => '']);
+        session(['glo_os_dadosTMO' => '']);
+        session(['glo_os_dadosTmoSelecionada' => '']);
+        
+        return view('/lancamentos/servico/painelAberturaOS');
+    }
+
+    //Metodo de controle de carregamento da OS na pagina principal
+    public function atualizaPrevEntrega(Request $request, $empresa, $numOS, $cliente)
+    {
+
+        $data = Helper::limpaData($request->dataPrevEnt);
+        $hora = Helper::limpaHoraMinuto($request->horaPrevEnt);
+
+        $atualiaServico = DB::table('lancamento_srv_os')
+        ->where('os_emp', $empresa)
+        ->where('os_nos', $numOS)
+        ->update(['os_qtd_hr' => $request->qtdHoraOS,
+        'os_dpe' => $data,
+        'os_hpe' => $hora,
+        'os_cli_agr' => $request->clienteAguardaTermino,
+        'os_cli_avs' => $request->avisaClienteTermino]);  
+        
+        return redirect(route('situacaoOS.carregaOS', ['empresa' => $empresa, 'cliente' => $cliente, 'nos' => $numOS, 'estagioAPP' => 'PRINCIPAL']))->with('success', 'Previsão de Entrega Atualizada com Sucesso!');
     }
 }

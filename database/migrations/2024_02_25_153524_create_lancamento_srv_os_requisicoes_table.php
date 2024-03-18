@@ -23,11 +23,12 @@ return new class extends Migration
             $table->string('req_are', 3);//area
             $table->biginteger('req_eat');//etapa do atendimento -> table lancamento_srv_etapa_atendimentos.eat_cod
             $table->dateTime('req_dhi');//data e hora da inclusão
+            $table->dateTime('req_dhf')->nullable();//data e hora fechamento
             $table->dateTime('req_dhc')->nullable();//data e hora do cancelamento
             $table->date('req_dt_apr')->nullable();//data aprovação requisição
             $table->string('req_res_apr')->nullable();//responsavel da aprovação -> tabela users.usuario_codigo
             $table->decimal('req_vlr')->nullable();//valor req
-            $table->decimal('req_vls')->nullable();//valor valor servico
+            $table->decimal('req_vls')->nullable();//valor servico
             $table->decimal('req_vlp')->nullable();//valor pecas
             $table->enum('req_tvd', ['1', '2'])->default('1');/* Tipo do valor de desconto -> 1 valor / 2 % do valor */
             $table->decimal('req_per_des', 5,2)->nullable();/* Percentual % desconto */

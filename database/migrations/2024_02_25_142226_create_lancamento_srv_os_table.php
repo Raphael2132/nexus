@@ -27,14 +27,19 @@ return new class extends Migration
             $table->date('os_dt_orc')->nullable();//data orcamento
             $table->biginteger('os_num_orc')->nullable();//numero orcamento
             $table->date('os_dtc')->nullable();//data camcelamento os
-            $table->string('os_res_can', 6)->nullable();//responsavel cancelamewnto -> tabela users.usuario_codigo
-            $table->decimal('os_vlt', 15,2)->nullable();//valor total - com desconto
-            $table->decimal('os_vos', 15,2)->nullable();//valor os - serviço + produtos
+            $table->string('os_res_can', 6)->nullable();//responsavel cancelamento -> tabela users.usuario_codigo
+            $table->date('os_dpe')->nullable();//data previsão de entrega
+            $table->decimal('os_hpe', 4,0)->nullable();//hora previsão de entrega
+            $table->decimal('os_qtd_hr', 5,2)->nullable();//quantidade de horas de serviços
+            $table->decimal('os_vlt', 15,2)->nullable();//valor total - com desconto - liquido
+            $table->decimal('os_vos', 15,2)->nullable();//valor os - serviço + produtos - bruto
             $table->decimal('os_vls', 15,2)->nullable();//valor valor servico
             $table->decimal('os_vlp', 15,2)->nullable();//valor produtos
             $table->enum('os_tip_des', ['1', '2'])->default('1');/* Tipo do valor de desconto -> 1 valor / 2 % do valor */
             $table->decimal('os_per_des', 3,2)->nullable();//percentual desconto
             $table->decimal('os_val_des', 15,2)->nullable();//valor desconto
+            $table->enum('os_cli_agr', ['S', 'N'])->default('N');//cliente aguarda serviço
+            $table->enum('os_cli_avs', ['S', 'N'])->default('S');//avisa cliente termino serviço
             $table->enum('os_sts', ['C', 'F', 'A'])->default('A');//status da tarefa do serviço - finalizado, cancelado, aberto
             $table->timestamps();
             $table->unique(['os_emp','os_nos'], 'ak_lancamento_srv_os');

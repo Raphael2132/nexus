@@ -782,21 +782,6 @@ return [
                 ],
             ],
         ],
-        'Select2' => [
-            'active' => false,
-            'files' => [
-                [
-                    'type' => 'js',
-                    'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
-                ],
-                [
-                    'type' => 'css',
-                    'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css',
-                ],
-            ],
-        ],
         'Chartjs' => [
             'active' => false,
             'files' => [
@@ -830,11 +815,6 @@ return [
         'Sweetalert2' => [
             'active' => false,
             'files' => [
-                [
-                    'type' => 'js',
-                    'asset' => true,
-                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@8',
-                ],
                 [
                     'type' => 'js',
                     'asset' => true,

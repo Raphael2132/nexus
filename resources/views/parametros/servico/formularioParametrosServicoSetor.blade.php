@@ -130,6 +130,7 @@
 @section('plugins.jqueryValidation', true)
 @section('plugins.Sweetalert2', true)
 @section('plugins.toastr', true)
+@section('plugins.Select2', true)
 
 @section('css')
 @stop

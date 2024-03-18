@@ -27,7 +27,6 @@ class ParametrosSrvTmo extends Model
         'tmo_tip_val_cgt',
         'tmo_val_cgt',
         'tmo_per_cgt',
-        'tmo_alt_val',
         'tmo_sts'
     ];
 }

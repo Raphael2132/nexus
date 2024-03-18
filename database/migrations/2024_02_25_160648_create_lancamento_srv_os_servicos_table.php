@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('srv_prt',8)->nullable();//prestrador do serviço da empresa -> tabela prestador_servicos.prestador_cod
             $table->string('srv_set',6);//setor da empresa que presta o serviço -> tabela parametros_srv_setores.setor_codigo
             $table->string('srv_are',3);//areA do setor da empresa -> tabela parametros_sistema_areas.area_codigo
-            $table->enum('srv_sts', ['S', 'C', 'F', 'A'])->default('A');//status da tarefa do serviço - suspenso, finalizado, cancelado, andamento
+            $table->enum('srv_sts', ['S', 'C', 'F', 'A', 'E'])->default('E');//status da tarefa do serviço - suspenso, finalizado, cancelado, andamento, espera
             $table->string('srv_tmo', 15);//codigo da tarefa de mão de Obra -> tabela parametros_srv_tmos.tmo_cod
             $table->string('srv_dsc', 40);//descricao da tarefa de mão de obra
             $table->string('srv_cmp',80)->nullable();//complemento

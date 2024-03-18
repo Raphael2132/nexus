@@ -90,7 +90,6 @@ class ParametrosSrvTmoController extends Controller
             'tmo_tip_val_cgt' => $request->tipValCGT,
             'tmo_val_cgt' => $valor_cgt,
             'tmo_per_cgt' => $per_cgt,
-            'tmo_alt_val' => $request->altVal,
             'tmo_sts' => $request->status
         ];
         
@@ -152,7 +151,6 @@ class ParametrosSrvTmoController extends Controller
             'tmo_tip_val_cgt' => $request->tipValCGT,
             'tmo_val_cgt' => $valor_cgt,
             'tmo_per_cgt' => $per_cgt,
-            'tmo_alt_val' => $request->altVal,
             'tmo_sts' => $request->status]);
         
         return redirect(route('parametrosSrvTMO.editarCadastro', ['empresa' => $request->empresa, 'setor' => $request->setor, 'codigo' => $request->codigo]))->with('success', 'Tarefa de Mão de Obra atualizada com sucesso!');

@@ -27,6 +27,9 @@ class LancamentoSrvOs extends Model
         'os_num_orc',
         'os_dtc',
         'os_res_can',
+        'os_dpe',
+        'os_hpe',
+        'os_qtd_hr',
         'os_vlt',
         'os_vos',
         'os_vls',
@@ -34,6 +37,8 @@ class LancamentoSrvOs extends Model
         'os_tip_des',
         'os_per_des',
         'os_val_des',
+        'os_cli_agr',
+        'os_cli_avs',
         'os_sts'
     ];
 }

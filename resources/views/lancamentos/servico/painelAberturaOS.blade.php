@@ -24,7 +24,9 @@
 //Gera as variaveis globais do painel de OS
 $glo_os_dadosOS = session('glo_os_dadosOS');
 $glo_os_dadosRequisicoes = session('glo_os_dadosRequisicoes');
+$glo_os_dadosServicos = session('glo_os_dadosServicos');
 $glo_os_dadosEmpresa = session('glo_os_dadosEmpresa');
+$glo_os_dadosEmpresaEndereco = session('glo_os_dadosEmpresaEndereco');
 $glo_os_dadosCliente = session('glo_os_dadosCliente');
 $glo_os_dadosClienteEndereco = session('glo_os_dadosClienteEndereco');
 $glo_os_empresa = session('glo_os_empresa');
@@ -39,6 +41,12 @@ $glo_os_dadosTMO = session('glo_os_dadosTMO');
 $glo_os_dadosTmoSelecionada = session('glo_os_dadosTmoSelecionada');
 $glo_os_subEstagioRequisicao = session('glo_os_subEstagioRequisicao');
 $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
+
+
+$altValorTOS = '';
+$altHoraTOS = '';
+$status_requisicao = '';
+$status_servico = '';
 
 @endphp
 <div class="col-md-12">
@@ -55,15 +63,15 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                 <!-- ********** Bloco dos dados principais da abertura de OS ********** -->
                 <x-adminlte-card title="Dados da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
                     @php 
-                        if($glo_os_dadosOS[0]['os_sts'] == 'A'){
+                        if($glo_os_dadosOS[0]->os_sts == 'A'){
                             $situacao = "Aberta";
-                        }elseif($glo_os_dadosOS[0]['os_sts'] == 'F'){
+                        }elseif($glo_os_dadosOS[0]->os_sts == 'F'){
                             $situacao = "Finalizada";
                         }else{
                             $situacao = "Cancelada";
                         }
 
-                        $dataAbertura = date("d/m/Y H:i:s", strtotime($glo_os_dadosOS[0]['os_dha']));
+                        $dataAbertura = date("d/m/Y H:i:s", strtotime($glo_os_dadosOS[0]->os_dha));
 
                         if($glo_os_dadosCliente[0]->cliente_tipo_pessoa == 'F'){
                             $cpfCnpjCliente = substr($glo_os_dadosCliente[0]->cliente_cpf_cnpj,0,3).'.'.substr($glo_os_dadosCliente[0]->cliente_cpf_cnpj,3,3).'.'.substr($glo_os_dadosCliente[0]->cliente_cpf_cnpj,6,3).'-'.substr($glo_os_dadosCliente[0]->cliente_cpf_cnpj,9,2);
@@ -254,8 +262,8 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                                             <i class="fa-solid fa-circle-check fa-lg text-success"></i>
                                         </a>
                                         @elseif($requisicao->req_sts == 'A')
-                                        <a class="text-muted" title="Andamento">
-                                            <i class="fa-solid fa-clock-rotate-left fa-lg text-warning"></i>
+                                        <a class="text-muted" title="Em Andamento">
+                                            <i class="fa-solid fa-clock-rotate-left fa-lg text-info"></i>
                                         </a>
                                         @else
                                         <a class="text-muted" title="Cancelado">
@@ -404,17 +412,16 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                                     <td colspan="1" style="border: 0px;">
                                         <p class="text-sm">Situação
                                             <b class="d-block">
+                                                @php 
+                                                    $status_requisicao = $glo_os_dadosRequisicoes[0]['req_sts'];
+                                                @endphp
                                                 @if($glo_os_dadosRequisicoes[0]['req_sts'] == 'F')
                                                 <a class="text-muted" title="Finalizado" >
-                                                    <i class="fa-solid fa-circle-check fa-xl text-success"></i>
+                                                    <i title="Finalizado" class="fa-solid fa-circle-check fa-xl text-success"></i>
                                                 </a>
                                                 @elseif($glo_os_dadosRequisicoes[0]['req_sts'] == 'A')
-                                                <a class="text-muted" title="Andamento">
-                                                    <i class="fa-solid fa-clock-rotate-left fa-xl text-info"></i>
-                                                </a>
-                                                @else
-                                                <a class="text-muted" title="Cancelado">
-                                                    <i class="fa-solid fa-circle-xmark fa-xl text-danger"></i>
+                                                <a class="text-muted" title="Em Andamento">
+                                                    <i title="Em Andamento" class="fa-solid fa-clock-rotate-left fa-xl text-info"></i>
                                                 </a>
                                                 @endif
                                             </b>
@@ -465,6 +472,7 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                         'Código',
                         'Descrição',
                         'Prestador',
+                        'Tipo',
                         'UN',
                         'Qtd.',
                         'Val. Uni.',
@@ -501,7 +509,7 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                                 'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
                             ],
                         ],
-                        'columns' => [['orderable' => false], null, null, null, null,  null, null, null, null, null],
+                        'columns' => [['orderable' => false], null, null, null, null, null,  null, null, null, null, null],
                     ];
                     @endphp
                     <x-adminlte-datatable id="detalhesServicos" :heads="$heads1" :config="$config1" theme="light" striped hoverable beautify>
@@ -512,12 +520,19 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
 
                                 if($servico->srv_sts == 'F'){
                                     $icone_sts_servico = "fa-solid fa-circle-check fa-lg text-success";
+                                    $title = "Finalizado";
                                 }elseif($servico->srv_sts == 'A'){
                                     $icone_sts_servico = "fa-solid fa-clock-rotate-left fa-lg text-info";
+                                    $title = "Em Andamento";
                                 }elseif($servico->srv_sts == 'C'){
                                     $icone_sts_servico = "fa-solid fa-circle-xmark fa-lg text-danger";
+                                    $title = "Cancelado";
+                                }elseif($servico->srv_sts == 'E'){
+                                    $icone_sts_servico = "fa-solid fa-hourglass-start fa-lg text-primary";
+                                    $title = "Em Espera";
                                 }else{
                                     $icone_sts_servico = "fa-solid fa-triangle-exclamation fa-lg text-warning";
+                                    $title = "Suspenso";
                                 }
 
                                 if($servico->srv_flg_apr == 'S'){
@@ -540,17 +555,55 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                                 <td>{{$servico->srv_tmo}}</td>
                                 <td>{{$servico->srv_dsc}}</td>  
                                 <td>{{$servico->srv_prt}}</td>
+                                <td>{{$servico->srv_ths}}</td>
                                 <td>{{$servico->srv_und}}</td>
                                 <td>{{$servico->srv_qhr}}</td>
                                 <td>{{$srv_vhr}}</td> 
                                 <td>{{$srv_vts}}</td>
-                                <td><i class="{{$icone_apr_servico}}"></i></td>
-                                <td><i class="{{$icone_sts_servico}}"></i></td>   
+                                <td>
+                                    @if($servico->srv_flg_apr == 'S')
+                                    <i title="Aprovado" class="{{$icone_apr_servico}}"></i>
+                                    @else
+                                    <a data-toggle="modal" data-target="#aprovaServico_{{$servico->srv_seq}}">
+                                        <i title="Não Aprovado" class="{{$icone_apr_servico}}"></i>
+                                    </a>
+                                    <x-adminlte-modal id="aprovaServico_{{$servico->srv_seq}}" title="Aprovar Serviço" size="lg" theme="navy" v-centered static-backdrop scrollable>
+                                        <div class="row">
+                                            <p class="text-sm col-md-2">Código
+                                                <b class="d-block">{{$servico->srv_tmo}}</b>
+                                            </p>
+                                            <p class="text-sm col-md-3">Descrição
+                                                <b class="d-block">{{$servico->srv_dsc}}</b>
+                                            </p>
+                                            <p class="text-sm col-md-2">Tipo
+                                                <b class="d-block">{{$servico->srv_ths}}</b>
+                                            </p>
+                                            <p class="text-sm col-md-1">Qtd.
+                                                <b class="d-block">{{$servico->srv_qhr}}</b>
+                                            </p>
+                                            <p class="text-sm col-md-2">Val. Uni.
+                                                <b class="d-block">{{$srv_vhr}}</b>
+                                            </p>
+                                            <p class="text-sm col-md-2">Val. Total
+                                                <b class="d-block">{{$srv_vts}}</b>
+                                            </p>
+                                        </div>
+                                        <x-slot name="footerSlot">
+                                            <form method="get" action="{{route('servicoOS.aprovar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $servico->srv_req,'sequencia'=> $servico->srv_seq,'codTMO'=> $servico->srv_tmo])}}">
+                                                @csrf 
+                                                <x-adminlte-button class="mr-auto" theme="info" label="Aprovar" value="Aprovar" type="submit"/>
+                                            </form>
+                                            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                                        </x-slot>
+                                    </x-adminlte-modal>
+                                    @endif
+                                </td>
+                                <td><i title="{{$title}}" class="{{$icone_sts_servico}}"></i></td>   
                             </tr>
                         @endforeach
                         <tfoot class="thead-light">
                             <tr>
-                                <th colspan="5" style="text-align:left">Sub-Total</br>Total Geral</th>
+                                <th colspan="6" style="text-align:left">Sub-Total</br>Total Geral</th>
                                 <th style="text-align:center"></th>
                                 <th style="text-align:center"></th>
                                 <th style="text-align:center"></th>
@@ -558,6 +611,19 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                             </tr>
                         </tfoot>
                     </x-adminlte-datatable>
+
+                    <!-- Botão hide de inclusão de nova requisição -->
+                    <x-adminlte-button class="btn_hide_iniciar_servicos" type="button" onclick="window.location='{{ route('servicoOS.iniciar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Iniciar Serviços" theme="info"/>
+                    <x-adminlte-button class="btn_hide_finalizar_servicos" type="button" onclick="window.location='{{ route('servicoOS.finalizar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Finalizar Serviços" theme="info"/>
+                    <x-adminlte-button class="btn_hide_finalizar_requisicao" type="button" onclick="window.location='{{ route('requisicaoOS.finalizar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Finalizar Requisição" theme="info"/>
+                    <x-adminlte-button class="btn_hide_reabrir_requisicao" type="button" onclick="window.location='{{ route('requisicaoOS.reabrir', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Reabrir Requisição" theme="info"/>
+
+                    <form method="post" action="{{ route('requisicaoOS.destroy', ['requisicaoOS' => $glo_os_dadosRequisicoes[0]['req_id'], 'empresa'=> $glo_os_empresa, 'cliente'=> $glo_os_cliente, 'numOS'=> $glo_os_nos]) }}">
+                        @csrf 
+                        @method('delete')
+                        <x-adminlte-button class="btn_hide_excluir_requisicao" type="submit" label="Excluir Requisição" value="Excluir Requisição" theme="info"/>
+                    </form>
+
                 </x-adminlte-card><!-- Fechamento do bloco de consulta de requisição da OS ********** -->
                 @endif
 
@@ -584,6 +650,9 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                                     <td colspan="1" style="border: 0px;">
                                         <p class="text-sm">Situação
                                             <b class="d-block">
+                                                @php 
+                                                    $status_requisicao = $glo_os_dadosRequisicoes[0]['req_sts'];
+                                                @endphp
                                                 @if($glo_os_dadosRequisicoes[0]['req_sts'] == 'F')
                                                 <a class="text-muted" title="Finalizado" >
                                                     <i class="fa-solid fa-circle-check fa-xl text-success"></i>
@@ -591,10 +660,6 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                                                 @elseif($glo_os_dadosRequisicoes[0]['req_sts'] == 'A')
                                                 <a class="text-muted" title="Andamento">
                                                     <i class="fa-solid fa-clock-rotate-left fa-xl text-info"></i>
-                                                </a>
-                                                @else
-                                                <a class="text-muted" title="Cancelado">
-                                                    <i class="fa-solid fa-circle-xmark fa-xl text-danger"></i>
                                                 </a>
                                                 @endif
                                             </b>
@@ -606,9 +671,13 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
 
                                     $nom_are = DB::table('parametros_sistema_areas')->select('area_desc')->where('area_codigo', $glo_os_dadosRequisicoes[0]['req_are'])->get();
 
-                                    $nom_tos = DB::table('lancamento_srv_tipo_servicos')->select('tipsrv_nom')->where('tipsrv_emp', $glo_os_empresa)->where('tipsrv_cod', $glo_os_dadosRequisicoes[0]['req_tos'])->get();
+                                    $nom_tos = DB::table('lancamento_srv_tipo_servicos')->select('tipsrv_nom', 'tipsrv_ahs', 'tipsrv_avs')->where('tipsrv_emp', $glo_os_empresa)->where('tipsrv_cod', $glo_os_dadosRequisicoes[0]['req_tos'])->get();
 
                                     $nom_set = DB::table('parametros_srv_setores')->select('setor_desc')->where('setor_empresa', $glo_os_empresa)->where('setor_codigo', $glo_os_dadosRequisicoes[0]['req_set'])->get();
+
+                                    //Cria variaveis que serão utilizadas no JS inicial
+                                    $altValorTOS = $nom_tos[0]->tipsrv_avs;
+                                    $altHoraTOS = $nom_tos[0]->tipsrv_ahs;
                                 @endphp
                                 <tr>
                                     <td>
@@ -676,6 +745,9 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                                         </p>
                                     </td>
                                     <td colspan="1" style="border: 0px;">
+                                        @php 
+                                            $status_servico = $glo_os_dadosServicoSelecionado[0]->srv_sts;
+                                        @endphp
                                         <p class="text-md font-weight-bold">Situação
                                             <b class="d-block" style="padding: 5px;">
                                                 @if($glo_os_dadosServicoSelecionado[0]->srv_sts == 'F')
@@ -689,6 +761,10 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                                                 @elseif($glo_os_dadosServicoSelecionado[0]->srv_sts == 'C')
                                                 <a class="text-muted" title="Cancelado">
                                                     <i class="fa-solid fa-circle-xmark fa-2xl text-danger"></i>
+                                                </a>
+                                                @elseif($glo_os_dadosServicoSelecionado[0]->srv_sts == 'E')
+                                                <a class="text-muted" title="Em Espera">
+                                                    <i class="fa-solid fa-hourglass-start fa-2xl text-primary"></i>
                                                 </a>
                                                 @else
                                                 <a class="text-muted" title="Suspenso">
@@ -793,9 +869,9 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                     @if($glo_os_subEstagioRequisicao == 'TMO_SELECIONADA')
                     <!-- Formulario de Inclusão (INCLUSAO_SERVICO) / Manutenção da TMO (MANUTENCAO_SERVICO) -->
                     @if($glo_os_estagioAPP == "INCLUSAO_SERVICO")
-                    <form method="post" action="{{route('servicoOS.inserir', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos, 'requisicao' => $glo_os_dadosRequisicoes[0]['req_seq'], 'codTMO' => $glo_os_dadosTmoSelecionada[0]->tmo_cod, 'estagioAPP' => 'CONSULTA_REQUISICAO'])}}" id="quickForm-ins_upd-servico" novalidate="novalidate">
+                    <form method="post" action="{{route('servicoOS.inserir', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos, 'requisicao' => $glo_os_dadosRequisicoes[0]['req_seq'], 'codTMO' => $glo_os_dadosTmoSelecionada[0]->tmo_cod, 'estagioAPP' => 'CONSULTA_REQUISICAO'])}}" id="quickForm-ins-upd-servico" novalidate="novalidate">
                     @else
-                    <form method="post" action="{{route('servicoOS.atualizar', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos, 'requisicao' => $glo_os_dadosServicoSelecionado[0]->srv_req, 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $glo_os_dadosServicoSelecionado[0]->srv_tmo, 'estagioAPP' => 'CONSULTA_REQUISICAO'])}}" id="quickForm-ins_upd-servico" novalidate="novalidate">
+                    <form method="post" action="{{route('servicoOS.atualizar', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos, 'requisicao' => $glo_os_dadosServicoSelecionado[0]->srv_req, 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $glo_os_dadosServicoSelecionado[0]->srv_tmo, 'estagioAPP' => 'CONSULTA_REQUISICAO'])}}" id="quickForm-ins-upd-servico" novalidate="novalidate">
                     @endif
                         @csrf
                         <!-- Demais campos da TMO selecionada -->
@@ -832,7 +908,9 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                                 }
                             @endphp
                             <!-- Tipo da TMO -->
-                            <x-adminlte-input name="tipoTMO" label="Tipo da Tarefa" type="text" value="{{$tipoTMO_sel}}" fgroup-class="col-md-4"/>
+                            <x-adminlte-select name="tipoTMO" label="Tipo da Tarefa" fgroup-class="col-md-4">
+                                <x-adminlte-options :options="['P' => 'Padrão', 'I' => 'Hora Informada', 'R' => 'Hora Real', 'F' => 'Valor Fixo', 'T' => 'Terceiros']" selected="{{$tipoTMO_sel}}"/>
+                            </x-adminlte-select>
                             <!-- Prestador responsavel da TMO -->
                             <x-adminlte-input name="prestadorTMO" label="Prestador da Tarefa" type="text" value="{{$prestadorTMO_sel}}" fgroup-class="col-md-8"/>
                         </div>
@@ -850,32 +928,86 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                                 }
                             @endphp
                             <!-- Quantidade de Hortas -->
-                            <x-adminlte-input name="qtdHrTMO" label="Qtd. de Horas" type="text" value="{{$qtdHrTMO_sel}}" fgroup-class="col-md-4"/>
+                            <x-adminlte-input name="qtdHrTMO" label="Qtd. de Horas" type="text" value="{{$qtdHrTMO_sel}}" placeholder="0.00" fgroup-class="col-md-4"/>
                             <!-- Valor da Hora -->
-                            <x-adminlte-input name="valUniHrTMO" label="Valor Unitário" type="text" value="{{$valUniHrTMO_sel}}" fgroup-class="col-md-4"/>
+                            <x-adminlte-input name="valUniHrTMO" label="Valor Unitário" type="text" value="{{$valUniHrTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
                             <!-- Valor Total -->
-                            <x-adminlte-input name="valTotHrTMO" label="Valor Total" type="text" value="{{$valTotHrTMO_sel}}" fgroup-class="col-md-4"/>
+                            <x-adminlte-input name="valTotHrTMO" label="Valor Total" type="text" value="{{$valTotHrTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
                         </div>
 
-                        <div class="row">
-                            @php 
-                                if($glo_os_estagioAPP == "INCLUSAO_SERVICO"){
-                                    $forTerceiroTMO_sel = $glo_os_dadosTmoSelecionada[0]->tmo_for_cgt;
-                                }else{
-                                    $forTerceiroTMO_sel = $glo_os_dadosServicoSelecionado[0]->srv_for;
-                                }
-                            @endphp
-                            <!-- Fornecedor do Serviço de Terceiros -->
-                            <x-adminlte-input name="forTerceiroTMO" label="Fornecedor Terceiro" type="text" value="{{$forTerceiroTMO_sel}}" fgroup-class="col-md-6"/>
-                        </div>
+                        <div class="bloco-terceiros">
+                            <div class="row">
+                                @php 
+                                    if($glo_os_estagioAPP == "INCLUSAO_SERVICO"){
+                                        $forTerceiroTMO_sel = $glo_os_dadosTmoSelecionada[0]->tmo_for_cgt;
+                                    }else{
+                                        $forTerceiroTMO_sel = $glo_os_dadosServicoSelecionado[0]->srv_for;
+                                    }
 
-                        <div class="row">
-                            <!-- Número da NF -->
-                            <x-adminlte-input name="numNfTerceiroTMO" label="Número da NF" type="text" value="" fgroup-class="col-md-4"/>
-                            <!-- Série da NF -->
-                            <x-adminlte-input name="serNfTerceiroTMO" label="Série da NF" type="text" value="" fgroup-class="col-md-4"/>
-                            <!-- Data da NF -->
-                            <x-adminlte-input name="dataNfTerceiroTMO" label="Data da NF" type="text" value="" fgroup-class="col-md-4"/>
+                                    if(!empty($forTerceiroTMO_sel)){
+                                        $cli_nom = DB::table('cadastro_clientes')->select('cliente_nome')->where('cliente_codigo', $forTerceiroTMO_sel)->get();
+                                        $forTerceiroTMO_sel = $forTerceiroTMO_sel.' - '.$cli_nom[0]->cliente_nome;
+                                    }
+
+                                    $data_cli = DB::table('cadastro_clientes')->selectRaw('cliente_codigo, cliente_nome')->where('cliente_tipo_cadastro','F')->orderBy('cliente_codigo', 'asc')->get();
+                                    $html = '<datalist id="fornecedores">';
+                                    foreach($data_cli as $cliente){
+                                        $html .= '<option value="'.$cliente->cliente_codigo.' - '.$cliente->cliente_nome.'">'.$cliente->cliente_codigo.' - '.$cliente->cliente_nome.'</option>';
+                                    }
+                                    $html .='</datalist>';
+                                    echo $html;
+                                @endphp
+                                <!-- Fornecedor do Serviço de Terceiros -->
+                                <x-adminlte-input name="forTerceiroTMO" label="Fornecedor Terceiro" type="search" list="fornecedores" value="{{$forTerceiroTMO_sel}}" fgroup-class="col-md-6"/>
+                            </div>
+
+                            <div class="row">
+                                @php
+                                    if($glo_os_estagioAPP == "INCLUSAO_SERVICO"){
+                                        $data_nf = '';
+                                    }else{
+                                        if(!empty($glo_os_dadosServicoSelecionado[0]->srv_dtt)){
+                                            $data_nf = $data_nf = date('d/m/Y', strtotime($glo_os_dadosServicoSelecionado[0]->srv_dtt));
+                                        }else{
+                                            $data_nf = '';
+                                        }
+                                    }
+
+                                    $config_dt_nf = [
+                                        "singleDatePicker" => true,
+                                        "showDropdowns" => true,
+                                        "startDate" => "js:moment()",
+                                        "minYear" => 1900,
+                                        "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
+                                        "timePicker" => false,
+                                        "timePicker24Hour" => false,
+                                        "timePickerSeconds" => false,
+                                        "cancelButtonClasses" => "btn-danger",
+                                        "locale" => ["format" => "DD/MM/YYYY"],
+                                    ];
+
+                                    if($glo_os_estagioAPP == "INCLUSAO_SERVICO"){
+                                        $numNFTMO_sel = '';
+                                        $serNFTMO_sel = '';
+                                    }else{
+                                        $numNFTMO_sel = $glo_os_dadosServicoSelecionado[0]->srv_nft;
+                                        $serNFTMO_sel = $glo_os_dadosServicoSelecionado[0]->srv_srt;
+                                    }
+                                @endphp
+                                <!-- Número da NF -->
+                                <x-adminlte-input name="numNfTerceiroTMO" label="Número da NF" type="text" value="{{$numNFTMO_sel}}" fgroup-class="col-md-4"/>
+                                <!-- Série da NF -->
+                                <x-adminlte-input name="serNfTerceiroTMO" label="Série da NF" type="text" value="{{$serNFTMO_sel}}" fgroup-class="col-md-4"/>
+                                <!-- Data da NF -->
+                                <x-adminlte-date-range name="dataNfTerceiroTMO" label="Data da NF" :config="$config_dt_nf" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
+                                    <x-slot name="prependSlot">
+                                        <div class="input-group-text">
+                                            <i class="far fa-lg fa-calendar-alt"></i>
+                                        </div>
+                                    </x-slot>
+                                </x-adminlte-date-range>
+                                @push('js')<script>$(() => $("#dataNfTerceiroTMO").val('{{ $data_nf }}'))</script>@endpush
+                            </div>
                         </div>
 
                         <div class="row">
@@ -890,12 +1022,14 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                                     $perCustoTMO_sel = $glo_os_dadosServicoSelecionado[0]->srv_pcg;
                                 }
                             @endphp
-                            <!-- Quantidade de Hortas -->
-                            <x-adminlte-input name="tipCustoTMO" label="Tipo do Custo" type="text" value="{{$tipCustoTMO_sel}}" fgroup-class="col-md-4"/>
-                            <!-- Valor da Hora -->
-                            <x-adminlte-input name="valCustoTMO" label="Valor do Custo" type="text" value="{{$valCustoTMO_sel}}" fgroup-class="col-md-4"/>
-                            <!-- Valor Total -->
-                            <x-adminlte-input name="perCustoTMO" label="Percentual do custo" type="text" value="{{$perCustoTMO_sel}}" fgroup-class="col-md-4"/>
+                            <!-- Tipo do Valor do custo gerencial de terceiros -->
+                            <x-adminlte-select name="tipCustoTMO" label="Tipo do Custo" fgroup-class="col-md-4">
+                                <x-adminlte-options :options="['1' => 'Valor', '2' => 'Percentual']" selected="{{$tipCustoTMO_sel}}"/>
+                            </x-adminlte-select>
+                            <!-- Valor do custo -->
+                            <x-adminlte-input name="valCustoTMO" label="Valor do Custo" type="text" value="{{$valCustoTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
+                            <!-- Valor percentual do custo -->
+                            <x-adminlte-input name="perCustoTMO" label="Percentual do custo" type="text" value="{{$perCustoTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
                         </div>
 
                         @if($glo_os_estagioAPP == "INCLUSAO_SERVICO")
@@ -908,8 +1042,509 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
 
                     </form><!-- Fechamento do formulario de Inclusão / Manutenção da TMO -->
                     @endif
+
+                    <!-- Botão hide de manutenção da tmo -->
+                    @if($glo_os_estagioAPP == "CONSULTA_REQUISICAO")
+                        <x-adminlte-button class="btn_hide_suspender_tmo" type="button" onclick="window.location='{{ route('servicoOS.suspender', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}'" label="Suspender TMO" theme="info"/>
+                        <x-adminlte-button class="btn_hide_cancelar_tmo" type="button" onclick="window.location='{{ route('servicoOS.cancelar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}'" label="Cancelar TMO" theme="info"/>
+                        <x-adminlte-button class="btn_hide_reabrir_tmo" type="button" onclick="window.location='{{ route('servicoOS.reabrir', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}'" label="Cancelar TMO" theme="info"/>
+
+                        <form method="post" action="{{ route('servicoOS.destroy', ['servicoOS' => $glo_os_dadosServicoSelecionado[0]->srv_id, 'empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}">
+                            @csrf 
+                            @method('delete')
+                            <x-adminlte-button class="btn_hide_excluir_tmo" type="submit" label="Excluir TMO" value="Excluir TMO" theme="info"/>
+                        </form>
+                    @endif
+
                 </x-adminlte-card><!-- Fechamento do bloco Inclusão/Manutenção do serviço na requisição da OS ********** -->
                 @endif
+
+                <!-- ********** Bloco PREVISAO_ENTREGA da OS ********** -->
+                @if($glo_os_estagioAPP == "PREVISAO_ENTREGA")
+                <x-adminlte-card title="Previsão de Entrega da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
+
+                    <x-adminlte-card title="Informações da Previsão de Entrega" theme="navy">
+                        <form method="post" action="{{ route('painelOS.atualizaPrevEntrega', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'cliente' => $glo_os_cliente]) }}" id="quickForm-upd-prev-entrega" novalidate="novalidate">
+                            @csrf 
+                            @method('post')
+                            <div class="row">
+                                <!-- Grupo do serviço -->
+                                <x-adminlte-input name="qtdHoraOS" label="Duração Prevista" type="text" value="{{$glo_os_dadosOS[0]->os_qtd_hr}}" placeholder="0.00" fgroup-class="col-md-4"/>
+
+                                @php
+                                    $config = [
+                                        "singleDatePicker" => true,
+                                        "showDropdowns" => true,
+                                        "startDate" => "js:moment()",
+                                        "minYear" => 1900,
+                                        "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
+                                        "timePicker" => false,
+                                        "timePicker24Hour" => false,
+                                        "timePickerSeconds" => false,
+                                        "cancelButtonClasses" => "btn-danger",
+                                        "locale" => ["format" => "DD/MM/YYYY"],
+                                    ];
+                                    if(!empty($glo_os_dadosOS[0]->os_dpe)){
+                                        $dataPrevEnt = date('d/m/Y', strtotime($glo_os_dadosOS[0]->os_dpe));
+                                    }else{
+                                        $dataPrevEnt = '';
+                                    }
+                                @endphp
+                                <!-- Data da Previsão de Entrega -->
+                                <x-adminlte-date-range name="dataPrevEnt" label="Data da Previsão de Entrega" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
+                                    <x-slot name="appendSlot">
+                                        <div class="input-group-text">
+                                            <i class="far fa-lg fa-calendar-alt"></i>
+                                        </div>
+                                    </x-slot>
+                                </x-adminlte-date-range>
+                                @push('js')<script>$(() => $("#dataPrevEnt").val('{{ $dataPrevEnt }}'))</script>@endpush
+                                
+                                @php
+                                    if(!empty($glo_os_dadosOS[0]->os_dpe)){
+                                        $startDate = substr($glo_os_dadosOS[0]->os_hpe,0,2).':'.substr($glo_os_dadosOS[0]->os_hpe,2,2);
+                                    }else{
+                                        $startDate = 'js:moment()';
+                                    }
+                                    $config = [
+                                        "singleDatePicker" => true,
+                                        "showDropdowns" => true,
+                                        "startDate" => $startDate,
+                                        "minYear" => 2000,
+                                        "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
+                                        "timePicker" => true,
+                                        "timePicker24Hour" => true,
+                                        "timePickerSeconds" => false,
+                                        "cancelButtonClasses" => "btn-danger",
+                                        "locale" => ["format" => "HH:mm"],
+                                    ];
+                                    if(!empty($glo_os_dadosOS[0]->os_dpe)){
+                                        $horaPrevEnt = substr($glo_os_dadosOS[0]->os_hpe,0,2).':'.substr($glo_os_dadosOS[0]->os_hpe,2,2);
+                                    }else{
+                                        $horaPrevEnt = '';
+                                    }
+                                @endphp
+                                <x-adminlte-date-range name="horaPrevEnt" label="Hora da Previsão de Entrega" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
+                                    <x-slot name="appendSlot">
+                                        <div class="input-group-text">
+                                            <i class="far fa-lg fa-clock"></i>
+                                        </div>
+                                    </x-slot>
+                                </x-adminlte-date-range>
+                                @push('js')<script>$(() => $("#horaPrevEnt").val('{{ $horaPrevEnt }}'))</script>@endpush
+                            </div>
+                            <div class="row">
+                                <!-- Gera novo orçamento -->
+                                <x-adminlte-select name="clienteAguardaTermino" label="Cliente Aguarda Final do Serviço" fgroup-class="col-md-6">
+                                    <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$glo_os_dadosOS[0]->os_cli_agr}}"/>
+                                </x-adminlte-select>
+                                
+                                <!-- Gera novo orçamento -->
+                                <x-adminlte-select name="avisaClienteTermino" label="Avisa Cliente o Final do Serviço" fgroup-class="col-md-6">
+                                    <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$glo_os_dadosOS[0]->os_cli_avs}}"/>
+                                </x-adminlte-select>
+                            </div>
+
+                            <x-adminlte-button class="btn_hide_atualizar_previsao_entrega" type="submit" label="Gerar Orçamento" value="Gerar Orçamento" theme="info"/>
+                        </form>
+                    </x-adminlte-card>
+
+                </x-adminlte-card>
+                @endif
+                <!-- Fechamento do bloco PREVISAO_ENTREGA da OS -->
+
+                <!-- ********** Bloco ORCAMENTO_OS da OS ********** -->
+                @if($glo_os_estagioAPP == "ORCAMENTO_OS")
+                <x-adminlte-card title="Orçamento da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
+                    
+                    <x-adminlte-card title="Informações do Orçamento" theme="navy">
+                        <form method="post" action="{{ route('painelOS.abrirOrcamento', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos]) }}">
+                            @csrf 
+                            @method('post')
+                            <div class="row">
+                                @php 
+                                    if(!empty($glo_os_dadosOS[0]->os_num_orc)){
+                                        $orcamento = str_pad($glo_os_dadosOS[0]->os_num_orc, 8, "0", STR_PAD_LEFT);
+                                        $novoOrcamento = 'N';
+                                    }else{
+                                        $orcamento = "Não Gerado";
+                                        $novoOrcamento = 'S';
+                                    }
+                                @endphp
+                                <!-- Orçamento gerado -->
+                                <x-adminlte-input name="orcamento" label="Número do Orçamento" type="text" value="{{$orcamento}}" fgroup-class="col-md-6" disabled/>
+                                <!-- Gera novo orçamento -->
+                                <x-adminlte-select name="novoOrcamento" label="Gerar Novo Orçamento" fgroup-class="col-md-6">
+                                    <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$novoOrcamento}}"/>
+                                </x-adminlte-select>
+                            </div>
+
+                            <x-adminlte-button class="btn_hide_gerar_orcamento" type="submit" label="Gerar Orçamento" value="Gerar Orçamento" theme="info"/>
+                        </form>
+                    </x-adminlte-card>
+                </x-adminlte-card>
+                @endif
+                <!-- Fechamento do bloco ORCAMENTO_OS da OS -->
+
+                <!-- ********** Bloco ORCAMENTO_OS_IMPRESSAO da OS ********** -->
+                @if($glo_os_estagioAPP == "ORCAMENTO_OS_IMPRESSAO")
+                <x-adminlte-card title="Impressão do Orçamento da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
+                    
+                    <x-adminlte-card title="Orçamento da Ordem de Serviço" theme="navy">
+                        <div class="col-md-12 tabela-orcamento">
+                            <table class="table table-sm table-borderless">
+                                <tbody>
+                                    <tr>
+                                        @php 
+                                            $logo_emp = "img/".$glo_os_dadosEmpresa[0]->empresa_cnpj."/".$glo_os_dadosEmpresa[0]->empresa_codigo."_logo.png";
+                                        @endphp
+                                        <td rowspan="4" style="width: 40%;"><div class="d-flex justify-content-center"><img src="{{ asset($logo_emp) }}" style="max-width: 60%; max-height: 60%; float: right;" /></div></td>
+                                        <td rowspan="4">
+                                            <p class="text-sm">Endereço
+                                                <b class="d-block">{{$glo_os_dadosEmpresaEndereco[0]->endereco_logradouro.', '.$glo_os_dadosEmpresaEndereco[0]->endereco_numero}}</b>
+                                                <b class="d-block">{{$glo_os_dadosEmpresaEndereco[0]->endereco_cep}}</b>
+                                                <b class="d-block">{{$glo_os_dadosEmpresaEndereco[0]->endereco_bairro}}</b>
+                                                <b class="d-block">{{$glo_os_dadosEmpresaEndereco[0]->endereco_cidade.' - '.$glo_os_dadosEmpresaEndereco[0]->endereco_uf}}</b>
+                                            </p>
+                                            @php 
+                                                if(!empty($glo_os_dadosEmpresa[0]->empresa_tel_celular)){
+                                                    $telCelular = Helper::mascaraTelCelular($glo_os_dadosEmpresa[0]->empresa_tel_celular);
+                                                }else{
+                                                    $telCelular = "Não Cadastrado";
+                                                }
+
+                                                if(!empty($glo_os_dadosEmpresa[0]->empresa_tel_comercial)){
+                                                    $telComercial = Helper::mascaraTelComercial($glo_os_dadosEmpresa[0]->empresa_tel_comercial);
+                                                }else{
+                                                    $telComercial = "Não Cadastrado";
+                                                }
+
+                                                if(!empty($glo_os_dadosEmpresa[0]->empresa_cnpj)){
+                                                    $cnpjEmpresa = Helper::mascaraCNPJ($glo_os_dadosEmpresa[0]->empresa_cnpj);
+                                                }else{
+                                                    $cnpjEmpresa = "Não Cadastrado";
+                                                }
+
+                                                $dataConsultor = DB::table('users')->select('name')->where('usuario_codigo',$glo_os_dadosOS[0]->os_res_abr)->get();
+                                                $consultorAbertura = $glo_os_dadosOS[0]->os_res_abr.' - '.$dataConsultor[0]->name;
+
+                                                $dataHoraAbertura = Helper::formataDataHora($glo_os_dadosOS[0]->os_dha);
+
+                                            @endphp
+                                            <p class="text-sm">Telefone
+                                                <b class="d-block">{{$telCelular.' / '.$telComercial}}</b>
+                                            </p>
+                                            <p class="text-sm">Email
+                                                <b class="d-block">{{$glo_os_dadosEmpresa[0]->empresa_email}}</b>
+                                            </p>
+                                        </td>
+                                        <td rowspan="4">
+                                            <p class="text-sm">Empresa
+                                                <b class="d-block">{{$glo_os_dadosEmpresa[0]->empresa_codigo.' - '.$glo_os_dadosEmpresa[0]->empresa_nome}}</b>
+                                            </p>
+                                            <p class="text-sm">CNPJ
+                                                <b class="d-block">{{$cnpjEmpresa}}</b>
+                                            </p>
+                                            <p class="text-sm">Inscrição Estadual
+                                                <b class="d-block">{{$glo_os_dadosEmpresa[0]->empresa_insc_estadual}}</b>
+                                            </p>
+                                            <p class="text-sm">Consultor Técnico
+                                                <b class="d-block">{{$consultorAbertura}}</b>
+                                            </p>
+                                            <p class="text-sm">Data e Hora da Abertura da OS
+                                                <b class="d-block">{{$dataHoraAbertura}}</b>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table> 
+                            <table class="table table-sm table-bordered tabela-orc-pre">
+                                <tbody>
+                                    <tr>
+                                    @php 
+                                        $dataPreEnt = Helper::formataData($glo_os_dadosOS[0]->os_dpe);
+                                        $horaPreEnt = Helper::formataHoraMinuto($glo_os_dadosOS[0]->os_hpe);
+
+                                        $dataOrcamento = Helper::formataData($glo_os_dadosOS[0]->os_dt_orc);
+                                    @endphp
+                                        <td>
+                                            <p class="text-sm">Número da OS
+                                                <b class="d-block">{{str_pad($glo_os_dadosOS[0]->os_nos, 8, "0", STR_PAD_LEFT)}}</b>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm">Data e Hora da Previsão de Entrega
+                                                <b class="d-block">{{$dataPreEnt.' '.$horaPreEnt}}</b>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm">Número do Orçamento
+                                                <b class="d-block">{{str_pad($glo_os_dadosOS[0]->os_num_orc, 8, "0", STR_PAD_LEFT)}}</b>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm">Data do Orçamento
+                                                <b class="d-block">{{$dataOrcamento}}</b>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table> 
+                            <table class="table table-sm table-bordered">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col" colspan="3">dados do cliente</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <p class="text-sm">Cliente
+                                                <b class="d-block">{{$glo_os_dadosCliente[0]->cliente_codigo.' - '.$glo_os_dadosCliente[0]->cliente_nome}}</b>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm">CPF / CNPJ
+                                                <b class="d-block">@if($glo_os_dadosCliente[0]->cliente_tipo_pessoa == 'J') 
+                                                                        {{Helper::mascaraCNPJ($glo_os_dadosCliente[0]->cliente_cpf_cnpj)}} 
+                                                                    @else 
+                                                                    {{Helper::mascaraCPF($glo_os_dadosCliente[0]->cliente_cpf_cnpj)}} 
+                                                                    @endif</b>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm">RG
+                                                <b class="d-block">@if($glo_os_dadosCliente[0]->cliente_tipo_pessoa == 'F' && !empty($glo_os_dadosCliente[0]->cliente_rg)) 
+                                                                        {{Helper::mascaraRG($glo_os_dadosCliente[0]->cliente_rg)}} 
+                                                                    @endif</b>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p class="text-sm">Endereço
+                                                <b class="d-block">{{$glo_os_dadosClienteEndereco[0]->endereco_logradouro.', '.$glo_os_dadosClienteEndereco[0]->endereco_numero}}</b>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm">Complemento
+                                                <b class="d-block">{{$glo_os_dadosClienteEndereco[0]->endereco_complemento}}</b>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm">Bairro
+                                                <b class="d-block">{{$glo_os_dadosClienteEndereco[0]->endereco_bairro}}</b>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p class="text-sm">CEP
+                                                <b class="d-block">{{$glo_os_dadosClienteEndereco[0]->endereco_cep}}</b>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm">Cidade
+                                                <b class="d-block">{{$glo_os_dadosClienteEndereco[0]->endereco_cidade}}</b>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm">UF
+                                                <b class="d-block">{{$glo_os_dadosClienteEndereco[0]->endereco_uf}}</b>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p class="text-sm">Telefone Celular
+                                                <b class="d-block">@if(!empty($glo_os_dadosCliente[0]->cliente_tel_celular)) {{Helper::mascaraTelCelular($glo_os_dadosCliente[0]->cliente_tel_celular)}} @endif</b>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm">Telefone Comercial
+                                                <b class="d-block">@if(!empty($glo_os_dadosCliente[0]->cliente_tel_comercial)) {{Helper::mascaraTelComercial($glo_os_dadosCliente[0]->cliente_tel_comercial)}} @endif</b>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm">Telefone Residencial
+                                                <b class="d-block">@if(!empty($glo_os_dadosCliente[0]->cliente_tel_residencial)) {{Helper::mascaraTelResidencial($glo_os_dadosCliente[0]->cliente_tel_residencial)}} @endif</b>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <p class="text-sm">Email
+                                                <b class="d-block">{{$glo_os_dadosCliente[0]->cliente_email}}</b>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col" colspan="3">Solicitações de Servicos</th>
+                                        </tr>
+                                    </thead>
+                                    <tr>
+                                        <td colspan="3">
+                                            <table class="table table-sm table-bordered" style="margin: 0px;">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th scope="col">Item</th>
+                                                        <th scope="col">Etapa</th>
+                                                        <th scope="col">Descrição</th>
+                                                        <th scope="col">Área</th>
+                                                        <th scope="col">Setor</th>
+                                                        <th scope="col">Tipo de Serviço</th>
+                                                        <th scope="col">Valor</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($glo_os_dadosRequisicoes as $requisicao)
+                                                    <tr>
+                                                        @php 
+                                                            $dataEtapa = DB::table('lancamento_srv_etapa_atendimentos')->select('eat_nom')->where('eat_emp',$glo_os_empresa)->where('eat_cod',$requisicao->req_eat)->get();
+                                                            $etapa = $requisicao->req_eat.' - '.$dataEtapa[0]->eat_nom;
+
+                                                            $dataArea = DB::table('parametros_sistema_areas')->select('area_desc')->where('area_codigo',$requisicao->req_are)->get();
+                                                            $area = $requisicao->req_are.' - '.$dataArea[0]->area_desc;
+
+                                                            $dataSet = DB::table('parametros_srv_setores')->select('setor_desc')->where('setor_empresa',$glo_os_empresa)->where('setor_codigo',$requisicao->req_set)->where('setor_area',$requisicao->req_are)->get();
+                                                            $setor = $requisicao->req_set.' - '.$dataSet[0]->setor_desc;
+
+                                                            $dataTOS = DB::table('lancamento_srv_tipo_servicos')->select('tipsrv_nom')->where('tipsrv_emp', $glo_os_empresa)->where('tipsrv_are', $requisicao->req_are)->where('tipsrv_cod', $requisicao->req_tos)->get();
+                                                            $tos = $requisicao->req_tos.' - '.$dataTOS[0]->tipsrv_nom;
+                                                        @endphp
+                                                        <td>{{$requisicao->req_seq}}</td>
+                                                        <td>{{$etapa}}</td>
+                                                        <td>{{$requisicao->req_dsc}}</td>
+                                                        <td>{{$area}}</td>
+                                                        <td>{{$setor}}</td>
+                                                        <td>{{$tos}}</td>
+                                                        <td>{{Helper::formataValorMonetario($requisicao->req_vlr)}}</td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col" colspan="3">Serviços de Mão de Obra</th>
+                                        </tr>
+                                    </thead>
+                                    <tr>
+                                        <td colspan="3">
+                                            <table class="table table-sm table-bordered" style="margin: 0px;">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th scope="col">Requisição</th>
+                                                        <th scope="col">Item</th>
+                                                        <th scope="col">Código Serviço</th>
+                                                        <th scope="col">Descrição</th>
+                                                        <th scope="col">Tipo</th>
+                                                        <th scope="col">Qtd. Horas</th>
+                                                        <th scope="col">Val. Hora</th>
+                                                        <th scope="col">Valor Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($glo_os_dadosServicos as $servico)
+                                                    <tr>
+                                                        @php 
+                                                            if($servico->srv_ths == 'F'){
+                                                                $tipoHR = 'Valor Fixo';
+                                                            }elseif($servico->srv_ths == 'P'){
+                                                                $tipoHR = 'Hora Padrão';
+                                                            }elseif($servico->srv_ths == 'T'){
+                                                                $tipoHR = 'Terceiros';
+                                                            }elseif($servico->srv_ths == 'R'){
+                                                                $tipoHR = 'Hora Real';
+                                                            }else{
+                                                                $tipoHR = 'Hora Informada';
+                                                            }
+                                                        @endphp
+                                                        <td>{{$servico->srv_req}}</td>
+                                                        <td>{{$servico->srv_seq}}</td>
+                                                        <td>{{$servico->srv_tmo}}</td>
+                                                        <td>{{$servico->srv_dsc}}</td>
+                                                        <td>{{$tipoHR}}</td>
+                                                        <td>{{$servico->srv_qhr}}</td>
+                                                        <td>{{Helper::formataValorMonetario($servico->srv_vhr)}}</td>
+                                                        <td>{{Helper::formataValorMonetario($servico->srv_vts)}}</td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table> 
+                            <table class="table table-sm table-bordered tabela-totais">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col" colspan="4">Totais da OS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <p class="text-sm">Valor Total Bruto
+                                                <b class="d-block">{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vos)}}</b>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm">Descontos
+                                                <b class="d-block">{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_val_des)}}</b>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm">Valor Total de Serviços
+                                                <b class="d-block">{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vls)}}</b>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p class="text-sm">Valor Total Liquido
+                                                <b class="d-block">{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vlt)}}</b>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table> 
+                            <table class="table table-sm table-bordered">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Informações Adicionais</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>O cliente reconhece ter conhecimento prévio das condições gerais da realização dos serviços solicitados e autoriza a realização dos serviços constantes desta Ordem de Serviço / Orçamento e a Emissão da respectiva Nota Fiscal para pagamento.</td>
+                                    </tr>
+                                </tbody>
+                            </table> 
+                            <div class="row" style="margin-top: 75px;">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-8 assinatura-consultor">
+                                    <p class="text-sm">Assinatura Consultor</p>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                            <div class="row assinatura-cliente">
+                                <div class="col-md-2">
+                        
+                                </div>
+                                <div class="col-md-8 assinatura-meio">
+                                    <p class="text-sm">Assinatura do Cliente ou Responsável Autorizado</p>
+                                </div>
+                                <div class="col-md-2">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </x-adminlte-card>
+
+                </x-adminlte-card>
+                @endif
+                <!-- Fechamento do bloco ORCAMENTO_OS_IMPRESSAO da OS -->
                 
                 <!-- ********** Bloco ENCERRAMENTO da tarefa da Abertura de OS ********** -->
                 @if($glo_os_estagioAPP == "ENCERRAMENTO")
@@ -993,14 +1628,45 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
 
         <!-- ********** Rodapé com os botões do Painel Principal da Abertura de OS ********** -->
         <x-slot name="footerSlot">
+            @php
+                if($glo_os_estagioAPP == 'CONSULTA_REQUISICAO'){
+
+                    if(!empty($glo_os_dadosRequisicoes[0]['req_set'])){
+
+                        $setor_req = $glo_os_dadosRequisicoes[0]['req_set'];
+                    }else{
+                        $setor_req = ' ';
+                    }
+                }else{
+                    $setor_req = ' ';
+                }
+            @endphp
             <x-adminlte-button class="btn_geral" type="button" onclick="window.location='{{ route('situacaoOS.carregaOS', ['empresa' => $glo_os_empresa, 'cliente' => $glo_os_cliente, 'nos' => $glo_os_nos, 'estagioAPP' => 'PRINCIPAL']) }}'" label="Geral" theme="info" icon=""/>
+            <x-adminlte-button class="btn_previsao_entrega" type="button" onclick="window.location='{{ route('painelOS.previsaoEntregaOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Previsão de Entrega" theme="info" icon="fa-solid fa-truck"/>
+            <x-adminlte-button class="btn_orcamento" type="button" onclick="window.location='{{ route('painelOS.orcamentoOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Orçamento" theme="info" icon="fa-solid fa-file-invoice-dollar"/>
+
+            <x-adminlte-button class="btn_atualizar_previsao_entrega" type="button" onclick="document.querySelector('.btn_hide_atualizar_previsao_entrega').click()" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
             
-            
+            <x-adminlte-button class="btn_gerar_orcamento" type="button" onclick="document.querySelector('.btn_hide_gerar_orcamento').click()" label="Gerar Orçamento" theme="info" icon=""/>
+
+            <x-adminlte-button class="btn_orcamentoPDF" type="button" onclick="window.open('{{ route('painelOS.orcamentoPDF', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}');" label="Gerar PDF" theme="info" icon="fa-solid fa-file-pdf"/>
+
             <x-adminlte-button class="btn_incluir_requisicao" type="button" onclick="document.querySelector('.btn_hide_incluir_requisicao').click()" label="Incluir Requisição" theme="info" icon="fa-solid fa-plus"/>
-            <x-adminlte-button class="btn_novo_servico" type="button" onclick="window.location='{{ route('painelOS.abrirServicoRequisicao', ['empresa' => $glo_os_empresa, 'setor' => $glo_os_dadosRequisicoes[0]['req_set'], 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'SELECAO_TMO']) }}'" label="Novo Serviço" theme="info" icon=""/>
+
+            <x-adminlte-button class="btn_finalizar_requisicao" type="button" onclick="document.querySelector('.btn_hide_finalizar_requisicao').click()" label="Finalizar Requisição" theme="info" icon="fa-solid fa-lock"/>
+            <x-adminlte-button class="btn_excluir_requisicao" type="button" onclick="document.querySelector('.btn_hide_excluir_requisicao').click()" label="Excluir Requisição" theme="info" icon="fa-solid fa-trash"/>
+            <x-adminlte-button class="btn_reabrir_requisicao" type="button" onclick="document.querySelector('.btn_hide_reabrir_requisicao').click()" label="Reabrir Requisição" theme="info" icon=""/>
+            <x-adminlte-button class="btn_novo_servico" type="button" onclick="window.location='{{ route('painelOS.abrirServicoRequisicao', ['empresa' => $glo_os_empresa, 'setor' => $setor_req, 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'SELECAO_TMO']) }}'" label="Novo Serviço" theme="info" icon="fa-solid fa-plus"/>
+            <x-adminlte-button class="btn_iniciar_servicos" type="button" onclick="document.querySelector('.btn_hide_iniciar_servicos').click()" label="Iniciar Serviços" theme="info" icon=""/>
+            <x-adminlte-button class="btn_finalizar_servicos" type="button" onclick="document.querySelector('.btn_hide_finalizar_servicos').click()" label="Finalizar Serviços" theme="info" icon=""/>
 
             <x-adminlte-button class="btn_incluir_tmo" type="button" onclick="document.querySelector('.btn_hide_incluir_tmo').click()" label="Incluir" theme="info" icon="fa-solid fa-plus"/>
             <x-adminlte-button class="btn_atualizar_tmo" type="button" onclick="document.querySelector('.btn_hide_atualizar_tmo').click()" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+            <x-adminlte-button class="btn_suspender_tmo" type="button" onclick="document.querySelector('.btn_hide_suspender_tmo').click()" label="Suspender TMO" theme="info" icon="fa-solid fa-triangle-exclamation"/>
+            <x-adminlte-button class="btn_cancelar_tmo" type="button" onclick="document.querySelector('.btn_hide_cancelar_tmo').click()" label="Cancelar TMO" theme="info" icon="fa-solid fa-ban"/>
+            <x-adminlte-button class="btn_reabrir_tmo" type="button" onclick="document.querySelector('.btn_hide_reabrir_tmo').click()" label="Reabrir TMO" theme="info" icon="fa-solid fa-folder-open"/>
+            <x-adminlte-button class="btn_excluir_tmo" type="button" onclick="document.querySelector('.btn_hide_excluir_tmo').click()" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+
 
             <!--
             <x-adminlte-button label="Orçamento" theme="info" icon="fas fa-user-plus" type="submit"/>
@@ -1018,11 +1684,15 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
 
 <!-- Chamada dos Plugins usados na app -->
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
 @section('plugins.jqueryValidation', true)
+@section('plugins.DateRangePicker', true)
+@section('plugins.Select2', true)
 
 @section('css')
 <style>
+    #drSizeSm .calendar-table {
+  display: none;
+}
     .text-sm{
         margin-bottom: 0px;
         font-size: 10pt !important;
@@ -1055,10 +1725,37 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
     .tabela-dados-req .text-sm{
         font-size: 11pt !important;
     }
+
+    .tabela-orcamento th{
+        text-align: center;
+    }
+    .assinatura-cliente{
+        text-align: center;
+        margin-top: 75px;
+    }
+    .assinatura-consultor{
+        text-align: center;
+        border-top: 1px solid black;
+    }
+    .assinatura-meio{
+        border-top: 1px solid black;
+    }
+
+    .tabela-orc-pre{
+        text-align: center;
+    }
+
+    .tabela-totais{
+        text-align: center;
+    }
 </style>
 @stop
 
 @section('js')
+<script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script> 
+
+
+
 <!--
 |--------------------------------------------------------------------------
 | Eventos Iniciais da app
@@ -1067,60 +1764,308 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
 <script>
     $(document).ready(function() { 
 
-        /* ******************** Esconde botões secundarios da app que serão executados pelos botões da barra principal do painel ******************** */
+        /* **************************************** Esconde botões secundarios da app que serão executados pelos botões da barra principal do painel **************************************** */
 
         //Botão quadro - INCLUSAO_REQUISICAO
         $(".btn_hide_incluir_requisicao").hide();
 
+        //Botão quadro - ORCAMENTO_OS
+        $(".btn_hide_gerar_orcamento").hide();
+
+        //Botão quadro - PREVISAO_ENTREGA
+        $(".btn_hide_atualizar_previsao_entrega").hide();
+
         //Botão quadro -  INCLUSAO_SERVICO / MANUTENCAO_SERVICO
         $(".btn_hide_incluir_tmo").hide();
         $(".btn_hide_atualizar_tmo").hide();
+        $(".btn_hide_suspender_tmo").hide();
+        $(".btn_hide_cancelar_tmo").hide();
+        $(".btn_hide_reabrir_tmo").hide();
+        $(".btn_hide_excluir_tmo").hide();
 
-        /* ******************** Ao iniciar a app verifica qual a etapa executada e realiza a exibição dos botões da etapa ******************** */
+        //Botão quadro - CONSULTA_REQUISICAO
+        $(".btn_hide_iniciar_servicos").hide();
+        $(".btn_hide_finalizar_servicos").hide();
+        $(".btn_hide_finalizar_requisicao").hide();
+        $(".btn_hide_reabrir_requisicao").hide();
+        $(".btn_hide_excluir_requisicao").hide();
+
+
+        /* **************************************** Ao iniciar a app verifica qual a etapa executada e realiza a exibição dos botões da etapa **************************************** */
 
         var estagioAPP = {!! json_encode($glo_os_estagioAPP) !!};
+        var subEstagioRequisica = {!! json_encode($glo_os_subEstagioRequisicao) !!};
 
         if(estagioAPP == 'PRINCIPAL'){
+
             $(".btn_incluir_requisicao").hide();
             $(".btn_novo_servico").hide();
             $(".btn_incluir_tmo").hide();
             $(".btn_atualizar_tmo").hide();
+            $(".btn_iniciar_servicos").hide();
+            $(".btn_finalizar_servicos").hide();
+            $(".btn_finalizar_requisicao").hide();
+            $(".btn_reabrir_requisicao").hide();
+            $(".btn_suspender_tmo").hide();
+            $(".btn_cancelar_tmo").hide();
+            $(".btn_reabrir_tmo").hide();
+            $(".btn_excluir_tmo").hide();
+            $(".btn_excluir_requisicao").hide();
+            $(".btn_orcamentoPDF").hide();
+            $(".btn_gerar_orcamento").hide();
+            $(".btn_atualizar_previsao_entrega").hide();
+
         }else if(estagioAPP == 'INCLUSAO_REQUISICAO'){
+
             $(".btn_novo_servico").hide();
             $(".btn_incluir_tmo").hide();
             $(".btn_atualizar_tmo").hide();
+            $(".btn_iniciar_servicos").hide();
+            $(".btn_finalizar_servicos").hide();
+            $(".btn_finalizar_requisicao").hide();
+            $(".btn_reabrir_requisicao").hide();
+            $(".btn_suspender_tmo").hide();
+            $(".btn_cancelar_tmo").hide();
+            $(".btn_reabrir_tmo").hide();
+            $(".btn_excluir_tmo").hide();
+            $(".btn_excluir_requisicao").hide();
+            $(".btn_orcamento").hide();
+            $(".btn_previsao_entrega").hide();
+            $(".btn_orcamentoPDF").hide();
+            $(".btn_gerar_orcamento").hide();
+            $(".btn_atualizar_previsao_entrega").hide();
+
         }else if(estagioAPP == 'CONSULTA_REQUISICAO'){
+
             $(".btn_incluir_requisicao").hide();
             $(".btn_incluir_tmo").hide();
             $(".btn_atualizar_tmo").hide();
+            $(".btn_suspender_tmo").hide();
+            $(".btn_cancelar_tmo").hide();
+            $(".btn_reabrir_tmo").hide();
+            $(".btn_excluir_tmo").hide();
+            $(".btn_orcamento").hide();
+            $(".btn_previsao_entrega").hide();
+            $(".btn_orcamentoPDF").hide();
+            $(".btn_gerar_orcamento").hide();
+            $(".btn_atualizar_previsao_entrega").hide();
+
+            var status_requisicao = {!! json_encode($status_requisicao) !!};
+            if(status_requisicao == 'F'){
+                $(".btn_finalizar_requisicao").hide();
+                $(".btn_iniciar_servicos").hide();
+                $(".btn_finalizar_servicos").hide();
+                $(".btn_novo_servico").hide();
+                $(".btn_excluir_requisicao").hide();
+            }else{
+                $(".btn_reabrir_requisicao").hide();
+            }
+
         }else if(estagioAPP == 'INCLUSAO_SERVICO'){
+
             $(".btn_novo_servico").hide();
             $(".btn_incluir_requisicao").hide();
             $(".btn_atualizar_tmo").hide();
+            $(".btn_iniciar_servicos").hide();
+            $(".btn_finalizar_servicos").hide();
+            $(".btn_finalizar_requisicao").hide();
+            $(".btn_reabrir_requisicao").hide();
+            $(".btn_suspender_tmo").hide();
+            $(".btn_cancelar_tmo").hide();
+            $(".btn_reabrir_tmo").hide();
+            $(".btn_excluir_tmo").hide();
+            $(".btn_excluir_requisicao").hide();
+            $(".btn_orcamento").hide();
+            $(".btn_previsao_entrega").hide();
+            $(".btn_orcamentoPDF").hide();
+            $(".btn_gerar_orcamento").hide();
+            $(".btn_atualizar_previsao_entrega").hide();
+
+            if(subEstagioRequisica != 'TMO_SELECIONADA'){
+                $(".btn_incluir_tmo").hide();
+            }
+
         }else if(estagioAPP == 'MANUTENCAO_SERVICO'){
+
             $(".btn_novo_servico").hide();
             $(".btn_incluir_requisicao").hide();
             $(".btn_incluir_tmo").hide();
+            $(".btn_iniciar_servicos").hide();
+            $(".btn_finalizar_servicos").hide();
+            $(".btn_finalizar_requisicao").hide();
+            $(".btn_reabrir_requisicao").hide();
+            $(".btn_excluir_requisicao").hide();
+            $(".btn_orcamento").hide();
+            $(".btn_previsao_entrega").hide();
+            $(".btn_orcamentoPDF").hide();
+            $(".btn_gerar_orcamento").hide();
+            $(".btn_atualizar_previsao_entrega").hide();
+
+            var status_requisicao = {!! json_encode($status_requisicao) !!};
+            if(status_requisicao == 'F'){
+                $(".btn_atualizar_tmo").hide();
+                $(".btn_cancelar_tmo").hide();
+                $(".btn_suspender_tmo").hide();
+                $(".btn_reabrir_tmo").hide();
+                $(".btn_excluir_tmo").hide();
+            }else{
+                var status_servico = {!! json_encode($status_servico) !!};
+                if(status_servico == 'F'){
+                    $(".btn_suspender_tmo").hide();
+                }else if(status_servico == 'S'){
+                    $(".btn_suspender_tmo").hide();
+                }else if(status_servico == 'C'){
+                    $(".btn_cancelar_tmo").hide();
+                    $(".btn_suspender_tmo").hide();
+                }else{
+                    $(".btn_reabrir_tmo").hide();
+                }
+            }
+        }else if(estagioAPP == 'PREVISAO_ENTREGA'){
+
+            $(".btn_incluir_requisicao").hide();
+            $(".btn_novo_servico").hide();
+            $(".btn_incluir_tmo").hide();
+            $(".btn_atualizar_tmo").hide();
+            $(".btn_iniciar_servicos").hide();
+            $(".btn_finalizar_servicos").hide();
+            $(".btn_finalizar_requisicao").hide();
+            $(".btn_reabrir_requisicao").hide();
+            $(".btn_suspender_tmo").hide();
+            $(".btn_cancelar_tmo").hide();
+            $(".btn_reabrir_tmo").hide();
+            $(".btn_excluir_tmo").hide();
+            $(".btn_excluir_requisicao").hide();
+            $(".btn_orcamento").hide();
+            $(".btn_previsao_entrega").hide();
+            $(".btn_orcamentoPDF").hide();
+            $(".btn_gerar_orcamento").hide();
+
+        }else if(estagioAPP == 'ORCAMENTO_OS_IMPRESSAO'){
+
+            $(".btn_incluir_requisicao").hide();
+            $(".btn_novo_servico").hide();
+            $(".btn_incluir_tmo").hide();
+            $(".btn_atualizar_tmo").hide();
+            $(".btn_iniciar_servicos").hide();
+            $(".btn_finalizar_servicos").hide();
+            $(".btn_finalizar_requisicao").hide();
+            $(".btn_reabrir_requisicao").hide();
+            $(".btn_suspender_tmo").hide();
+            $(".btn_cancelar_tmo").hide();
+            $(".btn_reabrir_tmo").hide();
+            $(".btn_excluir_tmo").hide();
+            $(".btn_excluir_requisicao").hide();
+            $(".btn_orcamento").hide();
+            $(".btn_previsao_entrega").hide();
+            $(".btn_gerar_orcamento").hide();
+            $(".btn_atualizar_previsao_entrega").hide();
+
+        }else if(estagioAPP == 'ORCAMENTO_OS'){
+
+            $(".btn_incluir_requisicao").hide();
+            $(".btn_novo_servico").hide();
+            $(".btn_incluir_tmo").hide();
+            $(".btn_atualizar_tmo").hide();
+            $(".btn_iniciar_servicos").hide();
+            $(".btn_finalizar_servicos").hide();
+            $(".btn_finalizar_requisicao").hide();
+            $(".btn_reabrir_requisicao").hide();
+            $(".btn_suspender_tmo").hide();
+            $(".btn_cancelar_tmo").hide();
+            $(".btn_reabrir_tmo").hide();
+            $(".btn_excluir_tmo").hide();
+            $(".btn_excluir_requisicao").hide();
+            $(".btn_orcamento").hide();
+            $(".btn_previsao_entrega").hide();
+            $(".btn_orcamentoPDF").hide();
+            $(".btn_atualizar_previsao_entrega").hide();
         }
 
-        /* ******************** Eventos de totalização do rodapé das tabelas ******************** */
+        
 
-        /* Tabela de detalhes da requisição com os dados dos serviços relacionados */
-        var tableDetServ = $('#detalhesServicos').DataTable();
+        /* **************************************** Eventos Iniciais do bloco  - CONSULTA_REQUISICAO **************************************** */
 
-        var intVal = function ( i ) {
-            return typeof i === 'string' ? i.replace(/[\$,]/g, '')*1 : typeof i === 'number' ? i : 0;
-        };
+        if(estagioAPP == 'CONSULTA_REQUISICAO'){
 
-        //Função que altera o rodapé quando a pagina da tabela é alterada
-        $('#detalhesServicos').on( 'draw.dt', function () {
+            /* ******************** Eventos de totalização do rodapé das tabelas - CONSULTA_REQUISICAO ******************** */
+
+            /* Tabela de detalhes da requisição com os dados dos serviços relacionados */
+            var tableDetServ = $('#detalhesServicos').DataTable();
+
+            var intVal = function ( i ) {
+                return typeof i === 'string' ? i.replace(/[\$,]/g, '')*1 : typeof i === 'number' ? i : 0;
+            };
+
+            //Função que altera o rodapé quando a pagina da tabela é alterada
+            $('#detalhesServicos').on( 'draw.dt', function () {
+
+                //Total dos registros exibidos na página atual da tabela 
+                pagQtdTot = tableDetServ.column(6, { page: 'current'} ).data().reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+                var cnt =0;
+                pagValUniTot = tableDetServ.column(7, { page: 'current'} ).data().reduce( function (a, b) {
+                    if(cnt == 0){
+                        a = String(a).replaceAll('.','');
+                        a = String(a).replaceAll(',','.');
+                    }
+                    cnt +=1;
+                    b = String(b).replaceAll('.','');
+                    b = String(b).replaceAll(',','.');
+                    return intVal(a) + intVal(b);
+                }, 0 );
+                var cnt =0;
+                pagValTot = tableDetServ.column(8, { page: 'current'} ).data().reduce( function (a, b) {
+                    if(cnt == 0){
+                        a = String(a).replaceAll('.','');
+                        a = String(a).replaceAll(',','.');
+                    }
+                    cnt +=1;
+                    b = String(b).replaceAll('.','');
+                    b = String(b).replaceAll(',','.');
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+                //Total de todos os registros da tabela 
+                qtdTot = tableDetServ.column( 6 ).data().reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                });
+                var cnt =0;
+                valUniTot = tableDetServ.column( 7 ).data().reduce( function (a, b) {
+                    if(cnt == 0){
+                        a = String(a).replaceAll('.','');
+                        a = String(a).replaceAll(',','.');
+                    }
+                    cnt +=1;
+                    b = String(b).replaceAll('.','');
+                    b = String(b).replaceAll(',','.');
+                    return intVal(a) + intVal(b);
+                });
+                var cnt =0;
+                valTot = tableDetServ.column( 8 ).data().reduce( function (a, b) {
+                    if(cnt == 0){
+                        a = String(a).replaceAll('.','');
+                        a = String(a).replaceAll(',','.');
+                    }
+                    cnt +=1;
+                    b = String(b).replaceAll('.','');
+                    b = String(b).replaceAll(',','.');
+                    return intVal(a) + intVal(b);
+                });
+
+                //Atualiza o rodapé
+                $( tableDetServ.column( 5 ).footer() ).html(new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagQtdTot) +' </br> '+ new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(qtdTot) );
+                $( tableDetServ.column( 6 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValUniTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valUniTot) );
+                $( tableDetServ.column( 7 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot) );
+            });
 
             //Total dos registros exibidos na página atual da tabela 
-            pagQtdTot = tableDetServ.column(5, { page: 'current'} ).data().reduce( function (a, b) {
+            pagQtdTot = tableDetServ.column(6, { page: 'current'} ).data().reduce( function (a, b) {
                 return intVal(a) + intVal(b);
             }, 0 );
             var cnt =0;
-            pagValUniTot = tableDetServ.column(6, { page: 'current'} ).data().reduce( function (a, b) {
+            pagValUniTot = tableDetServ.column(7, { page: 'current'} ).data().reduce( function (a, b) {
                 if(cnt == 0){
                     a = String(a).replaceAll('.','');
                     a = String(a).replaceAll(',','.');
@@ -1131,7 +2076,7 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                 return intVal(a) + intVal(b);
             }, 0 );
             var cnt =0;
-            pagValTot = tableDetServ.column(7, { page: 'current'} ).data().reduce( function (a, b) {
+            pagValTot = tableDetServ.column(8, { page: 'current'} ).data().reduce( function (a, b) {
                 if(cnt == 0){
                     a = String(a).replaceAll('.','');
                     a = String(a).replaceAll(',','.');
@@ -1143,11 +2088,11 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
             }, 0 );
 
             //Total de todos os registros da tabela 
-            qtdTot = tableDetServ.column( 5 ).data().reduce( function (a, b) {
+            qtdTot = tableDetServ.column( 6 ).data().reduce( function (a, b) {
                 return intVal(a) + intVal(b);
             });
             var cnt =0;
-            valUniTot = tableDetServ.column( 6 ).data().reduce( function (a, b) {
+            valUniTot = tableDetServ.column( 7 ).data().reduce( function (a, b) {
                 if(cnt == 0){
                     a = String(a).replaceAll('.','');
                     a = String(a).replaceAll(',','.');
@@ -1158,7 +2103,7 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                 return intVal(a) + intVal(b);
             });
             var cnt =0;
-            valTot = tableDetServ.column( 7 ).data().reduce( function (a, b) {
+            valTot = tableDetServ.column( 8 ).data().reduce( function (a, b) {
                 if(cnt == 0){
                     a = String(a).replaceAll('.','');
                     a = String(a).replaceAll(',','.');
@@ -1168,75 +2113,375 @@ $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
                 b = String(b).replaceAll(',','.');
                 return intVal(a) + intVal(b);
             });
+            
+            valUniTot = String(valUniTot).replaceAll('.','');
+            valUniTot = String(valUniTot).replaceAll(',','.');
+            valTot = String(valTot).replaceAll('.','');
+            valTot = String(valTot).replaceAll(',','.');
 
             //Atualiza o rodapé
-            $( tableDetServ.column( 5 ).footer() ).html(new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagQtdTot) +' </br> '+ new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(qtdTot) );
-            $( tableDetServ.column( 6 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValUniTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valUniTot) );
-            $( tableDetServ.column( 7 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot) );
-        });
+            $( tableDetServ.column( 6 ).footer() ).html(new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagQtdTot) +' </br> '+ new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(qtdTot) );
+            $( tableDetServ.column( 7 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValUniTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valUniTot) );
+            $( tableDetServ.column( 8 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot) );
+            /* Final da montagem da Tabela de detalhes da requisição com os dados dos serviços relacionados */
+        }
 
-        //Total dos registros exibidos na página atual da tabela 
-        pagQtdTot = tableDetServ.column(5, { page: 'current'} ).data().reduce( function (a, b) {
-            return intVal(a) + intVal(b);
-        }, 0 );
-        var cnt =0;
-        pagValUniTot = tableDetServ.column(6, { page: 'current'} ).data().reduce( function (a, b) {
-            if(cnt == 0){
-                a = String(a).replaceAll('.','');
-                a = String(a).replaceAll(',','.');
-            }
-            cnt +=1;
-            b = String(b).replaceAll('.','');
-            b = String(b).replaceAll(',','.');
-            return intVal(a) + intVal(b);
-        }, 0 );
-        var cnt =0;
-        pagValTot = tableDetServ.column(7, { page: 'current'} ).data().reduce( function (a, b) {
-            if(cnt == 0){
-                a = String(a).replaceAll('.','');
-                a = String(a).replaceAll(',','.');
-            }
-            cnt +=1;
-            b = String(b).replaceAll('.','');
-            b = String(b).replaceAll(',','.');
-            return intVal(a) + intVal(b);
-        }, 0 );
+        
 
-        //Total de todos os registros da tabela 
-        qtdTot = tableDetServ.column( 5 ).data().reduce( function (a, b) {
-            return intVal(a) + intVal(b);
-        });
-        var cnt =0;
-        valUniTot = tableDetServ.column( 6 ).data().reduce( function (a, b) {
-            if(cnt == 0){
-                a = String(a).replaceAll('.','');
-                a = String(a).replaceAll(',','.');
+        /* **************************************** Eventos Iniciais dos blocos  - INCLUSAO_SERVICO e MANUTENCAO_SERVICO **************************************** */
+
+        if(estagioAPP == 'INCLUSAO_SERVICO' || estagioAPP == 'MANUTENCAO_SERVICO'){
+
+            /* ******************** Mascaras de campos float ******************** */
+
+            //Mascaras do inclusão da TMO do serviço
+            $('#qtdHrTMO').mask('#.##0.00', {reverse: true});
+            $('#valUniHrTMO').mask('#.##0,00', {reverse: true});
+            $('#valTotHrTMO').mask('#.##0,00', {reverse: true});
+            $('#valCustoTMO').mask('#.##0,00', {reverse: true});
+            $('#perCustoTMO').mask('#.##0,00', {reverse: true});
+
+            //Campos que não serão editaveis no formulario de inclusão / edição
+            $("#descricaoTMO").prop('disabled', true);
+            $("#tipoTMO").prop('disabled', true);
+
+            //Ao carregar a app verifica o tipo do valor da tarefa
+            if($("#tipoTMO").val() == 'P'){
+                $("#valTotHrTMO").prop('disabled', true);
+                $("#qtdHrTMO").prop('disabled', false);
+                $("#valUniHrTMO").prop('disabled', false);
+                $(".bloco-terceiros").hide();
+            }else if($("#tipoTMO").val() == 'I'){
+                $("#valTotHrTMO").prop('disabled', true);
+                $("#qtdHrTMO").prop('disabled', false);
+                $("#valUniHrTMO").prop('disabled', false);
+                $(".bloco-terceiros").hide();
+            }else if($("#tipoTMO").val() == 'R'){
+                $("#valTotHrTMO").prop('disabled', true);
+                $("#qtdHrTMO").prop('disabled', true);
+                $("#valUniHrTMO").prop('disabled', false);
+                $(".bloco-terceiros").hide();
+            }else if($("#tipoTMO").val() == 'T'){
+                $("#valTotHrTMO").prop('disabled', false);
+                $("#valUniHrTMO").prop('disabled', true);
+                $("#qtdHrTMO").prop('disabled', true);
+                $(".bloco-terceiros").show();
+            }else{
+                $("#valTotHrTMO").prop('disabled', false);
+                $("#valUniHrTMO").prop('disabled', true);
+                $("#qtdHrTMO").prop('disabled', false);
+                $(".bloco-terceiros").hide();
             }
-            cnt +=1;
-            b = String(b).replaceAll('.','');
-            b = String(b).replaceAll(',','.');
-            return intVal(a) + intVal(b);
-        });
-        var cnt =0;
-        valTot = tableDetServ.column( 7 ).data().reduce( function (a, b) {
-            if(cnt == 0){
-                a = String(a).replaceAll('.','');
-                a = String(a).replaceAll(',','.');
+
+            //Verifica a parametrização do tipo do serviço da requisição se pode alterar o valor do serviço e qtd de horas
+            var altValor = {!! json_encode($altValorTOS) !!};
+            var altHora = {!! json_encode($altHoraTOS) !!};
+
+            if(altValor == 'N' && $("#tipoTMO").val() != 'R'){
+                $("#valUniHrTMO").prop('disabled', true);
+                $("#valTotHrTMO").prop('disabled', true);
             }
-            cnt +=1;
-            b = String(b).replaceAll('.','');
-            b = String(b).replaceAll(',','.');
-            return intVal(a) + intVal(b);
-        });
-        
-        //Atualiza o rodapé
-        $( tableDetServ.column( 5 ).footer() ).html(new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagQtdTot) +' </br> '+ new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(qtdTot) );
-        $( tableDetServ.column( 6 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValUniTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valUniTot) );
-        $( tableDetServ.column( 7 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot) );
-        /* Final da montagem da Tabela de detalhes da requisição com os dados dos serviços relacionados */
-        
+
+            if(altHora == 'N' && $("#tipoTMO").val() != 'R'){
+                $("#qtdHrTMO").prop('disabled', true);
+            }
+           
+            //Ao carregar a app verifica o tipo do custo
+            if($("#tipCustoTMO").val() == '1'){
+                $("#valCustoTMO").prop('disabled', false);
+                $("#perCustoTMO").hide();
+                $('label[for="perCustoTMO"]').hide();
+            }else{
+                $("#valCustoTMO").prop('disabled', true);
+                $("#perCustoTMO").show();
+                $('label[for="perCustoTMO"]').show();
+            }
+        }
+
+        /* **************************************** Eventos Iniciais do bloco  - PREVISAO_ENTREGA **************************************** */
+
+        if(estagioAPP == 'PREVISAO_ENTREGA'){
+
+            //Mascaras do inclusão da TMO do serviço
+            $('#qtdHoraOS').mask('#.##0.00', {reverse: true});
+
+            //Esconde calendário de data
+            $(function() { 
+                $('#horaPrevEnt').on('showCalendar.daterangepicker', function(ev, picker) {
+    
+                    $('.calendar-table').hide();
+    
+                }) 
+            });
+
+            //Mostra calendário de data
+            $(function() { 
+                $('#dataPrevEnt').on('showCalendar.daterangepicker', function(ev, picker) {
+    
+                    $('.calendar-table').show();
+                }) 
+            });
+        }        
     });
 </script>
+
+
+
+
+<!--
+|--------------------------------------------------------------------------
+| Eventos onChange da app
+|--------------------------------------------------------------------------
+-->
+<script>
+    $(document).ready(function() {
+
+
+        var estagioAPP = {!! json_encode($glo_os_estagioAPP) !!};
+        var subEstagioRequisica = {!! json_encode($glo_os_subEstagioRequisicao) !!};
+
+        /* **************************************** Eventos onChange dos blocos  - INCLUSAO_SERVICO e MANUTENCAO_SERVICO **************************************** */
+
+        if(estagioAPP == 'INCLUSAO_SERVICO' || estagioAPP == 'MANUTENCAO_SERVICO'){
+        
+            /* *************** Evento ao trocar o valor do campo tipo da tarefa - INCLUSAO_SERVICO / MANUTENCAO_SERVICO *************** */
+            /* inicialmente não vai permitir trocar o tipo da hora da tarefa, caso mudar descomentar o trecho
+                $("#tipoTMO").change(function(){
+                
+                if(this.value == 'P'){
+                    $("#valTotHrTMO").prop('disabled', true);
+                    $("#qtdHrTMO").prop('disabled', false);
+                    $("#valUniHrTMO").prop('disabled', false);
+                    $("#qtdHrTMO").val('');
+                    $("#valUniHrTMO").val('');
+                    $("#valTotHrTMO").val('');
+                    $(".bloco-terceiros").hide();
+                    $("#forTerceiroTMO").val('');
+                }else if(this.value == 'I'){
+                    $("#valTotHrTMO").prop('disabled', true);
+                    $("#qtdHrTMO").prop('disabled', false);
+                    $("#valUniHrTMO").prop('disabled', false);
+                    $("#qtdHrTMO").val('');
+                    $("#valUniHrTMO").val('');
+                    $("#valTotHrTMO").val('');
+                    $(".bloco-terceiros").hide();
+                    $("#forTerceiroTMO").val('');
+                }else if(this.value == 'R'){
+                    $("#valTotHrTMO").prop('disabled', true);
+                    $("#qtdHrTMO").prop('disabled', true);
+                    $("#valUniHrTMO").prop('disabled', false);
+                    $("#qtdHrTMO").val('0.00');
+                    $("#valUniHrTMO").val('');
+                    $("#valTotHrTMO").val('0,00');
+                    $(".bloco-terceiros").hide();
+                    $("#forTerceiroTMO").val('');
+                }else if(this.value == 'T'){
+                    $("#valTotHrTMO").prop('disabled', false);
+                    $("#valUniHrTMO").prop('disabled', true);
+                    $("#qtdHrTMO").prop('disabled', true);
+                    $("#qtdHrTMO").val('0.00');
+                    $("#valUniHrTMO").val('0,00');
+                    $("#valTotHrTMO").val('');
+                    $(".bloco-terceiros").show();
+                    $("#forTerceiroTMO").val('');
+                }else{
+                    $("#valTotHrTMO").prop('disabled', false);
+                    $("#valUniHrTMO").prop('disabled', true);
+                    $("#qtdHrTMO").prop('disabled', false);
+                    $("#qtdHrTMO").val('');
+                    $("#valUniHrTMO").val('');
+                    $("#valTotHrTMO").val('');
+                    $(".bloco-terceiros").hide();
+                    $("#forTerceiroTMO").val('');
+                }
+            });
+            */
+            /* *************** Evento ao trocar o valor do campo tipo do custo da tarefa - INCLUSAO_SERVICO / MANUTENCAO_SERVICO *************** */
+            $("#tipCustoTMO").change(function(){
+                
+                if(this.value == '1'){
+                    $("#valCustoTMO").prop('disabled', false);
+                    $("#valCustoTMO").val('');
+                    $("#perCustoTMO").val('0.00');
+                    $("#perCustoTMO").hide();
+                    $('label[for="perCGT"]').hide();
+                }else{
+                    $("#valCustoTMO").prop('disabled', true);
+                    $("#valCustoTMO").val('');
+                    $("#perCustoTMO").val('');
+                    $("#perCustoTMO").show();
+                    $('label[for="perCustoTMO"]').show();
+                }
+            });
+
+            /* *************** Evento ao trocar o valor do campo tipo do custo da tarefa - INCLUSAO_SERVICO / MANUTENCAO_SERVICO *************** */
+            $("#valUniHrTMO").change(function(){
+                
+                if($("#tipoTMO").val() == 'P'){
+                    
+                    var qtdHr = $("#qtdHrTMO").val();
+                    var valHr = this.value;
+
+                    valHr = valHr.replaceAll('.', '');
+                    valHr = valHr.replaceAll(',', '.');
+
+                    var valTot = qtdHr * valHr;
+                    valTot = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot);
+
+                    $("#valTotHrTMO").val(valTot);
+
+                }else if($("#tipoTMO").val() == 'I' && $("#qtdHrTMO").val() != ''){
+                    
+                    var qtdHr = $("#qtdHrTMO").val();
+                    var valHr = this.value;
+
+                    valHr = valHr.replaceAll('.', '');
+                    valHr = valHr.replaceAll(',', '.');
+
+                    var valTot = qtdHr * valHr;
+                    valTot = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot);
+
+                    $("#valTotHrTMO").val(valTot);
+
+                }
+            });
+
+            /* *************** Evento ao trocar o valor do campo tipo do custo da tarefa - INCLUSAO_SERVICO / MANUTENCAO_SERVICO *************** */
+            $("#valTotHrTMO").change(function(){
+                
+                if($("#tipoTMO").val() == 'F' && $("#qtdHrTMO").val() != ''){
+                    
+                    var qtdHr = $("#qtdHrTMO").val();
+                    var valTot = this.value;
+
+                    valTot = valTot.replaceAll('.', '');
+                    valTot = valTot.replaceAll(',', '.');
+
+                    var valHr = valTot/qtdHr;
+                    valHr = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valHr);
+
+                    $("#valUniHrTMO").val(valHr);
+
+                }else if($("#tipoTMO").val() == 'I' && $("#qtdHrTMO").val() != ''){
+                    
+                    var qtdHr = $("#qtdHrTMO").val();
+                    var valHr = this.value;
+
+                    valHr = valHr.replaceAll('.', '');
+                    valHr = valHr.replaceAll(',', '.');
+
+                    var valTot = qtdHr * valHr;
+                    valTot = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot);
+
+                    $("#valTotHrTMO").val(valTot);
+
+                }
+            });
+
+            /* *************** Evento ao trocar o valor do campo  quantidade de horas da tarefa - INCLUSAO_SERVICO / MANUTENCAO_SERVICO *************** */
+            $("#qtdHrTMO").change(function(){
+                
+                if($("#tipoTMO").val() == 'I' && $("#valUniHrTMO").val() != ''){
+                    
+                    var valHr = $("#valUniHrTMO").val();
+                    var qtdHr = this.value;
+
+                    valHr = valHr.replaceAll('.', '');
+                    valHr = valHr.replaceAll(',', '.');
+
+                    var valTot = valHr*qtdHr;
+                    valTot = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot);
+
+                    $("#valTotHrTMO").val(valTot);
+
+                }else if($("#tipoTMO").val() == 'F' && $("#valTotHrTMO").val() != ''){
+                    
+                    var valTot = $("#valTotHrTMO").val();
+                    var qtdHr = this.value;
+
+                    valTot = valTot.replaceAll('.', '');
+                    valTot = valTot.replaceAll(',', '.');
+
+                    var valHr = valTot / qtdHr;
+                    valHr = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valHr);
+
+                    $("#valUniHrTMO").val(valHr);
+
+                }
+            });
+
+            /* *************** Evento ao trocar o valor do campo  de percentual do custo da tarefa - INCLUSAO_SERVICO / MANUTENCAO_SERVICO *************** */
+            $("#perCustoTMO").change(function(){
+                
+                if($("#valTotHrTMO").val() != ''){
+                    
+                    var valTot = $("#valTotHrTMO").val();
+                    var perCGT = this.value;
+
+                    perCGT = perCGT.replaceAll('.', '');
+                    perCGT = perCGT.replaceAll(',', '.');
+
+                    valTot = valTot.replaceAll('.', '');
+                    valTot = valTot.replaceAll(',', '.');
+
+                    var valCGT = (valTot / 100) * perCGT;
+                    valCGT = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valCGT);
+
+                    $("#valCustoTMO").val(valCGT);
+
+                }
+            });
+        }
+    });
+</script>
+
+
+
+<!--
+|--------------------------------------------------------------------------
+| Eventos onClick da app
+|--------------------------------------------------------------------------
+-->
+
+<script>
+    $(document).ready(function() {
+
+        var estagioAPP = {!! json_encode($glo_os_estagioAPP) !!};
+        var subEstagioRequisica = {!! json_encode($glo_os_subEstagioRequisicao) !!};
+
+        /* **************************************** Eventos onClick dos blocos - INCLUSAO_SERVICO   **************************************** */
+
+        if(estagioAPP == 'INCLUSAO_SERVICO'){
+
+            //Ao clicar no botão incluir TMO retira o disabled do campo para não ter problema no request do update do campo
+            $(".btn_hide_incluir_tmo").click(function(){
+                $("#valTotHrTMO").prop('disabled', false);
+                $("#qtdHrTMO").prop('disabled', false);
+                $("#valUniHrTMO").prop('disabled', false);
+                $("#descricaoTMO").prop('disabled', false);
+                $("#tipoTMO").prop('disabled', false);
+                $("#valCustoTMO").prop('disabled', false);
+            });
+        }
+
+        /* **************************************** Eventos onClick dos blocos - MANUTENCAO_SERVICO  **************************************** */
+
+        if(estagioAPP == 'MANUTENCAO_SERVICO'){
+
+            //Ao clicar no botão atualizar TMO retira o disabled do campo para não ter problema no request do update do campo
+            $(".btn_hide_atualizar_tmo").click(function(){
+                $("#valTotHrTMO").prop('disabled', false);
+                $("#qtdHrTMO").prop('disabled', false);
+                $("#valUniHrTMO").prop('disabled', false);
+                $("#descricaoTMO").prop('disabled', false);
+                $("#tipoTMO").prop('disabled', false);
+                $("#valCustoTMO").prop('disabled', false);
+            });
+        }
+    });
+</script>
+
+
 
 <!--
 |--------------------------------------------------------------------------
@@ -1295,6 +2540,127 @@ $(function () {
             $(element).removeClass('is-invalid');
         }
     });
+
+    jQuery.validator.addMethod("maxpercent", function(value, element) {
+        return this.optional(element) || /^(\d{1,2}|\d{1,2}\,\d{1,2}|100\,[0]{1,2}|100)$/i.test(value);
+    }, "Porcentagem máxima de 100,00 %");
+
+    jQuery.validator.addMethod("maxqtdhr", function(value, element) {
+        return this.optional(element) || /^(\d{1,3}|\d{1,3}\.\d{1,3}|999\.[0]{1,2}|999)$/i.test(value);
+    }, "Quantidade de horas máxima de 999.99");
+
+    //Inserção da TMO na requisição
+    $('#quickForm-ins-upd-servico').validate({
+        rules: {
+            descricaoTMO: {
+                required: true,
+                maxlength: 40
+            },
+            tipoTMO: {
+                required: true
+            },
+            qtdHrTMO: {
+                required: true,
+                maxqtdhr: true
+            },
+            valUniHrTMO: {
+                required: true,
+                maxlength: 20
+            },
+            valTotHrTMO: {
+                required: true,
+                maxlength: 20
+            },
+            perCustoTMO: {
+                maxpercent: true
+            },
+            valCustoTMO: {
+                maxlength: 20
+            },
+            numNfTerceiroTMO: {
+                maxlength: 9
+            },
+            serNfTerceiroTMO: {
+                maxlength: 5
+            },
+        },
+        messages: {
+            descricaoTMO: {
+                required: "Por Favor informe a Descrição da TMO",
+                maxlength: "Infome no máximo 40 caracteres"
+            },
+            tipoTMO: {
+                required: "Por Favor informe um Tipo da Tarefa"
+            },
+            qtdHrTMO: {
+                required: "Por Favor informe a Quantidade de Horas"
+            },
+            valUniHrTMO: {
+                required: "Por Favor informe o Valor Unitário"
+            },
+            valTotHrTMO: {
+                required: "Por Favor informe o Valor Total"
+            },
+            valCustoTMO: {
+                maxlength: "Limite máximo do valor é de 15 digitos"
+            },
+            numNfTerceiroTMO: {
+                maxlength: "Infome no máximo 9 dígitos"
+            },
+            serNfTerceiroTMO: {
+                maxlength: "Infome no máximo 5 caracteres"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    //Atualização da previsão de entrega
+    $('#quickForm-upd-prev-entrega').validate({
+        rules: {
+            qtdHoraOS: {
+                required: true,
+                maxqtdhr: true
+            },
+            dataPrevEnt: {
+                required: true
+            },
+            horaPrevEnt: {
+                required: true
+            },
+        },
+        messages: {
+            qtdHoraOS: {
+                required: "Por Favor informe a Quantidade de Horas"
+            },
+            dataPrevEnt: {
+                required: "Por Favor informe a Data da Previsão de Entrega "
+            },
+            horaPrevEnt: {
+                required: "Por Favor informe a Hora da Previsão de Entrega "
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
 });
 </script>
 
@@ -1319,11 +2685,23 @@ $(function () {
 
     @if(Session::has('error'))
         Swal.fire({
-        confirmButtonColor: "#007bff",
-        title: "Erro!!!",
-        text: "{{ session('error') }}",
-        icon: "error"
-    });
+            confirmButtonColor: "#007bff",
+            title: "Erro!!!",
+            text: "{{ session('error') }}",
+            icon: "error"
+        });
+    @endif
+
+    @if(Session::has('info'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Aviso!",
+            text: "{{ session('info') }}",
+            icon: "info",
+            customClass: {
+                icon: "no-before-icon",
+            }
+        });
     @endif
 </script>
 @stop

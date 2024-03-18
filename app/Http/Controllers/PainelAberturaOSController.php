@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\LancamentoSrvOs;
 use App\Models\LancamentoSrvOsRequisicoes;
 use stdClass;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PainelAberturaOSController extends Controller
 {
@@ -102,5 +103,69 @@ class PainelAberturaOSController extends Controller
         session(['glo_os_dadosTmoSelecionada' => '']);
         
         return view('/lancamentos/servico/painelAberturaOS');
+    }
+
+    //Metodo de abertura da edição do serviço da requisição
+    public function previsaoEntregaOS($empresa, $numOS)
+    {
+        $empresaEndereco = DB::table('cadastro_empresa_enderecos')->where('endereco_empresa_codigo', $empresa)->where('endereco_principal', 'S')->get();
+        $requisicoesOS = DB::table('lancamento_srv_os_requisicoes')->where('req_emp', $empresa)->where('req_nos', $numOS)->orderby('req_seq', 'asc')->get();
+        $servicosOS = DB::table('lancamento_srv_os_servicos')->where('srv_emp', $empresa)->where('srv_nos', $numOS)->orderby('srv_req', 'asc')->orderby('srv_seq', 'asc')->get();
+        $dadosOS = DB::table('lancamento_srv_os')->where('os_emp', $empresa)->where('os_nos', $numOS)->get();
+
+        session(['glo_os_dadosEmpresaEndereco' => $empresaEndereco]);
+        session(['glo_os_dadosRequisicoes' => $requisicoesOS]);
+        session(['glo_os_dadosOS' => $dadosOS]);
+        session(['glo_os_dadosServicos' => $servicosOS]);
+        session(['glo_os_estagioAPP' => 'PREVISAO_ENTREGA']);
+        session(['glo_os_subEstagioRequisicao' => '']);
+        session(['glo_os_dadosServicoSelecionado' => '']);
+        session(['glo_os_dadosTMO' => '']);
+        session(['glo_os_dadosTmoSelecionada' => '']);
+        
+        return view('/lancamentos/servico/painelAberturaOS');
+    }
+
+    //Metodo de abertura da edição do serviço da requisição
+    public function orcamentoOS($empresa, $numOS)
+    {
+        $empresaEndereco = DB::table('cadastro_empresa_enderecos')->where('endereco_empresa_codigo', $empresa)->where('endereco_principal', 'S')->get();
+        $requisicoesOS = DB::table('lancamento_srv_os_requisicoes')->where('req_emp', $empresa)->where('req_nos', $numOS)->orderby('req_seq', 'asc')->get();
+        $servicosOS = DB::table('lancamento_srv_os_servicos')->where('srv_emp', $empresa)->where('srv_nos', $numOS)->orderby('srv_req', 'asc')->orderby('srv_seq', 'asc')->get();
+        $dadosOS = DB::table('lancamento_srv_os')->where('os_emp', $empresa)->where('os_nos', $numOS)->get();
+
+        session(['glo_os_dadosEmpresaEndereco' => $empresaEndereco]);
+        session(['glo_os_dadosRequisicoes' => $requisicoesOS]);
+        session(['glo_os_dadosOS' => $dadosOS]);
+        session(['glo_os_dadosServicos' => $servicosOS]);
+        session(['glo_os_estagioAPP' => 'ORCAMENTO_OS']);
+        session(['glo_os_subEstagioRequisicao' => '']);
+        session(['glo_os_dadosServicoSelecionado' => '']);
+        session(['glo_os_dadosTMO' => '']);
+        session(['glo_os_dadosTmoSelecionada' => '']);
+        
+        return view('/lancamentos/servico/painelAberturaOS');
+    }
+
+    public function orcamentoGerarPDF($empresa, $numOS)
+    {
+        $empresaEndereco = DB::table('cadastro_empresa_enderecos')->where('endereco_empresa_codigo', $empresa)->where('endereco_principal', 'S')->get();
+        $requisicoesOS = DB::table('lancamento_srv_os_requisicoes')->where('req_emp', $empresa)->where('req_nos', $numOS)->orderby('req_seq', 'asc')->get();
+        $servicosOS = DB::table('lancamento_srv_os_servicos')->where('srv_emp', $empresa)->where('srv_nos', $numOS)->orderby('srv_req', 'asc')->orderby('srv_seq', 'asc')->get();
+        $dadosOS = DB::table('lancamento_srv_os')->where('os_emp', $empresa)->where('os_nos', $numOS)->get();
+        $dadosEmpresa = DB::table('cadastro_empresas')->where('empresa_codigo',$empresa)->get();
+        $dadosCliente = DB::table('cadastro_clientes')->where('cliente_codigo',$dadosOS[0]->os_cli)->get();
+        $dadosClienteEndereco = DB::table('cadastro_cliente_enderecos')->where('endereco_cliente_codigo',$dadosOS[0]->os_cli)->where('endereco_seq',$dadosOS[0]->os_cli_end)->get();
+
+        // Carregar a string com o HTML/conteúdo e determinar a orientação e o tamanho do arquivo
+        //$pdf = PDF::loadView('/lancamentos/servico/impressao/orcamentoPDF', ['glo_os_empresa' => $empresa, 'glo_os_dadosClienteEndereco' => $dadosClienteEndereco, 'glo_os_dadosCliente' => $dadosCliente, 'glo_os_dadosEmpresa' => $dadosEmpresa, 'glo_os_dadosEmpresaEndereco' => $empresaEndereco, 'glo_os_dadosRequisicoes' => $requisicoesOS, 'glo_os_dadosOS' => $dadosOS, 'glo_os_dadosServicos' => $servicosOS])->setPaper('a4', 'portrait');
+        $html = response()->view('/lancamentos/servico/impressao/orcamentoPDF', ['glo_os_empresa' => $empresa, 'glo_os_dadosClienteEndereco' => $dadosClienteEndereco, 'glo_os_dadosCliente' => $dadosCliente, 'glo_os_dadosEmpresa' => $dadosEmpresa, 'glo_os_dadosEmpresaEndereco' => $empresaEndereco, 'glo_os_dadosRequisicoes' => $requisicoesOS, 'glo_os_dadosOS' => $dadosOS, 'glo_os_dadosServicos' => $servicosOS])->getContent();
+
+        // pass html to pdf
+        $pdf = PDF::loadHTML($html)->setPaper('a4', 'portrait');
+
+        // Fazer o download do arquivo
+        //return $pdf->download('orcamento.pdf');
+        return $pdf->stream(); 
     }
 }

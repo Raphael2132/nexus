@@ -93,9 +93,19 @@
                         }else{
                             $codigo_sel = '';
                         }
+                        
+                        if(!empty($dadosTMO[0]['tmo_sts'])){
+                            $sts_sel = $dadosTMO[0]['tmo_sts'];
+                        }else{
+                            $sts_sel = 'A';
+                        }
                     @endphp
                     <!-- Código -->
                     <x-adminlte-input name="codigo" label="Código da Tarefa de Mão de Obra" type="text" value="{{$codigo_sel}}" fgroup-class="col-md-6"/>
+                    <!-- Status da Tarefa -->
+                    <x-adminlte-select name="status" label="Status" fgroup-class="col-md-6">
+                        <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" selected="{{$sts_sel}}"/>
+                    </x-adminlte-select>
                 </div>
 
                 <div class="row">
@@ -181,7 +191,7 @@
                             $tipTMO_sel = 'P';
                         }
                     @endphp
-                    <!-- Empresa do Setor -->
+                    <!-- Tipo da TMO -->
                     <x-adminlte-select name="tipoTMO" label="Tipo da Tarefa" fgroup-class="col-md-6">
                         <x-adminlte-options :options="['P' => 'Padrão', 'I' => 'Hora Informada', 'R' => 'Hora Real', 'F' => 'Valor Fixo', 'T' => 'Terceiros']" selected="{{$tipTMO_sel}}"/>
                     </x-adminlte-select>
@@ -281,37 +291,7 @@
                     <x-adminlte-input name="valCGT" label="Valor do Custo" type="text" value="{{$valCGT_sel}}" placeholder="0,00" fgroup-class="col-md-6"/>
                     <!-- Porcentagem do custo de terceiros -->
                     <x-adminlte-input name="perCGT" label="Porcentagem do Custo" type="text" value="{{$perCGT_sel}}" placeholder="0,00" fgroup-class="col-md-6"/>
-                </div>
-                                    
-                </br>
-                <div class="post">
-                    <h4 class="text-secondary font-weight-bold">Permissões e Status</h4>
-                </div>
-
-                <div class="row"> 
-                    @php
-                        if(!empty($dadosTMO[0]['tmo_alt_val'])){
-                            $altVal_sel = $dadosTMO[0]['tmo_alt_val'];
-                        }else{
-                            $altVal_sel = 'S';
-                        }
-
-                        if(!empty($dadosTMO[0]['tmo_sts'])){
-                            $sts_sel = $dadosTMO[0]['tmo_sts'];
-                        }else{
-                            $sts_sel = 'A';
-                        }
-                    @endphp
-                    <!-- Altera o Valor da tarefa -->
-                    <x-adminlte-select name="altVal" label="Permissão de Alteração do Valor na OS" fgroup-class="col-md-6">
-                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$altVal_sel}}"/>
-                    </x-adminlte-select>
-
-                    <!-- Status da Tarefa -->
-                    <x-adminlte-select name="status" label="Status" fgroup-class="col-md-6">
-                        <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" selected="{{$sts_sel}}"/>
-                    </x-adminlte-select>
-                </div>
+                </div>                                
 
                 <!-- /.card -->
                 <x-slot name="footerSlot">
@@ -336,6 +316,7 @@
 @section('plugins.jqueryValidation', true)
 @section('plugins.Sweetalert2', true)
 @section('plugins.toastr', true)
+@section('plugins.Select2', true)
 
 @section('css')
 @stop
@@ -732,6 +713,15 @@ $(function () {
             codSrv: {
                 required: true
             },
+            valHora: {
+                maxlength: 20
+            },
+            valTot: {
+                maxlength: 20
+            },
+            valCGT: {
+                maxlength: 20
+            },
         },
         messages: {
             empresa: {
@@ -756,6 +746,15 @@ $(function () {
             },
             codSrv: {
                 required: "Por Favor informe um Código do Serviço"
+            },
+            valHora: {
+                maxlength: "Limite máximo do valor é de 15 digitos"
+            },
+            valTot: {
+                maxlength: "Limite máximo do valor é de 15 digitos"
+            },
+            valCGT: {
+                maxlength: "Limite máximo do valor é de 15 digitos"
             },
         },
         errorElement: 'span',
