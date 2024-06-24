@@ -1415,7 +1415,7 @@ $status_servico = '';
                                 <tbody>
                                     <tr>
                                         @php 
-                                            $logo_emp = "img/".$glo_os_dadosEmpresa[0]->empresa_cnpj."/".$glo_os_dadosEmpresa[0]->empresa_codigo."_logo.png";
+                                            $logo_emp = $glo_os_dadosEmpresa[0]->empresa_cnpj."/file/img/".$glo_os_dadosEmpresa[0]->empresa_codigo."_logo.png";
                                         @endphp
                                         <td rowspan="4" style="width: 40%;"><div class="d-flex justify-content-center"><img src="{{ asset($logo_emp) }}" style="max-width: 60%; max-height: 60%; float: right;" /></div></td>
                                         <td rowspan="4">

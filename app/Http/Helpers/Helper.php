@@ -132,4 +132,37 @@ class Helper
 
         return $valorLimpo;
     }
+
+    /*
+    * Remover os acentos de uma string
+    * @param string $str
+    * @return string
+    */
+    public static function removerAcento($str, $convertToUpper = 'N'){
+
+        $com_acento = array(
+            'Á', 'À', 'Â', 'Ã', 'Ä', 'á', 'à', 'â', 'ã', 'ä',
+            'É', 'È', 'Ê', 'Ë', 'é', 'è', 'ê', 'ë',
+            'Í', 'Ì', 'Î', 'Ï', 'í', 'ì', 'î', 'ï',
+            'Ó', 'Ò', 'Ô', 'Õ', 'Ö', 'ó', 'ò', 'ô', 'õ', 'ö',
+            'Ú', 'Ù', 'Û', 'Ü', 'ú', 'ù', 'û', 'ü',
+            'Ç', 'ç', 'Ñ', 'ñ'
+        );
+        $sem_acento = array(
+            'A', 'A', 'A', 'A', 'A', 'a', 'a', 'a', 'a', 'a',
+            'E', 'E', 'E', 'E', 'e', 'e', 'e', 'e',
+            'I', 'I', 'I', 'I', 'i', 'i', 'i', 'i',
+            'O', 'O', 'O', 'O', 'O', 'o', 'o', 'o', 'o', 'o',
+            'U', 'U', 'U', 'U', 'u', 'u', 'u', 'u',
+            'C', 'c', 'N', 'n'
+        );
+        
+        $str = str_replace($com_acento, $sem_acento, $str);
+        
+        if($convertToUpper == 'S'){
+            $str = strtoupper($str);   
+        } 
+
+        return $str;
+    }
 }

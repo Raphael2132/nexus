@@ -23,6 +23,7 @@ return new class extends Migration
             $table->date('nfs_dt_emi')->nullable();//Data da Emissão da NFS
             $table->decimal('nfs_hr_emi',4,0)->default(0);//Hora da Emissão da NFS
             $table->decimal('nfs_vlr_srv',15,2)->default(0);// Valor dos Servicos
+            $table->decimal('nfs_vlr_dsc',15,2)->default(0);// Valor das Descontos 
             $table->decimal('nfs_vlr_ded',15,2)->default(0);// Valor das Deducoes 
             $table->decimal('nfs_vlr_tot',15,2)->default(0);// Valor total da nota
             $table->integer('nfs_cod_srv')->default(0);// Codigo do Servico Prestado
@@ -50,6 +51,8 @@ return new class extends Migration
             $table->decimal('nfs_nro_nfe',9,0)->default(0);// Numero da Nota Fiscal Eletronica
             $table->string('nfs_cod_ver',8)->nullable();// Codigo Verificacao Nota Fiscal Eletronica
             $table->decimal('nfs_vlr_des_iss_inc',15,2)->default(0);// Valor do desconto iss incentivado
+            $table->string('nfs_obs',255)->nullable(); // Observacões da NF
+            $table->string('nfs_pais_tom',40)->nullable();// País do Tomador
             $table->timestamps();
             $table->unique(['nfs_emp','nfs_nfhdr_num'], 'ak_faturamento_nfs');
         });

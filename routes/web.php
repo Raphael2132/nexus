@@ -297,6 +297,8 @@ Route::delete('/lancamentos/servico/painelAberturaOS/requisicao/servico/{servico
 |
 */
 
+Route::get('/faturamento/notas/impressao/nfse/{empresa}/{numControle}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'nfseGerarPDF'])->name('impresaoNF.nfsePDF');
+
 /* ********** Rotas de Emissao de NF ********** */
 Route::get('/faturamento/notas/controleEmissaoNF', [App\Http\Controllers\HomeController::class, 'emissaoNF'])->name('home.emissaoNF');
 

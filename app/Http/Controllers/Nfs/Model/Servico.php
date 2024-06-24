@@ -11,29 +11,45 @@ class Servico {
     private $quantidade;
     private $valorUnitario;
     private $valorTotal;
+    private $valorDesconto;
+    private $valorTotalLiquido;
 
-    public function loadItens($empresa, $numero, $serie)
+    public function carregaServicos($empresa, $numero, $numControle)
     {
+        echo "<br> Entrei Model Servico <br>";
+
         $itens = array();
 
-        $sql = "SELECT DISCRIMINACAOSERVICO, QUANTIDADE, VALORUNITARIO, VALORTOTAL 
-                FROM vi_rpsxml_itens 
-                WHERE empresa = '$empresa' and 
-                      numerorps = $numero and 
-                      trim(serierps) = trim('$serie')";
-        
-        $rs = $this->Select($sql);
+        $sql = "SELECT 
+                    discriminacao_servico, 
+                    quantidade, 
+                    valor_unitario, 
+                    valor_total,
+                    valor_desconto,
+                    valor_total_liquido
+                FROM vi_nfsxml_servicos 
+                WHERE 
+                    empresa = '".$empresa."' and 
+                    num_controle = ".$numControle." and 
+                    num_nf =".$numero;
+        $rs = DB::select($sql);
 
         foreach ($rs as $dados) {
             $item = new Servico();
 
-            $item->discriminacaoServico = trim($dados['DISCRIMINACAOSERVICO']);
-            $item->quantidade = $dados['QUANTIDADE'];
-            $item->valorUnitario = $dados['VALORUNITARIO'];
-            $item->valorTotal= $dados['VALORTOTAL'];
+            $item->discriminacaoServico = $dados->discriminacao_servico;
+            $item->quantidade = $dados->quantidade;
+            $item->valorUnitario = $dados->valor_unitario;
+            $item->valorTotal= $dados->valor_total;
+            $item->valorDesconto= $dados->valor_desconto;
+            $item->valorTotalLiquido= $dados->valor_total_liquido;
 
             $itens[] = $item;
         }
+
+        echo "<br> Teste Model Servico <br>";
+        var_dump($itens);
+        echo "<br>";
 
         unset($rs);
 

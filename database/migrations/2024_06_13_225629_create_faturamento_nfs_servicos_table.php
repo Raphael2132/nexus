@@ -25,6 +25,7 @@ return new class extends Migration
             $table->decimal('nfssrv_qtd_hr', 5,2)->default(0);//quantidade de horas da tarefa
             $table->decimal('nfssrv_vlr_hr', 15,2)->default(0);//valor da hora da tarefa
             $table->decimal('nfssrv_vlr_tot', 15,2)->default(0);//valor total da tmo
+            $table->decimal('nfssrv_vlr_dsc', 15,2)->default(0);//valor desconto da tmo
             $table->decimal('nfssrv_vlr_liq', 15,2)->default(0);//valor liquido da tmo
             $table->timestamps();
             $table->unique(['nfssrv_emp','nfssrv_num','nfssrv_req','nfssrv_seq'], 'ak_faturamento_nfs_servicos');

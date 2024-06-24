@@ -38,6 +38,7 @@ return new class extends Migration
             $table->string('nfcli_ins_est',14)->nullable();// Inscr. Estadual 
             $table->string('nfcli_ins_mun',15)->nullable();// Inscr. Municipal 
             $table->string('nfcli_email',80)->nullable();// Email
+            $table->string('nfcli_pais',40)->nullable();// País
             $table->unique(['nfcli_emp','nfcli_num'], 'ak_faturamento_nf_clientes');
             $table->timestamps();
         });

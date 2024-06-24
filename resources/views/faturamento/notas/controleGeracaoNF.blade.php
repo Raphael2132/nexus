@@ -26,30 +26,48 @@
             <div class="row">
                 <table class="table tabela-dados-os">
                     <tbody>
+                        @php 
+                            $dataNfs = DB::table('faturamento_nfs')->where('nfs_emp', $empresa)->where('nfs_nfhdr_num', $numControle)->get();
+                            $dataNfsXML = DB::table('faturamento_nfs_xml_envios')->where('nfsenv_emp', $empresa)->where('nfsenv_nfhdr_num', $numControle)->where('nfsenv_num', $dataNfs[0]->nfs_nnfs)->get();
+
+                            $pathXML = $dataNfsXML[0]->nfsenv_cnpj.'/file/doc/nfsxml/envio/'.$pathXML;
+                            
+                        @endphp
                         <tr>
-                            <td style="border: 0px; width: 20%;">
+                            <td style="border: 0px; width: 15%;">
                                 <p class="text-sm">Data/Hora
-                                    <b class="d-block">01/01/2024 15:00:00</b>
+                                    <b class="d-block">{{Helper::formataDataHora($dataNfsXML[0]->nfsenv_dt_atu)}}</b>
+                                </p>
+                            </td>
+                            <td style="border: 0px; width: 10%;">
+                                <p class="text-sm">OS
+                                    <b class="d-block">{{$dataNfs[0]->nfs_nfhdr_num_ped}}</b>
                                 </p>
                             </td>
                             <td style="border: 0px; width: 15%;">
                                 <p class="text-sm">Nr./Série NFS-e
-                                    <b class="d-block">475-RP</b>
+                                    <b class="d-block">{{$dataNfs[0]->nfs_nnfs.'-'.$dataNfs[0]->nfs_snfs}}</b>
                                 </p>
                             </td>
                             <td style="border: 0px; width: 35%;">
                                 <p class="text-sm">Status da Geração
-                                    <b class="d-block text-success"> Gerado com sucesso</b>
+                                    @if($dataNfsXML[0]->nfsenv_sts == 3)
+                                    <b class="d-block text-success">{{$dataNfsXML[0]->nfsenv_obs}}</b>
+                                    @elseif($dataNfsXML[0]->nfsenv_sts == 2)
+                                    <b class="d-block text-danger">{{'Erro: '.$dataNfsXML[0]->nfsenv_sts_emi.' - '.$dataNfsXML[0]->nfsenv_obs}}</b>
+                                    @else
+                                    <b class="d-block text-danger">{{'Erro: '.$dataNfsXML[0]->nfsenv_sts_emi.' - '.$dataNfsXML[0]->nfsenv_obs}}</b>
+                                    @endif
                                 </p>
                             </td>
-                            <td style="border: 0px; width: 15%;">
+                            <td style="border: 0px; width: 10%;">
                                 <p class="text-sm">Impressão
-                                    <b class="d-block"><a href="">Abrir NFS-e</a></b>
+                                    <b class="d-block"><a href="{{route('impresaoNF.nfsePDF',['empresa' => $dataNfs[0]->nfs_emp, 'numControle' => $dataNfs[0]->nfs_nfhdr_num])}}" target="_blank">Abrir NFS-e</a></b>
                                 </p>
                             </td>
                             <td style="border: 0px; width: 15%;">
                                 <p class="text-sm">Arquivo
-                                    <b class="d-block"><a href="">XML</a></b>
+                                    <b class="d-block"><a href="{{asset($pathXML)}}" target="_blank">XML</a></b>
                                 </p>
                             </td>
                         </tr>

@@ -118,7 +118,7 @@ $(function () {
         maxlength: 80
       },
 	  wsdl: {
-        maxlength: 80
+        maxlength: 100
       },
     },
     messages: {

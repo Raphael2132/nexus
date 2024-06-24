@@ -244,8 +244,8 @@ class LancamentoSrvOsServicoController extends Controller
                 'srv_srt' => $request->serNfTerceiroTMO,
                 'srv_dtt' => $dataNfTerceiroTMO,
                 'srv_tcg' => $request->tipCustoTMO,
-                'srv_pcg' => $valCustoTMO,
-                'srv_vcg' => $perCustoTMO,
+                'srv_pcg' => $perCustoTMO,
+                'srv_vcg' => $valCustoTMO,
                 'srv_per_des' => $perDesconto,
                 'srv_val_des' => $valDesconto,
                 'srv_vtl' => $valLiquido]);   

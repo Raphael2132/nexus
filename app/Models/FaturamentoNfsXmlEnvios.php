@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FaturamentoNfsXmlEnviados extends Model
+class FaturamentoNfsXmlEnvios extends Model
 {
-    use HasFactory; 
+    use HasFactory;
 
     protected $primaryKey = 'nfsenv_id';
     
@@ -19,11 +19,11 @@ class FaturamentoNfsXmlEnviados extends Model
         'nfsenv_pro',
         'nfsenv_sts',
         'nfsenv_xml_env',
-        'nfsenv_xml_rcb',
-        'nfsenv_xml_cns',
+        'nfsenv_xml_ret',
         'nfsenv_dt_atu',
         'nfsenv_dt_inc',
         'nfsenv_num_nfs',
+        'nfsenv_sts_emi',
         'nfsenv_obs'
     ];
 }

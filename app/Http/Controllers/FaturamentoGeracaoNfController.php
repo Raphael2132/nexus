@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use stdClass;
-use App\Models\FaturamentoNfsXmlEnviados;
 use App\Http\Controllers\Nfs\Core\Nfsxml;
-
+use File;
 class FaturamentoGeracaoNfController extends Controller
 {
     //private $nfsxml;
@@ -15,7 +14,7 @@ class FaturamentoGeracaoNfController extends Controller
     public function gerarNF($empresa, $cliente, $nfSelecionada)
     {
 
-        /*
+        
         //Inicia o Database Transaction
         DB::beginTransaction();
 
@@ -30,14 +29,19 @@ class FaturamentoGeracaoNfController extends Controller
             //Grava as alterações do banco
             DB::commit();
         }
-        */
 
         //Gera o xml de envio
-        //echo $_SERVER['DOCUMENT_ROOT'];exit;
-        //include_once 'App/Http/Controllers/Nfs/Core/Nfsxml.php';
         echo "<br> iniciando o Nfsxml <br>";
-        $nfsxml = new Nfsxml($empresa, $nfSelecionada, 1);
+        $nfsxml = new Nfsxml($empresa, $nfSelecionada);
+
         //envia o xml
+        echo "<br> Finalizei a criação do xml na instanciação da classe Nfsxml <br>";
+        
+        echo "<br> iniciando a emissão da nfs <br>";
+
+        $nfsxml->emitirNFS();
+
+        $pathXML = $nfsxml->nomeArquivo;
 
         $dadosNF = DB::table('faturamento_nf_headers')->where('nfhdr_emp', $empresa)->where('nfhdr_num', $nfSelecionada)->get();
         $dadosEmi = DB::table('cadastro_empresas')->where('empresa_codigo', $empresa)->get();
@@ -45,22 +49,6 @@ class FaturamentoGeracaoNfController extends Controller
         $dataHoraGeracaoNF = date('Y-m-d H:i:s');
         $dataGeracaoNF = date('Y-m-d');
         $horaGeracaoNF = date('Hi');
-
-        //Gera dados do envio e retorno da prefeitura
-        $dados = [
-            'nfsenv_emp' => $empresa,
-            'nfsenv_num' => $dadosNF[0]->nfhdr_num_nf,
-            'nfsenv_nfhdr_num' => $nfSelecionada,
-            'nfsenv_cnpj' => $dadosEmi[0]->empresa_cnpj,
-            'nfsenv_pro' => '00000000',
-            'nfsenv_sts' => '3',
-            'nfsenv_dt_atu' => $dataHoraGeracaoNF,
-            'nfsenv_dt_inc' => $dataHoraGeracaoNF,
-            'nfsenv_num_nfs' => $dadosNF[0]->nfhdr_num_nf,
-            'nfsenv_obs' => 'NFS-e Gerada com sucesso'
-        ];
-
-        FaturamentoNfsXmlEnviados::create($dados);
 
         //Atualiza os dados da NF
         DB::table('faturamento_nf_headers')
@@ -76,6 +64,23 @@ class FaturamentoGeracaoNfController extends Controller
             'nfs_dt_emi' => $dataGeracaoNF,
             'nfs_hr_emi' => $horaGeracaoNF]);
 
-        return view('/faturamento/notas/controleGeracaoNF');
+        return view('/faturamento/notas/controleGeracaoNF', ['empresa' => $empresa, 'numControle' => $nfSelecionada, 'pathXML' => $pathXML]);
+    }
+
+    public function abrirXml($xml,$nf,$empresa)
+    {
+        $xmlContent = base64_decode($xml);
+
+        // Crie o nome do arquivo
+        $fileName = 'xml_'.$empresa .'_'.$nf.'.xml';
+
+        // Crie o cabeçalho para a resposta
+        $headers = [
+            'Content-Type' => 'application/xml',
+            'Content-Disposition' => 'inline; filename="' . $fileName . '"',
+        ];
+
+        // Retorne o XML como resposta
+        return response($xmlContent, 200)->withHeaders($headers);
     }
 }

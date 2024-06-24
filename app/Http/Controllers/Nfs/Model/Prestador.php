@@ -23,6 +23,7 @@ class Prestador {
     private $municipioo;
     private $uf;
     private $cep;
+    private $pais;
 
     public function __construct(string $empresa, int $numero, int $numControle){
         
@@ -44,7 +45,8 @@ class Prestador {
                     bairro,
                     municipio,
                     uf,
-                    cep 
+                    cep,
+                    pais 
                 FROM vi_nfsxml_prestador 
                 WHERE 
                     empresa = '".$empresa."' and 
@@ -70,6 +72,7 @@ class Prestador {
         $this->municipio = $dados->municipio;
         $this->uf = $dados->uf;
         $this->cep = $dados->cep;
+        $this->pais = $dados->pais;
 
         echo "<br> Teste dados Prestador: ".$this->razaoPrestador." <br>";
 

@@ -41,7 +41,7 @@ return new class extends Migration
 
             $table->decimal('nfitm_cif',1,0)->default(0); // Indicativo Fiscal
             $table->decimal('nfitm_aif',3,1)->default(0); // Aliquota Indicativo Fiscal (verificar depois se vai usar isso seria o mesmo do campo acima)  
-            $table->decimal('nfitm_nop',4,0)->nullable(); // NOP
+            $table->decimal('nfitm_cfop',4,0)->default(0);// Código Fiscal de Operações e de Prestações
             $table->decimal('nfitm_cme',3,0)->nullable(); // CME
             $table->string('nfitm_ori',2)->nullable(); // Origem da NF - sera implementado no futuro e vai ter uma tabela para isso
             $table->enum('nfitm_tor', ['P', 'S']); // Tipo da Origem da NF ( P - Produtos, S - Serviços )
@@ -67,14 +67,13 @@ return new class extends Migration
 
             $table->decimal('nfitm_qtd',9,4)->default(0); // Quantidade do item
             $table->decimal('nfitm_qth',5,2)->default(0); // Quantidade de Horas (Serviços)
-            $table->decimal('nfitm_vlr_hr',15,2)->default(0); // Valor da hora (Serviços)
-            $table->decimal('nfitm_vlr_uni',15,2)->default(0); // Valor unitario (para serviço é o valor da hora x qtd. hora)
-            $table->decimal('nfitm_vlr_alq_desc',5,2)->default(0); // Aliquota de Desconto (peças é desconto pela unidade)
-            $table->decimal('nfitm_vlr_desc',15,2)->default(0); // Valor de descontos (peças é desconto pela unidade)
-            $table->decimal('nfitm_vlr_uni_liq',15,2)->default(0); // Valor Unitário Liquido (vlr uni - desconto)
-            $table->decimal('nfitm_vlr_tot',15,2)->default(0); // Valor total Bruto (peças vlr uni x qtd) (serviços vlr uni)
+            $table->decimal('nfitm_vlr_uni',15,2)->default(0); // Valor unitario --------(para serviço é o valor da hora x qtd. hora)
+            $table->decimal('nfitm_vlr_alq_desc',5,2)->default(0); // Aliquota de Desconto ---------(peças é desconto pela unidade)
+            $table->decimal('nfitm_vlr_desc',15,2)->default(0); // Valor de descontos --------(peças é desconto pela unidade)
+            $table->decimal('nfitm_vlr_uni_liq',15,2)->default(0); // Valor Unitário Liquido (peças vlr uni - desconto) (serviços vlr uni)
+            $table->decimal('nfitm_vlr_tot',15,2)->default(0); // Valor total Bruto (peças vlr uni x qtd) (serviços vlr uni x qth)
             $table->decimal('nfitm_vlr_ipi',15,2)->default(0); // IPI 
-            $table->decimal('nfitm_vlr_cst',15,2)->default(0); // Custo do item
+            $table->decimal('nfitm_vlr_cus_itm',15,2)->default(0); // Custo do item
             $table->decimal('nfitm_vlr_tot_liq',15,2)->default(0); // Valor total Liquido (total - desconto)
             $table->decimal('nfitm_vlr_bc_icms',15,2)->default(0); // Base de ICMS 
             $table->decimal('nfitm_vlr_alq_icms',5,2)->default(0); // Aliquota de ICMS 
@@ -84,9 +83,9 @@ return new class extends Migration
             $table->decimal('nfitm_vlr_adi',5,2)->default(0);// Aliquota de desconto do item 
             $table->decimal('nfitm_vlr_tdi',11,2)->default(0);// Valor Total de desconto no item        
             
-            $table->decimal('nfitm_vlr_cst_con',15,2)->default(0);// Custo Contabil
+            $table->decimal('nfitm_vlr_cus_con',15,2)->default(0);// Custo Contabil
             $table->decimal('nfitm_vlr_adf',15,2)->default(0);// Acrescimo Desconto Financeiro no item 
-            $table->string('nfitm_ctb',2)->nullable();// Codigo de tributacao     
+            $table->string('nfitm_cst',2)->nullable();// Codigo de situação tributaria  
 
             $table->decimal('nfitm_vlr_alq_red',6,4)->default(0);// Aliquota de reducao 
             $table->decimal('nfitm_vlr_alq_red_icms',6,4)->default(0);// Aliquota de Reducao valor ICMS 

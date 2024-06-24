@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Nfs\Core;
 
 use App\Http\Controllers\Nfs\Layouts\SaoJoaoDaBoaVista;
 use App\Http\Controllers\Nfs\Util\Config;
@@ -8,68 +8,68 @@ use App\Http\Controllers\Nfs\Util\Config;
 class LayoutNFS{
     
     private static $nfsxml;
-    private $documentoXML;
+    public $documentoXML;
+    public $documentoRetornoXML;
     private $nomeArquivo;
-    private static $config;
+    public $config;
 
-    public function __construct(Nfsxml $nfsxml){
+    public function __construct(Nfsxml $nfs){
 
-        $this->nfsxml = $nfsxml;
+        echo "<br> Entrei no LayoutNFS <br>";
 
-        $this->config = Config::getInstance($this->nfsxml);
+        static::$nfsxml = $nfs;
+        $this->config = Config::getInstance(static::$nfsxml);
     }
 
     public function gerarXML(){
 
+        echo "<br> Entrei no gerarXML <br>";
+        
         $layout = $this->config->layout;
 
         switch ($layout) {
             case 1:
-                $this->documentoXML = SaoJoaoDaBoaVista::nfsxml($this->nfsxml);
+                $this->documentoXML = SaoJoaoDaBoaVista::nfsxml(static::$nfsxml);
                 break;
             default:
                 # code...
                 break;
         }
         
+        echo "<br> Finalizei o xml <br>";
     }
 
     public function gravaXML()
     {
 
-        $nomeArquivoDownload = Misc::gerarNomeArquivo($this->nfsxml);
+        echo "<br> Entrei no gravaXML <br>";
+
+        $nomeArquivoDownload = Config::gerarNomeArquivo(static::$nfsxml);
         $path = $this->config->pathDownload;
         $path .= $nomeArquivoDownload;
-        $this->documentoXML->save($path);
-
-
-        $this->nomeArquivo = Misc::gerarNomeArquivo($this->nfsxml);
-        $path = $this->config->path;
-        $path .= $this->nomeArquivo;
-        //echo "<h3 color='red'>$path</h3>";
         $this->documentoXML->save($path);
 
         return $nomeArquivoDownload;
 
     }
 
-    public function processaXMLRetorno(){
-        $retorno = null;
+    public function enviarXML()
+    {
 
-        libxml_use_internal_errors(true);
+        echo "<br> Entrei no enviarXML <br>";
 
-        switch ($this->config->layout) {
+        $layout = $this->config->layout;
+
+        echo "<pre>".htmlentities($this->documentoXML->saveHTML())."</pre>";
+
+        switch ($layout) {
             case 1:
-                $retorno = SaoJoaoDaBoaVista::retorno($this->config->path, $this->nomeArquivo);
+                $this->documentoRetornoXML = SaoJoaoDaBoaVista::startConnection(static::$nfsxml, $this->documentoXML);
                 break;
             default:
                 # code...
                 break;
         }
-        
-        libxml_use_internal_errors(false);
-
-        return $retorno;
 
     }
 }

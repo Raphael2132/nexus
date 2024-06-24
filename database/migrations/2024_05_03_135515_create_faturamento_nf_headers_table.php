@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('nfhdr_ser_nf',5)->nullable();// Serie da NF / Cupom
             $table->date('nfhdr_dt_nf')->nullable();// Data da NF / Cupom
             $table->decimal('nfhdr_hr_nf',4,0)->default(0);// Hora da NF
-            $table->decimal('nfhdr_nop',4,0)->default(0);// Numero de Operação
+            $table->decimal('nfhdr_cfop',4,0)->default(0);// Código Fiscal de Operações e de Prestações
             $table->decimal('nfhdr_cme',3,0)->default(0);// Codigo do CME
             $table->date('nfhdr_dt_ped');// Data do Pedido / OS
             $table->date('nfhdr_dt_fec_ped');// Data do Fechamento do Pedido / OS 
@@ -34,9 +34,9 @@ return new class extends Migration
             $table->decimal('nfhdr_vlr_itm_pro',15,2)->default(0);// Valor de itens em promoção
             $table->decimal('nfhdr_vlr_itm_s_dsc',15,2)->default(0);// valor Itens sem desconto
             $table->decimal('nfhdr_vlr_itm_c_dsc',15,2)->default(0);// valor Itens com desconto
-            $table->decimal('nfhdr_vlr_itm',15,2)->default(0);// Valor das mercadorias bruto
-            $table->decimal('nfhdr_vlr_alq_des',5,2)->default(0);// Alíquota de desconto do pedido OS
-            $table->decimal('nfhdr_vlr_dsc',15,2)->default(0);// Valor do Desconto do pedido OS
+            $table->decimal('nfhdr_vlr_mrc',15,2)->default(0);// Valor das mercadorias bruto
+            $table->decimal('nfhdr_vlr_alq_dsc_mrc',5,2)->default(0);// Alíquota de desconto sobre mercadorias
+            $table->decimal('nfhdr_vlr_dsc_mrc',15,2)->default(0);// Valor do Desconto sobre mercadorias
             $table->decimal('nfhdr_vlr_srv',15,2)->default(0);// Valor de mão de Obra (Serviços) bruto
             $table->decimal('nfhdr_vlr_srv_ter',15,2)->default(0);// Valor de Serviços de terceiros
             $table->decimal('nfhdr_vlr_alq_dsc_srv',5,2)->default(0);// Aliquota de desconto sobre serviços
@@ -46,7 +46,7 @@ return new class extends Migration
             $table->decimal('nfhdr_vlr_lqs',15,2)->default(0);// Valor Liquido de serviços
             $table->decimal('nfhdr_vlr_sbt',15,2)->default(0);// Valor da Substituicao Tributária
             $table->decimal('nfhdr_vlr_ipi',15,2)->default(0);// Valor de IPI
-            $table->decimal('nfhdr_vlr_tot',15,2)->default(0);// Valor Total da NF
+            $table->decimal('nfhdr_vlr_tot_nf',15,2)->default(0);// Valor Total da NF
             $table->decimal('nfhdr_vlr_bc_icms',15,2)->default(0);// Valor da Base de ICMS
             $table->decimal('nfhdr_vlr_alq_icms',5,2)->default(0);// Valor da Aliquota de ICMS
             $table->decimal('nfhdr_vlr_icms',15,2)->default(0);// Valor de ICMS

@@ -51,6 +51,7 @@ return new class extends Migration
             $table->decimal('nftot_vlr_dac',15,2)->default(0); // Outras Despesas Acessorias 
             $table->decimal('nftot_vlr_adf',15,2)->default(0); // Acrescimo Desconto Financeiro no item 
             $table->decimal('nftot_nop_dac',4,0)->default(0); // NOP Despesa Acessoria 
+            $table->string('nftot_obs',255)->nullable(); // Observacões da NF
             $table->unique(['nftot_emp','nftot_num'], 'ak_faturamento_nf_totais');
             $table->timestamps();
         });

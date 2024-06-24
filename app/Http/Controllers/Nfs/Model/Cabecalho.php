@@ -15,6 +15,7 @@ class Cabecalho {
     private $valorTotalServicos;
     private $valorTotalDeducoes;
     private $valorTotalNota;
+    private $observacaoNota;
 
     public function __construct(string $empresa, int $numero, int $numControle){
 
@@ -28,7 +29,8 @@ class Cabecalho {
                     qtd_nfs, 
                     valor_tot_servico,
                     valor_tot_deducoes,
-                    valor_tot_nota
+                    valor_tot_nota,
+                    observacao_nfs
                 FROM vi_nfsxml_cabecalho 
                 WHERE 
                     empresa = '".$empresa."' and 
@@ -46,6 +48,7 @@ class Cabecalho {
         $this->valorTotalServicos = $dados->valor_tot_servico;
         $this->valorTotalDeducoes = $dados->valor_tot_deducoes;
         $this->valorTotalNota = $dados->valor_tot_nota;
+        $this->observacaoNota = $dados->observacao_nfs;
         
         echo "<br> Teste dados Cabecalho: ".$this->razaoEmp." <br>";
         

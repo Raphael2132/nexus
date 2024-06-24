@@ -67,7 +67,7 @@
         <tbody>
             <tr>
                 @php 
-                    $logo_emp = "img/".$glo_os_dadosEmpresa[0]->empresa_cnpj."/".$glo_os_dadosEmpresa[0]->empresa_codigo."_logo.png";
+                    $logo_emp = $glo_os_dadosEmpresa[0]->empresa_cnpj."/file/img/".$glo_os_dadosEmpresa[0]->empresa_codigo."_logo.png";
                     $fullpath = public_path($logo_emp); 
                 @endphp
                 <td rowspan="4" style="width: 40%;text-align: center;"><img src="data:image/png;base64, <?php echo base64_encode(file_get_contents($fullpath)); ?>" style="max-width: 60%; max-height: 60%;" /></td>

@@ -124,7 +124,7 @@
                                 <td>{{Helper::formataData($header->nfhdr_dt_ped)}}</td>
                                 <td>{{$origem}}</td>
                                 <td>NFS-e</td>
-                                <td>{{Helper::formataValorMonetario($header->nfhdr_vlr_tot)}}</td>
+                                <td>{{Helper::formataValorMonetario($header->nfhdr_vlr_tot_nf)}}</td>
                             </tr>
                         @endforeach
                     </x-adminlte-datatable>

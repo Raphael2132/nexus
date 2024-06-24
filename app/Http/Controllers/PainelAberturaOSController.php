@@ -8,7 +8,9 @@ use App\Models\LancamentoSrvOs;
 use App\Models\LancamentoSrvOsRequisicoes;
 use stdClass;
 use DateTime;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+//use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 
 class PainelAberturaOSController extends Controller
@@ -159,6 +161,7 @@ class PainelAberturaOSController extends Controller
         $dadosCliente = DB::table('cadastro_clientes')->where('cliente_codigo',$dadosOS[0]->os_cli)->get();
         $dadosClienteEndereco = DB::table('cadastro_cliente_enderecos')->where('endereco_cliente_codigo',$dadosOS[0]->os_cli)->where('endereco_seq',$dadosOS[0]->os_cli_end)->get();
 
+        /* Código original utilizando a lib Barryvdh\DomPDF
         // Carregar a string com o HTML/conteúdo e determinar a orientação e o tamanho do arquivo
         //$pdf = PDF::loadView('/lancamentos/servico/impressao/orcamentoPDF', ['glo_os_empresa' => $empresa, 'glo_os_dadosClienteEndereco' => $dadosClienteEndereco, 'glo_os_dadosCliente' => $dadosCliente, 'glo_os_dadosEmpresa' => $dadosEmpresa, 'glo_os_dadosEmpresaEndereco' => $empresaEndereco, 'glo_os_dadosRequisicoes' => $requisicoesOS, 'glo_os_dadosOS' => $dadosOS, 'glo_os_dadosServicos' => $servicosOS])->setPaper('a4', 'portrait');
         $html = response()->view('/lancamentos/servico/impressao/orcamentoPDF', ['glo_os_empresa' => $empresa, 'glo_os_dadosClienteEndereco' => $dadosClienteEndereco, 'glo_os_dadosCliente' => $dadosCliente, 'glo_os_dadosEmpresa' => $dadosEmpresa, 'glo_os_dadosEmpresaEndereco' => $empresaEndereco, 'glo_os_dadosRequisicoes' => $requisicoesOS, 'glo_os_dadosOS' => $dadosOS, 'glo_os_dadosServicos' => $servicosOS])->getContent();
@@ -169,6 +172,39 @@ class PainelAberturaOSController extends Controller
         // Fazer o download do arquivo
         //return $pdf->download('orcamento.pdf');
         return $pdf->stream(); 
+        */
+        
+        // Opções de configuração
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isPhpEnabled', true);
+        $options->set('pdfBackend', 'auto');
+        //$options->set('dpi', 150);
+        
+        // Cria uma instância do Dompdf com opções padrão
+        $dompdf = new Dompdf($options);
+
+        // Carrega o HTML da View para ser convertido em PDF
+        $html = view('/lancamentos/servico/impressao/orcamentoPDF', ['glo_os_empresa' => $empresa, 'glo_os_dadosClienteEndereco' => $dadosClienteEndereco, 'glo_os_dadosCliente' => $dadosCliente, 'glo_os_dadosEmpresa' => $dadosEmpresa, 'glo_os_dadosEmpresaEndereco' => $empresaEndereco, 'glo_os_dadosRequisicoes' => $requisicoesOS, 'glo_os_dadosOS' => $dadosOS, 'glo_os_dadosServicos' => $servicosOS])->render();
+
+        // Carrega o HTML no Dompdf
+        $dompdf->loadHtml($html);
+
+        // (Optional) Setup the paper size and orientation
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Renderiza o PDF (gera o conteúdo do PDF)
+        $dompdf->render();
+
+        // Saída do PDF (nome do arquivo) - Baixar o arquivo PDF Automaticamente
+        //return $dompdf->stream('exemplo.pdf'); 
+
+        // Saída do PDF (nome do arquivo)
+        $output = $dompdf->output();
+
+        // Retorna a resposta HTTP com o PDF para abrir em uma nova aba
+        return response($output, 200)->header('Content-Type', 'application/pdf');
+
     }
 
     //Função que atualiza o valor total da OS, executada ao inserir, atualizar, excluir, reabrir, suspender, cancelar e excluir serviços e excluir requisição

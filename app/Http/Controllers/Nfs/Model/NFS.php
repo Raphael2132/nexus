@@ -20,7 +20,7 @@ class NFS {
     private $valorTotalServicos;
     private $valorTotalDeducoes;
 
-    
+    private $cabecalho;
     private $prestador;
     private $tomador;
     private $tributacao;
@@ -118,9 +118,8 @@ class NFS {
         $this->parametros = new Parametros($this->empresa);
         
         $item = new Servico();
-        exit;
-        $this->itens = $item->loadServicos($this->empresa, $this->numero, $this->serie);
         
+        $this->itens = $item->carregaServicos($this->empresa, $this->numero, $this->numControle);
     }
 
 }

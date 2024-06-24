@@ -392,6 +392,11 @@ return [
                     'icon' => 'fa-solid fa-list',
                     'submenu' => [
                         [
+                            'text' => 'Geral da Empresa',
+                            'url'  => '',
+                            'icon' => '',
+                        ],
+                        [
                             'text' => 'Categorias de Atendimento',
                             'url'  => '/parametros/servico/homeLancamentosServicoCategoria',
                             'icon' => '',

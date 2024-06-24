@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('parfat_id');
             $table->string('parfat_emp',6)->unsigned();//Empresa
             $table->enum('parfat_sim',['S','N'])->default('N');//Empresa é do Simples Nacional
-            $table->decimal('parfat_alq_iss',5,2)->default(0);//Aliquota municipal de imposto sobre serviços
             $table->timestamps();
             $table->unique(['parfat_emp'], 'ak_parametros_fat_empresas');
             $table->foreign('parfat_emp', 'fk_parametros_fat_empresas')->references('empresa_codigo')->on('cadastro_empresas')->onDelete('cascade');

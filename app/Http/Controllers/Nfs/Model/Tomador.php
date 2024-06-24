@@ -22,6 +22,7 @@ class Tomador {
     private $cidade;
     private $uf;
     private $cep;
+    private $pais;
     private $email;
     private $codigoCidadeIBGE;
 
@@ -46,7 +47,8 @@ class Tomador {
                     uf,
                     cep, 
                     email, 
-                    cod_ibge_mun_tomador
+                    cod_ibge_mun_tomador,
+                    pais
                 FROM vi_nfsxml_tomador
                 WHERE 
                     empresa = '".$empresa."' and 
@@ -70,6 +72,7 @@ class Tomador {
         $this->cidade = $dados->cidade;
         $this->uf = $dados->uf;
         $this->cep = $dados->cep;
+        $this->pais = $dados->pais;
         $this->email = $dados->email;
         $this->codigoCidadeIBGE = $dados->cod_ibge_mun_tomador;
         

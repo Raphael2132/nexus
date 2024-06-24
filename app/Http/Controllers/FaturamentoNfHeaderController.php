@@ -60,16 +60,16 @@ class FaturamentoNfHeaderController extends Controller
         if(!empty($request->vlrIniOS) && !empty($request->vlrFinOS)){
             $vlr_ini = Helper::limpaValorMonetario($request->vlrIniOS);
             $vlr_fin = Helper::limpaValorMonetario($request->vlrFinOS);
-            $where .= " and nfhdr_vlr_tot between ".$vlr_ini." and ".$vlr_fin;
+            $where .= " and nfhdr_vlr_tot_nf between ".$vlr_ini." and ".$vlr_fin;
         }elseif(empty($request->vlrIniOS) && !empty($request->vlrFinOS)){
             $vlr_fin = Helper::limpaValorMonetario($request->vlrFinOS);
-            $where .= " and nfhdr_vlr_tot <= ".$vlr_fin;
+            $where .= " and nfhdr_vlr_tot_nf <= ".$vlr_fin;
         }elseif(!empty($request->vlrIniOS) && empty($request->vlrFinOS)){
             $vlr_ini = Helper::limpaValorMonetario($request->vlrIniOS);
-            $where .= " and nfhdr_vlr_tot >= ".$vlr_ini;
+            $where .= " and nfhdr_vlr_tot_nf >= ".$vlr_ini;
         }
 
-        $dados = DB::select("select nfhdr_emp, nfhdr_cli, count(nfhdr_num_ped) as qtd_reg, sum(nfhdr_vlr_tot) as total_pedidos from faturamento_nf_headers where nfhdr_sts = 'A' ".$where." group by nfhdr_emp, nfhdr_cli order by nfhdr_cli");
+        $dados = DB::select("select nfhdr_emp, nfhdr_cli, count(nfhdr_num_ped) as qtd_reg, sum(nfhdr_vlr_tot_nf) as total_pedidos from faturamento_nf_headers where nfhdr_sts = 'A' ".$where." group by nfhdr_emp, nfhdr_cli order by nfhdr_cli");
 
         return view('/faturamento/notas/consultaEmissaoNF',['dadosHeader'=>$dados]);
     }

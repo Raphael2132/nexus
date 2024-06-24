@@ -67,8 +67,8 @@ $config = [
         @foreach($dadosHeader as $header)
             @php 
                 $data = DB::table('cadastro_empresas')->where('empresa_codigo', $header->nfhdr_emp)->get();
-
                 $data_cli = DB::table('cadastro_clientes')->where('cliente_codigo', $header->nfhdr_cli)->get();
+                $dadosXmlNfsEnv = DB::table('faturamento_nfs_xml_envios')->where('nfsenv_emp',$header->nfhdr_emp)->where('nfsenv_num',$header->nfhdr_num_nf)->get();
             @endphp
             <tr>
                 <td>{{$header->nfhdr_emp.' - '.$data[0]->empresa_nome}}</td>
@@ -76,10 +76,16 @@ $config = [
                 <td>{{$header->nfhdr_cli.' - '.$data_cli[0]->cliente_nome}}</td>
                 <td>{{$header->nfhdr_num_ped}}</td>
                 <td>{{$header->nfhdr_num_nf.'-'.$header->nfhdr_ser_nf}}</td>
-                <td>{{Helper::formataValorMonetario($header->nfhdr_vlr_tot)}}</td>
+                <td>{{Helper::formataValorMonetario($header->nfhdr_vlr_tot_nf)}}</td>
                 <td>NFS-e</td>
-                <td><b class="text-danger">NFS-e Rejeitada</b><a href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num])}}"> Reenviar</a></td>
-                <td><a href="">Abrir NFS-e</a></td>
+                @if($dadosXmlNfsEnv[0]->nfsenv_sts == 1)
+                <td class="max-width-sts"><b class="text-danger"><strong>NFS-e Não Enviada: </strong>{{$dadosXmlNfsEnv[0]->nfsenv_obs}}</b><a href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num])}}"> Reenviar</a></td>
+                @elseif($dadosXmlNfsEnv[0]->nfsenv_sts == 2)
+                <td class="max-width-sts"><b class="text-danger"><strong>NFS-e Rejeitada: Erro </strong>{{$dadosXmlNfsEnv[0]->nfsenv_sts_emi.' - '.$dadosXmlNfsEnv[0]->nfsenv_obs}}</b><a href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num])}}"> Reenviar</a></td>
+                @else
+                <td class="max-width-sts"><b class="text-success">{{$dadosXmlNfsEnv[0]->nfsenv_obs}}</b></td>
+                @endif
+                <td><a href="{{route('impresaoNF.nfsePDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num])}}" target="_blank">Abrir NFS-e</a></td>
             </tr>
         @endforeach
     </x-adminlte-datatable>
@@ -89,6 +95,14 @@ $config = [
 @stop
 
 @section('css')
+<style>
+    .max-width-sts {
+        max-width: 50ch;
+        white-space: normal; /* Permite quebra de linha */
+        overflow-wrap: break-word; /* Permite quebras de linha apenas em espaços */
+        word-break: keep-all; /* Evita quebras de linha no meio de palavras */
+    }
+</style>
 @stop
 
 @section('js')

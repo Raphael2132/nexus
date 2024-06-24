@@ -11,15 +11,13 @@ class Nfsxml {
     public $empresa;
     public $numControle;
 
-    public $cabecalho;
     public $nfs;
-    private $layout;
+    public $layout;
     public $arquivo;
 
     /* ***** __construct *****
         @param String $empresa Código da empresa emissora
         @param int $numControle Número de Controle da NF
-        @param int $nfs Número da NFS-e
     ***** */
     public function __construct($empresa, $numControle){
 
@@ -27,17 +25,15 @@ class Nfsxml {
         $this->numControle = $numControle;
 
         echo "<br> iniciado o Nfsxml <br>";
-        //$this->cabecalho = new Cabecalho($empresa, $nfs);//????????????
 
         $this->getNFS();
 
-        echo 'aki';
-        var_dump($this->nfs);
-        exit;
+        echo "<br> Finalizado o getNFS vamos buscar o LayoutNFS a ser utilizado! <br>";
+
         $this->layout = new LayoutNFS($this);
 
+        echo "<br> Estou pronto para gerar o XML <br>";
         $this->layout->gerarXML();
-
     }
 
     //Pega os dados da NFS-e
@@ -62,15 +58,11 @@ class Nfsxml {
         $this->nfs->empresa;
     }
 
-    public function emitirRPS(){
+    public function emitirNFS(){
+
+        echo "<br> iniciada a emissão da nfs <br>";
         $this->nomeArquivo = $this->layout->gravaXML();
-
-        Misc::startLNX();
-    }
-
-    public function getRetorno(){
-        $retorno = $this->layout->processaXMLRetorno();
-
-        return $retorno;
+        
+        $this->layout->enviarXML();
     }
 }
