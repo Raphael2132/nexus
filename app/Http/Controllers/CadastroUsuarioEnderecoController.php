@@ -55,6 +55,7 @@ class CadastroUsuarioEnderecoController extends Controller
             'endereco_cidade' => $request->cidade,
             'endereco_uf' => $request->uf,
             'endereco_pais' => $request->pais,
+            'endereco_ibge_cod_mun' => $request->ibgeCodMun,
         ];
 
         $novoEndereco = CadastroUsuarioEndereco::create($dados);

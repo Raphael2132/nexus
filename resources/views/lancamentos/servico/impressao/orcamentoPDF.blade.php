@@ -134,8 +134,17 @@
         <tbody>
             <tr>
             @php 
-                $dataPreEnt = Helper::formataData($glo_os_dadosOS[0]->os_dpe);
-                $horaPreEnt = Helper::formataHoraMinuto($glo_os_dadosOS[0]->os_hpe);
+                if(!empty($glo_os_dadosOS[0]->os_dpe)){
+                    $dataPreEnt = Helper::formataData($glo_os_dadosOS[0]->os_dpe);
+                }else{
+                    $dataPreEnt = '';
+                }
+                
+                if(!empty($glo_os_dadosOS[0]->os_hpe)){
+                    $horaPreEnt = Helper::formataHoraMinuto($glo_os_dadosOS[0]->os_hpe);
+                }else{
+                    $horaPreEnt = '';
+                }
 
                 $dataOrcamento = Helper::formataData($glo_os_dadosOS[0]->os_dt_orc);
             @endphp
@@ -348,12 +357,19 @@
             <tr>
                 <td>
                     <p class="text-sm">Valor Total Bruto
-                        <b class="d-block">{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vos)}}</b>
+                        <b class="d-block">{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vlr)}}</b>
                     </p>
                 </td>
                 <td>
+                    @php
+                        $descontoReq = 0;
+                        foreach($glo_os_dadosRequisicoes as $requisicao){
+                            $descontoReq = $descontoReq + $requisicao->req_val_des;
+                        }
+                        $descontoTot = $descontoReq + $glo_os_dadosOS[0]->os_val_des;
+                    @endphp
                     <p class="text-sm">Descontos
-                        <b class="d-block">{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_val_des)}}</b>
+                        <b class="d-block">{{Helper::formataValorMonetario($descontoTot)}}</b>
                     </p>
                 </td>
                 <td>

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement('CREATE SEQUENCE sequencia_cad_fornecedores');
+        DB::statement('CREATE SEQUENCE sq_faturamento_nf_num_controle');
     }
 
     /**
@@ -19,6 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement('DROP SEQUENCE sequencia_cad_fornecedores');
+        DB::statement('DROP SEQUENCE sq_faturamento_nf_num_controle');
     }
 };

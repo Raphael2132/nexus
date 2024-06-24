@@ -201,11 +201,17 @@
                             </p>
                         </div>
                     </div>
+
+                    
+                    <div class="post">
+                        <h4 class="text-secondary font-weight-bold">Endereços Cadastrados</h4>
+                    </div>
+
                     <div class="main col-md-12" style="display: flex;flex-direction: column;"> 
 
                         @php
                             //Busca os dados dos endereços cadastrados do cliente
-                            $end_cli = DB::table('cadastro_cliente_enderecos')->where('endereco_cliente_codigo', $cliente)->get();
+                            $end_cli = DB::table('cadastro_cliente_enderecos')->where('endereco_cliente_codigo', $cliente)->orderby('endereco_seq')->get();
                             $cnt_end = 0;
                         @endphp
                         @if(empty($end_cli[0]))
@@ -262,17 +268,24 @@
                                     @foreach ($end_cli as $endereco)
                                         @php
                                             $cnt_end += 1;
+
+                                            if($endereco->endereco_principal == "S"){
+                                                $principal = ' - Principal';
+                                            }else{
+                                                $principal = '';
+                                            }
+
                                         @endphp
                                         @if($endereco->endereco_principal == "S")
-                                        <div class="icheck-primary d-inline">
-                                            <input type="radio" id="radioPrimary_{{$endereco->endereco_seq}}" name="enderecoCliOS" checked="" value="{{$endereco->endereco_seq}}">
-                                            <label for="radioPrimary_{{$endereco->endereco_seq}}">Endereço 1 - Principal</label>
+                                        <div class="icheck-primary d-inline" style="margin-right: 25px;">
+                                            <input type="radio" id="radioPrimary_{{$endereco->endereco_seq}}" name="enderecoCliOS" checked value="{{$endereco->endereco_seq}}">
+                                            <label for="radioPrimary_{{$endereco->endereco_seq}}">Endereço {{$cnt_end.$principal}}</label>
                                         </div>
                                         @else
-                                        </br>
-                                        <div class="icheck-primary d-inline">
+                                        
+                                        <div class="icheck-primary d-inline" style="margin-right: 25px;">
                                             <input type="radio" id="radioPrimary_{{$endereco->endereco_seq}}" name="enderecoCliOS" value="{{$endereco->endereco_seq}}">
-                                            <label for="radioPrimary_{{$endereco->endereco_seq}}">Endereço {{$cnt_end}}</label>
+                                            <label for="radioPrimary_{{$endereco->endereco_seq}}">Endereço {{$cnt_end.$principal}}</label>
                                         </div>
                                         @endif
                                     @endforeach

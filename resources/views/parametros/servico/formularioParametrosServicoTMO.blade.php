@@ -58,29 +58,68 @@
                             $emp_sel = '';
                         }
 
-                        $data_set = DB::table('parametros_srv_setores')->selectRaw('setor_codigo, setor_desc')->orderBy('setor_codigo', 'asc')->get();
-
-                        $new_array_set1 =[];
-                        $new_array_set2 =[];
-
-                        foreach ($data_set as $setor) {
-                            $new_array_set1[] = $setor->setor_codigo;
-                            $new_array_set2[] = $setor->setor_codigo.' - '.$setor->setor_desc;
-                        }
-                        $array_opt_set = array_combine($new_array_set1, $new_array_set2);
-
-                        if(!empty($dadosTMO[0]['tmo_set'])){
-                            $set_sel = $dadosTMO[0]['tmo_set'];
+                        if(!empty($dadosTMO[0]['tmo_sts'])){
+                            $sts_sel = $dadosTMO[0]['tmo_sts'];
                         }else{
-                            $set_sel = '';
+                            $sts_sel = 'A';
                         }
                     @endphp
-                    <!-- Empresa do Setor -->
+                    <!-- Empresa -->
                     <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-6">
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$emp_sel}}"/>
                     </x-adminlte-select>
 
-                    <!-- Empresa do Setor -->
+                    <!-- Status da Tarefa -->
+                    <x-adminlte-select name="status" label="Status" fgroup-class="col-md-6">
+                        <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" selected="{{$sts_sel}}"/>
+                    </x-adminlte-select>
+                </div>
+
+                <div class="row"> 
+                    @php
+
+                        $data_are = DB::table('parametros_sistema_areas')->selectRaw('area_codigo, area_desc')->orderBy('area_codigo', 'asc')->get();
+
+                        $new_array_are1 =[];
+                        $new_array_are2 =[];
+
+                        foreach ($data_are as $area) {
+                            $new_array_are1[] = $area->area_codigo;
+                            $new_array_are2[] = $area->area_codigo.' - '.$area->area_desc;
+                        }
+                        $array_opt_are = array_combine($new_array_are1, $new_array_are2);
+
+                        if(!empty($dadosTMO[0]['tmo_are'])){
+                            $are_sel = $dadosTMO[0]['tmo_are'];
+                        }else{
+                            $are_sel = '';
+                        }
+
+                        if(!empty($dadosTMO[0]['tmo_set'])){
+
+                            $data_set = DB::table('parametros_srv_setores')->selectRaw('setor_codigo, setor_desc')->orderBy('setor_codigo', 'asc')->get();
+
+                            $new_array_set1 =[];
+                            $new_array_set2 =[];
+
+                            foreach ($data_set as $setor) {
+                                $new_array_set1[] = $setor->setor_codigo;
+                                $new_array_set2[] = $setor->setor_codigo.' - '.$setor->setor_desc;
+                            }
+                            $array_opt_set = array_combine($new_array_set1, $new_array_set2);
+
+                            $set_sel = $dadosTMO[0]['tmo_set'];
+                        }else{
+                            $set_sel = '';
+                            $array_opt_set = null;
+                        }
+                    @endphp
+                    <!-- Area -->
+                    <x-adminlte-select name="area" label="Área" fgroup-class="col-md-6">
+                        <x-adminlte-options :options="$array_opt_are" empty-option="Selecione..." selected="{{$are_sel}}"/>
+                    </x-adminlte-select>
+
+                    <!-- Setor -->
                     <x-adminlte-select name="setor" label="Setor" fgroup-class="col-md-6">
                         <x-adminlte-options :options="$array_opt_set" empty-option="Selecione..." selected="{{$set_sel}}"/>
                     </x-adminlte-select>
@@ -93,19 +132,29 @@
                         }else{
                             $codigo_sel = '';
                         }
-                        
-                        if(!empty($dadosTMO[0]['tmo_sts'])){
-                            $sts_sel = $dadosTMO[0]['tmo_sts'];
+
+                        if(!empty($dadosTMO[0]['tmo_res'])){
+
+                            $prestador_nom = DB::table('cadastro_prestadores')->select('prestador_nome')->where('prestador_codigo', $dadosTMO[0]['tmo_res'])->get();
+                            $prestResp_sel = $dadosTMO[0]['tmo_res'].' - '.$prestador_nom[0]->prestador_nome;
+
+                            //Faz o lookup do campo de fornecedores 
+                            $data_pres = DB::table('cadastro_prestadores')->selectRaw('prestador_codigo, prestador_nome')->where('prestador_set',$dadosTMO[0]['tmo_set'])->where('prestador_are',$dadosTMO[0]['tmo_are'])->where('prestador_status','A')->orderBy('prestador_codigo', 'asc')->get();
+                            $html = '<datalist id="prestadores">';
+                            foreach($data_pres as $prestador){
+                                $html .= '<option value="'.$prestador->prestador_codigo.' - '.$prestador->prestador_nome.'">'.$prestador->prestador_codigo.' - '.$prestador->prestador_nome.'</option>';
+                            }
+                            $html .='</datalist>';
+                            //Echo adiciona o html ao campo dos fornecedores
+                            echo $html;
                         }else{
-                            $sts_sel = 'A';
+                            $prestResp_sel = '';
                         }
                     @endphp
                     <!-- Código -->
                     <x-adminlte-input name="codigo" label="Código da Tarefa de Mão de Obra" type="text" value="{{$codigo_sel}}" fgroup-class="col-md-6"/>
-                    <!-- Status da Tarefa -->
-                    <x-adminlte-select name="status" label="Status" fgroup-class="col-md-6">
-                        <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" selected="{{$sts_sel}}"/>
-                    </x-adminlte-select>
+                    <!-- Prestador responsavel da TMO -->
+                    <x-adminlte-input name="prestResp" label="Prestador Responsável da Tarefa" type="search" list="prestadores" value="{{$prestResp_sel}}" fgroup-class="col-md-6"/>
                 </div>
 
                 <div class="row">
@@ -347,6 +396,7 @@
             $("#setor").attr("disabled", true);
             $("#empresa").attr("disabled", true);
             $("#codigo").attr("disabled", true);
+            $("#area").attr("disabled", true);
         }else{
             $(".btn_novo").hide();
             $(".btn_excluir").hide();
@@ -615,9 +665,156 @@
 						$('#codSrv').html(options);
                     }
                 });
-            } else {
+            } else {console.log('amerda');
 				$('#codSrv').html('<option value="">Selecione...</option>');
 			}
+        });
+
+        //Evento de carregamento ajax dos dados dos setores
+        $('#area').change(function(){
+
+            if( $(this).val() && $('#empresa').val() != '' ) {
+                var are = $(this).val();
+                var emp = $('#empresa').val();
+
+                var url = "{{ route('parametrosSrvTMO.carregaSetAjax', [':are',':emp']) }}";
+                url = url.replace(':are', are);
+                url = url.replace(':emp', emp);
+
+                $.ajax({
+                    url: url,
+                    dataType: "JSON",
+                    type: 'GET',
+                    data: {
+                        '_token': $('meta[name=csrf-token]').attr("content"),
+                        '_method': 'GET',
+                        "are": are,
+                        "emp": emp
+                    },
+                    success: function (data)
+                    {
+                        if(data.setores_ajax_existe == 'S'){
+
+                            var options = '<option value="">Selecione...</option>';	
+
+                            for (var i = 0; i < data.setores_ajax.length; i++) {
+
+                                options += '<option value="' + data.setores_ajax[i].id + '">' + data.setores_ajax[i].cod_setor + '</option>';
+                            }	
+                            $('#setor').html(options);
+
+                        }else{
+                            $('#setor').html('<option value="">Selecione...</option>');
+                        }
+                    }
+                });
+                $('#prestResp').val('');
+                $('#prestResp').html('<datalist id="prestadores"></datalist>');
+            } else {
+                $('#setor').html('<option value="">Selecione...</option>');
+                $('#prestResp').val('');
+                $('#prestResp').html('<datalist id="prestadores"></datalist>');
+            }
+        });
+
+        //Evento de carregamento ajax dos dados dos setores
+        $('#empresa').change(function(){
+
+            if( $(this).val() && $('#area').val() != '' ) {
+                var are = $('#area').val();
+                var emp = $(this).val();
+
+                var url = "{{ route('parametrosSrvTMO.carregaSetAjax', [':are',':emp']) }}";
+                url = url.replace(':are', are);
+                url = url.replace(':emp', emp);
+
+                $.ajax({
+                    url: url,
+                    dataType: "JSON",
+                    type: 'GET',
+                    data: {
+                        '_token': $('meta[name=csrf-token]').attr("content"),
+                        '_method': 'GET',
+                        "are": are,
+                        "emp": emp
+                    },
+                    success: function (data)
+                    {
+                        if(data.setores_ajax_existe == 'S'){
+
+                            var options = '<option value="">Selecione...</option>';	
+
+                            for (var i = 0; i < data.setores_ajax.length; i++) {
+
+                                options += '<option value="' + data.setores_ajax[i].id + '">' + data.setores_ajax[i].cod_setor + '</option>';
+                            }	
+
+                            $('#setor').html(options);
+                            $('#prestResp').val('');
+                            $('#prestResp').html('<datalist id="prestadores"></datalist>');
+
+                        }else{
+                            $('#setor').html('<option value="">Selecione...</option>');
+                            $('#prestResp').val('');
+                            $('#prestResp').html('<datalist id="prestadores"></datalist>');
+                        }
+                    }
+                });
+            } else {
+                $('#setor').html('<option value="">Selecione...</option>');
+                $('#prestResp').val('');
+                $('#prestResp').html('<datalist id="prestadores"></datalist>');
+            }
+        });
+
+        //Evento de carregamento ajax dos dados dos setores
+        $('#setor').change(function(){
+
+            if( $(this).val() ) {
+                var set = $(this).val();
+                var emp = $('#empresa').val();
+                var are = $('#area').val();
+
+                var url = "{{ route('parametrosSrvTMO.carregaRespAjax', [':are',':set',':emp']) }}";
+                url = url.replace(':are', are);
+                url = url.replace(':set', set);
+                url = url.replace(':emp', emp);
+
+                $.ajax({
+                    url: url,
+                    dataType: "JSON",
+                    type: 'GET',
+                    data: {
+                        '_token': $('meta[name=csrf-token]').attr("content"),
+                        '_method': 'GET',
+                        "are": are,
+                        "set": set,
+                        "emp": emp
+                    },
+                    success: function (data)
+                    {
+                        if(data.prestadores_ajax_existe == 'S'){
+                            var options = '<datalist id="prestadores">';	
+
+                            for (var i = 0; i < data.prestadores_ajax.length; i++) {
+
+                                options += '<option value="' + data.prestadores_ajax[i].id + '">' + data.prestadores_ajax[i].id + '</option>';
+                            }	
+
+                            options += '</datalist>';
+
+                            $('#prestResp').html(options);
+                            $('#prestResp').val('');
+                        }else{
+                            $('#prestResp').val('');
+                            $('#prestResp').html('<datalist id="prestadores"></datalist>');
+                        }
+                    }
+                });
+            } else {
+                $('#prestResp').val('');
+                $('#prestResp').html('<datalist id="prestadores"></datalist>');
+            }
         });
     });
 </script>
@@ -634,6 +831,7 @@
         //Ao clicar no botão salvar retira o disabled do campo para não ter problema no request do update do campo
         $(".btn_salvar").click(function(){
             $("#setor").attr("disabled", false);
+            $("#area").attr("disabled", false);
             $("#empresa").attr("disabled", false);
             $("#codigo").attr("disabled", false);
             $("#valTot").prop('disabled', false);
@@ -690,6 +888,9 @@ $(function () {
             setor: {
                 required: true
             },
+            area: {
+                required: true
+            },
             descricao: {
                 required: true,
                 maxlength: 40
@@ -729,6 +930,9 @@ $(function () {
             },
             setor: {
                 required: "Por Favor informe um Setor"
+            },
+            area: {
+                required: "Por Favor informe uma Área"
             },
             descricao: {
                 required: "Por Favor informe a Descrição",

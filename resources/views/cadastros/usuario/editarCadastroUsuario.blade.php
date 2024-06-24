@@ -255,7 +255,8 @@
                                 <x-adminlte-modal id="modalCustom" title="Novo Endereço" size="lg" theme="navy" icon="" v-centered static-backdrop scrollable>
                                     <div style="height:400px;">
                                         <!-- Campos escondidoscom o id e codigo do usuario para o request -->  
-                                        <input type="hidden" value="{{ $dadosUsuario[0]['usuario_codigo'] }}" name="usuario_codigo">
+                                        <input id="usuario_codigo" type="hidden" value="{{ $dadosUsuario[0]['usuario_codigo'] }}" name="usuario_codigo">
+                                        <input id="ibgeCodMun" type="hidden" name="ibgeCodMun">
                                     
                                         <!-- CEP -->
                                         <x-adminlte-input name="cep" type="text" label="CEP" fgroup-class="col-md-4">
@@ -277,7 +278,7 @@
                                             </x-adminlte-input>
 
                                             <!-- Numero -->
-                                            <x-adminlte-input name="numero" type="number" label="Número" fgroup-class="col-md-3">
+                                            <x-adminlte-input name="numero" type="text" label="Número" fgroup-class="col-md-3">
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-hashtag"></i>
@@ -304,10 +305,22 @@
                                                 </x-slot>
                                             </x-adminlte-input>
 
+                                            @php
+                                                $dados_ibge = DB::table('ibge_estados')->orderby('ibge_sigla')->get();
+
+                                                $new_array1 =[];
+                                                $new_array2 =[];
+
+                                                foreach ($dados_ibge as $ibge) {
+                                                    $new_array1[] = $ibge->ibge_sigla;
+                                                    $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
+                                                }
+                                                $array_opt = array_combine($new_array1, $new_array2);
+                                            @endphp
+
                                             <!-- Estado -->
                                             <x-adminlte-select name="uf" label="UF" fgroup-class="col-md-3">
-                                                <x-adminlte-options :options="['SP' => 'São Paulo', 'MG' => 'Minas Gerais']"
-                                                    empty-option="Selecione..."/>
+                                                <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
                                             </x-adminlte-select>
 
                                             <!-- Pais -->
@@ -348,6 +361,11 @@
                         <!-- Usuario tem acesso aos parametros gerais -->
                         <x-adminlte-select name="acessoParametros" label="Acessa Área de Parametrização Geral" fgroup-class="col-md-6">
                             <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_pararametros']}}"/>
+                        </x-adminlte-select>
+
+                        <!-- Usuario Tem permissão de autorizar desconto acima do permitido -->
+                        <x-adminlte-select name="autorizaDesconto" label="Permissão de Autorização de Desconto" fgroup-class="col-md-6">
+                            <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_aut_desc']}}"/>
                         </x-adminlte-select>
 
                         <div class="d-flex justify-content-center">
@@ -465,6 +483,7 @@
                     $("#cidade").val(dadosRetorno.localidade);
                     $("#uf").val(dadosRetorno.uf);
                     $("#complemento").val(dadosRetorno.complemento);
+                    $("#ibgeCodMun").val(dadosRetorno.ibge);
                     $("#numero").focus();
                 }catch(ex){}
             });
@@ -604,7 +623,7 @@ $(function () {
         maxlength: "Informe no máximo 100 caracteres para o Logradouro"
       },
 	  numero: {
-		maxlength: "Informe no máximo 5 dígitos no Número"
+		maxlength: "Informe no máximo 5 caracteres no Número"
       },
 	  complemento: {
 		maxlength: "Informe no máximo 60 caracteres no Complemento"

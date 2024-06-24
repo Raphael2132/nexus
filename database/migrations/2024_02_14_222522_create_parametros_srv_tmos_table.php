@@ -23,6 +23,7 @@ return new class extends Migration
         Schema::create('parametros_srv_tmos', function (Blueprint $table) {
             $table->id('tmo_id');
             $table->string('tmo_emp',6)->unsigned();//empresa
+            $table->string('tmo_are',3);//area FK tabela areas - parametros_sistema_areas
             $table->string('tmo_set',6);//Setor FK tabela setores - parametros_srv_sets
             $table->string('tmo_cod',15);//codigo tarefa
             $table->string('tmo_dsc',40);//descriçao
@@ -37,10 +38,10 @@ return new class extends Migration
             $table->enum('tmo_tip_val_cgt', ['1', '2'])->default('1');//tipo custo gerencial da tarefa 1 valor 2 porcentagem
             $table->decimal('tmo_val_cgt',15,2);//valor Custo gerencial da tarefa
             $table->decimal('tmo_per_cgt',5,2);//percentual custo gerencial tarefa
-            //$table->enum('tmo_alt_val', ['S', 'N'])->default('N');//altera valor na abertura da os
+            $table->string('tmo_res', 6)->nullable();//responsavel
             $table->enum('tmo_sts', ['A', 'D'])->default('A');//status Ativo Desativado
             $table->timestamps();
-            $table->unique(['tmo_emp','tmo_set','tmo_cod'], 'ak_parametros_srv_tmos');
+            $table->unique(['tmo_emp','tmo_are','tmo_set','tmo_cod'], 'ak_parametros_srv_tmos');
             $table->foreign('tmo_emp', 'fk_parametros_srv_tmos')->references('empresa_codigo')->on('cadastro_empresas')->onDelete('cascade');
         });
     }

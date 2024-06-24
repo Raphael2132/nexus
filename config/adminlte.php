@@ -380,6 +380,11 @@ return [
                             'url'  => '/parametros/faturamento/nfs/homeParametroFatNfs',
                             'icon' => '',
                         ],
+                        [
+                            'text' => 'Parâmetros Empresas',
+                            'url'  => '',
+                            'icon' => '',
+                        ],
                     ],
                 ],
                 [
@@ -437,8 +442,8 @@ return [
                     'icon' => '',
                 ],
                 [
-                    'text' => 'Funcionário',
-                    'url'  => '',
+                    'text' => 'Prestadores',
+                    'url'  => '/cadastros/prestador/homePrestadores',
                     'icon' => '',
                 ],
                 [
@@ -501,12 +506,12 @@ return [
                         ],
                         [
                             'text' => 'Emissão de NF-e/NFS-e',
-                            'url'  => '',
+                            'url'  => 'faturamento/notas/controleEmissaoNF',
                             'icon' => '',
                         ],
                         [
                             'text' => 'Reemissão de NF-e/NFS-e',
-                            'url'  => '',
+                            'url'  => 'faturamento/notas/controleReemissaoNF',
                             'icon' => '',
                         ],
                     ],

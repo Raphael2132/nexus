@@ -112,7 +112,7 @@
 
                         @php
                             //Busca os dados dos endereços cadastrados da empresa
-                            $data = DB::table('cadastro_empresa_enderecos')->where('endereco_empresa_codigo','=',$dadosEmpresa[0]['empresa_codigo'])->get();
+                            $data = DB::table('cadastro_empresa_enderecos')->where('endereco_empresa_codigo','=',$dadosEmpresa[0]['empresa_codigo'])->orderby('endereco_seq')->get();
                                 
                             if(empty($data[0])){
                         @endphp
@@ -197,8 +197,9 @@
                                 <x-adminlte-modal id="modalCustom" title="Novo Endereço" size="lg" theme="navy" icon="" v-centered static-backdrop scrollable>
                                     <div style="height:400px;">
                                         <!-- Campos escondidos com o codigo da empresa para o request -->  
-                                        <input type="hidden" value="{{ $dadosEmpresa[0]['empresa_codigo'] }}" name="empresa_codigo">
-                                    
+                                        <input id="empresa_codigo" type="hidden" value="{{ $dadosEmpresa[0]['empresa_codigo'] }}" name="empresa_codigo">
+                                        <input id="ibgeCodMun" type="hidden" name="ibgeCodMun">
+
                                         <!-- CEP -->
                                         <x-adminlte-input name="cep" type="text" label="CEP" fgroup-class="col-md-4">
                                             <x-slot name="prependSlot">
@@ -219,7 +220,7 @@
                                             </x-adminlte-input>
 
                                             <!-- Numero -->
-                                            <x-adminlte-input name="numero" type="number" label="Número" fgroup-class="col-md-3">
+                                            <x-adminlte-input name="numero" type="text" label="Número" fgroup-class="col-md-3">
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-hashtag"></i>
@@ -246,10 +247,22 @@
                                                 </x-slot>
                                             </x-adminlte-input>
 
+                                            @php
+                                                $dados_ibge = DB::table('ibge_estados')->orderby('ibge_sigla')->get();
+
+                                                $new_array1 =[];
+                                                $new_array2 =[];
+
+                                                foreach ($dados_ibge as $ibge) {
+                                                    $new_array1[] = $ibge->ibge_sigla;
+                                                    $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
+                                                }
+                                                $array_opt = array_combine($new_array1, $new_array2);
+                                            @endphp
+
                                             <!-- Estado -->
                                             <x-adminlte-select name="uf" label="UF" fgroup-class="col-md-3">
-                                                <x-adminlte-options :options="['SP' => 'São Paulo', 'MG' => 'Minas Gerais']"
-                                                    empty-option="Selecione..."/>
+                                                <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
                                             </x-adminlte-select>
 
                                             <!-- Pais -->
@@ -257,7 +270,7 @@
                                         </div>
                                         <!-- Criação dos botões do Modal -->  
                                         <x-slot name="footerSlot">
-                                            <x-adminlte-button class="mr-auto" theme="success" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
+                                            <x-adminlte-button class="btn_salvar_end mr-auto" theme="success" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
                                             <x-adminlte-button theme="danger" label="Voltar" data-dismiss="modal"/>
                                         </x-slot>
                                     </div>
@@ -327,6 +340,7 @@
             "mask": " 99.999.999/9999-99",
             // Specify other options...
         });
+
     });
 
     // Busca os dados do CEP informado
@@ -352,12 +366,14 @@
         // preenchendo os campos normalmente
         $.getJSON(url, function(dadosRetorno){
             try{
+                //console.log(dadosRetorno);
                 // Preenche os campos de acordo com o retorno da pesquisa
                 $("#logradouro").val(dadosRetorno.logradouro);
                 $("#bairro").val(dadosRetorno.bairro);
                 $("#cidade").val(dadosRetorno.localidade);
                 $("#uf").val(dadosRetorno.uf);
                 $("#complemento").val(dadosRetorno.complemento);
+                $("#ibgeCodMun").val(dadosRetorno.ibge);
                 $("#numero").focus();
             }catch(ex){}
         });
@@ -496,7 +512,7 @@ $(function () {
         maxlength: "Informe no máximo 100 caracteres para o Logradouro"
       },
 	  numero: {
-		maxlength: "Informe no máximo 5 dígitos no Número"
+		maxlength: "Informe no máximo 5 caracteres no Número"
       },
 	  complemento: {
 		maxlength: "Informe no máximo 60 caracteres no Complemento"

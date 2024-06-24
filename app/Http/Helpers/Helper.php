@@ -10,6 +10,13 @@ class Helper
         return $celularFormatado;
     }
 
+    public static function limpaTelCelular(string $telCelular)
+    {
+        $replace = array("_", "(", ")", "-", " ");
+        $celular = str_replace($replace,"",$telCelular);
+        return $celular;
+    }
+
     public static function mascaraTelComercial(string $telComercial)
     {
         $comercialFormatado = "(".substr($telComercial,0,2).") ".substr($telComercial,2,4)."-".substr($telComercial,-4,4);
@@ -20,6 +27,13 @@ class Helper
     {
         $residencialFormatado = "(".substr($telResidencial,0,2).") ".substr($telResidencial,2,4)."-".substr($telResidencial,-4,4);
         return $residencialFormatado;
+    }
+
+    public static function limpaTelResidencial(string $telResidencial)
+    {
+        $replace = array("_", "(", ")", "-", " ");
+        $residencial = str_replace($replace,"",$telResidencial);
+        return $residencial;
     }
 
     public static function mascaraCNPJ(string $cnpj)
@@ -34,16 +48,37 @@ class Helper
         return $cpfFormatado;
     }
 
+    public static function limpaCPF(string $cpf)
+    {
+        $replace = array("_","/", "-", ".", " ");
+        $cpf = str_replace($replace,"",$cpf);
+        return $cpf;
+    }
+
     public static function mascaraRG(string $rg)
     {
         $rgFormatado = substr($rg,0,2).'.'.substr($rg,2,3).'.'.substr($rg,5,3).'-'.substr($rg,-1,1);
         return $rgFormatado;
     }
 
+    public static function limpaRG(string $rg)
+    {
+        $replace = array("_","-", ".", " ");
+        $rg = str_replace($replace,"",$rg);
+        return $rg;
+    }
+
     public static function mascaraCEP(string $cep)
     {
         $cepFormatado = substr($cep,0,5).'-'.substr($cep,-3,3);
         return $cepFormatado;
+    }
+
+    public static function limpaCEP(string $cep)
+    {
+        $replace = array("_", "-", " ");
+        $cep = str_replace($replace,"",$cep);
+        return $cep;
     }
 
     public static function formataDataHora(string $dataHora)
@@ -80,5 +115,21 @@ class Helper
     {
         $valorFormatado = number_format($valor,2,",",".");
         return $valorFormatado;
+    }
+
+    public static function limpaValorMonetario(string $valor)
+    {
+        $valorLimpo = str_replace(".","",$valor);
+        $valorLimpo = str_replace(",",".",$valorLimpo);
+
+        return $valorLimpo;
+    }
+
+    public static function limpaPorcentagem(string $valor)
+    {
+        $valorLimpo = str_replace(".","",$valor);
+        $valorLimpo = str_replace(",",".",$valorLimpo);
+
+        return $valorLimpo;
     }
 }

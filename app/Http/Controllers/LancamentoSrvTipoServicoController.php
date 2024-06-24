@@ -68,7 +68,6 @@ class LancamentoSrvTipoServicoController extends Controller
             'tipsrv_nom' => $request->descricao,
             'tipsrv_are' => $request->area,
             'tipsrv_cat' => $request->categoria,
-            'tipsrv_res' => $request->responsavel,
             'tipsrv_pmt_des' => $request->permiteDesc,
             'tipsrv_pmd' => $percentual,
             'tipsrv_vmd' => $valor,
@@ -110,7 +109,6 @@ class LancamentoSrvTipoServicoController extends Controller
             ->where('tipsrv_cod', $request->codigo)
             ->where('tipsrv_emp', $request->empresa)
             ->update(['tipsrv_nom' => $request->descricao,
-                    'tipsrv_res' => $request->responsavel,
                     'tipsrv_pmt_des' => $request->permiteDesc,
                     'tipsrv_pmd' => $percentual,
                     'tipsrv_vmd' => $valor,

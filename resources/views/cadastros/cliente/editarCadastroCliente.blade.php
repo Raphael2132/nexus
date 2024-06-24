@@ -87,7 +87,12 @@
                                         "cancelButtonClasses" => "btn-danger",
                                         "locale" => ["format" => "DD/MM/YYYY"],
                                     ];
-                                    $data_nascimento = date('d/m/Y', strtotime($dadosCliente[0]['cliente_data_nascimento']));
+
+                                    if(!empty($dadosCliente[0]['cliente_data_nascimento'])){
+                                        $data_nascimento = date('d/m/Y', strtotime($dadosCliente[0]['cliente_data_nascimento']));
+                                    }else{
+                                        $data_nascimento = '';
+                                    }
                                 @endphp
                                 <!-- Data de Nascimento -->
                                 <x-adminlte-date-range name="dataNascimento" label="Data de Nascimento" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
@@ -183,7 +188,7 @@
 
                         @php
                             //Busca os dados dos endereços cadastrados do cliente
-                            $data = DB::table('cadastro_cliente_enderecos')->where('endereco_cliente_codigo','=',$dadosCliente[0]['cliente_codigo'])->get();
+                            $data = DB::table('cadastro_cliente_enderecos')->where('endereco_cliente_codigo','=',$dadosCliente[0]['cliente_codigo'])->orderBy('endereco_seq', 'asc')->get();
                                 
                             if(empty($data[0])){
                         @endphp
@@ -268,7 +273,8 @@
                                 <x-adminlte-modal id="modalCustom" title="Novo Endereço" size="lg" theme="navy" icon="" v-centered static-backdrop scrollable>
                                     <div style="height:400px;">
                                         <!-- Campos escondidoscom o id e codigo do cliente para o request -->  
-                                        <input type="hidden" value="{{ $dadosCliente[0]['cliente_codigo'] }}" name="cliente_codigo">
+                                        <input id="cliente_codigo" type="hidden" value="{{ $dadosCliente[0]['cliente_codigo'] }}" name="cliente_codigo">
+                                        <input id="ibgeCodMun" type="hidden" name="ibgeCodMun">
                                     
                                         <!-- CEP -->
                                         <x-adminlte-input name="cep" type="text" label="CEP" fgroup-class="col-md-4">
@@ -290,7 +296,7 @@
                                             </x-adminlte-input>
 
                                             <!-- Numero -->
-                                            <x-adminlte-input name="numero" type="number" label="Número" fgroup-class="col-md-3">
+                                            <x-adminlte-input name="numero" type="text" label="Número" fgroup-class="col-md-3">
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-hashtag"></i>
@@ -317,10 +323,22 @@
                                                 </x-slot>
                                             </x-adminlte-input>
 
+                                            @php
+                                                $dados_ibge = DB::table('ibge_estados')->orderby('ibge_sigla')->get();
+
+                                                $new_array1 =[];
+                                                $new_array2 =[];
+
+                                                foreach ($dados_ibge as $ibge) {
+                                                    $new_array1[] = $ibge->ibge_sigla;
+                                                    $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
+                                                }
+                                                $array_opt = array_combine($new_array1, $new_array2);
+                                            @endphp
+
                                             <!-- Estado -->
                                             <x-adminlte-select name="uf" label="UF" fgroup-class="col-md-3">
-                                                <x-adminlte-options :options="['SP' => 'São Paulo', 'MG' => 'Minas Gerais']"
-                                                    empty-option="Selecione..."/>
+                                                <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
                                             </x-adminlte-select>
 
                                             <!-- Pais -->
@@ -461,6 +479,7 @@
                 $("#cidade").val(dadosRetorno.localidade);
                 $("#uf").val(dadosRetorno.uf);
                 $("#complemento").val(dadosRetorno.complemento);
+                $("#ibgeCodMun").val(dadosRetorno.ibge);
                 $("#numero").focus();
             }catch(ex){}
         });
@@ -594,7 +613,7 @@ $(function () {
         maxlength: "Informe no máximo 100 caracteres para o Logradouro"
       },
 	  numero: {
-		maxlength: "Informe no máximo 5 dígitos no Número"
+		maxlength: "Informe no máximo 5 caracteres no Número"
       },
 	  complemento: {
 		maxlength: "Informe no máximo 60 caracteres no Complemento"

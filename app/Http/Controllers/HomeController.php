@@ -17,6 +17,7 @@ use App\Models\LancamentoSrvOs;
 use App\Models\LancamentoSrvCategorias;
 use App\Models\LancamentoSrvTipoServico;
 use App\Models\LancamentoSrvEtapaAtendimento;
+use App\Models\CadastroPrestadores;
 use Illuminate\Http\Request;
 use stdClass;
 
@@ -42,7 +43,8 @@ class HomeController extends Controller
                                 LancamentoSrvOs $lancamentosOS, 
                                 LancamentoSrvCategorias $lancamentosServicoCategoria,
                                 LancamentoSrvTipoServico $lancamentoSrvTipoServico,
-                                LancamentoSrvEtapaAtendimento  $lancamentosServicoEtapas)
+                                LancamentoSrvEtapaAtendimento  $lancamentosServicoEtapas,
+                                CadastroPrestadores $prestador)
     {
         $this->middleware('auth');
         $this->cliente = $cliente;
@@ -60,6 +62,7 @@ class HomeController extends Controller
         $this->lancamentosServicoCategoria = $lancamentosServicoCategoria;
         $this->lancamentoSrvTipoServico = $lancamentoSrvTipoServico;
         $this->lancamentosServicoEtapas = $lancamentosServicoEtapas;
+        $this->prestador = $prestador;
     }
 
     /**
@@ -145,6 +148,18 @@ class HomeController extends Controller
         $usuarios = $this->usuario->reorder('usuario_codigo', 'asc')->get();
 
         return view('/cadastros/usuario/homeUsuarios',['usuarios'=>$usuarios,'usuAtivo'=>$usuAtivo,'usuDesat'=>$usuDesat,'usuTot'=>$usuTot,'usuAdm'=>$usuAdm,'usuPdr'=>$usuPdr]);
+    }
+
+    public function homePrestadores()
+    {      
+
+        $totalPrestadores = $this->prestador->count();
+        $prestadoresAtivos = $this->prestador->where('prestador_status','=','A')->count();
+        $prestadoresDemitidos = $this->prestador->where('prestador_status','=','D')->count();
+
+        $prestadores = $this->prestador->where('prestador_status', 'A')->reorder('prestador_codigo', 'asc')->get();
+
+        return view('/cadastros/prestador/homePrestadores',['prestadores'=>$prestadores,'totalPrestadores'=>$totalPrestadores,'prestadoresAtivos'=>$prestadoresAtivos,'prestadoresDemitidos'=>$prestadoresDemitidos]);
     }
 
     //Redireciona a app para o home de cadastro de empresas
@@ -454,5 +469,17 @@ class HomeController extends Controller
         $etapas = $this->lancamentosServicoEtapas->reorder('eat_cod', 'asc')->get();
 
         return view('/parametros/servico/homeLancamentosServicoEtapas', ['etapas'=>$etapas]);
+    }
+
+    //Redireciona a app para o faturamento da emissão de nf
+    public function emissaoNF()
+    {    
+        return view('/faturamento/notas/controleEmissaoNF');
+    }
+
+    //Redireciona a app para o faturamento da reemissão de nf
+    public function reemissaoNF()
+    {    
+        return view('/faturamento/notas/controleReemissaoNF');
     }
 }

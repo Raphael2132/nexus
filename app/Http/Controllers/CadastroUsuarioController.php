@@ -205,7 +205,8 @@ class CadastroUsuarioController extends Controller
                 ->where('usuario_codigo', $usuario_cod)
                 ->update(['usuario_altera_permissoes_acesso' => $request->altPerAcesso,
                 'usuario_acesso_pararametros' => $request->acessoParametros,
-                'usuario_acesso_cadastros' => $request->acessoCadastros]);
+                'usuario_acesso_cadastros' => $request->acessoCadastros,
+                'usuario_aut_desc' => $request->autorizaDesconto]);
         
         }             
         

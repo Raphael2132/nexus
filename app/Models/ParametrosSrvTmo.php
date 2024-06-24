@@ -13,6 +13,7 @@ class ParametrosSrvTmo extends Model
     
     protected $fillable = [
         'tmo_emp',
+        'tmo_are',
         'tmo_set',
         'tmo_cod',
         'tmo_dsc',
@@ -27,6 +28,7 @@ class ParametrosSrvTmo extends Model
         'tmo_tip_val_cgt',
         'tmo_val_cgt',
         'tmo_per_cgt',
+        'tmo_res',
         'tmo_sts'
     ];
 }

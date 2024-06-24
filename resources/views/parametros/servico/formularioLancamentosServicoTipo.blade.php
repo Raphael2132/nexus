@@ -64,16 +64,25 @@
                         }else{
                             $sts_sel = 'A';
                         }
+
+                        if(!empty($dadosTipo[0]['tipsrv_nom'])){
+                            $descricao_sel = $dadosTipo[0]['tipsrv_nom'];
+                        }else{
+                            $descricao_sel = '';
+                        }
                     @endphp
                     <!-- Empresa do Setor -->
-                    <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-6">
+                    <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-5">
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$emp_sel}}"/>
                     </x-adminlte-select>
                     
                     <!-- Status do tipo do serviço -->
-                    <x-adminlte-select name="status" label="Status" fgroup-class="col-md-6">
+                    <x-adminlte-select name="status" label="Status" fgroup-class="col-md-2">
                         <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" selected="{{$sts_sel}}"/>
                     </x-adminlte-select>
+                    
+                    <!-- Descrição -->
+                    <x-adminlte-input name="descricao" label="Descrição" type="text" value="{{$descricao_sel}}" fgroup-class="col-md-5"/>
                 </div>
 
                 <div class="row">
@@ -84,21 +93,6 @@
                             $codigo_sel = '';
                         }
 
-                        if(!empty($dadosTipo[0]['tipsrv_nom'])){
-                            $descricao_sel = $dadosTipo[0]['tipsrv_nom'];
-                        }else{
-                            $descricao_sel = '';
-                        }
-                    @endphp
-                    <!-- Código -->
-                    <x-adminlte-input class="text-uppercase" name="codigo" label="Código" type="text" value="{{$codigo_sel}}" fgroup-class="col-md-4"/>
-                    
-                    <!-- Descrição -->
-                    <x-adminlte-input name="descricao" label="Descrição" type="text" value="{{$descricao_sel}}" fgroup-class="col-md-8"/>
-                </div>
-
-                <div class="row"> 
-                    @php
                         $data_cat = DB::table('lancamento_srv_categorias')->select('categoria_codigo', 'categoria_desc')->orderBy('categoria_codigo', 'asc')->get();
 
                         $new_array1_cat =[];
@@ -132,15 +126,12 @@
                         }else{
                             $are_sel = '';
                         }
-
-                        if(!empty($dadosTipo[0]['tipsrv_res'])){
-                            $res_sel = $dadosTipo[0]['tipsrv_res'];
-                        }else{
-                            $res_sel = '';
-                        }
                     @endphp
+                    <!-- Código -->
+                    <x-adminlte-input class="text-uppercase" name="codigo" label="Código" type="text" value="{{$codigo_sel}}" fgroup-class="col-md-4"/>
+
                     <!--categoria -->
-                    <x-adminlte-select name="categoria" label="Categoria" fgroup-class="col-md-2">
+                    <x-adminlte-select name="categoria" label="Categoria" fgroup-class="col-md-4">
                         <x-adminlte-options :options="$array_opt_cat" empty-option="Selecione..." selected="{{$cat_sel}}"/>
                     </x-adminlte-select>
 
@@ -148,9 +139,6 @@
                     <x-adminlte-select name="area" label="Área" fgroup-class="col-md-4">
                         <x-adminlte-options :options="$array_opt_are" empty-option="Selecione..." selected="{{$are_sel}}"/>
                     </x-adminlte-select>
-
-                    <!-- Responsável -->
-                    <x-adminlte-input name="responsavel" label="Responsável" type="text" value="{{$res_sel}}" fgroup-class="col-md-6"/>
                 </div>
 
                 <div class="row"> 

@@ -10,7 +10,7 @@
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item active">
-                    <a href="{{route('home.emissaoOS')}}">Emissão de OS</a>
+                    <a href="{{route('home.situacaoOS')}}">Situação de OS</a>
                 </li>
                 <li class="breadcrumb-item active">Painel de Abertura de OS</li>
             </ol>
@@ -165,6 +165,72 @@ $status_servico = '';
                     </div>
                 </x-adminlte-card><!-- Fechamento do bloco dos dados principais da abertura de OS -->
 
+                @php 
+                    $status_os = $glo_os_dadosOS[0]->os_sts;
+                @endphp
+
+                @if($glo_os_dadosOS[0]->os_sts == 'F' || $glo_os_dadosOS[0]->os_sts == 'C')
+                <!-- ********** Bloco do resumo da os ********** -->
+                <x-adminlte-card title="Resumo da OS" theme="navy" theme-mode="outline" collapsible maximizable>
+                    @php 
+                        $usu_abr = DB::table('users')->where('usuario_codigo', $glo_os_dadosOS[0]->os_res_abr)->get();
+                    @endphp
+                    <table class="table text-sm">
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="border: 0px;">
+                                    <p class="text-sm">Responsável da Abertura OS
+                                        <b class="d-block">{{ $glo_os_dadosOS[0]->os_res_abr }} - {{$usu_abr[0]->name}}</b>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                @if($glo_os_dadosOS[0]->os_sts == 'F')
+                                @php 
+                                    $usu_fec = DB::table('users')->where('usuario_codigo', $glo_os_dadosOS[0]->os_res_fec)->get();
+                                @endphp
+                                <td colspan="2">
+                                    <p class="text-sm">Responsável do Encerramento OS
+                                        <b class="d-block">{{ $glo_os_dadosOS[0]->os_res_fec }} - {{$usu_fec[0]->name}}</b>
+                                    </p>
+                                </td>
+                                <td colspan="2">
+                                    <p class="text-sm">Data e Hora do Encerramento
+                                        <b class="d-block">{{ Helper::formataDataHora($glo_os_dadosOS[0]->os_dhf) }}</b>
+                                    </p>
+                                </td>
+                                @else
+                                @php 
+                                    $usu_can = DB::table('users')->where('usuario_codigo', $glo_os_dadosOS[0]->os_res_abr)->get();
+                                @endphp
+                                <td colspan="2">
+                                    <p class="text-sm">Responsável do Cancelamento OS
+                                        <b class="d-block">{{ $glo_os_dadosOS[0]->os_res_can }} - {{$usu_can[0]->name}}</b>
+                                    </p>
+                                </td>
+                                <td colspan="2">
+                                    <p class="text-sm">Data do Cancelamento
+                                        <b class="d-block">{{ Helper::formataData($glo_os_dadosOS[0]->os_dtc) }}</b>
+                                    </p>
+                                </td>
+                                @endif
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="padding: .35rem;"><strong>Valor Total Bruto da OS:</strong></td>
+                                <td colspan="2" style="text-align: right; padding: .35rem;">R${{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vlr)}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="padding: .35rem;"><strong>Valor Total de Descontos:</strong></td>
+                                <td colspan="2" style="text-align: right; padding: .35rem;">R${{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_val_des+$glo_os_dadosOS[0]->os_val_des_srv)}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="padding: .35rem;"><strong>Valor Total à Pagar:</strong></td>
+                                <td colspan="2" style="text-align: right; padding: .35rem;">R${{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vlt)}}</td>
+                            </tr>
+                        </tbody>
+                    </table>                            
+                </x-adminlte-card><!-- Fechamento do bloco do resumo da os ********** -->
+                @else
                 <!-- ********** Bloco dos dados das etapas de atendimento da abertura de OS ********** -->
                 <x-adminlte-card title="Etapas de Atendimento" theme="navy" theme-mode="outline" collapsible maximizable>
                     @php 
@@ -188,6 +254,7 @@ $status_servico = '';
                         </tbody>
                     </table>                            
                 </x-adminlte-card><!-- Fechamento do bloco dos dados do atendimento da abertura de OS ********** -->
+                @endif
 
             </div><!-- Fechamento do Bloco do Lado Esquerdo do Painel Principal da Abertura de OS -->
 
@@ -242,6 +309,15 @@ $status_servico = '';
                     @endphp
                     <x-adminlte-datatable id="tabelaGeral" :heads="$heads" :config="$config" theme="light" striped hoverable>
                         @foreach($glo_os_dadosRequisicoes as $requisicao)
+                            @php
+                                $data_set = DB::table('parametros_srv_setores')->where('setor_empresa', $glo_os_empresa)->where('setor_codigo', $requisicao->req_set)->where('setor_area', $requisicao->req_are)->get();
+
+                                $data_tos = DB::table('lancamento_srv_tipo_servicos')->where('tipsrv_emp', $glo_os_empresa)->where('tipsrv_cod', $requisicao->req_tos)->get();
+
+                                $setor = $requisicao->req_set.' - '.$data_set[0]->setor_desc;
+
+                                $tipo_servico = $requisicao->req_tos.' - '.$data_tos[0]->tipsrv_nom;
+                            @endphp
                             <tr>
                                 <td>
                                     <nobr class="d-flex justify-content-center">
@@ -252,9 +328,9 @@ $status_servico = '';
                                 </td>
                                 <td>{{ $requisicao->req_seq }}</td>
                                 <td>{{ $requisicao->req_dsc }}</td>
-                                <td>{{ $requisicao->req_set }}</td>
-                                <td>{{ $requisicao->req_tos }}</td>
-                                <td>{{ $requisicao->req_vlr }}</td>
+                                <td>{{ $setor }}</td>
+                                <td>{{ $tipo_servico }}</td>
+                                <td>{{ $requisicao->req_vlt }}</td>
                                 <td>
                                     <nobr class="d-flex justify-content-center">
                                         @if($requisicao->req_sts == 'F')
@@ -469,14 +545,17 @@ $status_servico = '';
                     //Monta dados da tabela do bloco
                     $heads1 = [
                         ['label' => '', 'no-export' => true, 'width' => 5],
+                        'Seq.',
                         'Código',
                         'Descrição',
                         'Prestador',
-                        'Tipo',
-                        'UN',
+                        'Tipo Hr.',
+                        'Und.',
                         'Qtd.',
                         'Val. Uni.',
-                        'Val. Total',
+                        'Total',
+                        'Desc.',
+                        'Val. Liq.',
                         'Aprovado',
                         'Situação'
                     ];
@@ -509,14 +588,16 @@ $status_servico = '';
                                 'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
                             ],
                         ],
-                        'columns' => [['orderable' => false], null, null, null, null, null,  null, null, null, null, null],
+                        'columns' => [['orderable' => false], null, null, null, null, null, null, null, null, null, null, null, null, null],
                     ];
                     @endphp
                     <x-adminlte-datatable id="detalhesServicos" :heads="$heads1" :config="$config1" theme="light" striped hoverable beautify>
                         @foreach($glo_os_dadosServico as $servico)
                             @php 
                                 $srv_vhr = number_format($servico->srv_vhr,2,",",".");
+                                $srv_vtl = number_format($servico->srv_vtl,2,",",".");
                                 $srv_vts = number_format($servico->srv_vts,2,",",".");
+                                $srv_val_des = number_format($servico->srv_val_des,2,",",".");
 
                                 if($servico->srv_sts == 'F'){
                                     $icone_sts_servico = "fa-solid fa-circle-check fa-lg text-success";
@@ -540,6 +621,27 @@ $status_servico = '';
                                 }else{
                                     $icone_apr_servico = "fa-solid fa-circle-xmark fa-lg text-danger";
                                 }
+
+                                if(!empty($servico->srv_prt)){
+                                    $data_prest = DB::table('cadastro_prestadores')->where('prestador_empresa', $glo_os_empresa)->where('prestador_codigo', $servico->srv_prt)->get();
+
+                                    $prestador = $servico->srv_prt.' - '.$data_prest[0]->prestador_nome;
+                                }else{
+                                    $prestador = '';
+                                }
+
+                                if($servico->srv_ths == 'F'){
+                                    $tipo_hora = "Fixo";
+                                }elseif($servico->srv_ths == 'P'){
+                                    $tipo_hora = "Padrão";
+                                }elseif($servico->srv_ths == 'I'){
+                                    $tipo_hora = "Informada";
+                                }elseif($servico->srv_ths == 'R'){
+                                    $tipo_hora = "Real";
+                                }else{
+                                    $tipo_hora = "Terceiros";
+                                }
+                                
                             @endphp
                             <tr>
                                 <td>
@@ -552,14 +654,17 @@ $status_servico = '';
                                         </form>
                                     </nobr>
                                 </td>
+                                <td>{{$servico->srv_seq}}</td>
                                 <td>{{$servico->srv_tmo}}</td>
                                 <td>{{$servico->srv_dsc}}</td>  
-                                <td>{{$servico->srv_prt}}</td>
-                                <td>{{$servico->srv_ths}}</td>
+                                <td>{{$prestador}}</td>
+                                <td>{{$tipo_hora}}</td>
                                 <td>{{$servico->srv_und}}</td>
                                 <td>{{$servico->srv_qhr}}</td>
                                 <td>{{$srv_vhr}}</td> 
                                 <td>{{$srv_vts}}</td>
+                                <td>{{$srv_val_des}}</td>
+                                <td>{{$srv_vtl}}</td>
                                 <td>
                                     @if($servico->srv_flg_apr == 'S')
                                     <i title="Aprovado" class="{{$icone_apr_servico}}"></i>
@@ -567,25 +672,47 @@ $status_servico = '';
                                     <a data-toggle="modal" data-target="#aprovaServico_{{$servico->srv_seq}}">
                                         <i title="Não Aprovado" class="{{$icone_apr_servico}}"></i>
                                     </a>
-                                    <x-adminlte-modal id="aprovaServico_{{$servico->srv_seq}}" title="Aprovar Serviço" size="lg" theme="navy" v-centered static-backdrop scrollable>
-                                        <div class="row">
-                                            <p class="text-sm col-md-2">Código
+                                    <x-adminlte-modal id="aprovaServico_{{$servico->srv_seq}}" title="Aprovar Serviço" size="xl" theme="navy" v-centered static-backdrop scrollable>
+                                        <div class="row" style="height:auto;">
+                                            <p class="text-sm col-md-1">Seq.
+                                                <b class="d-block">{{$servico->srv_seq}}</b>
+                                            </p>
+                                            <p class="text-sm col-md-1">Código
                                                 <b class="d-block">{{$servico->srv_tmo}}</b>
                                             </p>
-                                            <p class="text-sm col-md-3">Descrição
+                                            <p class="text-sm col-md-4">Descrição
                                                 <b class="d-block">{{$servico->srv_dsc}}</b>
                                             </p>
-                                            <p class="text-sm col-md-2">Tipo
-                                                <b class="d-block">{{$servico->srv_ths}}</b>
+                                            @php 
+                                                if($servico->srv_ths == 'F'){
+                                                    $tipo_hora = "Fixo";
+                                                }elseif($servico->srv_ths == 'P'){
+                                                    $tipo_hora = "Padrão";
+                                                }elseif($servico->srv_ths == 'I'){
+                                                    $tipo_hora = "Informada";
+                                                }elseif($servico->srv_ths == 'R'){
+                                                    $tipo_hora = "Real";
+                                                }else{
+                                                    $tipo_hora = "Terceiros";
+                                                }
+                                            @endphp
+                                            <p class="text-sm col-md-1">Tipo da Hora
+                                                <b class="d-block">{{$tipo_hora}}</b>
                                             </p>
                                             <p class="text-sm col-md-1">Qtd.
                                                 <b class="d-block">{{$servico->srv_qhr}}</b>
                                             </p>
-                                            <p class="text-sm col-md-2">Val. Uni.
+                                            <p class="text-sm col-md-1">Val. Uni.
                                                 <b class="d-block">{{$srv_vhr}}</b>
                                             </p>
-                                            <p class="text-sm col-md-2">Val. Total
+                                            <p class="text-sm col-md-1">Total
                                                 <b class="d-block">{{$srv_vts}}</b>
+                                            </p>
+                                            <p class="text-sm col-md-1">Val. Desc.
+                                                <b class="d-block">{{$srv_val_des}}</b>
+                                            </p>
+                                            <p class="text-sm col-md-1">Val. Liq.
+                                                <b class="d-block">{{$srv_vtl}}</b>
                                             </p>
                                         </div>
                                         <x-slot name="footerSlot">
@@ -603,7 +730,9 @@ $status_servico = '';
                         @endforeach
                         <tfoot class="thead-light">
                             <tr>
-                                <th colspan="6" style="text-align:left">Sub-Total</br>Total Geral</th>
+                                <th colspan="7" style="text-align:left">Sub-Total</br>Total Geral</th>
+                                <th style="text-align:center"></th>
+                                <th style="text-align:center"></th>
                                 <th style="text-align:center"></th>
                                 <th style="text-align:center"></th>
                                 <th style="text-align:center"></th>
@@ -836,7 +965,7 @@ $status_servico = '';
                                                             <tr>
                                                                 <td>
                                                                     <nobr class="d-flex justify-content-center">
-                                                                        <form method="get" action="{{route('painelOS.selecionarTMO', ['empresa' => $glo_os_empresa, 'setor' => $glo_os_dadosRequisicoes[0]['req_set'], 'codigo' => $TMO->tmo_cod, 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'TMO_SELECIONADA'])}}">
+                                                                        <form method="get" action="{{route('painelOS.selecionarTMO', ['empresa' => $glo_os_empresa, 'area' => $glo_os_dadosRequisicoes[0]['req_are'], 'setor' => $glo_os_dadosRequisicoes[0]['req_set'], 'codigo' => $TMO->tmo_cod, 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'TMO_SELECIONADA'])}}">
                                                                             @csrf
                                                                             <x-adminlte-button class="btn-sm" type="submit" label="Selecionar" theme="info" icon="fa-solid fa-check"/>
                                                                         </form>
@@ -871,7 +1000,7 @@ $status_servico = '';
                     @if($glo_os_estagioAPP == "INCLUSAO_SERVICO")
                     <form method="post" action="{{route('servicoOS.inserir', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos, 'requisicao' => $glo_os_dadosRequisicoes[0]['req_seq'], 'codTMO' => $glo_os_dadosTmoSelecionada[0]->tmo_cod, 'estagioAPP' => 'CONSULTA_REQUISICAO'])}}" id="quickForm-ins-upd-servico" novalidate="novalidate">
                     @else
-                    <form method="post" action="{{route('servicoOS.atualizar', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos, 'requisicao' => $glo_os_dadosServicoSelecionado[0]->srv_req, 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $glo_os_dadosServicoSelecionado[0]->srv_tmo, 'estagioAPP' => 'CONSULTA_REQUISICAO'])}}" id="quickForm-ins-upd-servico" novalidate="novalidate">
+                    <form method="post" action="{{route('servicoOS.atualizar', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos, 'requisicao' => $glo_os_dadosServicoSelecionado[0]->srv_req, 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $glo_os_dadosServicoSelecionado[0]->srv_tmo, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'tos' => $glo_os_dadosRequisicoes[0]['req_tos']])}}" id="quickForm-ins-upd-servico" novalidate="novalidate">
                     @endif
                         @csrf
                         <!-- Demais campos da TMO selecionada -->
@@ -896,9 +1025,9 @@ $status_servico = '';
                                 if($glo_os_estagioAPP == "INCLUSAO_SERVICO"){
                                     $tipoTMO_sel = $glo_os_dadosTmoSelecionada[0]->tmo_tip;
 
-                                    $prestadorTOS = DB::table('lancamento_srv_tipo_servicos')->select('tipsrv_res')->where('tipsrv_emp',$glo_os_empresa)->where('tipsrv_cod',$glo_os_dadosRequisicoes[0]['req_tos'])->get();
-                                    if(!empty($prestadorTOS)){
-                                        $prestadorTMO_sel = $prestadorTOS[0]->tipsrv_res;
+                                    //$prestadorTOS = DB::table('lancamento_srv_tipo_servicos')->select('tipsrv_res')->where('tipsrv_emp',$glo_os_empresa)->where('tipsrv_cod',$glo_os_dadosRequisicoes[0]['req_tos'])->get();
+                                    if(!empty($glo_os_dadosTmoSelecionada[0]->tmo_res)){
+                                        $prestadorTMO_sel = $glo_os_dadosTmoSelecionada[0]->tmo_res;
                                     }else{
                                         $prestadorTMO_sel = '';
                                     }
@@ -906,13 +1035,28 @@ $status_servico = '';
                                     $tipoTMO_sel = $glo_os_dadosServicoSelecionado[0]->srv_ths;
                                     $prestadorTMO_sel = $glo_os_dadosServicoSelecionado[0]->srv_prt;
                                 }
+
+                                if(!empty($prestadorTMO_sel)){
+                                    $prestador_nom = DB::table('cadastro_prestadores')->select('prestador_nome')->where('prestador_codigo', $prestadorTMO_sel)->get();
+                                    $prestadorTMO_sel = $prestadorTMO_sel.' - '.$prestador_nom[0]->prestador_nome;
+                                }
+
+                                //Faz o lookup do campo de fornecedores 
+                                $data_pres = DB::table('cadastro_prestadores')->selectRaw('prestador_codigo, prestador_nome')->where('prestador_set',$glo_os_dadosRequisicoes[0]['req_set'])->where('prestador_are',$glo_os_dadosRequisicoes[0]['req_are'])->orderBy('prestador_codigo', 'asc')->get();
+                                $html = '<datalist id="prestadores">';
+                                foreach($data_pres as $prestador){
+                                    $html .= '<option value="'.$prestador->prestador_codigo.' - '.$prestador->prestador_nome.'">'.$prestador->prestador_codigo.' - '.$prestador->prestador_nome.'</option>';
+                                }
+                                $html .='</datalist>';
+                                //Echo adiciona o html ao campo dos fornecedores
+                                echo $html;
                             @endphp
                             <!-- Tipo da TMO -->
                             <x-adminlte-select name="tipoTMO" label="Tipo da Tarefa" fgroup-class="col-md-4">
                                 <x-adminlte-options :options="['P' => 'Padrão', 'I' => 'Hora Informada', 'R' => 'Hora Real', 'F' => 'Valor Fixo', 'T' => 'Terceiros']" selected="{{$tipoTMO_sel}}"/>
                             </x-adminlte-select>
                             <!-- Prestador responsavel da TMO -->
-                            <x-adminlte-input name="prestadorTMO" label="Prestador da Tarefa" type="text" value="{{$prestadorTMO_sel}}" fgroup-class="col-md-8"/>
+                            <x-adminlte-input name="prestadorTMO" label="Prestador da Tarefa" type="search" list="prestadores" value="{{$prestadorTMO_sel}}" fgroup-class="col-md-8"/>
                         </div>
 
                         <div class="row">
@@ -935,6 +1079,22 @@ $status_servico = '';
                             <x-adminlte-input name="valTotHrTMO" label="Valor Total" type="text" value="{{$valTotHrTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
                         </div>
 
+                        @if($glo_os_estagioAPP == "MANUTENCAO_SERVICO")
+                        <div class="row">
+                            @php 
+                                $perDesTMO_sel = $glo_os_dadosServicoSelecionado[0]->srv_per_des;
+                                $valDesTMO_sel = $glo_os_dadosServicoSelecionado[0]->srv_val_des;
+                                $valLiqTMO_sel = $glo_os_dadosServicoSelecionado[0]->srv_vtl;
+                            @endphp
+                            <!-- Quantidade de Hortas -->
+                            <x-adminlte-input name="perDesTMO" label="Percentual de Desconto" type="text" value="{{$perDesTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
+                            <!-- Valor da Hora -->
+                            <x-adminlte-input name="valDesTMO" label="Valor de Desconto" type="text" value="{{$valDesTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
+                            <!-- Valor Total -->
+                            <x-adminlte-input name="valLiqTMO" label="Valor Total Líquido" type="text" value="{{$valLiqTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
+                        </div>
+                        @endif
+
                         <div class="bloco-terceiros">
                             <div class="row">
                                 @php 
@@ -949,12 +1109,14 @@ $status_servico = '';
                                         $forTerceiroTMO_sel = $forTerceiroTMO_sel.' - '.$cli_nom[0]->cliente_nome;
                                     }
 
+                                    //Faz o lookup do campo de fornecedores 
                                     $data_cli = DB::table('cadastro_clientes')->selectRaw('cliente_codigo, cliente_nome')->where('cliente_tipo_cadastro','F')->orderBy('cliente_codigo', 'asc')->get();
                                     $html = '<datalist id="fornecedores">';
                                     foreach($data_cli as $cliente){
                                         $html .= '<option value="'.$cliente->cliente_codigo.' - '.$cliente->cliente_nome.'">'.$cliente->cliente_codigo.' - '.$cliente->cliente_nome.'</option>';
                                     }
                                     $html .='</datalist>';
+                                    //Echo adiciona o html ao campo dos fornecedores
                                     echo $html;
                                 @endphp
                                 <!-- Fornecedor do Serviço de Terceiros -->
@@ -1042,18 +1204,74 @@ $status_servico = '';
 
                     </form><!-- Fechamento do formulario de Inclusão / Manutenção da TMO -->
                     @endif
-
-                    <!-- Botão hide de manutenção da tmo -->
-                    @if($glo_os_estagioAPP == "CONSULTA_REQUISICAO")
+                        
+                    <!-- Botão hide de manutenção da tmo e Modal de liberação de desconto -->
+                    @if($glo_os_estagioAPP == "MANUTENCAO_SERVICO")
                         <x-adminlte-button class="btn_hide_suspender_tmo" type="button" onclick="window.location='{{ route('servicoOS.suspender', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}'" label="Suspender TMO" theme="info"/>
                         <x-adminlte-button class="btn_hide_cancelar_tmo" type="button" onclick="window.location='{{ route('servicoOS.cancelar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}'" label="Cancelar TMO" theme="info"/>
-                        <x-adminlte-button class="btn_hide_reabrir_tmo" type="button" onclick="window.location='{{ route('servicoOS.reabrir', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}'" label="Cancelar TMO" theme="info"/>
+                        <x-adminlte-button class="btn_hide_reabrir_tmo" type="button" onclick="window.location='{{ route('servicoOS.reabrir', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}'" label="Reabrir TMO" theme="info"/>
 
                         <form method="post" action="{{ route('servicoOS.destroy', ['servicoOS' => $glo_os_dadosServicoSelecionado[0]->srv_id, 'empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}">
                             @csrf 
                             @method('delete')
                             <x-adminlte-button class="btn_hide_excluir_tmo" type="submit" label="Excluir TMO" value="Excluir TMO" theme="info"/>
                         </form>
+
+                        <!-- Modal de Liberação de Desconto da TMO -->
+                        <form method="post" action="{{ route('requisicaoOS.autorizaDescTMO', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao' => $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'tmo' => $glo_os_dadosServicoSelecionado[0]->srv_tmo]) }}" id="quickForm-aut-desconto" novalidate="novalidate">
+                            @csrf 
+                            @method('post')
+                            <x-adminlte-modal id="modalLibDescTMO" title="Liberação de Desconto na TMO" size="xl" theme="navy" icon="fa-solid fa-lock-open" v-centered scrollable>
+                                @php
+                                    $nom_tos = DB::table('lancamento_srv_tipo_servicos')->select('tipsrv_nom','tipsrv_pmt_des','tipsrv_pmd','tipsrv_vmd')->where('tipsrv_emp', $glo_os_empresa)->where('tipsrv_cod', $glo_os_dadosRequisicoes[0]['req_tos'])->get();
+                                @endphp
+                                <div class="row" style="height:auto;">                       
+                                    <div class="post  col-md-12">
+                                        <div class="row">
+                                            <div class="text-muted col-md-3">
+                                                <p class="text-sm">Tipo de Serviço
+                                                    <b class="d-block">{{ $glo_os_dadosRequisicoes[0]['req_tos'].' - '.$nom_tos[0]->tipsrv_nom}}</b>
+                                                </p>
+                                            </div>
+                                            <div class="text-muted col-md-3">
+                                                <p class="text-sm">Permite desconto
+                                                    <b class="d-block">@if($nom_tos[0]->tipsrv_pmt_des == 'S') Sim @else Não @endif</b>
+                                                </p>
+                                            </div>
+                                            <div class="text-muted col-md-3">
+                                                <p class="text-sm">Percentual Máximo de Desconto
+                                                    <b class="d-block">{{Helper::formataValorMonetario($nom_tos[0]->tipsrv_pmd).'%'}}</b>
+                                                </p>
+                                            </div>
+                                            <div class="text-muted col-md-3">
+                                                <p class="text-sm">Valor Máximo de Desconto
+                                                    <b class="d-block">{{'R$'.Helper::formataValorMonetario($nom_tos[0]->tipsrv_vmd)}}</b>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="post col-md-12">
+                                        <div class="row">
+                                            @if($glo_os_dadosServicoSelecionado[0]->srv_aut_desc == 'N')
+                                            <x-adminlte-input-switch name="liberaDesc" label="Desconto Liberado" data-on-text="Sim" data-off-text="Não" data-on-color="success" data-off-color="danger" fgroup-class="col-md-2" igroup-size="sm"/>
+                                            @else
+                                            <x-adminlte-input-switch name="liberaDesc" label="Desconto Liberado" data-on-text="Sim" data-off-text="Não" data-on-color="success" data-off-color="danger" fgroup-class="col-md-2" igroup-size="sm" checked/>
+                                            @endif
+                                            <!-- Usuário com permissão de dar o desconto -->
+                                            <x-adminlte-input name="usuarioDesconto" label="Código do Usuário" type="text" placeholder="Usuário" fgroup-class="col-md-5" igroup-size="sm"/>
+                                            <!-- Senha -->
+                                            <x-adminlte-input name="senhaDesconto" label="Senha" placeholder="Senha" type="password" fgroup-class="col-md-5" igroup-size="sm"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Criação dos botões do Modal -->  
+                                <x-slot name="footerSlot">
+                                    <x-adminlte-button class="mr-auto" theme="info" label="Autorizar" icon="fa-solid fa-handshake" type="submit"/>
+                                    <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                                </x-slot>
+                                
+                            </x-adminlte-modal>   
+                        </form><!-- Final do Modal de Liberação de Desconto da TMO -->
                     @endif
 
                 </x-adminlte-card><!-- Fechamento do bloco Inclusão/Manutenção do serviço na requisição da OS ********** -->
@@ -1156,21 +1374,22 @@ $status_servico = '';
                 <!-- ********** Bloco ORCAMENTO_OS da OS ********** -->
                 @if($glo_os_estagioAPP == "ORCAMENTO_OS")
                 <x-adminlte-card title="Orçamento da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
-                    
+                    @php 
+                        if($glo_os_dadosOS[0]->os_num_orc != 0){
+                            $orcamento = str_pad($glo_os_dadosOS[0]->os_num_orc, 8, "0", STR_PAD_LEFT);
+                            $novoOrcamento = 'N';
+                            $stsOrc = 'S';
+                        }else{
+                            $orcamento = "Não Gerado";
+                            $novoOrcamento = 'S';
+                            $stsOrc = 'N';
+                        }
+                    @endphp
                     <x-adminlte-card title="Informações do Orçamento" theme="navy">
-                        <form method="post" action="{{ route('painelOS.abrirOrcamento', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos]) }}">
+                        <form method="post" action="{{ route('painelOS.abrirOrcamento', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'stsOS' => $glo_os_dadosOS[0]->os_sts, 'stsOrc' => $stsOrc, 'cliente' => $glo_os_dadosOS[0]->os_cli, 'dtOS' => $glo_os_dadosOS[0]->os_dha]) }}">
                             @csrf 
                             @method('post')
                             <div class="row">
-                                @php 
-                                    if(!empty($glo_os_dadosOS[0]->os_num_orc)){
-                                        $orcamento = str_pad($glo_os_dadosOS[0]->os_num_orc, 8, "0", STR_PAD_LEFT);
-                                        $novoOrcamento = 'N';
-                                    }else{
-                                        $orcamento = "Não Gerado";
-                                        $novoOrcamento = 'S';
-                                    }
-                                @endphp
                                 <!-- Orçamento gerado -->
                                 <x-adminlte-input name="orcamento" label="Número do Orçamento" type="text" value="{{$orcamento}}" fgroup-class="col-md-6" disabled/>
                                 <!-- Gera novo orçamento -->
@@ -1262,9 +1481,19 @@ $status_servico = '';
                                 <tbody>
                                     <tr>
                                     @php 
-                                        $dataPreEnt = Helper::formataData($glo_os_dadosOS[0]->os_dpe);
-                                        $horaPreEnt = Helper::formataHoraMinuto($glo_os_dadosOS[0]->os_hpe);
-
+                                         
+                                        if(!empty($glo_os_dadosOS[0]->os_dpe)){
+                                            $dataPreEnt = Helper::formataData($glo_os_dadosOS[0]->os_dpe);
+                                        }else{
+                                            $dataPreEnt = '';
+                                        }
+                                        
+                                        if(!empty($glo_os_dadosOS[0]->os_hpe)){
+                                            $horaPreEnt = Helper::formataHoraMinuto($glo_os_dadosOS[0]->os_hpe);
+                                        }else{
+                                            $horaPreEnt = '';
+                                        }
+                                        
                                         $dataOrcamento = Helper::formataData($glo_os_dadosOS[0]->os_dt_orc);
                                     @endphp
                                         <td>
@@ -1488,12 +1717,19 @@ $status_servico = '';
                                     <tr>
                                         <td>
                                             <p class="text-sm">Valor Total Bruto
-                                                <b class="d-block">{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vos)}}</b>
+                                                <b class="d-block">{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vlr)}}</b>
                                             </p>
                                         </td>
                                         <td>
+                                            @php
+                                                $descontoReq = 0;
+                                                foreach($glo_os_dadosRequisicoes as $requisicao){
+                                                    $descontoReq = $descontoReq + $requisicao->req_val_des;
+                                                }
+                                                $descontoTot = $descontoReq + $glo_os_dadosOS[0]->os_val_des;
+                                            @endphp
                                             <p class="text-sm">Descontos
-                                                <b class="d-block">{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_val_des)}}</b>
+                                                <b class="d-block">{{Helper::formataValorMonetario($descontoTot)}}</b>
                                             </p>
                                         </td>
                                         <td>
@@ -1545,82 +1781,277 @@ $status_servico = '';
                 </x-adminlte-card>
                 @endif
                 <!-- Fechamento do bloco ORCAMENTO_OS_IMPRESSAO da OS -->
-                
-                <!-- ********** Bloco ENCERRAMENTO da tarefa da Abertura de OS ********** -->
-                @if($glo_os_estagioAPP == "ENCERRAMENTO")
-                <x-adminlte-card title="Encerramento da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
+
+                <!-- ********** Bloco TOTAIS_OS da tarefa da Abertura de OS ********** -->
+                @if($glo_os_estagioAPP == "TOTAIS_OS")
+                <x-adminlte-card title="Total da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
                     
+                    <div class="row">
+                        <table class="table tabela-dados-req">
+                            <tbody>
+                                <tr>
+                                    <th colspan="4">Requisições da Ordem de Serviço</th>
+                                </tr>
+                            </tbody>
+                        </table> 
+                    </div>
                     <!-- Linha 1 - lista dos serviços -->    
                     <div class="row">
                         @php
-                        //Monta dados da tabela do bloco
-                        $heads = [
-                            'Código',
-                            'Nome',
-                            'Tipo do Usuário',
-                            'Status',
-                        ];
-                        
-                        $config = [
-                            'searching' => false,
-                            'lengthChange' => false,
-                            'pageLength' => 5,
-                            'language' => [
-                                'decimal' =>        '',
-                                'emptyTable' =>     'Sem dados disponíveis na tabela',
-                                'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                                'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-                                'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-                                'infoPostFix' =>    '',
-                                'thousands' =>      ',',
-                                'lengthMenu' =>     'Mostrar _MENU_ registros',
-                                'loadingRecords' => 'Carregando...',
-                                'processing' =>     '',
-                                'search' =>         'Pesquisar:',
-                                'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-                                'paginate' => [
-                                    'first' =>      'Primeiro',
-                                    'last' =>       'Último',
-                                    'next' =>       'Próximo',
-                                    'previous' =>   'Anterior'
+                            //Monta dados da tabela do bloco
+                            $heads = [
+                                'Requisição',
+                                'Descrição',
+                                'Tipo de Serviço',
+                                'Área',
+                                'setor',
+                                'Valor Total',
+                            ];
+            
+                            $config = [
+                                'searching' => false,
+                                'lengthChange' => false,
+                                'paging' => false, 
+                                'info' => false,
+                                'language' => [
+                                    'decimal' =>        '',
+                                    'emptyTable' =>     'Sem dados disponíveis na tabela',
+                                    'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                                    'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
+                                    'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
+                                    'infoPostFix' =>    '',
+                                    'thousands' =>      ',',
+                                    'lengthMenu' =>     'Mostrar _MENU_ registros',
+                                    'loadingRecords' => 'Carregando...',
+                                    'processing' =>     '',
+                                    'search' =>         'Pesquisar:',
+                                    'zeroRecords' =>    'Nenhum registro correspondente encontrado',
+                                    'paginate' => [
+                                        'first' =>      'Primeiro',
+                                        'last' =>       'Último',
+                                        'next' =>       'Próximo',
+                                        'previous' =>   'Anterior'
+                                    ],
+                                    'aria' => [
+                                        'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
+                                        'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
+                                    ],
                                 ],
-                                'aria' => [
-                                    'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                                    'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-                                ],
-                            ],
-                            'columns' => [null, null, null, null],
-                        ];
+                                'columns' => [null, null, null, null, null, null],
+                            ];
                         @endphp
                         <x-adminlte-datatable id="table3" :heads="$heads" :config="$config" theme="light" striped hoverable>
-                            <tr>
-                                <td>usuariousuario_codigo</td>
-                                <td>usuarioname</td>
-                                <td>tip_us</td>
-                                <td>sts_usu</td>           
-                            </tr>
+                            @foreach($glo_os_dadosRequisicoes as $requisicao)
+                                @php 
+                                    $data_set = DB::table('parametros_srv_setores')->where('setor_empresa', $glo_os_empresa)->where('setor_codigo', $requisicao->req_set)->where('setor_area', $requisicao->req_are)->get();
+                                    $data_tos = DB::table('lancamento_srv_tipo_servicos')->where('tipsrv_emp', $glo_os_empresa)->where('tipsrv_cod', $requisicao->req_tos)->get();
+                                    $data_are = DB::table('parametros_sistema_areas')->where('area_codigo', $requisicao->req_are)->get();
+
+                                    $setor = $requisicao->req_set.' - '.$data_set[0]->setor_desc;
+                                    $tipo_servico = $requisicao->req_tos.' - '.$data_tos[0]->tipsrv_nom;
+                                    $area = $requisicao->req_are.' - '.$data_are[0]->area_desc;
+                                @endphp
+                                <tr>
+                                    <td>{{$requisicao->req_seq}}</td>
+                                    <td>{{$requisicao->req_dsc}}</td>
+                                    <td>{{$tipo_servico}}</td>
+                                    <td>{{$area}}</td>  
+                                    <td>{{$setor}}</td>       
+                                    <td>{{Helper::formataValorMonetario($requisicao->req_vlt)}}</td>      
+                                </tr>
+                            @endforeach
                         </x-adminlte-datatable>
                     </div>
-
-                    <!-- ********** Bloco dos TOTAIS da tarefa da Abertura de OS ********** -->
-                    <x-adminlte-card title="Totais da Ordem de Serviço" theme="navy">
-                        <div class="row">
-                            <!-- Grupo do serviço -->
-                            <x-adminlte-input name="grupo" label="Grupo" type="text" value="" fgroup-class="col-md-12" disabled/>
+                    <div class="row">  
+                    <div class="col-md-6">       
+                        <table class="table tabela-dados-req">
+                            <tbody>
+                                <tr>
+                                    <th colspan=2>Valores Totais da Ordem de Serviço</th>
+                                </tr>
+                                <tr>
+                                    <td><strong>Valor Total Bruto da OS:</strong></td>
+                                    <td style="text-align: right">R${{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vlr)}}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Valor Total de Serviços:</strong></td>
+                                    <td style="text-align: right">R${{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vls)}}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Valor Total de Descontos de Serviços:</strong></td>
+                                    <td style="text-align: right">R${{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_val_des_srv)}}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Valor Total Líquido das Requisições:</strong></td>
+                                    <td style="text-align: right">R${{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vls - $glo_os_dadosOS[0]->os_val_des_srv)}}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Valor de Desconto da OS:</strong></td>
+                                    <td style="text-align: right">R${{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_val_des)}}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Valor Total à Pagar:</strong></td>
+                                    <td style="text-align: right">R${{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vlt)}}</td>
+                                </tr>
+                            </tbody>
+                        </table> 
                         </div>
-                        <div class="row">
-                            <!-- Grupo do serviço -->
-                            <x-adminlte-input name="grupo" label="Grupo" type="text" value="" fgroup-class="col-md-12" disabled/>
+                        <div class="col-md-6"> 
+                        <table class="table tabela-dados-req">
+                            <tbody>
+                                <tr>
+                                    <th colspan=2>Contato / Observações da Ordem de Serviço</th>
+                                </tr>
+                                <tr>
+                                    <td><nobr><strong>Cliente da OS:</strong></nobr></td>
+                                    <td style="text-align: center">{{ $glo_os_cliente }} - {{$glo_os_dadosCliente[0]->cliente_nome}}</td>
+                                </tr>
+                                <tr>
+                                    @php 
+                                        $nom_cli_fat = DB::table('cadastro_clientes')->select('cliente_nome')->where('cliente_codigo', $glo_os_dadosOS[0]->os_cli_fatura)->get();
+                                    @endphp
+                                    <td><nobr><strong>Faturar OS Para:</strong></nobr></td>
+                                    <td style="text-align: center">{{$glo_os_dadosOS[0]->os_cli_fatura}} - {{$nom_cli_fat[0]->cliente_nome}}</td>
+                                </tr>
+                                <tr>
+                                    <td><nobr><strong>Telefone Residencial:</strong></nobr></td>
+                                    <td style="text-align: center">@if(!empty($glo_os_dadosCliente[0]->cliente_tel_residencial)){{Helper::mascaraTelResidencial($glo_os_dadosCliente[0]->cliente_tel_residencial)}}@else Não Informado @endif</td>
+                                </tr>
+                                <tr>
+                                    <td><nobr><strong>Telefone Celular:</strong></nobr></td>
+                                    <td style="text-align: center">@if(!empty($glo_os_dadosCliente[0]->cliente_tel_celular)){{Helper::mascaraTelCelular($glo_os_dadosCliente[0]->cliente_tel_celular)}}@else Não Informado @endif</td>
+                                </tr>
+                                <tr>
+                                    <td><nobr><strong>Telefone Comercial:</strong></nobr></td>
+                                    <td style="text-align: center">@if(!empty($glo_os_dadosCliente[0]->cliente_tel_comercial)){{Helper::mascaraTelComercial($glo_os_dadosCliente[0]->cliente_tel_comercial)}}@else Não Informado @endif</td>
+                                </tr>
+                                <tr>
+                                    <td><nobr><strong>Email:</strong></nobr></td>
+                                    <td style="text-align: center">@if(!empty($glo_os_dadosCliente[0]->cliente_email)){{$glo_os_dadosCliente[0]->cliente_email}}@else Não Informado @endif</td>
+                                </tr>
+                                <tr>
+                                    <td><nobr><strong>Observações:</strong></nobr></td>
+                                    <td style="text-align: center">{{$glo_os_dadosOS[0]->os_observacao}}</td>
+                                </tr>
+                            </tbody>
+                        </table> 
                         </div>
-                        <div class="row">
-                            <!-- Grupo do serviço -->
-                            <x-adminlte-input name="grupo" label="Grupo" type="text" value="" fgroup-class="col-md-12" disabled/>
-                        </div>
-                    </x-adminlte-card><!-- Fechamento do bloco dos TOTAIS da tarefa da Abertura de OS -->
-
+                    </div>
                 </x-adminlte-card>
+                        
+                <!-- Modal do botão de observações -->
+                <form method="post" action="{{ route('lancamentoOS.atualizaObservacao', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos]) }}" id="formulario-observacao-os" novalidate="novalidate">
+                    @csrf 
+                    @method('post')
+                    <x-adminlte-modal id="modalObservacaoOS" title="Observações da OS" size="xl" theme="navy" icon="" v-centered scrollable>
+                        
+                        <div class="row" style="height:auto;">
+                            <div class="post col-md-12">
+                                <div class="row">
+                                    <!-- Observação da tarefa -->
+                                    <x-adminlte-textarea name="observacaoOS" label="Observação" rows=3 label-class="text-dark" igroup-size="sm" placeholder="Informe a Observação da OS..." fgroup-class="col-md-12">
+                                        <x-slot name="prependSlot">
+                                            <div class="input-group-text bg-navy">
+                                                <i class="fas fa-lg fa-file-alt text-white"></i>
+                                            </div>
+                                        </x-slot>
+                                    </x-adminlte-textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Criação dos botões do Modal -->  
+                        <x-slot name="footerSlot">
+                            <x-adminlte-button class="mr-auto" theme="info" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
+                            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                        </x-slot>
+                        
+                    </x-adminlte-modal>   
+                </form>
+
+                <!-- Modal do botão de troca cliente da fatura -->
+                <form method="post" action="{{ route('lancamentoOS.atualizaCliFatura', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos]) }}" id="formulario-troca-cli-fat" novalidate="novalidate">
+                    @csrf 
+                    @method('post')
+                    <x-adminlte-modal id="modalTrocaCliFatOS" title="Trocar Cliente do Faturamento da OS" size="xl" theme="navy" icon="" v-centered scrollable>
+                        
+                        <div class="row" style="height:auto;">
+                            <div class="post col-md-12">
+                                <div class="row">
+                                    @php
+                                        //Faz o lookup do campo de novo cliente da fatura 
+                                        $data_cli_fat = DB::table('cadastro_clientes')->select('cliente_codigo', 'cliente_nome')->orderBy('cliente_codigo', 'asc')->get();
+                                        $html = '<datalist id="clientesFatura">';
+                                        foreach($data_cli_fat as $cliente){
+                                            $html .= '<option value="'.$cliente->cliente_codigo.' - '.$cliente->cliente_nome.'">'.$cliente->cliente_codigo.' - '.$cliente->cliente_nome.'</option>';
+                                        }
+                                        $html .='</datalist>';
+                                        //Echo adiciona o html ao campo dos clientes
+                                        echo $html;
+                                    @endphp
+                                    <!-- Prestador responsavel da TMO -->
+                                    <x-adminlte-input name="cliFatura" label="Novo Cliente da Fatura" type="search" list="clientesFatura" fgroup-class="col-md-12"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Criação dos botões do Modal -->  
+                        <x-slot name="footerSlot">
+                            <x-adminlte-button class="mr-auto" theme="info" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
+                            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                        </x-slot>
+                        
+                    </x-adminlte-modal>   
+                </form>
+
+                <!-- Modal do botão de desconto da os -->
+                <form method="post" action="{{ route('lancamentoOS.atualizaDescontoOS', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos]) }}" id="formulario-desconto-os" novalidate="novalidate">
+                    @csrf 
+                    @method('post')
+                    <x-adminlte-modal id="modalDescontoOS" title="Desconto da OS" size="xl" theme="navy" icon="" v-centered scrollable>
+                        
+                        <div class="row" style="height:auto;">
+                            <div class="post col-md-12">
+                                <table class="table table-sm table-borderless">
+                                    <thead class="thead-default">
+                                        <tr>
+                                            <th scope="col">Valor da OS</th>
+                                            <th scope="col">% Desconto</th>
+                                            <th scope="col">Valor Desconto</th>
+                                            <th scope="col">Valor Total da OS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <!-- Grupo do serviço -->
+                                                <x-adminlte-input name="valBrutoOS" type="text" value="{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vlt)}}" placeholder="0,00" fgroup-class="col-md-12" igroup-size="sm" disabled/>
+                                            </td>
+                                            <td>
+                                                <!-- Grupo do serviço -->
+                                                <x-adminlte-input name="perDescontoOS" type="text" value="{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_per_des)}}" placeholder="0,00" fgroup-class="col-md-12" igroup-size="sm"/>
+                                            </td>
+                                            <td>
+                                                <!-- Grupo do serviço -->
+                                                <x-adminlte-input name="valDescontoOS" type="text" value="{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_val_des)}}" placeholder="0,00" fgroup-class="col-md-12" igroup-size="sm"/>
+                                            </td>
+                                            <td>
+                                                <!-- Grupo do serviço -->
+                                                <x-adminlte-input name="valLiquidoOS" type="text" value="{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vlt)}}" placeholder="0,00" fgroup-class="col-md-12" igroup-size="sm" disabled/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- Criação dos botões do Modal -->  
+                        <x-slot name="footerSlot">
+                            <x-adminlte-button class="mr-auto" theme="info" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
+                            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                        </x-slot>
+                        
+                    </x-adminlte-modal>   
+                </form>
                 @endif
-                <!-- Fechamento do bloco ENCERRAMENTO da tarefa da Abertura de OS -->
+                <!-- Fechamento do bloco TOTAIS_OS da tarefa da Abertura de OS -->
 
             </div><!-- Fechamento do Bloco do Lado Direito do Painel Principal da Abertura de OS -->
             
@@ -1634,20 +2065,32 @@ $status_servico = '';
                     if(!empty($glo_os_dadosRequisicoes[0]['req_set'])){
 
                         $setor_req = $glo_os_dadosRequisicoes[0]['req_set'];
+                        $requisicao = $glo_os_dadosRequisicoes[0]['req_seq'];
+                        $area_req = $glo_os_dadosRequisicoes[0]['req_are'];
                     }else{
                         $setor_req = ' ';
+                        $requisicao = ' ';
+                        $area_req  = ' ';
                     }
                 }else{
                     $setor_req = ' ';
+                    $requisicao = ' ';
+                    $area_req  = ' ';
                 }
             @endphp
             <x-adminlte-button class="btn_geral" type="button" onclick="window.location='{{ route('situacaoOS.carregaOS', ['empresa' => $glo_os_empresa, 'cliente' => $glo_os_cliente, 'nos' => $glo_os_nos, 'estagioAPP' => 'PRINCIPAL']) }}'" label="Geral" theme="info" icon=""/>
             <x-adminlte-button class="btn_previsao_entrega" type="button" onclick="window.location='{{ route('painelOS.previsaoEntregaOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Previsão de Entrega" theme="info" icon="fa-solid fa-truck"/>
-            <x-adminlte-button class="btn_orcamento" type="button" onclick="window.location='{{ route('painelOS.orcamentoOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Orçamento" theme="info" icon="fa-solid fa-file-invoice-dollar"/>
+            <x-adminlte-button class="btn_total_os" type="button" onclick="window.location='{{ route('painelOS.totalOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Total OS" theme="info" icon=""/>
 
             <x-adminlte-button class="btn_atualizar_previsao_entrega" type="button" onclick="document.querySelector('.btn_hide_atualizar_previsao_entrega').click()" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
             
             <x-adminlte-button class="btn_gerar_orcamento" type="button" onclick="document.querySelector('.btn_hide_gerar_orcamento').click()" label="Gerar Orçamento" theme="info" icon=""/>
+
+            <x-adminlte-button class="btn_observacao" type="button" data-toggle="modal" data-target="#modalObservacaoOS" label="Observações" theme="info" icon="fa-regular fa-eye"/>
+            <x-adminlte-button class="btn_troca_cliente" type="button" data-toggle="modal" data-target="#modalTrocaCliFatOS" label="Troca Cliente Fatura" theme="info" icon="fa-solid fa-right-left"/>
+            <x-adminlte-button class="btn_desconto_os" type="button" data-toggle="modal" data-target="#modalDescontoOS" label="Desconto" theme="info" icon="fa-solid fa-tag"/>
+            <x-adminlte-button class="btn_orcamento" type="button" onclick="window.location='{{ route('painelOS.orcamentoOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Orçamento" theme="info" icon="fa-solid fa-file-invoice-dollar"/>
+            <x-adminlte-button class="btn_encerra_os" type="button" onclick="window.location='{{ route('painelOS.encerraOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Encerrar OS" theme="info" icon="fa-solid fa-handshake"/>
 
             <x-adminlte-button class="btn_orcamentoPDF" type="button" onclick="window.open('{{ route('painelOS.orcamentoPDF', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}');" label="Gerar PDF" theme="info" icon="fa-solid fa-file-pdf"/>
 
@@ -1656,26 +2099,18 @@ $status_servico = '';
             <x-adminlte-button class="btn_finalizar_requisicao" type="button" onclick="document.querySelector('.btn_hide_finalizar_requisicao').click()" label="Finalizar Requisição" theme="info" icon="fa-solid fa-lock"/>
             <x-adminlte-button class="btn_excluir_requisicao" type="button" onclick="document.querySelector('.btn_hide_excluir_requisicao').click()" label="Excluir Requisição" theme="info" icon="fa-solid fa-trash"/>
             <x-adminlte-button class="btn_reabrir_requisicao" type="button" onclick="document.querySelector('.btn_hide_reabrir_requisicao').click()" label="Reabrir Requisição" theme="info" icon=""/>
-            <x-adminlte-button class="btn_novo_servico" type="button" onclick="window.location='{{ route('painelOS.abrirServicoRequisicao', ['empresa' => $glo_os_empresa, 'setor' => $setor_req, 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'SELECAO_TMO']) }}'" label="Novo Serviço" theme="info" icon="fa-solid fa-plus"/>
             <x-adminlte-button class="btn_iniciar_servicos" type="button" onclick="document.querySelector('.btn_hide_iniciar_servicos').click()" label="Iniciar Serviços" theme="info" icon=""/>
             <x-adminlte-button class="btn_finalizar_servicos" type="button" onclick="document.querySelector('.btn_hide_finalizar_servicos').click()" label="Finalizar Serviços" theme="info" icon=""/>
+            <x-adminlte-button class="btn_novo_servico" type="button" onclick="window.location='{{ route('painelOS.abrirServicoRequisicao', ['empresa' => $glo_os_empresa, 'area' => $area_req, 'setor' => $setor_req, 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'SELECAO_TMO']) }}'" label="Novo Serviço" theme="info" icon="fa-solid fa-plus"/>
 
             <x-adminlte-button class="btn_incluir_tmo" type="button" onclick="document.querySelector('.btn_hide_incluir_tmo').click()" label="Incluir" theme="info" icon="fa-solid fa-plus"/>
             <x-adminlte-button class="btn_atualizar_tmo" type="button" onclick="document.querySelector('.btn_hide_atualizar_tmo').click()" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+            <x-adminlte-button class="btn_liberar_desconto_tmo" type="button" data-toggle="modal" data-target="#modalLibDescTMO" label="Liberar Desconto" theme="info" icon="fa-solid fa-unlock"/>
             <x-adminlte-button class="btn_suspender_tmo" type="button" onclick="document.querySelector('.btn_hide_suspender_tmo').click()" label="Suspender TMO" theme="info" icon="fa-solid fa-triangle-exclamation"/>
             <x-adminlte-button class="btn_cancelar_tmo" type="button" onclick="document.querySelector('.btn_hide_cancelar_tmo').click()" label="Cancelar TMO" theme="info" icon="fa-solid fa-ban"/>
             <x-adminlte-button class="btn_reabrir_tmo" type="button" onclick="document.querySelector('.btn_hide_reabrir_tmo').click()" label="Reabrir TMO" theme="info" icon="fa-solid fa-folder-open"/>
             <x-adminlte-button class="btn_excluir_tmo" type="button" onclick="document.querySelector('.btn_hide_excluir_tmo').click()" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
 
-
-            <!--
-            <x-adminlte-button label="Orçamento" theme="info" icon="fas fa-user-plus" type="submit"/>
-            <x-adminlte-button label="Totais" theme="info" icon="fas fa-user-plus" type="submit"/>
-            <x-adminlte-button label="Reabrir OS" theme="info" icon="fas fa-user-plus" type="submit"/>
-            <x-adminlte-button label="Finalizar OS" theme="info" icon="fas fa-user-plus" type="submit"/>
-            <x-adminlte-button label="Excluir TMO" theme="info" icon="fas fa-user-plus" type="submit"/>     
-            <x-adminlte-button label="Concluir" theme="info" icon="fas fa-user-plus" type="submit"/>
-            -->
         </x-slot>
     </x-adminlte-card><!-- Fechamento do Painel Principal da Abertura de OS -->
 
@@ -1687,6 +2122,7 @@ $status_servico = '';
 @section('plugins.jqueryValidation', true)
 @section('plugins.DateRangePicker', true)
 @section('plugins.Select2', true)
+@section('plugins.BootstrapSwitch', true)
 
 @section('css')
 <style>
@@ -1795,6 +2231,7 @@ $status_servico = '';
 
         var estagioAPP = {!! json_encode($glo_os_estagioAPP) !!};
         var subEstagioRequisica = {!! json_encode($glo_os_subEstagioRequisicao) !!};
+        var statusOS = {!! json_encode($status_os) !!};
 
         if(estagioAPP == 'PRINCIPAL'){
 
@@ -1811,9 +2248,20 @@ $status_servico = '';
             $(".btn_reabrir_tmo").hide();
             $(".btn_excluir_tmo").hide();
             $(".btn_excluir_requisicao").hide();
+            $(".btn_orcamento").hide();
             $(".btn_orcamentoPDF").hide();
             $(".btn_gerar_orcamento").hide();
             $(".btn_atualizar_previsao_entrega").hide();
+            $(".btn_desconto_requisicao").hide();
+            $(".btn_encerra_os").hide();
+            $(".btn_observacao").hide();
+            $(".btn_desconto_os").hide();
+            $(".btn_troca_cliente").hide();
+            $(".btn_liberar_desconto_tmo").hide();  
+            
+            if(statusOS == 'F' || statusOS == 'C'){
+                $(".btn_previsao_entrega").hide();
+            }
 
         }else if(estagioAPP == 'INCLUSAO_REQUISICAO'){
 
@@ -1834,6 +2282,13 @@ $status_servico = '';
             $(".btn_orcamentoPDF").hide();
             $(".btn_gerar_orcamento").hide();
             $(".btn_atualizar_previsao_entrega").hide();
+            $(".btn_desconto_requisicao").hide();
+            $(".btn_total_os").hide();
+            $(".btn_encerra_os").hide();
+            $(".btn_observacao").hide();
+            $(".btn_desconto_os").hide();
+            $(".btn_troca_cliente").hide();
+            $(".btn_liberar_desconto_tmo").hide(); 
 
         }else if(estagioAPP == 'CONSULTA_REQUISICAO'){
 
@@ -1849,6 +2304,12 @@ $status_servico = '';
             $(".btn_orcamentoPDF").hide();
             $(".btn_gerar_orcamento").hide();
             $(".btn_atualizar_previsao_entrega").hide();
+            $(".btn_total_os").hide();
+            $(".btn_encerra_os").hide();
+            $(".btn_observacao").hide();
+            $(".btn_desconto_os").hide();
+            $(".btn_troca_cliente").hide();
+            $(".btn_liberar_desconto_tmo").hide(); 
 
             var status_requisicao = {!! json_encode($status_requisicao) !!};
             if(status_requisicao == 'F'){
@@ -1858,6 +2319,10 @@ $status_servico = '';
                 $(".btn_novo_servico").hide();
                 $(".btn_excluir_requisicao").hide();
             }else{
+                $(".btn_reabrir_requisicao").hide();
+            }
+
+            if(statusOS == 'F' || statusOS == 'C'){
                 $(".btn_reabrir_requisicao").hide();
             }
 
@@ -1880,6 +2345,13 @@ $status_servico = '';
             $(".btn_orcamentoPDF").hide();
             $(".btn_gerar_orcamento").hide();
             $(".btn_atualizar_previsao_entrega").hide();
+            $(".btn_desconto_requisicao").hide();
+            $(".btn_total_os").hide();
+            $(".btn_encerra_os").hide();
+            $(".btn_observacao").hide();
+            $(".btn_desconto_os").hide();
+            $(".btn_troca_cliente").hide();
+            $(".btn_liberar_desconto_tmo").hide();             
 
             if(subEstagioRequisica != 'TMO_SELECIONADA'){
                 $(".btn_incluir_tmo").hide();
@@ -1900,6 +2372,12 @@ $status_servico = '';
             $(".btn_orcamentoPDF").hide();
             $(".btn_gerar_orcamento").hide();
             $(".btn_atualizar_previsao_entrega").hide();
+            $(".btn_desconto_requisicao").hide();
+            $(".btn_total_os").hide();
+            $(".btn_encerra_os").hide();
+            $(".btn_observacao").hide();
+            $(".btn_desconto_os").hide();
+            $(".btn_troca_cliente").hide();
 
             var status_requisicao = {!! json_encode($status_requisicao) !!};
             if(status_requisicao == 'F'){
@@ -1908,15 +2386,20 @@ $status_servico = '';
                 $(".btn_suspender_tmo").hide();
                 $(".btn_reabrir_tmo").hide();
                 $(".btn_excluir_tmo").hide();
+                $(".btn_liberar_desconto_tmo").hide(); 
+                
             }else{
                 var status_servico = {!! json_encode($status_servico) !!};
                 if(status_servico == 'F'){
                     $(".btn_suspender_tmo").hide();
+                    $(".btn_liberar_desconto_tmo").hide(); 
                 }else if(status_servico == 'S'){
                     $(".btn_suspender_tmo").hide();
+                    $(".btn_liberar_desconto_tmo").hide(); 
                 }else if(status_servico == 'C'){
                     $(".btn_cancelar_tmo").hide();
                     $(".btn_suspender_tmo").hide();
+                    $(".btn_liberar_desconto_tmo").hide(); 
                 }else{
                     $(".btn_reabrir_tmo").hide();
                 }
@@ -1940,6 +2423,13 @@ $status_servico = '';
             $(".btn_previsao_entrega").hide();
             $(".btn_orcamentoPDF").hide();
             $(".btn_gerar_orcamento").hide();
+            $(".btn_desconto_requisicao").hide();
+            $(".btn_total_os").hide();
+            $(".btn_encerra_os").hide();
+            $(".btn_observacao").hide();
+            $(".btn_desconto_os").hide();
+            $(".btn_troca_cliente").hide();
+            $(".btn_liberar_desconto_tmo").hide(); 
 
         }else if(estagioAPP == 'ORCAMENTO_OS_IMPRESSAO'){
 
@@ -1960,6 +2450,13 @@ $status_servico = '';
             $(".btn_previsao_entrega").hide();
             $(".btn_gerar_orcamento").hide();
             $(".btn_atualizar_previsao_entrega").hide();
+            $(".btn_desconto_requisicao").hide();
+            $(".btn_total_os").hide();
+            $(".btn_encerra_os").hide();
+            $(".btn_observacao").hide();
+            $(".btn_desconto_os").hide();
+            $(".btn_troca_cliente").hide();
+            $(".btn_liberar_desconto_tmo").hide(); 
 
         }else if(estagioAPP == 'ORCAMENTO_OS'){
 
@@ -1980,6 +2477,43 @@ $status_servico = '';
             $(".btn_previsao_entrega").hide();
             $(".btn_orcamentoPDF").hide();
             $(".btn_atualizar_previsao_entrega").hide();
+            $(".btn_desconto_requisicao").hide();
+            $(".btn_total_os").hide();
+            $(".btn_encerra_os").hide();
+            $(".btn_observacao").hide();
+            $(".btn_desconto_os").hide();
+            $(".btn_troca_cliente").hide();
+            $(".btn_liberar_desconto_tmo").hide(); 
+
+        }else if(estagioAPP == 'TOTAIS_OS'){
+
+            $(".btn_incluir_requisicao").hide();
+            $(".btn_novo_servico").hide();
+            $(".btn_incluir_tmo").hide();
+            $(".btn_atualizar_tmo").hide();
+            $(".btn_iniciar_servicos").hide();
+            $(".btn_finalizar_servicos").hide();
+            $(".btn_finalizar_requisicao").hide();
+            $(".btn_reabrir_requisicao").hide();
+            $(".btn_suspender_tmo").hide();
+            $(".btn_cancelar_tmo").hide();
+            $(".btn_reabrir_tmo").hide();
+            $(".btn_excluir_tmo").hide();
+            $(".btn_excluir_requisicao").hide();
+            $(".btn_previsao_entrega").hide();
+            $(".btn_orcamentoPDF").hide();
+            $(".btn_atualizar_previsao_entrega").hide();
+            $(".btn_desconto_requisicao").hide();
+            $(".btn_gerar_orcamento").hide();
+            $(".btn_total_os").hide();
+            $(".btn_liberar_desconto_tmo").hide(); 
+
+            if(statusOS == 'F' || statusOS == 'C'){
+                $(".btn_encerra_os").hide();
+                $(".btn_observacao").hide();
+                $(".btn_desconto_os").hide();
+                $(".btn_troca_cliente").hide();
+            }
         }
 
         
@@ -2001,11 +2535,11 @@ $status_servico = '';
             $('#detalhesServicos').on( 'draw.dt', function () {
 
                 //Total dos registros exibidos na página atual da tabela 
-                pagQtdTot = tableDetServ.column(6, { page: 'current'} ).data().reduce( function (a, b) {
+                pagQtdTot = tableDetServ.column(7, { page: 'current'} ).data().reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
                 var cnt =0;
-                pagValUniTot = tableDetServ.column(7, { page: 'current'} ).data().reduce( function (a, b) {
+                pagValUniTot = tableDetServ.column(8, { page: 'current'} ).data().reduce( function (a, b) {
                     if(cnt == 0){
                         a = String(a).replaceAll('.','');
                         a = String(a).replaceAll(',','.');
@@ -2016,7 +2550,29 @@ $status_servico = '';
                     return intVal(a) + intVal(b);
                 }, 0 );
                 var cnt =0;
-                pagValTot = tableDetServ.column(8, { page: 'current'} ).data().reduce( function (a, b) {
+                pagValTot = tableDetServ.column(9, { page: 'current'} ).data().reduce( function (a, b) {
+                    if(cnt == 0){
+                        a = String(a).replaceAll('.','');
+                        a = String(a).replaceAll(',','.');
+                    }
+                    cnt +=1;
+                    b = String(b).replaceAll('.','');
+                    b = String(b).replaceAll(',','.');
+                    return intVal(a) + intVal(b);
+                }, 0 );
+                var cnt =0;
+                pagValDes = tableDetServ.column(10, { page: 'current'} ).data().reduce( function (a, b) {
+                    if(cnt == 0){
+                        a = String(a).replaceAll('.','');
+                        a = String(a).replaceAll(',','.');
+                    }
+                    cnt +=1;
+                    b = String(b).replaceAll('.','');
+                    b = String(b).replaceAll(',','.');
+                    return intVal(a) + intVal(b);
+                }, 0 );
+                var cnt =0;
+                pagValLiqTot = tableDetServ.column(11, { page: 'current'} ).data().reduce( function (a, b) {
                     if(cnt == 0){
                         a = String(a).replaceAll('.','');
                         a = String(a).replaceAll(',','.');
@@ -2028,11 +2584,11 @@ $status_servico = '';
                 }, 0 );
 
                 //Total de todos os registros da tabela 
-                qtdTot = tableDetServ.column( 6 ).data().reduce( function (a, b) {
+                qtdTot = tableDetServ.column( 7 ).data().reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 });
                 var cnt =0;
-                valUniTot = tableDetServ.column( 7 ).data().reduce( function (a, b) {
+                valUniTot = tableDetServ.column( 8 ).data().reduce( function (a, b) {
                     if(cnt == 0){
                         a = String(a).replaceAll('.','');
                         a = String(a).replaceAll(',','.');
@@ -2043,7 +2599,29 @@ $status_servico = '';
                     return intVal(a) + intVal(b);
                 });
                 var cnt =0;
-                valTot = tableDetServ.column( 8 ).data().reduce( function (a, b) {
+                valTot = tableDetServ.column( 9 ).data().reduce( function (a, b) {
+                    if(cnt == 0){
+                        a = String(a).replaceAll('.','');
+                        a = String(a).replaceAll(',','.');
+                    }
+                    cnt +=1;
+                    b = String(b).replaceAll('.','');
+                    b = String(b).replaceAll(',','.');
+                    return intVal(a) + intVal(b);
+                });
+                var cnt =0;
+                valDes = tableDetServ.column( 10 ).data().reduce( function (a, b) {
+                    if(cnt == 0){
+                        a = String(a).replaceAll('.','');
+                        a = String(a).replaceAll(',','.');
+                    }
+                    cnt +=1;
+                    b = String(b).replaceAll('.','');
+                    b = String(b).replaceAll(',','.');
+                    return intVal(a) + intVal(b);
+                });
+                var cnt =0;
+                valLiqTot = tableDetServ.column( 11 ).data().reduce( function (a, b) {
                     if(cnt == 0){
                         a = String(a).replaceAll('.','');
                         a = String(a).replaceAll(',','.');
@@ -2055,17 +2633,19 @@ $status_servico = '';
                 });
 
                 //Atualiza o rodapé
-                $( tableDetServ.column( 5 ).footer() ).html(new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagQtdTot) +' </br> '+ new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(qtdTot) );
-                $( tableDetServ.column( 6 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValUniTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valUniTot) );
-                $( tableDetServ.column( 7 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot) );
+                $( tableDetServ.column( 7 ).footer() ).html(new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagQtdTot) +' </br> '+ new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(qtdTot) );
+                //$( tableDetServ.column( 8 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValUniTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valUniTot) );
+                $( tableDetServ.column( 9 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot) );
+                $( tableDetServ.column( 10 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValDes) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valDes) );
+                $( tableDetServ.column( 11 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValLiqTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valLiqTot) );
             });
 
             //Total dos registros exibidos na página atual da tabela 
-            pagQtdTot = tableDetServ.column(6, { page: 'current'} ).data().reduce( function (a, b) {
+            pagQtdTot = tableDetServ.column(7, { page: 'current'} ).data().reduce( function (a, b) {
                 return intVal(a) + intVal(b);
             }, 0 );
             var cnt =0;
-            pagValUniTot = tableDetServ.column(7, { page: 'current'} ).data().reduce( function (a, b) {
+            pagValUniTot = tableDetServ.column(8, { page: 'current'} ).data().reduce( function (a, b) {
                 if(cnt == 0){
                     a = String(a).replaceAll('.','');
                     a = String(a).replaceAll(',','.');
@@ -2076,7 +2656,29 @@ $status_servico = '';
                 return intVal(a) + intVal(b);
             }, 0 );
             var cnt =0;
-            pagValTot = tableDetServ.column(8, { page: 'current'} ).data().reduce( function (a, b) {
+            pagValTot = tableDetServ.column(9, { page: 'current'} ).data().reduce( function (a, b) {
+                if(cnt == 0){
+                    a = String(a).replaceAll('.','');
+                    a = String(a).replaceAll(',','.');
+                }
+                cnt +=1;
+                b = String(b).replaceAll('.','');
+                b = String(b).replaceAll(',','.');
+                return intVal(a) + intVal(b);
+            }, 0 );
+            var cnt =0;
+            pagValDes = tableDetServ.column(10, { page: 'current'} ).data().reduce( function (a, b) {
+                if(cnt == 0){
+                    a = String(a).replaceAll('.','');
+                    a = String(a).replaceAll(',','.');
+                }
+                cnt +=1;
+                b = String(b).replaceAll('.','');
+                b = String(b).replaceAll(',','.');
+                return intVal(a) + intVal(b);
+            }, 0 );
+            var cnt =0;
+            pagValLiqTot = tableDetServ.column(11, { page: 'current'} ).data().reduce( function (a, b) {
                 if(cnt == 0){
                     a = String(a).replaceAll('.','');
                     a = String(a).replaceAll(',','.');
@@ -2088,11 +2690,11 @@ $status_servico = '';
             }, 0 );
 
             //Total de todos os registros da tabela 
-            qtdTot = tableDetServ.column( 6 ).data().reduce( function (a, b) {
+            qtdTot = tableDetServ.column( 7 ).data().reduce( function (a, b) {
                 return intVal(a) + intVal(b);
             });
             var cnt =0;
-            valUniTot = tableDetServ.column( 7 ).data().reduce( function (a, b) {
+            valUniTot = tableDetServ.column( 8 ).data().reduce( function (a, b) {
                 if(cnt == 0){
                     a = String(a).replaceAll('.','');
                     a = String(a).replaceAll(',','.');
@@ -2103,7 +2705,29 @@ $status_servico = '';
                 return intVal(a) + intVal(b);
             });
             var cnt =0;
-            valTot = tableDetServ.column( 8 ).data().reduce( function (a, b) {
+            valTot = tableDetServ.column( 9 ).data().reduce( function (a, b) {
+                if(cnt == 0){
+                    a = String(a).replaceAll('.','');
+                    a = String(a).replaceAll(',','.');
+                }
+                cnt +=1;
+                b = String(b).replaceAll('.','');
+                b = String(b).replaceAll(',','.');
+                return intVal(a) + intVal(b);
+            });
+            var cnt =0;
+            valDes = tableDetServ.column( 10 ).data().reduce( function (a, b) {
+                if(cnt == 0){
+                    a = String(a).replaceAll('.','');
+                    a = String(a).replaceAll(',','.');
+                }
+                cnt +=1;
+                b = String(b).replaceAll('.','');
+                b = String(b).replaceAll(',','.');
+                return intVal(a) + intVal(b);
+            });
+            var cnt =0;
+            valLiqTot = tableDetServ.column( 11 ).data().reduce( function (a, b) {
                 if(cnt == 0){
                     a = String(a).replaceAll('.','');
                     a = String(a).replaceAll(',','.');
@@ -2114,15 +2738,28 @@ $status_servico = '';
                 return intVal(a) + intVal(b);
             });
             
-            valUniTot = String(valUniTot).replaceAll('.','');
-            valUniTot = String(valUniTot).replaceAll(',','.');
-            valTot = String(valTot).replaceAll('.','');
-            valTot = String(valTot).replaceAll(',','.');
+            
+            //valUniTot = String(valUniTot).replaceAll('.','');
+            //valUniTot = String(valUniTot).replaceAll(',','.');
+
+            //apenas quando tem um registro no serviço faz o replace se tiver mais de um serviço não precisa fazer
+            if(cnt == 0){
+                valTot = String(valTot).replaceAll('.','');
+                valTot = String(valTot).replaceAll(',','.');
+                valDes = String(valDes).replaceAll('.','');
+                valDes = String(valDes).replaceAll(',','.');
+                valLiqTot = String(valLiqTot).replaceAll('.','');
+                valLiqTot = String(valLiqTot).replaceAll(',','.');
+            }            
+
+            console.log(cnt);console.log(pagValLiqTot);console.log(valLiqTot);
 
             //Atualiza o rodapé
-            $( tableDetServ.column( 6 ).footer() ).html(new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagQtdTot) +' </br> '+ new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(qtdTot) );
-            $( tableDetServ.column( 7 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValUniTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valUniTot) );
-            $( tableDetServ.column( 8 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot) );
+            $( tableDetServ.column( 7 ).footer() ).html(new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagQtdTot) +' </br> '+ new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(qtdTot) );
+            //$( tableDetServ.column( 8 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValUniTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valUniTot) );
+            $( tableDetServ.column( 9 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot) );
+            $( tableDetServ.column( 10 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValDes) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valDes) );
+            $( tableDetServ.column( 11 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValLiqTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valLiqTot) );
             /* Final da montagem da Tabela de detalhes da requisição com os dados dos serviços relacionados */
         }
 
@@ -2140,10 +2777,14 @@ $status_servico = '';
             $('#valTotHrTMO').mask('#.##0,00', {reverse: true});
             $('#valCustoTMO').mask('#.##0,00', {reverse: true});
             $('#perCustoTMO').mask('#.##0,00', {reverse: true});
+            $('#perDesTMO').mask('#.##0,00', {reverse: true});
+            $('#valDesTMO').mask('#.##0,00', {reverse: true});
+            $('#valLiqTMO').mask('#.##0,00', {reverse: true});
 
             //Campos que não serão editaveis no formulario de inclusão / edição
             $("#descricaoTMO").prop('disabled', true);
             $("#tipoTMO").prop('disabled', true);
+            $("#valLiqTMO").prop('disabled', true);
 
             //Ao carregar a app verifica o tipo do valor da tarefa
             if($("#tipoTMO").val() == 'P'){
@@ -2221,7 +2862,20 @@ $status_servico = '';
                     $('.calendar-table').show();
                 }) 
             });
-        }        
+        }     
+
+        /* **************************************** Eventos Iniciais dos blocos  - DESCONTO_REQUISICAO e MANUTENCAO_SERVICO **************************************** */
+
+        if(estagioAPP == 'TOTAIS_OS' ){
+
+            /* ******************** Mascaras de campos float ******************** */
+
+            //Mascaras do inclusão da TMO do serviço
+            $('#valBrutoOS').mask('#.##0,00', {reverse: true});
+            $('#perDescontoOS').mask('#.##0,00', {reverse: true});
+            $('#valDescontoOS').mask('#.##0,00', {reverse: true});
+            $('#valLiquidoOS').mask('#.##0,00', {reverse: true});
+        }
     });
 </script>
 
@@ -2330,6 +2984,10 @@ $status_servico = '';
 
                     $("#valTotHrTMO").val(valTot);
 
+                    $("#valDesTMO").val('0,00');
+                    $("#valLiqTMO").val(valTot);
+                    $("#perDesTMO").val('0,00');
+
                 }else if($("#tipoTMO").val() == 'I' && $("#qtdHrTMO").val() != ''){
                     
                     var qtdHr = $("#qtdHrTMO").val();
@@ -2342,6 +3000,10 @@ $status_servico = '';
                     valTot = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot);
 
                     $("#valTotHrTMO").val(valTot);
+
+                    $("#valDesTMO").val('0,00');
+                    $("#valLiqTMO").val(valTot);
+                    $("#perDesTMO").val('0,00');
 
                 }
             });
@@ -2362,6 +3024,11 @@ $status_servico = '';
 
                     $("#valUniHrTMO").val(valHr);
 
+                    $("#valDesTMO").val('0,00');
+                    valTot = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot);
+                    $("#valLiqTMO").val(valTot);
+                    $("#perDesTMO").val('0,00');
+
                 }else if($("#tipoTMO").val() == 'I' && $("#qtdHrTMO").val() != ''){
                     
                     var qtdHr = $("#qtdHrTMO").val();
@@ -2375,13 +3042,17 @@ $status_servico = '';
 
                     $("#valTotHrTMO").val(valTot);
 
+                    $("#valDesTMO").val('0,00');
+                    $("#valLiqTMO").val(valTot);
+                    $("#perDesTMO").val('0,00');
+
                 }
             });
 
             /* *************** Evento ao trocar o valor do campo  quantidade de horas da tarefa - INCLUSAO_SERVICO / MANUTENCAO_SERVICO *************** */
             $("#qtdHrTMO").change(function(){
                 
-                if($("#tipoTMO").val() == 'I' && $("#valUniHrTMO").val() != ''){
+                if(($("#tipoTMO").val() == 'I' || $("#tipoTMO").val() == 'P') && $("#valUniHrTMO").val() != ''){
                     
                     var valHr = $("#valUniHrTMO").val();
                     var qtdHr = this.value;
@@ -2393,6 +3064,10 @@ $status_servico = '';
                     valTot = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot);
 
                     $("#valTotHrTMO").val(valTot);
+
+                    $("#valDesTMO").val('0,00');
+                    $("#valLiqTMO").val(valTot);
+                    $("#perDesTMO").val('0,00');
 
                 }else if($("#tipoTMO").val() == 'F' && $("#valTotHrTMO").val() != ''){
                     
@@ -2407,6 +3082,10 @@ $status_servico = '';
 
                     $("#valUniHrTMO").val(valHr);
 
+                    $("#valDesTMO").val('0,00');
+                    valTot = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot);
+                    $("#valLiqTMO").val(valTot);
+                    $("#perDesTMO").val('0,00');
                 }
             });
 
@@ -2430,6 +3109,103 @@ $status_servico = '';
                     $("#valCustoTMO").val(valCGT);
 
                 }
+            });
+
+            /* *************** Evento ao trocar o valor do campo valor do desconto - INCLUSAO_SERVICO / MANUTENCAO_SERVICO *************** */
+            $("#valDesTMO").change(function(){
+                
+                var valTot = $("#valTotHrTMO").val();
+                var valDes = this.value;
+
+                valTot = valTot.replaceAll('.', '');
+                valTot = valTot.replaceAll(',', '.');
+
+                valDes = valDes.replaceAll('.', '');
+                valDes = valDes.replaceAll(',', '.');
+
+                var percentual = (valDes / valTot) * 100;
+                var valLiq = valTot - valDes;
+
+                valLiq = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valLiq);
+                percentual = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(percentual);
+
+                $("#valLiqTMO").val(valLiq);
+                $("#perDesTMO").val(percentual);
+            });
+
+            /* *************** Evento ao trocar o valor do campo de percentual do desconto - INCLUSAO_SERVICO / MANUTENCAO_SERVICO *************** */
+            $("#perDesTMO").change(function(){
+                
+                var valTot = $("#valTotHrTMO").val();
+                var percentual = this.value;
+
+                valTot = valTot.replaceAll('.', '');
+                valTot = valTot.replaceAll(',', '.');
+
+                percentual = percentual.replaceAll('.', '');
+                percentual = percentual.replaceAll(',', '.');
+
+                var valorLiquido = valTot - ((valTot / 100) * percentual);
+                var valorDesconto = (valTot / 100) * percentual;
+
+                valorLiquido = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valorLiquido);
+                valorDesconto = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valorDesconto);
+
+
+                $("#valLiqTMO").val(valorLiquido);
+                $("#valDesTMO").val(valorDesconto);
+            });
+        }
+
+        if(estagioAPP == 'TOTAIS_OS'){
+
+            /* *************** Evento ao trocar o valor do campo  de percentual do desconto - TOTAIS_OS *************** */
+            $("#perDescontoOS").change(function(){
+                
+                var valBruto = $("#valBrutoOS").val();
+                var percentual = this.value;
+
+                valBruto = valBruto.replaceAll('.', '');
+                valBruto = valBruto.replaceAll(',', '.');
+
+                percentual = percentual.replaceAll('.', '');
+                percentual = percentual.replaceAll(',', '.');
+
+
+                var valorLiquido = valBruto - ((valBruto / 100) * percentual);
+                var valorDesconto = (valBruto / 100) * percentual;
+
+                valorLiquido = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valorLiquido);
+                valorDesconto = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valorDesconto);
+
+
+                $("#valLiquidoOS").val(valorLiquido);
+                $("#valDescontoOS").val(valorDesconto);
+            });
+
+            /* *************** Evento ao trocar o valor do campo do valor do desconto - DESCONTO_REQUISICAO *************** */
+            $("#valDescontoOS").change(function(){
+                
+                var valBruto = $("#valBrutoOS").val();
+                var valDesc = this.value;
+
+                valBruto = valBruto.replaceAll('.', '');
+                valBruto = valBruto.replaceAll(',', '.');
+
+                valDesc = valDesc.replaceAll('.', '');
+                valDesc = valDesc.replaceAll(',', '.');
+
+
+                var percentual = (valDesc / valBruto) * 100;
+                var valorLiquido = valBruto - valDesc;
+
+                valorLiquido = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valorLiquido);
+                percentual = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(percentual);
+
+
+                $("#valLiquidoOS").val(valorLiquido);
+                $("#perDescontoOS").val(percentual);
+                
             });
         }
     });
@@ -2461,6 +3237,7 @@ $status_servico = '';
                 $("#descricaoTMO").prop('disabled', false);
                 $("#tipoTMO").prop('disabled', false);
                 $("#valCustoTMO").prop('disabled', false);
+                $("#valLiqTMO").prop('disabled', false);
             });
         }
 
@@ -2476,6 +3253,7 @@ $status_servico = '';
                 $("#descricaoTMO").prop('disabled', false);
                 $("#tipoTMO").prop('disabled', false);
                 $("#valCustoTMO").prop('disabled', false);
+                $("#valLiqTMO").prop('disabled', false);
             });
         }
     });
@@ -2624,6 +3402,34 @@ $(function () {
         }
     });
 
+    //Atualização do desconto da requisição
+    $('#formulario-desconto-os').validate({
+        rules: {
+            perDescontoOS: {
+                maxpercent: true
+            },
+            valDescontoOS: {
+                maxlength: 20
+            },
+        },
+        messages: {
+            valDescontoOS: {
+                maxlength: "Limite máximo do valor é de 15 digitos"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
     //Atualização da previsão de entrega
     $('#quickForm-upd-prev-entrega').validate({
         rules: {
@@ -2648,6 +3454,58 @@ $(function () {
             horaPrevEnt: {
                 required: "Por Favor informe a Hora da Previsão de Entrega "
             },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    //Atualização da observação da os
+    $('#formulario-observacao-os').validate({
+        rules: {
+            observacaoOS: {
+                required: true,
+                maxlength: 255
+            }
+        },
+        messages: {
+            observacaoOS: {
+                required: "Por Favor informe a Observação",
+                maxlength: "Informe no máximo 255 caracteres"
+            }
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    //Atualização do cliente da fatura da os
+    $('#formulario-troca-cli-fat').validate({
+        rules: {
+            cliFatura: {
+                required: true
+            }
+        },
+        messages: {
+            cliFatura: {
+                required: "Por Favor informe o Cliente"
+            }
         },
         errorElement: 'span',
         errorPlacement: function (error, element) {
@@ -2698,6 +3556,18 @@ $(function () {
             title: "Aviso!",
             text: "{{ session('info') }}",
             icon: "info",
+            customClass: {
+                icon: "no-before-icon",
+            }
+        });
+    @endif
+
+    @if(Session::has('success2'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Sucesso!",
+            text: "{{ session('success2') }}",
+            icon: "success",
             customClass: {
                 icon: "no-before-icon",
             }

@@ -25,6 +25,7 @@ class UsuariosTableSeeder extends Seeder
             'usuario_altera_permissoes_acesso' => 'S',
             'usuario_acesso_pararametros' => 'S',
             'usuario_acesso_cadastros' => 'S',
+            'usuario_aut_desc' => 'S',
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s')]
         );

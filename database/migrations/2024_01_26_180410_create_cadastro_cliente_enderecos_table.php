@@ -18,7 +18,7 @@ return new class extends Migration
             $table->enum('endereco_principal', ['S', 'N']);
             $table->string('endereco_cep',8)->nullable();
             $table->string('endereco_logradouro', 100)->nullable();
-            $table->integer('endereco_numero')->nullable();
+            $table->string('endereco_numero',5)->nullable();
             $table->string('endereco_complemento', 60)->nullable();
             $table->string('endereco_bairro', 60)->nullable();
             $table->string('endereco_cidade', 80)->nullable();

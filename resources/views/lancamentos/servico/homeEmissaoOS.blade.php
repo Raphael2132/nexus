@@ -35,17 +35,15 @@
                     $emp_sel = '';
                     $array_opt = array_combine($new_array1, $new_array2);
 
-                    $data_cli = DB::table('cadastro_clientes')->select('cliente_codigo', 'cliente_nome')->orderBy('cliente_codigo', 'asc')->get();
-
-                    $new_array_cli1 =[];
-                    $new_array_cli2 =[];
-
-                    foreach ($data_cli as $cliente) {
-                        $new_array_cli1[] = $cliente->cliente_codigo;
-                        $new_array_cli2[] = $cliente->cliente_codigo.' - '.$cliente->cliente_nome;
+                    //Faz o lookup do campo de clientes 
+                    $data_cli = DB::table('cadastro_clientes')->selectRaw('cliente_codigo, cliente_nome')->orderBy('cliente_codigo', 'asc')->get();
+                    $html = '<datalist id="clientes">';
+                    foreach($data_cli as $cliente){
+                        $html .= '<option value="'.$cliente->cliente_codigo.' - '.$cliente->cliente_nome.'">'.$cliente->cliente_codigo.' - '.$cliente->cliente_nome.'</option>';
                     }
-                    $cli_sel = '';
-                    $array_opt_cli = array_combine($new_array_cli1, $new_array_cli2);
+                    $html .='</datalist>';
+                    //Echo adiciona o html ao campo dos clientes
+                    echo $html;
                 @endphp
                 <div class="row"> 
                     <!-- Empresa do Setor -->
@@ -54,10 +52,8 @@
                     </x-adminlte-select>
                 </div>
                 <div class="row">
-                    <!-- Empresa do Setor -->
-                    <x-adminlte-select name="cliente" label="Cliente" fgroup-class="col-md-12">
-                        <x-adminlte-options :options="$array_opt_cli" empty-option="Selecione..." selected="{{$cli_sel}}"/>
-                    </x-adminlte-select>
+                    <!-- Prestador responsavel da TMO -->
+                    <x-adminlte-input name="cliente" label="Cliente" type="search" list="clientes" value="" fgroup-class="col-md-12"/>
                 </div>
                 <x-slot name="footerSlot">
                     <x-adminlte-button class="btn-flat" type="submit" label="Prosseguir" theme="info" icon="fa-solid fa-share-from-square"/>

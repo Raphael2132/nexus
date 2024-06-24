@@ -71,7 +71,7 @@ $perQtdCanFormat = number_format($perQtdCan,2,",",".").'%';
                             @elseif($perTot < 0)
                             <span class="description-percentage text-danger"><i class="fas fa-angle-down"></i> {{$perTotFormat}}</span>
                             @else
-                            <span class="description-percentage text-warning"><i class="fas fa-caret-left"></i> {{$perTotFormat}}</span>
+                            <span class="description-percentage text-warning"><i class="fas fa-square fa-2xs"></i> {{$perTotFormat}}</span>
                             @endif
                             <h5 class="description-header">{{$valSumTotFormat}}</h5>
                             <span class="description-text">VALOR TOTAL</span>

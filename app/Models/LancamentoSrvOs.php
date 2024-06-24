@@ -37,8 +37,11 @@ class LancamentoSrvOs extends Model
         'os_tip_des',
         'os_per_des',
         'os_val_des',
+        'os_val_des_req',
         'os_cli_agr',
         'os_cli_avs',
-        'os_sts'
+        'os_sts',
+        'os_cli_fatura',
+        'os_observacao'
     ];
 }

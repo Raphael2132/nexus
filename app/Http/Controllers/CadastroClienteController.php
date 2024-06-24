@@ -106,11 +106,11 @@ class CadastroClienteController extends Controller
         if($request->tipoCadastro == 'C'){
 
             //$nextval=DB::select("SELECT last_value FROM clientes_cliente_id_seq")[0]->last_value+1;
-            $nextval=DB::select("SELECT nextval('sequencia_cad_clientes')")[0]->nextval;
+            $nextval=DB::select("SELECT nextval('sq_cad_clientes')")[0]->nextval;
 
             $codigo = 'C'.str_pad($nextval,9,'0',STR_PAD_LEFT);
         }else{
-            $nextval=DB::select("SELECT nextval('sequencia_cad_fornecedores')")[0]->nextval;
+            $nextval=DB::select("SELECT nextval('sq_cad_fornecedores')")[0]->nextval;
 
             $codigo = 'F'.str_pad($nextval,9,'0',STR_PAD_LEFT);
         }

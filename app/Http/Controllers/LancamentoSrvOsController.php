@@ -9,6 +9,7 @@ use App\Models\LancamentoSrvOsRequisicoes;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
 use App\Http\Helpers\Helper;
+use App\Http\Controllers\PainelAberturaOSController;
 
 class LancamentoSrvOsController extends Controller
 {
@@ -24,7 +25,24 @@ class LancamentoSrvOsController extends Controller
     //Chama a app de controle de pré abertura de OS
     public function inicio(Request $request)
     {
-        return view('/lancamentos/servico/controleAberturaOS',['empresa'=>$request->empresa,'cliente'=>$request->cliente]);
+        if(!empty($request->cliente)){
+            $cliente = substr($request->cliente, 0, 10);
+
+            if(strlen($cliente) < 10){
+                return redirect()->back()->with('error', 'Código do cliente '.$cliente.' é inválido!');
+            }
+
+            $cnt_cli = DB::table('cadastro_clientes')->where('cliente_codigo', $cliente)->count();
+        
+            if($cnt_cli == 0){
+                return redirect()->back()->with('error', 'Código do cliente '.$cliente.' não existe!');
+            }
+        
+        }else{
+            return redirect()->back()->with('error', 'É obrigátorio informar o cliente!');
+        }
+
+        return view('/lancamentos/servico/controleAberturaOS',['empresa'=>$request->empresa,'cliente'=>$cliente]);
     }
 
     //Chama a app de controle de pré abertura de OS
@@ -65,13 +83,8 @@ class LancamentoSrvOsController extends Controller
             'os_cli_end' => $request->enderecoCliOS,
             'os_dha' => $data_abertura,
             'os_res_abr' => $usuario,
-            'os_vlt' => '0',
-            'os_vos' => '0',
-            'os_vls' => '0',
-            'os_vlp' => '0',
-            'os_per_des' => '0',
-            'os_val_des' => '0',
-            'os_sts' => 'A'
+            'os_sts' => 'A',
+            'os_cli_fatura' => $cliente
         ];
         
         $novaOS = LancamentoSrvOs::create($dados);
@@ -84,7 +97,7 @@ class LancamentoSrvOsController extends Controller
     {
         $dadosOS = $this->lancamentoOS->where('os_emp', $empresa)->where('os_cli', $cliente)->where('os_nos', $nos)->get();
 
-        $dadosRequisicoes = $this->requisicoesOS->where('req_emp', $empresa)->where('req_nos', $nos)->get();
+        $dadosRequisicoes = $this->requisicoesOS->where('req_emp', $empresa)->where('req_nos', $nos)->orderby('req_seq')->get();
 
         $dadosEmpresa = DB::table('cadastro_empresas')->where('empresa_codigo',$empresa)->get();
 
@@ -107,19 +120,43 @@ class LancamentoSrvOsController extends Controller
     }
 
     //Metodo de controle de carregamento da OS na pagina principal
-    public function abrirOrcamento(Request $request, $empresa, $numOS)
+    public function abrirOrcamento(Request $request, $empresa, $numOS, $stsOS, $stsOrc, $cliente, $dtOS)
     {
-        if($request->novoOrcamento == 'S' || ($request->novoOrcamento == 'N' && $request->orcamento == 'Não Gerado')){
+        if($stsOS == 'C' && $request->novoOrcamento == 'S'){
+            return redirect()->back()->with('info', 'Não é possível gerar um novo orçamento! OS já foi cancelada!');        
+        }else if($stsOS == 'F' && $request->novoOrcamento == 'S'){
+            return redirect()->back()->with('info', 'Não é possível gerar um novo orçamento! OS já foi finalizada!');        
+        }
+
+        if($request->novoOrcamento == 'S' || $stsOrc == 'N'){
             $nextval=DB::select("SELECT nextval('sq_num_orcamento')")[0]->nextval;
             $num = $nextval;
 
             $data = date('Y-m-d');
 
-            $atualiaServico = DB::table('lancamento_srv_os')
+            DB::table('lancamento_srv_os')
             ->where('os_emp', $empresa)
             ->where('os_nos', $numOS)
             ->update(['os_dt_orc' => $data,
             'os_num_orc' => $num]);  
+
+            if($stsOrc == 'N'){
+                DB::table('lancamento_srv_os_orcamentos')
+                ->where('orc_emp', $empresa)
+                ->where('orc_nos', $numOS)
+                ->insert(['orc_emp' => $empresa,
+                'orc_nos' => $numOS,
+                'orc_dt_orc' => $data,
+                'orc_num_orc' => $num,
+                'orc_cli' => $cliente,
+                'orc_dha' => $dtOS]);
+            }else{
+                DB::table('lancamento_srv_os_orcamentos')
+                ->where('orc_emp', $empresa)
+                ->where('orc_nos', $numOS)
+                ->update(['orc_dt_orc' => $data,
+                'orc_num_orc' => $num]);  
+            }
         }
         
         $empresaEndereco = DB::table('cadastro_empresa_enderecos')->where('endereco_empresa_codigo', $empresa)->where('endereco_principal', 'S')->get();
@@ -157,5 +194,63 @@ class LancamentoSrvOsController extends Controller
         'os_cli_avs' => $request->avisaClienteTermino]);  
         
         return redirect(route('situacaoOS.carregaOS', ['empresa' => $empresa, 'cliente' => $cliente, 'nos' => $numOS, 'estagioAPP' => 'PRINCIPAL']))->with('success', 'Previsão de Entrega Atualizada com Sucesso!');
+    }
+
+    //Atualiza a observação da os
+    public function atualizaObservacao(Request $request, $empresa, $numOS)
+    {
+        $atualiaServico = DB::table('lancamento_srv_os')
+        ->where('os_emp', $empresa)
+        ->where('os_nos', $numOS)
+        ->update(['os_observacao' => $request->observacaoOS]);  
+        
+        return redirect(route('painelOS.totalOS', ['empresa' => $empresa, 'numOS' => $numOS]))->with('success', 'Observações da OS Atualizada com Sucesso!');
+    }
+
+    //Atualiza a observação da os
+    public function atualizaCliFatura(Request $request, $empresa, $numOS)
+    {
+
+        if(!empty($request->cliFatura)){
+            $cliente = substr($request->cliFatura, 0, 10);
+
+            if(strlen($cliente) < 10){
+                return redirect()->back()->with('error', 'Código do cliente '.$cliente.' é inválido!');
+            }
+
+            $cnt_cli = DB::table('cadastro_clientes')->where('cliente_codigo', $cliente)->count();
+        
+            if($cnt_cli == 0){
+                return redirect()->back()->with('error', 'Código do cliente '.$cliente.' não existe!');
+            }
+        
+        }else{
+            $cliente = null;
+        }
+
+        $atualiaServico = DB::table('lancamento_srv_os')
+        ->where('os_emp', $empresa)
+        ->where('os_nos', $numOS)
+        ->update(['os_cli_fatura' => $cliente]);  
+        
+        return redirect(route('painelOS.totalOS', ['empresa' => $empresa, 'numOS' => $numOS]))->with('success', 'Troca do Cliente da Fatura Realizada com Sucesso!');
+    }
+
+    //Atualiza a observação da os
+    public function atualizaDescontoOS(Request $request, $empresa, $numOS)
+    {
+
+        $percentual = Helper::limpaPorcentagem($request->perDescontoOS);
+        $valor = Helper::limpaValorMonetario($request->valDescontoOS);
+
+        $atualiaServico = DB::table('lancamento_srv_os')
+        ->where('os_emp', $empresa)
+        ->where('os_nos', $numOS)
+        ->update(['os_per_des' => $percentual,
+            'os_val_des' => $valor]);  
+
+        PainelAberturaOSController::atualizaValorOS($empresa, $numOS);
+        
+        return redirect(route('painelOS.totalOS', ['empresa' => $empresa, 'numOS' => $numOS]))->with('success', 'Desconto da OS Realizado com Sucesso!');
     }
 }

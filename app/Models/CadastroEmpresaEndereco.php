@@ -22,6 +22,7 @@ class CadastroEmpresaEndereco extends Model
         'endereco_bairro',
         'endereco_cidade',
         'endereco_uf',
-        'endereco_pais'
+        'endereco_pais',
+        'endereco_ibge_cod_mun'
     ];
 }

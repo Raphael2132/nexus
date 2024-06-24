@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\LancamentoSrvOsServico;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
+use App\Http\Helpers\Helper;
+use App\Http\Controllers\PainelAberturaOSController;
 
 class LancamentoSrvOsServicoController extends Controller
 {
@@ -35,7 +37,7 @@ class LancamentoSrvOsServicoController extends Controller
         }
 
         if(!empty($request->dataNfTerceiroTMO)){
-            $dataNfTerceiroTMO = substr($request->dataNfTerceiroTMO,-4).'-'.substr($request->dataNfTerceiroTMO,3,2).'-'.substr($request->dataNfTerceiroTMO,0,2);;
+            $dataNfTerceiroTMO = Helper::limpaData($request->dataNfTerceiroTMO);
         }else{
             $dataNfTerceiroTMO = null;
         }
@@ -47,31 +49,43 @@ class LancamentoSrvOsServicoController extends Controller
         }
         
         if(!empty($request->valUniHrTMO)){
-            $valUniHrTMO = str_replace(".","",$request->valUniHrTMO);
-            $valUniHrTMO = str_replace(",",".",$valUniHrTMO);
+            $valUniHrTMO = Helper::limpaValorMonetario($request->valUniHrTMO);
         }else{
             $valUniHrTMO = '0.00';
         }
 
         if(!empty($request->valTotHrTMO)){
-            $valTotHrTMO = str_replace(".","",$request->valTotHrTMO);
-            $valTotHrTMO = str_replace(",",".",$valTotHrTMO);
+            $valTotHrTMO = Helper::limpaValorMonetario($request->valTotHrTMO);
         }else{
             $valTotHrTMO = '0.00';
         }
 
         if(!empty($request->valCustoTMO)){
-            $valCustoTMO = str_replace(".","",$request->valCustoTMO);
-            $valCustoTMO = str_replace(",",".",$valCustoTMO);
+            $valCustoTMO = Helper::limpaValorMonetario($request->valCustoTMO);
         }else{
             $valCustoTMO = '0.00';
         }
 
         if(!empty($request->perCustoTMO)){
-            $perCustoTMO = str_replace(".","",$request->perCustoTMO);
-            $perCustoTMO = str_replace(",",".",$perCustoTMO);
+            $perCustoTMO = Helper::limpaPorcentagem($request->perCustoTMO);
         }else{
             $perCustoTMO = '0.00';
+        }
+
+        if(!empty($request->prestadorTMO)){
+            $prestadorTMO = substr($request->prestadorTMO, 0, 6);
+
+            if(strlen($prestadorTMO) < 6){
+                return redirect()->back()->with('error', 'Código do prestador responsável '.$prestadorTMO.' é inválido!');
+            }
+
+            $cnt_prest = DB::table('cadastro_prestadores')->where('prestador_empresa', $empresa)->where('prestador_are', $requisicaoSel[0]->req_are)->where('prestador_set', $requisicaoSel[0]->req_set)->where('prestador_codigo', $prestadorTMO)->count();
+        
+            if($cnt_prest == 0){
+                return redirect()->back()->with('error', 'Código do prestador responsável '.$prestadorTMO.' não existe no setor '.$requisicaoSel[0]->req_set.' da área '.$requisicaoSel[0]->req_are.'!');
+            }
+        }else{
+            $prestadorTMO = null;
         }
 
         $dados = [
@@ -79,7 +93,7 @@ class LancamentoSrvOsServicoController extends Controller
             'srv_nos' => $numOS,
             'srv_req' => $requisicao,
             'srv_seq' => $sequencia,
-            'srv_prt' => $request->prestadorTMO,
+            'srv_prt' => $prestadorTMO,
             'srv_set' => $requisicaoSel[0]->req_set,
             'srv_are' => $requisicaoSel[0]->req_are,
             'srv_tmo' => $codTMO,
@@ -97,26 +111,62 @@ class LancamentoSrvOsServicoController extends Controller
             'srv_dtt' => $dataNfTerceiroTMO,
             'srv_tcg' => $request->tipCustoTMO,
             'srv_pcg' => $perCustoTMO,
-            'srv_vcg' => $valCustoTMO
+            'srv_vcg' => $valCustoTMO,
+            'srv_vtl' => $valTotHrTMO
         ];
         
         LancamentoSrvOsServico::create($dados);
 
-        $sum_servicos = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$numOS)->where('srv_req',$requisicao)->wherein('srv_sts',['A','E','F'])->sum('srv_vts');
+        PainelAberturaOSController::atualizaValorRequisicao($empresa, $numOS, $requisicao);
 
-        $updValReq = DB::table('lancamento_srv_os_requisicoes')
-            ->where('req_emp', $empresa)
-            ->where('req_nos', $numOS)
-            ->where('req_seq', $requisicao)
-            ->update(['req_vlr' => $sum_servicos,
-                'req_vls' => $sum_servicos]);  
+        PainelAberturaOSController::atualizaValorOS($empresa, $numOS);
+
+        PainelAberturaOSController::atualizaPrevEntrega($empresa, $numOS);
 
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'TMO adicionada com sucesso!');
     }
 
     //Metodo de atualização dos dados do serviço da requisição
-    public function update(Request $request, $empresa, $numOS, $requisicao, $sequencia, $codTMO, $estagioAPP)
-    {        
+    public function update(Request $request, $empresa, $numOS, $requisicao, $sequencia, $codTMO, $estagioAPP, $tos)
+    {       
+        if(!empty($request->valDesTMO)){ 
+            $valDesconto = Helper::limpaValorMonetario($request->valDesTMO);
+        }else{
+            $valDesconto = 0;
+        }
+
+        if(!empty($request->perDesTMO)){ 
+            $perDesconto = Helper::limpaPorcentagem($request->perDesTMO);
+        }else{
+            $perDesconto = 0;
+        }
+
+        if(!empty($request->valLiqTMO)){ 
+            $valLiquido = Helper::limpaPorcentagem($request->valLiqTMO);
+        }else{
+            $valLiquido = 0;
+        }
+
+        if($perDesconto > 0 || $valDesconto > 0){
+
+            $tosDados = DB::table('lancamento_srv_tipo_servicos')->where('tipsrv_emp', $empresa)->where('tipsrv_cod', $tos)->get();
+
+            $srvDados = DB::table('lancamento_srv_os_servicos')->where('srv_emp', $empresa)->where('srv_nos', $numOS)->where('srv_req', $requisicao)->where('srv_seq', $sequencia)->where('srv_tmo', $codTMO)->get();
+
+            if($srvDados[0]->srv_aut_desc == 'N'){
+                if($tosDados[0]->tipsrv_pmt_des == 'N'){
+                    return redirect()->back()->with('error', 'O Tipo de Serviço '.$tos.' - '.$tosDados[0]->tipsrv_nom.' não permite desconto!');
+                }else{
+                    if($tosDados[0]->tipsrv_vmd != 0 && $valDesconto > $tosDados[0]->tipsrv_vmd){
+                        return redirect()->back()->with('error', 'O Tipo de Serviço '.$tos.' - '.$tosDados[0]->tipsrv_nom.' permite um valor máximo de desconto de R$'.Helper::formataValorMonetario($tosDados[0]->tipsrv_vmd));
+                    }
+                    if($tosDados[0]->tipsrv_pmd != 0 && $perDesconto > $tosDados[0]->tipsrv_pmd){
+                        return redirect()->back()->with('error', 'O Tipo de Serviço '.$tos.' - '.$tosDados[0]->tipsrv_nom.' permite um percentual máximo de desconto de '.Helper::formataValorMonetario($tosDados[0]->tipsrv_pmd).'%');                
+                    }
+                }
+            }
+        }
+
         if(!empty($request->forTerceiroTMO)){
             $forTerceiroTMO = substr($request->forTerceiroTMO, 0, 10);
         }else{
@@ -124,7 +174,7 @@ class LancamentoSrvOsServicoController extends Controller
         }
 
         if(!empty($request->dataNfTerceiroTMO)){
-            $dataNfTerceiroTMO = substr($request->dataNfTerceiroTMO,-4).'-'.substr($request->dataNfTerceiroTMO,3,2).'-'.substr($request->dataNfTerceiroTMO,0,2);;
+            $dataNfTerceiroTMO = Helper::limpaData($request->dataNfTerceiroTMO);
         }else{
             $dataNfTerceiroTMO = null;
         }
@@ -136,31 +186,46 @@ class LancamentoSrvOsServicoController extends Controller
         }
         
         if(!empty($request->valUniHrTMO)){
-            $valUniHrTMO = str_replace(".","",$request->valUniHrTMO);
-            $valUniHrTMO = str_replace(",",".",$valUniHrTMO);
+            $valUniHrTMO = Helper::limpaValorMonetario($request->valUniHrTMO);
         }else{
             $valUniHrTMO = '0.00';
         }
 
         if(!empty($request->valTotHrTMO)){
-            $valTotHrTMO = str_replace(".","",$request->valTotHrTMO);
-            $valTotHrTMO = str_replace(",",".",$valTotHrTMO);
+            $valTotHrTMO = Helper::limpaValorMonetario($request->valTotHrTMO);
         }else{
             $valTotHrTMO = '0.00';
         }
 
         if(!empty($request->valCustoTMO)){
-            $valCustoTMO = str_replace(".","",$request->valCustoTMO);
-            $valCustoTMO = str_replace(",",".",$valCustoTMO);
+            $valCustoTMO = Helper::limpaValorMonetario($request->valCustoTMO);
         }else{
             $valCustoTMO = '0.00';
         }
 
         if(!empty($request->perCustoTMO)){
-            $perCustoTMO = str_replace(".","",$request->perCustoTMO);
-            $perCustoTMO = str_replace(",",".",$perCustoTMO);
+            $perCustoTMO = Helper::limpaPorcentagem($request->perCustoTMO);
         }else{
             $perCustoTMO = '0.00';
+        }
+
+        $requisicaoSel = session('glo_os_dadosRequisicoes');
+
+        if(!empty($request->prestadorTMO)){
+            $prestadorTMO = substr($request->prestadorTMO, 0, 6);
+
+            if(strlen($prestadorTMO) < 6){
+                return redirect()->back()->with('error', 'Código do prestador responsável '.$prestadorTMO.' é inválido!');
+            }
+
+            $cnt_prest = DB::table('cadastro_prestadores')->where('prestador_empresa', $empresa)->where('prestador_are', $requisicaoSel[0]->req_are)->where('prestador_set', $requisicaoSel[0]->req_set)->where('prestador_codigo', $prestadorTMO)->count();
+        
+            if($cnt_prest == 0){
+                return redirect()->back()->with('error', 'Código do prestador responsável '.$prestadorTMO.' não existe no setor '.$requisicaoSel[0]->req_set.' da área '.$requisicaoSel[0]->req_are.'!');
+            }
+
+        }else{
+            $prestadorTMO = null;
         }
 
         $atualiaServico = DB::table('lancamento_srv_os_servicos')
@@ -169,7 +234,7 @@ class LancamentoSrvOsServicoController extends Controller
             ->where('srv_req', $requisicao)
             ->where('srv_seq', $sequencia)
             ->where('srv_tmo', $codTMO)
-            ->update(['srv_prt' => $request->prestadorTMO,
+            ->update(['srv_prt' => $prestadorTMO,
                 'srv_cmp' => $request->complementoTMO,
                 'srv_qhr' => $qtdHrTMO,
                 'srv_vhr' => $valUniHrTMO,
@@ -180,16 +245,16 @@ class LancamentoSrvOsServicoController extends Controller
                 'srv_dtt' => $dataNfTerceiroTMO,
                 'srv_tcg' => $request->tipCustoTMO,
                 'srv_pcg' => $valCustoTMO,
-                'srv_vcg' => $perCustoTMO]);   
+                'srv_vcg' => $perCustoTMO,
+                'srv_per_des' => $perDesconto,
+                'srv_val_des' => $valDesconto,
+                'srv_vtl' => $valLiquido]);   
 
-        $sum_servicos = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$numOS)->where('srv_req',$requisicao)->wherein('srv_sts',['A','E','F'])->sum('srv_vts');
+        PainelAberturaOSController::atualizaValorRequisicao($empresa, $numOS, $requisicao);
 
-        $updValReq = DB::table('lancamento_srv_os_requisicoes')
-            ->where('req_emp', $empresa)
-            ->where('req_nos', $numOS)
-            ->where('req_seq', $requisicao)
-            ->update(['req_vlr' => $sum_servicos,
-                'req_vls' => $sum_servicos]);  
+        PainelAberturaOSController::atualizaValorOS($empresa, $numOS);
+
+        PainelAberturaOSController::atualizaPrevEntrega($empresa, $numOS);
         
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'TMO atualizada com sucesso!');
     }
@@ -282,14 +347,13 @@ class LancamentoSrvOsServicoController extends Controller
             ->where('srv_tmo', $codTMO)
             ->update(['srv_sts' => 'S']);   
 
-        $sum_servicos = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$numOS)->where('srv_req',$requisicao)->wherein('srv_sts',['A','E','F'])->sum('srv_vts');
+        $sum_servicos = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$numOS)->where('srv_req',$requisicao)->wherein('srv_sts',['A','E','F'])->sum('srv_vtl');
 
-        $updValReq = DB::table('lancamento_srv_os_requisicoes')
-            ->where('req_emp', $empresa)
-            ->where('req_nos', $numOS)
-            ->where('req_seq', $requisicao)
-            ->update(['req_vlr' => $sum_servicos,
-                'req_vls' => $sum_servicos]);  
+        PainelAberturaOSController::atualizaValorRequisicao($empresa, $numOS, $requisicao);
+
+        PainelAberturaOSController::atualizaValorOS($empresa, $numOS); 
+
+        PainelAberturaOSController::atualizaPrevEntrega($empresa, $numOS);
         
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'Serviço suspenso com sucesso!');
     }
@@ -305,14 +369,13 @@ class LancamentoSrvOsServicoController extends Controller
             ->where('srv_tmo', $codTMO)
             ->update(['srv_sts' => 'C']);  
         
-        $sum_servicos = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$numOS)->where('srv_req',$requisicao)->wherein('srv_sts',['A','E','F'])->sum('srv_vts');
+        $sum_servicos = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$numOS)->where('srv_req',$requisicao)->wherein('srv_sts',['A','E','F'])->sum('srv_vtl');
 
-        $updValReq = DB::table('lancamento_srv_os_requisicoes')
-            ->where('req_emp', $empresa)
-            ->where('req_nos', $numOS)
-            ->where('req_seq', $requisicao)
-            ->update(['req_vlr' => $sum_servicos,
-                'req_vls' => $sum_servicos]); 
+        PainelAberturaOSController::atualizaValorRequisicao($empresa, $numOS, $requisicao);
+
+        PainelAberturaOSController::atualizaValorOS($empresa, $numOS); 
+
+        PainelAberturaOSController::atualizaPrevEntrega($empresa, $numOS);
         
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'Serviço cancelado com sucesso!');
     }
@@ -327,6 +390,12 @@ class LancamentoSrvOsServicoController extends Controller
             ->where('srv_seq', $sequencia)
             ->where('srv_tmo', $codTMO)
             ->update(['srv_sts' => 'E']);  
+
+        PainelAberturaOSController::atualizaValorRequisicao($empresa, $numOS, $requisicao);
+
+        PainelAberturaOSController::atualizaValorOS($empresa, $numOS); 
+
+        PainelAberturaOSController::atualizaPrevEntrega($empresa, $numOS);
         
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'Serviço reaberto com sucesso!');
     }
@@ -335,7 +404,60 @@ class LancamentoSrvOsServicoController extends Controller
     public function destroy(LancamentoSrvOsServico $servicoOS, $empresa, $numOS, $requisicao){
 
         $servicoOS->delete();
+
+        //Quando exclui um serviço zera o desconto da requisição
+        $atualiaServico = DB::table('lancamento_srv_os_requisicoes')
+            ->where('req_emp', $empresa)
+            ->where('req_nos', $numOS)
+            ->where('req_seq', $requisicao)
+            ->update(['req_per_des' => 0,
+                'req_val_des' => 0]); 
+
+        PainelAberturaOSController::atualizaValorRequisicao($empresa, $numOS, $requisicao);
+
+        PainelAberturaOSController::atualizaValorOS($empresa, $numOS); 
+
+        PainelAberturaOSController::atualizaPrevEntrega($empresa, $numOS);
         
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'Serviço excluído com sucesso!');
+    }
+
+    //Autoriza o desconto da requisição
+    public function autorizaDescontoTMO(Request $request, $empresa, $numOS, $requisicao, $sequencia, $codTMO)
+    {        
+
+        $usuario = DB::table('users')->where('usuario_codigo', $request->usuarioDesconto)->get();
+
+        if(empty($usuario[0])){
+            return redirect()->back()->with('error', 'O Usuário '.$request->usuarioDesconto.' não existe!');
+        }else{
+
+            if (password_verify($request->senhaDesconto, $usuario[0]->password)) {
+                if($usuario[0]->usuario_aut_desc == 'N'){
+                    return redirect()->back()->with('error', 'O Usuário '.$request->usuarioDesconto.' não tem permissão para autorizar o desconto!');
+                }
+            }else{
+                return redirect()->back()->with('error', 'Senha informada é inválida!');
+            }
+        }
+
+        if($request->liberaDesc == true){
+            $autoriza = 'S';
+            $msg = 'Desconto autorizado com sucesso';
+        }else{
+            $autoriza = 'N';
+            $msg = 'Desconto não autorizado com sucesso';
+        }
+
+        $atualiaServico = DB::table('lancamento_srv_os_servicos')
+            ->where('srv_emp', $empresa)
+            ->where('srv_nos', $numOS)
+            ->where('srv_req', $requisicao)
+            ->where('srv_seq', $sequencia)
+            ->where('srv_tmo', $codTMO)
+            ->update(['srv_aut_desc' => $autoriza,
+                'srv_usu_aut_desc' => $request->usuarioDesconto]);
+
+        return redirect(route('painelOS.consultaServicoRequisicao', ['empresa' => $empresa, 'numOS' => $numOS, 'requisicao' => $requisicao, 'sequencia' => $sequencia, 'codTMO' => $codTMO, 'estagioAPP' => 'MANUTENCAO_SERVICO', 'subEstagioRequisicao' => 'TMO_SELECIONADA']))->with('success', $msg);
     }
 }

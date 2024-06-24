@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('lancamento_srv_etapa_atendimentos', function (Blueprint $table) {
             $table->id('eat_id');
-            $table->biginteger('eat_cod');
+            $table->integer('eat_cod');
             $table->string('eat_emp', 6)->unsigned();
             $table->string('eat_nom', 80);
             $table->integer('eat_ord');

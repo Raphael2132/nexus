@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\LancamentoSrvOsRequisicoes;
 use stdClass;
+use App\Http\Controllers\PainelAberturaOSController;
+use App\Http\Helpers\Helper;
 
 class LancamentoSrvOsRequisicoesController extends Controller
 {
@@ -41,6 +43,7 @@ class LancamentoSrvOsRequisicoesController extends Controller
             'req_vlr' => 0,
             'req_vls' => 0,
             'req_vlp' => 0,
+            'req_vlt' => 0,
             'req_per_des' => 0,
             'req_val_des' => 0
 
@@ -94,7 +97,17 @@ class LancamentoSrvOsRequisicoesController extends Controller
     //Metodo de excluir requisição
     public function destroy(LancamentoSrvOsRequisicoes $requisicaoOS, $empresa, $cliente, $numOS){
 
+        //$desconto_req = DB::table('lancamento_srv_os_requisicoes')->select('req_val_des')->where('req_emp',$empresa)->where('req_nos',$numOS)->where('req_seq',$sequencia)->get();
+
+        //$desconto_os = DB::table('lancamento_srv_os')->select('os_val_des')->where('os_emp',$empresa)->where('os_nos',$numOS)->get();
+
+        //$desconto = $desconto_os - $desconto_req;
+
         $requisicaoOS->delete();
+        
+        PainelAberturaOSController::atualizaValorOS($empresa, $numOS);
+
+        PainelAberturaOSController::atualizaPrevEntrega($empresa, $numOS);
         
         return redirect(route('situacaoOS.carregaOS', ['empresa' => $empresa, 'cliente' => $cliente, 'nos' => $numOS, 'estagioAPP' => 'PRINCIPAL']))->with('success', 'Requisição excluída com sucesso!');
     }

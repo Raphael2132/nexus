@@ -153,7 +153,9 @@ Route::get('/parametros/servico/homeParametrosServicoTMO/ajax', [App\Http\Contro
 
 Route::get('/parametros/servico/formularioParametrosServicoTMO', [App\Http\Controllers\ParametrosSrvTmoController::class, 'cadastro'])->name('parametrosSrvTMO.cadastro');
 Route::get('/parametros/servico/formularioParametrosServicoTMO/{empresa}/{setor}/{codigo}', [App\Http\Controllers\ParametrosSrvTmoController::class, 'editar'])->name('parametrosSrvTMO.editarCadastro');
-Route::get('/parametros/servico/formularioParametrosServicoTMO/{codigo}', [App\Http\Controllers\ParametrosSrvTmoController::class, 'carregaCodSrvAjax'])->name('parametrosSrvTMO.carregaCodSrvAjax');
+Route::get('/parametros/servico/formularioParametrosServicoTMO/ajax/{codigo}', [App\Http\Controllers\ParametrosSrvTmoController::class, 'carregaCodSrvAjax'])->name('parametrosSrvTMO.carregaCodSrvAjax');
+Route::get('/parametros/servico/formularioParametrosServicoTMO/ajax/set/{area}/{empresa}', [App\Http\Controllers\ParametrosSrvTmoController::class, 'carregaSetAjax'])->name('parametrosSrvTMO.carregaSetAjax');
+Route::get('/parametros/servico/formularioParametrosServicoTMO/ajax/resp/{area}/{setor}/{empresa}', [App\Http\Controllers\ParametrosSrvTmoController::class, 'carregaRespAjax'])->name('parametrosSrvTMO.carregaRespAjax');
 Route::post('/parametros/servico/formularioParametrosServicoTMO/insert', [App\Http\Controllers\ParametrosSrvTmoController::class, 'insert'])->name('parametrosSrvTMO.insert');
 Route::post('/parametros/servico/formularioParametrosServicoTMO/update', [App\Http\Controllers\ParametrosSrvTmoController::class, 'update'])->name('parametrosSrvTMO.update');
 Route::delete('/parametros/servico/tmo/{tarefa}/{origem}/destroy', [App\Http\Controllers\ParametrosSrvTmoController::class, 'destroy'])->name('parametrosSrvTMO.destroy');
@@ -208,6 +210,22 @@ Route::post('/cadastros/empresa/editarCadastroEmpresa', [App\Http\Controllers\Ca
 Route::delete('/empresa/editarCadastroEmpresa/{endereco}/destroy', [App\Http\Controllers\CadastroEmpresaEnderecoController::class, 'destroy'])->name('enderecoEmpresa.destroy');
 Route::delete('/empresa/{empresa}/destroy', [App\Http\Controllers\CadastroEmpresaController::class, 'destroy'])->name('empresa.destroy');
 
+/* ********** Rotas de Cadastro de Prestadores ********** */
+Route::get('/cadastros/prestador/homePrestadores', [App\Http\Controllers\HomeController::class, 'homePrestadores'])->name('home.prestadores');
+Route::get('/cadastros/prestador/consultaPrestador/{tipo}', [App\Http\Controllers\CadastroPrestadoresController::class, 'prestadorConsulta'])->name('prestador.consulta');
+Route::get('/cadastros/prestador/formularioPrestador/novo', [App\Http\Controllers\CadastroPrestadoresController::class, 'cadastro'])->name('prestador.cadastro');
+Route::get('/cadastros/prestador/formularioPrestador/ajaxSetor/{area}/{empresa}', [App\Http\Controllers\CadastroPrestadoresController::class, 'carregaSetAjax'])->name('prestador.carregaSetAjax');
+Route::get('/cadastros/prestador/formularioPrestador/ajaxUsuario', [App\Http\Controllers\CadastroPrestadoresController::class, 'carregaUsuAjax'])->name('prestador.carregaUsuAjax');
+Route::get('/cadastros/prestador/formularioPrestador/{dadosPrestador}/{empresa}', [App\Http\Controllers\CadastroPrestadoresController::class, 'editar'])->name('prestador.editarCadastro');
+Route::get('/cadastros/prestador/formularioPrestador/enderecoPrincipal/{endereco}/{prestador_cod}/{empresa}', [App\Http\Controllers\CadastroPrestadoresEnderecoController::class, 'principal'])->name('enderecoPrestador.principal');
+
+Route::post('/cadastros/prestador/formularioPrestador', [App\Http\Controllers\CadastroPrestadoresController::class, 'inserir'])->name('prestador.inserir');
+Route::post('/cadastros/prestador/formularioPrestador/{prestador}/{prestador_cod}/{atualiza}', [App\Http\Controllers\CadastroPrestadoresController::class, 'update'])->name('prestador.atualizar');
+Route::post('/cadastros/prestador/formularioPrestador/endereco/{empresa}', [App\Http\Controllers\CadastroPrestadoresEnderecoController::class, 'inserir'])->name('enderecoPrestador.inserir');
+
+Route::delete('/cadastros/prestador/formularioPrestador/{prestador}/destroy', [App\Http\Controllers\CadastroPrestadoresController::class, 'destroy'])->name('prestador.destroy');
+Route::delete('/cadastros/prestador/formularioPrestador/{endereco}/{empresa}/destroy', [App\Http\Controllers\CadastroPrestadoresEnderecoController::class, 'destroy'])->name('enderecoPrestador.destroy');
+
 /*
 |--------------------------------------------------------------------------
 | Área de Lançamentos
@@ -230,17 +248,22 @@ Route::get('/lancamentos/servico/consultaSituacaoOS/{statusOS}', [App\Http\Contr
 Route::get('/lancamentos/servico/consultaSituacaoOS/painelAberturaOS/{empresa}/{cliente}/{nos}/{estagioAPP}', [App\Http\Controllers\LancamentoSrvOsController::class, 'carregaOS'])->name('situacaoOS.carregaOS');
 
 /* ********** Rotas do painel de Abertura de OS - Contrele Utilizado: LancamentoSrvOsController ********** */
-Route::post('/lancamentos/servico/painelAberturaOS/orcamento/gerar/{empresa}/{numOS}', [App\Http\Controllers\LancamentoSrvOsController::class, 'abrirOrcamento'])->name('painelOS.abrirOrcamento');
+Route::post('/lancamentos/servico/painelAberturaOS/orcamento/gerar/{empresa}/{numOS}/{stsOS}/{stsOrc}/{cliente}/{dtOS}', [App\Http\Controllers\LancamentoSrvOsController::class, 'abrirOrcamento'])->name('painelOS.abrirOrcamento');
 Route::post('/lancamentos/servico/painelAberturaOS/previsaoEntrega/atualizar/{empresa}/{numOS}/{cliente}', [App\Http\Controllers\LancamentoSrvOsController::class, 'atualizaPrevEntrega'])->name('painelOS.atualizaPrevEntrega');
+Route::post('/lancamentos/servico/painelAberturaOS/observacao/{empresa}/{numOS}', [App\Http\Controllers\LancamentoSrvOsController::class, 'atualizaObservacao'])->name('lancamentoOS.atualizaObservacao');
+Route::post('/lancamentos/servico/painelAberturaOS/trocaClienteFatura/{empresa}/{numOS}', [App\Http\Controllers\LancamentoSrvOsController::class, 'atualizaCliFatura'])->name('lancamentoOS.atualizaCliFatura');
+Route::post('/lancamentos/servico/painelAberturaOS/descontoOS/{empresa}/{numOS}', [App\Http\Controllers\LancamentoSrvOsController::class, 'atualizaDescontoOS'])->name('lancamentoOS.atualizaDescontoOS');
 
 /* ********** Rotas do painel de Abertura de OS - Contrele Utilizado: PainelAberturaOSController ********** */
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/consulta/{empresa}/{nos}/{estagioAPP}/{requisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'consultaRequisicao'])->name('painelOS.consultaRequisicao');
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/abrir/{empresa}/{nos}/{estagioAPP}/{glo_eat_cod}', [App\Http\Controllers\PainelAberturaOSController::class, 'abreRequisicao'])->name('painelOS.abreRequisicao');
-Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/abrir/{empresa}/{setor}/{estagioAPP}/{subEstagioRequisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'abrirServicoRequisicao'])->name('painelOS.abrirServicoRequisicao');
+Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/abrir/{empresa}/{area}/{setor}/{estagioAPP}/{subEstagioRequisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'abrirServicoRequisicao'])->name('painelOS.abrirServicoRequisicao');
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/consulta/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}/{estagioAPP}/{subEstagioRequisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'consultaServicoRequisicao'])->name('painelOS.consultaServicoRequisicao');
-Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/selecionar/{empresa}/{setor}/{codigo}/{estagioAPP}/{subEstagioRequisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'selecionarTMO'])->name('painelOS.selecionarTMO');
+Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/selecionar/{empresa}/{area}/{setor}/{codigo}/{estagioAPP}/{subEstagioRequisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'selecionarTMO'])->name('painelOS.selecionarTMO');
 Route::get('/lancamentos/servico/painelAberturaOS/previsaoEntrega/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'previsaoEntregaOS'])->name('painelOS.previsaoEntregaOS');
 Route::get('/lancamentos/servico/painelAberturaOS/orcamento/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'orcamentoOS'])->name('painelOS.orcamentoOS');
+Route::get('/lancamentos/servico/painelAberturaOS/total/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'totalOS'])->name('painelOS.totalOS');
+Route::get('/lancamentos/servico/painelAberturaOS/encerraOS/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'encerraOS'])->name('painelOS.encerraOS');
 Route::get('/lancamentos/servico/painelAberturaOS/orcamento/impressao/pdf/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'orcamentoGerarPDF'])->name('painelOS.orcamentoPDF');
 
 /* ********** Rotas do painel de Abertura de OS - Contrele Utilizado: LancamentoSrvOsRequisicoesController ********** */
@@ -260,6 +283,29 @@ Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/cancelar/{e
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/reabrir/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'reabrirServico'])->name('servicoOS.reabrir');
 
 Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/inserir/{empresa}/{numOS}/{requisicao}/{codTMO}/{estagioAPP}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'inserir'])->name('servicoOS.inserir');
-Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/atualizar/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}/{estagioAPP}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'update'])->name('servicoOS.atualizar');
+Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/atualizar/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}/{estagioAPP}/{tos}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'update'])->name('servicoOS.atualizar');
+Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/desconto/autoriza/{empresa}/{numOS}/{requisicao}/{sequencia}/{tmo}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'autorizaDescontoTMO'])->name('requisicaoOS.autorizaDescTMO');
 
 Route::delete('/lancamentos/servico/painelAberturaOS/requisicao/servico/{servicoOS}/{empresa}/{numOS}/{requisicao}/destroy', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'destroy'])->name('servicoOS.destroy');
+
+/*
+|--------------------------------------------------------------------------
+| Área de Faturamento
+|--------------------------------------------------------------------------
+|
+| Área destina as rotas envolvidas no lançamento de informações.
+|
+*/
+
+/* ********** Rotas de Emissao de NF ********** */
+Route::get('/faturamento/notas/controleEmissaoNF', [App\Http\Controllers\HomeController::class, 'emissaoNF'])->name('home.emissaoNF');
+
+Route::get('/faturamento/notas/consultaEmissaoNF', [App\Http\Controllers\FaturamentoNfHeaderController::class, 'consultaNF'])->name('emissaoNF.consultaNF');
+Route::get('/faturamento/notas/painelEmissaoNF/{empresa}/{cliente}/{nfSelecionada}', [App\Http\Controllers\FaturamentoNfHeaderController::class, 'painelNF'])->name('emissaoNF.painelNF');
+
+Route::get('/faturamento/notas/controleGeracaoNF/{empresa}/{cliente}/{nfSelecionada}', [App\Http\Controllers\FaturamentoGeracaoNfController::class, 'gerarNF'])->name('emissaoNF.gerarNF');
+
+/* ********** Rotas de Reemissao de NF ********** */
+Route::get('/faturamento/notas/controleReemissaoNF', [App\Http\Controllers\HomeController::class, 'reemissaoNF'])->name('home.reemissaoNF');
+
+Route::get('/faturamento/notas/consultaReemissaoNF', [App\Http\Controllers\FaturamentoNfHeaderController::class, 'consultaReemissaoNF'])->name('reemissaoNF.consultaReemissaoNF');

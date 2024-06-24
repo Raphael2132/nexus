@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('lancamento_srv_os', function (Blueprint $table) {
             $table->id('os_id');
-            $table->biginteger('os_nos');//numero da os -> sequencia sq_lancamento_srv_numero_os
+            $table->integer('os_nos');//numero da os -> sequencia sq_lancamento_srv_numero_os
             $table->string('os_emp', 6);//empresa da os -> tabela cadastro_empresas.empresa_codigo
             $table->string('os_cli', 10);//cliente da os -> tabela cadastro_clientes.cliente_codigo
-            $table->biginteger('os_cli_end');//endereço do cliente da os -> tabela cadastro_clientes.cliente_codigo
+            $table->integer('os_cli_end');//endereço do cliente da os -> tabela cadastro_clientes.cliente_codigo
             $table->dateTime('os_dha');//data e hora da abertura da os
             $table->string('os_res_abr', 6);//responsavel abertura da os -> tabela users.usuario_codigo
             $table->dateTime('os_dhf')->nullable();//data e hora do fechamento da os
@@ -25,22 +25,25 @@ return new class extends Migration
             $table->date('os_dt_apr')->nullable();//data aprovação da os
             $table->string('os_res_apr', 6)->nullable();//responsavel aprovação da os -> tabela users.usuario_codigo
             $table->date('os_dt_orc')->nullable();//data orcamento
-            $table->biginteger('os_num_orc')->nullable();//numero orcamento
+            $table->integer('os_num_orc')->default(0);//numero orcamento
             $table->date('os_dtc')->nullable();//data camcelamento os
             $table->string('os_res_can', 6)->nullable();//responsavel cancelamento -> tabela users.usuario_codigo
             $table->date('os_dpe')->nullable();//data previsão de entrega
-            $table->decimal('os_hpe', 4,0)->nullable();//hora previsão de entrega
-            $table->decimal('os_qtd_hr', 5,2)->nullable();//quantidade de horas de serviços
-            $table->decimal('os_vlt', 15,2)->nullable();//valor total - com desconto - liquido
-            $table->decimal('os_vos', 15,2)->nullable();//valor os - serviço + produtos - bruto
-            $table->decimal('os_vls', 15,2)->nullable();//valor valor servico
-            $table->decimal('os_vlp', 15,2)->nullable();//valor produtos
-            $table->enum('os_tip_des', ['1', '2'])->default('1');/* Tipo do valor de desconto -> 1 valor / 2 % do valor */
-            $table->decimal('os_per_des', 3,2)->nullable();//percentual desconto
-            $table->decimal('os_val_des', 15,2)->nullable();//valor desconto
+            $table->decimal('os_hpe', 4,0)->default(0);//hora previsão de entrega
+            $table->decimal('os_qtd_hr', 5,2)->default(0);//quantidade de horas de serviços
+            $table->decimal('os_vlt', 15,2)->default(0);//valor total liquido da os com descontos
+            $table->decimal('os_vlr', 15,2)->default(0);//valor total bruto da os - serviço + produtos
+            $table->decimal('os_vls', 15,2)->default(0);//valor servico
+            $table->decimal('os_vlp', 15,2)->default(0);//valor produtos
+            $table->enum('os_tip_des', ['1', '2'])->default('1');/* Tipo do valor de desconto da os -> 1 valor / 2 % do valor */
+            $table->decimal('os_per_des', 5,2)->default(0);//percentual desconto da os
+            $table->decimal('os_val_des', 15,2)->default(0);//valor desconto da os
+            $table->decimal('os_val_des_srv', 15,2)->default(0);//valor total de desconto da requisição
             $table->enum('os_cli_agr', ['S', 'N'])->default('N');//cliente aguarda serviço
             $table->enum('os_cli_avs', ['S', 'N'])->default('S');//avisa cliente termino serviço
             $table->enum('os_sts', ['C', 'F', 'A'])->default('A');//status da tarefa do serviço - finalizado, cancelado, aberto
+            $table->string('os_cli_fatura', 10);//cliente a faturar nota da os -> tabela cadastro_clientes.cliente_codigo
+            $table->string('os_observacao', 255)->nullable();//observações da os
             $table->timestamps();
             $table->unique(['os_emp','os_nos'], 'ak_lancamento_srv_os');
         });
