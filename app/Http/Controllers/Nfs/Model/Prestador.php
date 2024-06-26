@@ -27,7 +27,7 @@ class Prestador {
 
     public function __construct(string $empresa, int $numero, int $numControle){
         
-        echo "<br> Entrei Model Prestador <br>";
+        //echo "<br> Entrei Model Prestador <br>";
 
         $sql = "SELECT 
                     insc_municipal, 
@@ -74,7 +74,7 @@ class Prestador {
         $this->cep = $dados->cep;
         $this->pais = $dados->pais;
 
-        echo "<br> Teste dados Prestador: ".$this->razaoPrestador." <br>";
+        //echo "<br> Teste dados Prestador: ".$this->razaoPrestador." <br>";
 
         unset($rs);
         unset($dados);

@@ -28,7 +28,7 @@ class Tomador {
 
     public function __construct(string $empresa, int $numero, int $numControle){
 
-        echo "<br> Entrei Model Tomador <br>";
+        //echo "<br> Entrei Model Tomador <br>";
 
         $sql = "SELECT  
                     insc_municipal, 
@@ -76,7 +76,7 @@ class Tomador {
         $this->email = $dados->email;
         $this->codigoCidadeIBGE = $dados->cod_ibge_mun_tomador;
         
-        echo "<br> Teste dados Tomador: ".$this->nomeTomador." <br>";
+        //echo "<br> Teste dados Tomador: ".$this->nomeTomador." <br>";
 
         unset($rs);
         unset($dados);

@@ -16,7 +16,7 @@ class Servico {
 
     public function carregaServicos($empresa, $numero, $numControle)
     {
-        echo "<br> Entrei Model Servico <br>";
+        //echo "<br> Entrei Model Servico <br>";
 
         $itens = array();
 
@@ -47,9 +47,9 @@ class Servico {
             $itens[] = $item;
         }
 
-        echo "<br> Teste Model Servico <br>";
-        var_dump($itens);
-        echo "<br>";
+        //echo "<br> Teste Model Servico <br>";
+        //var_dump($itens);
+        //echo "<br>";
 
         unset($rs);
 

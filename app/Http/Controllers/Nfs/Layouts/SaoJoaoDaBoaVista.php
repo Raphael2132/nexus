@@ -18,7 +18,7 @@ class SaoJoaoDaBoaVista{
     
     public static function nfsxml(Nfsxml $nfsxml){
 
-        echo "<br> Entrei no gerarXML <br>";
+        //echo "<br> Entrei no gerarXML <br>";
         
         $cabecalho = $nfsxml->nfs->cabecalho;
         $prestador = $nfsxml->nfs->prestador;
@@ -154,19 +154,19 @@ class SaoJoaoDaBoaVista{
 
         $dom->appendChild($xmlProcessaNFS);
 
-        echo "<pre>".htmlentities($dom->saveXML())."</pre>";
+        //echo "<pre>".htmlentities($dom->saveXML())."</pre>";
 
         return $dom;
     }
 
     public static function startConnection(Nfsxml $nfsxml, $documentoXML){
 
-        echo "<br> Entrei no startConnection <br>";
+        //echo "<br> Entrei no startConnection <br>";
 
         //Quando tiver acesso a prefeitura resolver como vai usar os parametros
         $parametros = $nfsxml->nfs->parametros;
 
-        var_dump($parametros);
+        //var_dump($parametros);
 
         //echo "<pre>".htmlentities($documentoXML->saveHTML())."</pre>";
 
@@ -180,7 +180,7 @@ class SaoJoaoDaBoaVista{
                 }
             )->post('http://webservice.intertecsolucoes.com.br/WSNfsesPsjv/nfseresources/ws/v2/emissao/simula',['body' => $documentoXML]);
 
-            echo "<pre>".htmlentities(utf8_encode($response->getBody()))."</pre>";
+            //echo "<pre>".htmlentities(utf8_encode($response->getBody()))."</pre>";
             //echo $response->getStatusCode();
             //echo $response->getHeader('content-type')[0];
             //echo $response->getContents();
@@ -219,7 +219,7 @@ class SaoJoaoDaBoaVista{
                 $dom->formatOutput = true;
                 $dom->loadXML(trim($xmlRetorno));
 
-                echo "<pre>".htmlentities($dom->saveXML())."</pre>";//Terminamos a simulação de retorno, excluir até aki quando tiver acesso
+                //echo "<pre>".htmlentities($dom->saveXML())."</pre>";//Terminamos a simulação de retorno, excluir até aki quando tiver acesso
 
                 //Salva o xml de retorno da prefeitura
                 $nomeArquivoRetorno = Config::gerarNomeArquivoRetorno($nfsxml);
@@ -244,9 +244,9 @@ class SaoJoaoDaBoaVista{
 
     public static function processaRetorno($nfsxml, $retorno, $stsConexao, $msgErroConexao, $pathRetorno){
         
-        echo "<br> Entrei no processaRetorno <br>";
+        //echo "<br> Entrei no processaRetorno <br>";
 
-        echo "<br>Sts Con: ".$stsConexao." / Erro: ".$msgErroConexao."<br>";
+        //echo "<br>Sts Con: ".$stsConexao." / Erro: ".$msgErroConexao."<br>";
 
         //Verifica se a nota ja existe na tabela de envios
         $cntEnv = DB::table('faturamento_nfs_xml_envios')->where('nfsenv_emp', $nfsxml->empresa)->where('nfsenv_num', $nfsxml->nfs->numero)->count();
@@ -282,12 +282,12 @@ class SaoJoaoDaBoaVista{
             $xmlRet = file_get_contents($pathRetorno);
 
             // Exibir os valores
-            echo "Numero Nota: $numeroNota<br>";
-            echo "Numero RPS: $numeroRps<br>";
-            echo "Codigo Verificacao: $codigoVerificacao<br>";
-            echo "Status Emissao: $statusEmissao<br>";
-            echo "Mensagem: $messageText<br>";
-            echo "Codigo: $messageCode<br> <br>";
+            //echo "Numero Nota: $numeroNota<br>";
+            //echo "Numero RPS: $numeroRps<br>";
+            //echo "Codigo Verificacao: $codigoVerificacao<br>";
+            //echo "Status Emissao: $statusEmissao<br>";
+            //echo "Mensagem: $messageText<br>";
+            //echo "Codigo: $messageCode<br> <br>";
 
             //Se ja existe faz update se não existe faz insert
             if($cntEnv == 0){

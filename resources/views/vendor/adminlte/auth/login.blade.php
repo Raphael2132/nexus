@@ -92,7 +92,7 @@
             </a>
         </p>
     @endif
-
+    <!-- No projeto não usaremos o cadastro de novo usuario por segurança
     {{-- Register link --}}
     @if($register_url)
         <p class="my-0">
@@ -101,4 +101,30 @@
             </a>
         </p>
     @endif
+    -->
 @stop
+
+<!-- Se surgir uma boa imagem de fundo usar aqui
+@section('css')
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-image: url('https://pt.lovepik.com/images/png-1619156.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+    .login-container {
+        background: rgba(255, 255, 255, 0.8); /* Fundo branco com transparência */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+</style>
+@stop
+-->

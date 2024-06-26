@@ -19,7 +19,7 @@ class Cabecalho {
 
     public function __construct(string $empresa, int $numero, int $numControle){
 
-        echo "<br> Entrei Model Cabecalho <br>";
+        //echo "<br> Entrei Model Cabecalho <br>";
 
         $sql = "SELECT 
                     cod_mun_empresa, 
@@ -50,7 +50,7 @@ class Cabecalho {
         $this->valorTotalNota = $dados->valor_tot_nota;
         $this->observacaoNota = $dados->observacao_nfs;
         
-        echo "<br> Teste dados Cabecalho: ".$this->razaoEmp." <br>";
+        //echo "<br> Teste dados Cabecalho: ".$this->razaoEmp." <br>";
         
         unset($rs);
         unset($dados);

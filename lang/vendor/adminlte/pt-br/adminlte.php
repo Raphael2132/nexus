@@ -14,7 +14,8 @@ return [
     'sign_in'                     => 'Entrar',
     'log_out'                     => 'Sair',
     'toggle_navigation'           => 'Trocar navegação',
-    'login_message'               => 'Entre para iniciar uma nova sessão',
+    //'login_message'               => 'Entre para iniciar uma nova sessão',
+    'login_message'               => 'Fusion Tech',//aki deve ir o nome da empresa pega por variavel
     'register_message'            => 'Registrar um novo membro',
     'password_reset_message'      => 'Recuperar senha',
     'reset_password'              => 'Recuperar senha',

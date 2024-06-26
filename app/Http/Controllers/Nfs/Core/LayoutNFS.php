@@ -15,7 +15,7 @@ class LayoutNFS{
 
     public function __construct(Nfsxml $nfs){
 
-        echo "<br> Entrei no LayoutNFS <br>";
+        //echo "<br> Entrei no LayoutNFS <br>";
 
         static::$nfsxml = $nfs;
         $this->config = Config::getInstance(static::$nfsxml);
@@ -23,7 +23,7 @@ class LayoutNFS{
 
     public function gerarXML(){
 
-        echo "<br> Entrei no gerarXML <br>";
+       // echo "<br> Entrei no gerarXML <br>";
         
         $layout = $this->config->layout;
 
@@ -36,13 +36,13 @@ class LayoutNFS{
                 break;
         }
         
-        echo "<br> Finalizei o xml <br>";
+        //echo "<br> Finalizei o xml <br>";
     }
 
     public function gravaXML()
     {
 
-        echo "<br> Entrei no gravaXML <br>";
+        //echo "<br> Entrei no gravaXML <br>";
 
         $nomeArquivoDownload = Config::gerarNomeArquivo(static::$nfsxml);
         $path = $this->config->pathDownload;
@@ -56,11 +56,11 @@ class LayoutNFS{
     public function enviarXML()
     {
 
-        echo "<br> Entrei no enviarXML <br>";
+        //echo "<br> Entrei no enviarXML <br>";
 
         $layout = $this->config->layout;
 
-        echo "<pre>".htmlentities($this->documentoXML->saveHTML())."</pre>";
+       // echo "<pre>".htmlentities($this->documentoXML->saveHTML())."</pre>";
 
         switch ($layout) {
             case 1:

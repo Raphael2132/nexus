@@ -18,6 +18,7 @@
         @yield('title', config('adminlte.title', 'AdminLTE 3'))
         @yield('title_postfix', config('adminlte.title_postfix', ''))
     </title>
+    <link rel="icon" href="{{asset('img/sistema/icone_nexus.png')}}" type="image/png">
 
     {{-- Custom stylesheets (pre AdminLTE) --}}
     @yield('adminlte_css_pre')

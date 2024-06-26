@@ -34,7 +34,7 @@ class NFS {
         $this->numero = $numero;
         $this->serie = $serie;
         $this->numControle = $numControle;
-        echo "<br> Iniciando NFS <br>";
+        //echo "<br> Iniciando NFS <br>";
         $this->iniciaNFS();
 
     }
@@ -46,9 +46,9 @@ class NFS {
 
     public function iniciaNFS(){
 
-        echo "<br> metodo iniciaNFS <br>";
+        //echo "<br> metodo iniciaNFS <br>";
         
-        echo "<br> dados: ".$this->empresa." / ".$this->numero." / ".$this->serie." / ".$this->numControle." <br>";
+        //echo "<br> dados: ".$this->empresa." / ".$this->numero." / ".$this->serie." / ".$this->numControle." <br>";
 
         $sql = "SELECT 
                     nfs_dt_emi, 
@@ -77,35 +77,12 @@ class NFS {
 
         $this->valorTotalDeducoes = $dados->nfs_vlr_ded;
 
-        echo "<br> dados: ".$this->dataEmissao." / ".$this->horaEmissao." / ".$this->situacao." / ".$this->valorTotalServicos." / ".$this->valorTotalDeducoes." <br>";
+        //echo "<br> dados: ".$this->dataEmissao." / ".$this->horaEmissao." / ".$this->situacao." / ".$this->valorTotalServicos." / ".$this->valorTotalDeducoes." <br>";
 
         unset($rs);
         unset($dados);
 
-        /*
-        $sql = "SELECT RPD_TXTSER  
-                FROM TB_FATRPD  
-                WHERE rpd_codemi = '".$this->empresa."' and 
-                      trim(rpd_serrps) = trim('".$this->serie."') and  
-                      rpd_numrps = ".$this->numero." and RPD_SEQUEN  >= 900";
-
-        $rs = DB::select($sql);
-
-        $qtdLinhas = count($rs);
-        $i = 1;
-        foreach ($rs as $linha) {
-            $this->descricao .= trim($linha['RPD_TXTSER']);
-
-            if($i < $qtdLinhas){
-                $this->descricao .= ' ';
-            }
-        }
-
-        unset($rs);
-        */
-
-
-        echo "<br> Vou começar a montar os Models <br>";
+        //echo "<br> Vou começar a montar os Models <br>";
         
         $this->cabecalho = new Cabecalho($this->empresa, $this->numero, $this->numControle);
 

@@ -25,7 +25,7 @@ class Config{
     public static function getInstance($nfsxml)
     {
 
-        echo "<br> Entrei no Config <br>";
+        //echo "<br> Entrei no Config <br>";
 
         $instance = null;
         if (null === self::$instance) {
@@ -41,7 +41,7 @@ class Config{
 
     private function setLayout($empresa){
 
-        echo "<br> Entrei no setLayout <br>";
+        //echo "<br> Entrei no setLayout <br>";
 
         $sql = "select parnfs_provedor from parametros_fat_nfs where parnfs_empresa = '".$empresa."'";
 
@@ -53,57 +53,24 @@ class Config{
 		else{
             $this->layout = $rs[0]->parnfs_provedor;
         }
-        echo "<br> Provedor: ".$this->layout." <br>";
+       // echo "<br> Provedor: ".$this->layout." <br>";
     }
 
     private function setXMLPath($cnpj){
         
-        echo "<br> Entrei no setXMLPath <br>";
+        //echo "<br> Entrei no setXMLPath <br>";
 
-        /*
-        $erro = 'N';
-        $arquivo_conf = "/etc/serconsvr/nfsemgrd.conf";
-
-        if(!is_file($arquivo_conf)){
-            
-            $arquivo_conf = "/etc/extsvr/nfsemgrd.conf";
-
-            if(!is_file($arquivo_conf)){
-                $erro = 'S';
-            }
-        }
-
-        if($erro == 'S'){
-
-            throw new Exception('Config:: Arquivo de configuracao do Servico de RPS nao encontrado');
-
-        }else{
-            $confs = Misc::iniParser($arquivo_conf);
-            
-            foreach ($confs as $conf) {
-                if($conf['CNPJ'] == $cnpj){
-
-                    $dir = $conf['DIR'];
-
-                    if(substr($dir, -1) != '/')
-                        $dir .= '/';
-
-                    $this->path = $dir;
-                }
-            }
-        }
-        */
         $this->path = $_SERVER['DOCUMENT_ROOT'];//Por hora vai no root quando estiver em servidor ver como vai ficar
         $this->pathDownload = $_SERVER['DOCUMENT_ROOT'].'\\'.$cnpj.'\file\doc\nfsxml\envio\\';
         $this->pathDownloadRetorno = $_SERVER['DOCUMENT_ROOT'].'\\'.$cnpj.'\file\doc\nfsxml\retorno\\';
 
-        echo "<br> Teste setXMLPath: path: ".$this->path.' / pathDownload: '.$this->pathDownload."<br>";
+        //echo "<br> Teste setXMLPath: path: ".$this->path.' / pathDownload: '.$this->pathDownload."<br>";
     }
 
     /* Verifica se o diretório onde é gravado o XML para download existe e caso nõa exista cria-lo */
     private function checkPathDownload(){
         
-        echo "<br> Entrei no checkPathDownload <br>";
+        //echo "<br> Entrei no checkPathDownload <br>";
 
         if(!file_exists($this->pathDownload)){
             $status = mkdir($this->pathDownload, 0775, true);
@@ -125,10 +92,10 @@ class Config{
     public static function gerarNomeArquivo(Nfsxml $nfsxml)
     {
 
-        echo "<br> Entrei no gerarNomeArquivo <br>";
+        //echo "<br> Entrei no gerarNomeArquivo <br>";
         $nomeArquivo = "nfs_".$nfsxml->empresa."_".$nfsxml->nfs->numero.".xml";
 
-        echo "<br> Nome Arquivo: ".$nomeArquivo."<br>";
+        //echo "<br> Nome Arquivo: ".$nomeArquivo."<br>";
 
         return $nomeArquivo;
     }
@@ -136,10 +103,10 @@ class Config{
     public static function gerarNomeArquivoRetorno(Nfsxml $nfsxml)
     {
 
-        echo "<br> Entrei no gerarNomeArquivo <br>";
+        //echo "<br> Entrei no gerarNomeArquivo <br>";
         $nomeArquivo = "retorno_nfs_".$nfsxml->empresa."_".$nfsxml->nfs->numero.".xml";
 
-        echo "<br> Nome Arquivo Retorno: ".$nomeArquivo."<br>";
+        //echo "<br> Nome Arquivo Retorno: ".$nomeArquivo."<br>";
 
         return $nomeArquivo;
     }

@@ -31,13 +31,13 @@ class FaturamentoGeracaoNfController extends Controller
         }
 
         //Gera o xml de envio
-        echo "<br> iniciando o Nfsxml <br>";
+        //echo "<br> iniciando o Nfsxml <br>";
         $nfsxml = new Nfsxml($empresa, $nfSelecionada);
 
         //envia o xml
-        echo "<br> Finalizei a criação do xml na instanciação da classe Nfsxml <br>";
+        //echo "<br> Finalizei a criação do xml na instanciação da classe Nfsxml <br>";
         
-        echo "<br> iniciando a emissão da nfs <br>";
+        //echo "<br> iniciando a emissão da nfs <br>";
 
         $nfsxml->emitirNFS();
 

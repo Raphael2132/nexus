@@ -16,7 +16,7 @@ class Parametros {
 
     public function __construct(string $empresa){
 
-        echo "<br> Entrei Model Parametros <br>";
+        //echo "<br> Entrei Model Parametros <br>";
 
         $sql = "SELECT  
                     conexao_provedor,
@@ -39,7 +39,7 @@ class Parametros {
         $this->tokenConexao = $dados->conexao_token;
         $this->ambiente = $dados->conexao_ambiente;
 
-        echo "<br> Teste dados Parametros: ".$this->ambiente." <br>";
+        //echo "<br> Teste dados Parametros: ".$this->ambiente." <br>";
 
         unset($rs);
         unset($dados);

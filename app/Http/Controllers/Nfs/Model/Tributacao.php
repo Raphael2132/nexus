@@ -27,7 +27,7 @@ class Tributacao {
 
     public function __construct(string $empresa, int $numero, int $numControle){
         
-        echo "<br> Entrei Model Tributacao <br>";
+        //echo "<br> Entrei Model Tributacao <br>";
 
         $sql = "SELECT  
                     aliq_atividade, 
@@ -73,7 +73,7 @@ class Tributacao {
         $this->valorISSRetido = $dados->valor_iss_retido;
         $this->aliqISS = $dados->aliq_iss;
 
-        echo "<br> Teste dados Tributacao: ".$this->issRetido." <br>";
+        //echo "<br> Teste dados Tributacao: ".$this->issRetido." <br>";
 
         unset($rs);
         unset($dados);

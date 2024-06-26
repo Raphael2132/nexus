@@ -15,11 +15,45 @@
 
 @section('classes_body'){{ ($auth_type ?? 'login') . '-page' }}@stop
 
-@section('body')
-    <div class="{{ $auth_type ?? 'login' }}-box">
+<style>
+body {
+    background:url(html/index/img/pw_maze_black_2X.png) left top repeat !important;
+    background-size: auto !important;
+}
+.container {
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    height: 100vh; /* Altura total da viewport, ajuste conforme necessário */
+}
+.header{
+    width: 100%; 
+    height: 100%;
+    background:url(/img/sistema/fundo3.png) center top no-repeat !important;
+    background-size: contain !important;
+}
+</style>
 
-        {{-- Logo --}}
-        <div class="{{ $auth_type ?? 'login' }}-logo">
+@section('body')
+<div class="d-flex justify-content-center header">
+<div class="col-md-2">
+    <div class="{{ $auth_type ?? 'login' }}-box container" style="width: 100%;">
+
+
+        {{-- Card Box --}}
+        <div class="card {{ config('adminlte.classes_auth_card', 'card-outline card-primary') }} " style="">
+
+            {{-- Card Header --}}
+            @hasSection('auth_header')
+                <div class="card-header {{ config('adminlte.classes_auth_header', '') }}" >
+                    <h1 class="card-title float-none text-center" style="font-size: 20pt;">
+                        @yield('auth_header')
+                    </h1>
+                </div>
+            @endif
+
+            {{-- Logo --}}
+        <div class="{{ $auth_type ?? 'login' }}-logo" style="padding: 0px 30px 0px 30px;">
             <a href="{{ $dashboard_url }}">
 
                 {{-- Logo Image --}}
@@ -41,22 +75,10 @@
                 @endif
 
                 {{-- Logo Label --}}
-                {!! config('adminlte.logo', '<b>Admin</b>LTE') !!}
+                <!--{!! config('adminlte.logo', '<b>Admin</b>LTE') !!}-->
 
             </a>
         </div>
-
-        {{-- Card Box --}}
-        <div class="card {{ config('adminlte.classes_auth_card', 'card-outline card-primary') }}">
-
-            {{-- Card Header --}}
-            @hasSection('auth_header')
-                <div class="card-header {{ config('adminlte.classes_auth_header', '') }}">
-                    <h3 class="card-title float-none text-center">
-                        @yield('auth_header')
-                    </h3>
-                </div>
-            @endif
 
             {{-- Card Body --}}
             <div class="card-body {{ $auth_type ?? 'login' }}-card-body {{ config('adminlte.classes_auth_body', '') }}">
@@ -72,6 +94,8 @@
 
         </div>
 
+    </div>
+    </div>
     </div>
 @stop
 
