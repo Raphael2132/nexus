@@ -33,6 +33,7 @@ require __DIR__.'/auth.php';
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/contato', [App\Http\Controllers\HomeController::class, 'contato'])->name('contato');
 Route::get('fiscal', [App\Http\Controllers\HomeController::class, 'fiscal'])->name('fiscal');
 Route::get('bancos', [App\Http\Controllers\HomeController::class, 'bancos'])->name('bancos');
 

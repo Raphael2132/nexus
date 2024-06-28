@@ -212,6 +212,11 @@ class HomeController extends Controller
             'qtdCliMes' => $qtdCliMes]);
     }
 
+    public function contato()
+    {
+        return view('contato');
+    }
+
     public function fiscal()
     {
         return view('fiscal');

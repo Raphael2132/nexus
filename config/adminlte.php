@@ -293,8 +293,18 @@ return [
     'menu' => [
         // Navbar items:
         [
+            'text' => 'Home',
+            'url' => 'home',
+            'topnav' => true,
+        ],
+        [
+            'text' => 'Contato',
+            'url' => 'contato',
+            'topnav' => true,
+        ],
+        [
             'type'         => 'navbar-search',
-            'text'         => 'search',
+            'text'         => 'Pesquisar',
             'topnav_right' => true,
         ],
         [
@@ -313,7 +323,7 @@ return [
         // Sidebar items:
         [
             'type' => 'sidebar-menu-search',
-            'text' => 'search',
+            'text' => 'Pesquisar',
         ],
         [
             'text' => 'blog',
