@@ -20,6 +20,7 @@ use App\Models\LancamentoSrvEtapaAtendimento;
 use App\Models\CadastroPrestadores;
 use Illuminate\Http\Request;
 use stdClass;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -72,12 +73,143 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
-    }
+        $dadosOS = $this->lancamentosOS->orderby('os_dha', 'desc')->limit(5)->get();
+        $dadosNFS = DB::table('faturamento_nfs')->limit(5)->orderby('nfs_dt_emi', 'desc')->orderby('nfs_nnfs', 'desc')->get();
 
-    public function indexInicial()
-    {
-        return view('homePrincipal');
+        //Data da semana atual
+        $dt1 = date('Y-m-d');
+        $dt2 = date('Y-m-d', strtotime('-6 days'));
+
+        //Data da semana passada
+        $dt3 = date('Y-m-d', strtotime('-7 days'));
+        $dt4 = date('Y-m-d', strtotime('-14 days'));
+
+        $qtdNFSfin = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->whereBetween('nfs_dt_emi', [$dt2, $dt1])->count();
+        $qtdNFSini = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->whereBetween('nfs_dt_emi', [$dt4, $dt3])->count();
+
+        if($qtdNFSini > $qtdNFSfin){
+            if(!empty($qtdNFSfin)){
+                $perNfsSemana = (($qtdNFSfin - $qtdNFSini) / $qtdNFSfin) * 100;
+            }else{
+                $perNfsSemana = -100;
+            }
+        }else{
+            if(!empty($qtdNFSini)){
+                $perNfsSemana = (($qtdNFSfin - $qtdNFSini) / $qtdNFSini) * 100;
+            }else{
+                $perNfsSemana = 0;
+            }
+        }
+
+        //Seta a data para português
+        setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese'); 
+        //date_default_timezone_set('America/Sao_Paulo');
+
+        $diasSemana = "[";
+        $qtdSemAtu = "[";
+        $qtdSemPas = "[";
+
+        $semAtual = 6;
+        $semPassada = 13;
+
+        for($i = 1; $i < 8; $i++){
+
+            $dtAtu = date('Y-m-d', strtotime('-'.$semAtual.' days'));
+            $dtPas = date('Y-m-d', strtotime('-'.$semPassada.' days'));
+
+            $diaSem = utf8_encode(ucfirst(strftime("%A", strtotime($dtAtu))));
+
+            $nfsSemAtu = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->where('nfs_dt_emi', $dtAtu)->count();
+            $nfsSemPas = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->where('nfs_dt_emi', $dtPas)->count();
+
+            if($semAtual == 0){
+                $diasSemana .= "'".$diaSem."'";
+                $qtdSemAtu .= "'".$nfsSemAtu."'";
+                $qtdSemPas .= "'".$nfsSemPas."'";
+            }else{
+                $diasSemana .= "'".$diaSem."',";
+                $qtdSemAtu .= "'".$nfsSemAtu."',";
+                $qtdSemPas .= "'".$nfsSemPas."',";
+            }
+
+            $semAtual -= 1;
+            $semPassada -= 1;
+        }
+
+        $diasSemana .= "]";
+        $qtdSemAtu .= "]";
+        $qtdSemPas .= "]";
+
+        
+        //Resumo Geral da Empresa no Mês 
+        $dtAtuFin = date('Y-m-d');
+        $dtAtuIni = date('Y-m-01');
+
+        $dtPasIni = date('Y-m-01', strtotime("-1 month"));
+        $dtPasFin = date("Y-m-t", strtotime("-1 month"));
+
+        $vlrNfsAtu = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->whereBetween('nfs_dt_emi', [$dtAtuIni, $dtAtuFin])->sum('nfs_vlr_tot');
+        $vlrNfsPas = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->whereBetween('nfs_dt_emi', [$dtPasIni, $dtPasFin])->sum('nfs_vlr_tot');
+
+        if($vlrNfsPas > $vlrNfsAtu){
+            if(!empty($vlrNfsAtu)){
+                $perVlrNfsMes = (($vlrNfsAtu - $vlrNfsPas) / $vlrNfsAtu) * 100;
+            }else{
+                $perVlrNfsMes = -100;
+            }
+        }else{
+            if(!empty($vlrNfsPas)){
+                $perVlrNfsMes = (($vlrNfsAtu - $vlrNfsPas) / $vlrNfsPas) * 100;
+            }else{
+                $perVlrNfsMes = 0;
+            }
+        }
+
+        $qtdOsAtu = DB::table('lancamento_srv_os')->where('os_sts', 'F')->whereBetween('os_dha', [$dtAtuIni.' 00:00:00', $dtAtuFin.' 23:59:59'])->count();
+        $qtdOsPas = DB::table('lancamento_srv_os')->where('os_sts', 'F')->whereBetween('os_dha', [$dtPasIni.' 00:00:00', $dtPasFin.' 23:59:59'])->count();
+
+        if($qtdOsPas > $qtdOsAtu){
+            if(!empty($qtdOsAtu)){
+                $qtdOsMes = (($qtdOsAtu - $qtdOsPas) / $qtdOsAtu) * 100;
+            }else{
+                $qtdOsMes = -100;
+            }
+        }else{
+            if(!empty($qtdOsPas)){
+                $qtdOsMes = (($qtdOsAtu - $qtdOsPas) / $qtdOsPas) * 100;
+            }else{
+                $qtdOsMes = 0;
+            }
+        }
+
+        $qtdCliAtu = DB::table('cadastro_clientes')->whereBetween('created_at', [$dtAtuIni.' 00:00:00', $dtAtuFin.' 23:59:59'])->count();
+        $qtdCliPas = DB::table('cadastro_clientes')->whereBetween('created_at', [$dtPasIni.' 00:00:00', $dtPasFin.' 23:59:59'])->count();
+
+        if($qtdCliPas > $qtdCliAtu){
+            if(!empty($qtdCliAtu)){
+                $qtdCliMes = (($qtdCliAtu - $qtdCliPas) / $qtdCliAtu) * 100;
+            }else{
+                $qtdCliMes = -100;
+            }
+        }else{
+            if(!empty($qtdCliPas)){
+                $qtdCliMes = (($qtdCliAtu - $qtdCliPas) / $qtdCliPas) * 100;
+            }else{
+                $qtdCliMes = 0;
+            }
+        }
+
+        return view('home',[
+            'dadosOS' => $dadosOS, 
+            'dadosNFS' => $dadosNFS, 
+            'qtdNFS' => $qtdNFSfin, 
+            'perNfsSemana' => $perNfsSemana, 
+            'diasSemana' => $diasSemana, 
+            'qtdSemAtu' => $qtdSemAtu, 
+            'qtdSemPas' => $qtdSemPas,
+            'perVlrNfsMes' => $perVlrNfsMes,
+            'qtdOsMes' => $qtdOsMes,
+            'qtdCliMes' => $qtdCliMes]);
     }
 
     public function fiscal()
@@ -94,7 +226,7 @@ class HomeController extends Controller
         
         //Seta a data para português
         setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese'); 
-        date_default_timezone_set('America/Sao_Paulo');
+        //date_default_timezone_set('America/Sao_Paulo');
 
         $meses = "[";
         $grafJ = "[";
@@ -236,7 +368,7 @@ class HomeController extends Controller
 
         //Seta a data para português
         setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese'); 
-        date_default_timezone_set('America/Sao_Paulo');
+        //date_default_timezone_set('America/Sao_Paulo');
 
         $meses = "[";
         $linTot = "[";
@@ -265,7 +397,7 @@ class HomeController extends Controller
             $meses .= "'".$mes_nom."',";
 
             //Pega o valor total das os do mes
-            $cntTot = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini, $dt_fin])->sum('os_vlt');
+            $cntTot = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vlt');
             if(!empty($cntTot)){
                 $linTot .= "'".$cntTot."',";
 
@@ -278,7 +410,7 @@ class HomeController extends Controller
             }
 
             //Pega o valor total dos serviços da os do mes
-            $cntSer = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini, $dt_fin])->sum('os_vls');
+            $cntSer = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vls');
             if(!empty($cntSer)){
                 $linSer .= "'".$cntSer."',";
 
@@ -291,7 +423,7 @@ class HomeController extends Controller
             }
 
             //Pega o valor total de os finalizadas
-            $cntFin = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini, $dt_fin])->count();
+            $cntFin = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->count();
             if(!empty($cntFin)){
                 $barFin .= $cntFin.",";
 
@@ -315,7 +447,7 @@ class HomeController extends Controller
             }else{
                 $barCan .= "0,";
             }
-        }//Fin do for
+        }
 
         //Pega o mês atual para o gráfico js
         $dt_ini = date('Y-m-01');
@@ -325,7 +457,7 @@ class HomeController extends Controller
         $meses .= "'".$mes_nom."']";
 
         //Soma o valor total das os no mes atual
-        $cntTot = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini, $dt_fin])->sum('os_vlt');
+        $cntTot = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vlt');
         if(!empty($cntTot)){
             $linTot .= "'".$cntTot."']";
 
@@ -336,7 +468,7 @@ class HomeController extends Controller
             $valTotMesNovo = 0;
         }
         //Soma o valor total das os durante todo o periodo
-        $sumTot = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_inicial_mes6, $dt_fin])->sum('os_vlt');
+        $sumTot = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_inicial_mes6.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vlt');
         if(!empty($sumTot)){
             $valSumTot = $sumTot;
         }else{
@@ -344,7 +476,7 @@ class HomeController extends Controller
         }
 
         //Soma o valor total dos servicos da os no mes atual
-        $cntSer = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini, $dt_fin])->sum('os_vls');
+        $cntSer = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vls');
         if(!empty($cntSer)){
             $linSer .= "'".$cntSer."']";
 
@@ -355,7 +487,7 @@ class HomeController extends Controller
             $valServMesNovo = 0;
         }
         //Soma o valor total dos servicos das os durante todo o periodo
-        $sumServ = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_inicial_mes6, $dt_fin])->sum('os_vls');
+        $sumServ = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_inicial_mes6.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vls');
         if(!empty($sumServ)){
             $valSumServ = $sumServ;
         }else{
@@ -377,7 +509,7 @@ class HomeController extends Controller
         }
 
         //Soma o total de os finalizadas no mes atual
-        $cntFin = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini, $dt_fin])->count();
+        $cntFin = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->count();
         if(!empty($cntFin)){
             $barFin .= $cntFin."]";
 
@@ -388,7 +520,7 @@ class HomeController extends Controller
             $qtdFinMesNovo = 0;
         }
         //Soma o total de os finalizadas durante todo o periodo
-        $sumFin = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_inicial_mes6, $dt_fin])->count();
+        $sumFin = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_inicial_mes6.' 00:00:00', $dt_fin.' 23:59:59'])->count();
         if(!empty($sumFin)){
             $valSumFin = $sumFin;
         }else{
@@ -407,7 +539,7 @@ class HomeController extends Controller
             $qtdCanMesNovo = 0;
         }
         //Soma o total de os canceladas durante todo o periodo
-        $sumCan = $this->lancamentosOS->where('os_sts','C')->whereBetween('os_dhf', [$dt_inicial_mes6, $dt_fin])->count();
+        $sumCan = $this->lancamentosOS->where('os_sts','C')->whereBetween('os_dhf', [$dt_inicial_mes6.' 00:00:00', $dt_fin.' 23:59:59'])->count();
         if(!empty($sumCan)){
             $valSumCan = $sumCan;
         }else{

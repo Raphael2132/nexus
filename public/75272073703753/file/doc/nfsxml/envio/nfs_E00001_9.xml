@@ -2,9 +2,9 @@
 <nfe>
   <notaFiscal/>
   <dadosPrestador>
-    <dataEmissao>23/06/2024</dataEmissao>
+    <dataEmissao>01/01/1970</dataEmissao>
     <im>123165100</im>
-    <numeroRps>000000006</numeroRps>
+    <numeroRps>000000009</numeroRps>
   </dadosPrestador>
   <dadosServico>
     <bairro>CENTRO</bairro>
@@ -21,12 +21,12 @@
     <cep>13876-341</cep>
     <cidade>SAO JOAO DA BOA VISTA</cidade>
     <complemento/>
-    <documento>03130316346</documento>
-    <email>thiago@gmail.com</email>
+    <documento>61030641164</documento>
+    <email>maria@gmail.com</email>
     <ie/>
     <logradouro>RUA DAERCIO QUERO ROBLES</logradouro>
-    <nomeTomador>THIAGO CARVALHO</nomeTomador>
-    <numero>1245</numero>
+    <nomeTomador>MARIA TEREZA DOS SANTOS</nomeTomador>
+    <numero>634</numero>
     <pais>BRASIL</pais>
     <tipoDoc>F</tipoDoc>
     <uf>SP</uf>
@@ -34,16 +34,16 @@
   <detalheServico>
     <cofins>0.00</cofins>
     <csll>0.00</csll>
-    <deducaoMaterial>87.00</deducaoMaterial>
+    <deducaoMaterial>0.00</deducaoMaterial>
     <descontoIncondicional>0.00</descontoIncondicional>
     <inss>0.00</inss>
     <ir>0.00</ir>
     <issRetido>0</issRetido>
     <item>
-      <aliquota>4.00</aliquota>
+      <aliquota>0.00</aliquota>
       <codigo>1401</codigo>
-      <descricao>TROCA DE SO - QTD. HORAS: 2.50 - VALOR LIQUIDO: 513.00</descricao>
-      <valor>513.00</valor>
+      <descricao> - QTD. HORAS: 0.00 - VALOR LIQUIDO: 10500.00 |  - QTD. HORAS: 0.00 - VALOR LIQUIDO: 0.00</descricao>
+      <valor>10500.00</valor>
     </item>
     <obs/>
     <pisPasep>0.00</pisPasep>

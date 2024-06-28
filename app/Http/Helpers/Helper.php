@@ -99,6 +99,12 @@ class Helper
         return $dataLimpa;
     }
 
+    public static function formataDataHoraParaData(string $data)
+    {
+        $dataLimpa = date('d/m/Y', strtotime($data));
+        return $dataLimpa;
+    }
+
     public static function formataHoraMinuto(string $hora)
     {
         $horaFormatada = substr($hora,0,2).':'.substr($hora,2,2);
@@ -131,6 +137,12 @@ class Helper
         $valorLimpo = str_replace(",",".",$valorLimpo);
 
         return $valorLimpo;
+    }
+
+    public static function formataPorcentagem(string $valor)
+    {
+        $valorFormatado = number_format($valor,2,",",".");
+        return $valorFormatado;
     }
 
     /*

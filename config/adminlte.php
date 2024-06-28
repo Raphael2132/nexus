@@ -322,7 +322,7 @@ return [
         ],
         [
             'text' => 'Página Inicial',
-            'url'  => 'homePrincipal',
+            'url'  => 'home',
             'icon' => 'fas fa-home',
         ],
 
