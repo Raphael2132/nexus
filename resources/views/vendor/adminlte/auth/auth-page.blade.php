@@ -17,7 +17,7 @@
 
 <style>
 body {
-    background:url(html/index/img/pw_maze_black_2X.png) left top repeat !important;
+    background:url(../html/index/img/pw_maze_black_2X.png) left top repeat !important;
     background-size: auto !important;
 }
 .container {
@@ -32,7 +32,63 @@ body {
     background:url(/img/sistema/fundo3.png) center top no-repeat !important;
     background-size: contain !important;
 }
+/* Animation Timers
+---------------------------------*/
+.delay-02s { 
+	animation-delay: 0.2s; 
+	-webkit-animation-delay: 0.2s; 
+}
+.delay-03s { 
+	animation-delay: 0.3s; 
+	-webkit-animation-delay: 0.3s; 
+}
+.delay-04s { 
+	animation-delay: 0.4s; 
+	-webkit-animation-delay: 0.4s; 
+}
+
+.delay-05s { 
+	animation-delay: 0.5s; 
+	-webkit-animation-delay: 0.5s; 
+}
+.delay-06s { 
+	animation-delay: 0.6s; 
+	-webkit-animation-delay: 0.6s; 
+}
+
+.delay-07s { 
+	animation-delay: 0.7s; 
+	-webkit-animation-delay: 0.7s; 
+}
+.delay-08s { 
+	animation-delay: 0.8s; 
+	-webkit-animation-delay: 0.8s; 
+}
+
+.delay-09s { 
+	animation-delay: 0.9s; 
+	-webkit-animation-delay: 0.9s; 
+}
+.delay-1s { 
+	animation-delay: 1s; 
+	-webkit-animation-delay: 1s; 
+}
+.delay-12s { 
+	animation-delay: 1.2s; 
+	-webkit-animation-delay: 1.2s; 
+}
+.delay-10s { 
+	animation-delay: 1.0s; 
+	-webkit-animation-delay: 1.0s; 
+}
+
+.delay-11s { 
+	animation-delay: 1.1s; 
+	-webkit-animation-delay: 1.1s; 
+}
 </style>
+<link rel="stylesheet" href="{{ asset('html/contato/css/responsive.css') }}">
+<link rel="stylesheet" href="{{ asset('html/contato/css/animate.css') }}">
 
 @section('body')
 <div class="d-flex justify-content-center header">
@@ -41,7 +97,7 @@ body {
 
 
         {{-- Card Box --}}
-        <div class="card {{ config('adminlte.classes_auth_card', 'card-outline card-primary') }} " style="">
+        <div class="wow fadeInUp delay-05s card {{ config('adminlte.classes_auth_card', 'card-outline card-primary') }} " style="">
 
             {{-- Card Header --}}
             @hasSection('auth_header')
@@ -103,3 +159,100 @@ body {
     @stack('js')
     @yield('js')
 @stop
+
+<script src="{{asset('html/contato/js/wow.js')}}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(e) {
+        $('#test').scrollToFixed();
+        $('.res-nav_click').click(function(){
+            $('.main-nav').slideToggle();
+            return false    
+            
+        });
+        
+    });
+</script>
+
+  <script>
+    wow = new WOW(
+      {
+        animateClass: 'animated',
+        offset:       100
+      }
+    );
+    wow.init();
+    document.getElementById('').onclick = function() {
+      var section = document.createElement('section');
+      section.className = 'wow fadeInDown';
+      this.parentNode.insertBefore(section, this);
+    };
+  </script>
+
+
+<script type="text/javascript">
+	$(window).load(function(){
+		
+		$('.main-nav li a').bind('click',function(event){
+			var $anchor = $(this);
+			
+			$('html, body').stop().animate({
+				scrollTop: $($anchor.attr('href')).offset().top - 102
+			}, 1500,'easeInOutExpo');
+			/*
+			if you don't want to use the easing effects:
+			$('html, body').stop().animate({
+				scrollTop: $($anchor.attr('href')).offset().top
+			}, 1000);
+			*/
+			event.preventDefault();
+		});
+	})
+</script>
+
+<script type="text/javascript">
+
+$(window).load(function(){
+  
+  
+  var $container = $('.portfolioContainer'),
+      $body = $('body'),
+      colW = 375,
+      columns = null;
+
+  
+  $container.isotope({
+    // disable window resizing
+    resizable: true,
+    masonry: {
+      columnWidth: colW
+    }
+  });
+  
+  $(window).smartresize(function(){
+    // check if columns has changed
+    var currentColumns = Math.floor( ( $body.width() -30 ) / colW );
+    if ( currentColumns !== columns ) {
+      // set new column count
+      columns = currentColumns;
+      // apply width to container manually, then trigger relayout
+      $container.width( columns * colW )
+        .isotope('reLayout');
+    }
+    
+  }).smartresize(); // trigger resize to set container width
+  $('.portfolioFilter a').click(function(){
+        $('.portfolioFilter .current').removeClass('current');
+        $(this).addClass('current');
+ 
+        var selector = $(this).attr('data-filter');
+        $container.isotope({
+			
+            filter: selector,
+         });
+         return false;
+    });
+  
+});
+
+</script>
