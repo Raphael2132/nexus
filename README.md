@@ -1,2 +1,2 @@
-# projeto-demo-adminlte
-Projeto de teste inicial
+# nexus
+Sistema Nexus - Gestão Empresarial
