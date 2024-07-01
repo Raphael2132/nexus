@@ -93,6 +93,11 @@ p{
 	text-align:center;
 	background:url(../img/pw_maze_black_2X.png) left top repeat;
 	padding:280px 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
 }
 .logo{
 	width:100%;

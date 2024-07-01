@@ -33,7 +33,7 @@
 <header class="header" id="header"><!--header-start-->
 	<div class="container">
     	<figure class="logo animated fadeInDown delay-07s">
-        	<a href="#"><img src="img/sistema/logo_nexus.png" alt=""></a>	
+        	<a href="#"><img src="img/sistema/logo_nexus_c.png" alt=""></a>	
         </figure>	
         <h1 class="animated fadeInDown delay-07s">Bem Vindo ao Novo</h1>
         <ul class="we-create animated fadeInUp delay-1s">
