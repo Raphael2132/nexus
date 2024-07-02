@@ -15,85 +15,13 @@
 
 @section('classes_body'){{ ($auth_type ?? 'login') . '-page' }}@stop
 
-<style>
-body {
-    background:url(../html/index/img/pw_maze_black_2X.png) left top repeat !important;
-    background-size: auto !important;
-}
-.container {
-    display: flex;
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center; /* Centraliza verticalmente */
-    height: 100vh; /* Altura total da viewport, ajuste conforme necessário */
-}
-.header{
-    width: 100%; 
-    height: 100%;
-    background:url(/img/sistema/fundo3.png) center top no-repeat !important;
-    background-size: contain !important;
-}
-/* Animation Timers
----------------------------------*/
-.delay-02s { 
-	animation-delay: 0.2s; 
-	-webkit-animation-delay: 0.2s; 
-}
-.delay-03s { 
-	animation-delay: 0.3s; 
-	-webkit-animation-delay: 0.3s; 
-}
-.delay-04s { 
-	animation-delay: 0.4s; 
-	-webkit-animation-delay: 0.4s; 
-}
-
-.delay-05s { 
-	animation-delay: 0.5s; 
-	-webkit-animation-delay: 0.5s; 
-}
-.delay-06s { 
-	animation-delay: 0.6s; 
-	-webkit-animation-delay: 0.6s; 
-}
-
-.delay-07s { 
-	animation-delay: 0.7s; 
-	-webkit-animation-delay: 0.7s; 
-}
-.delay-08s { 
-	animation-delay: 0.8s; 
-	-webkit-animation-delay: 0.8s; 
-}
-
-.delay-09s { 
-	animation-delay: 0.9s; 
-	-webkit-animation-delay: 0.9s; 
-}
-.delay-1s { 
-	animation-delay: 1s; 
-	-webkit-animation-delay: 1s; 
-}
-.delay-12s { 
-	animation-delay: 1.2s; 
-	-webkit-animation-delay: 1.2s; 
-}
-.delay-10s { 
-	animation-delay: 1.0s; 
-	-webkit-animation-delay: 1.0s; 
-}
-
-.delay-11s { 
-	animation-delay: 1.1s; 
-	-webkit-animation-delay: 1.1s; 
-}
-</style>
-<link rel="stylesheet" href="{{ asset('html/contato/css/responsive.css') }}">
-<link rel="stylesheet" href="{{ asset('html/contato/css/animate.css') }}">
+<link rel="stylesheet" href="{{ asset('html/login/css/style.css') }}">
+<link rel="stylesheet" href="{{ asset('html/login/css/responsive.css') }}">
+<link rel="stylesheet" href="{{ asset('html/login/css/animate.css') }}">
 
 @section('body')
-<div class="d-flex justify-content-center header">
-<div class="col-md-2">
-    <div class="{{ $auth_type ?? 'login' }}-box container" style="width: 100%;">
+<div class="d-flex justify-content-center header-box">
+    <div class="{{ $auth_type ?? 'login' }}-box container">
 
 
         {{-- Card Box --}}
@@ -151,8 +79,7 @@ body {
         </div>
 
     </div>
-    </div>
-    </div>
+</div>
 @stop
 
 @section('adminlte_js')
