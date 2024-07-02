@@ -242,7 +242,7 @@ class HomeController extends Controller
         for ($i = 6; $i > 1; $i--) {
             $dt_ini = date('Y-m-01', strtotime("-$i month"));
             $dt_fin = date("Y-m-t", strtotime("-$i month"));
-            $mes_nom = utf8_encode(ucfirst(strftime("%B", strtotime($dt_ini))));
+            $mes_nom = ucfirst(strftime("%B", strtotime($dt_ini)));
 
             $meses .= "'".$mes_nom."',";
 
@@ -393,7 +393,7 @@ class HomeController extends Controller
 
             $dt_ini = date('Y-m-01', strtotime("-$i month"));
             $dt_fin = date("Y-m-t", strtotime("-$i month"));
-            $mes_nom = utf8_encode(ucfirst(strftime("%B", strtotime($dt_ini))));
+            $mes_nom = ucfirst(strftime("%B", strtotime($dt_ini)));
 
             //monta a data inicial dos 6 meses que estão sendo buscados
             if($i == 5){
