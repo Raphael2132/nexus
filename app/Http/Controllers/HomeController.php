@@ -102,7 +102,7 @@ class HomeController extends Controller
         }
 
         //Seta a data para português
-        setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese'); 
+        //setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese'); 
         //date_default_timezone_set('America/Sao_Paulo');
 
         $diasSemana = "[";
@@ -117,7 +117,8 @@ class HomeController extends Controller
             $dtAtu = date('Y-m-d', strtotime('-'.$semAtual.' days'));
             $dtPas = date('Y-m-d', strtotime('-'.$semPassada.' days'));
 
-            $diaSem = utf8_encode(ucfirst(strftime("%A", strtotime($dtAtu))));
+            //$diaSem = utf8_encode(ucfirst(strftime("%A", strtotime($dtAtu))));
+            $diaSem = strftime("%A", strtotime($dtAtu));
 
             $nfsSemAtu = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->where('nfs_dt_emi', $dtAtu)->count();
             $nfsSemPas = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->where('nfs_dt_emi', $dtPas)->count();
