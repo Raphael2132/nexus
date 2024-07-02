@@ -332,20 +332,10 @@ return [
             'url'  => 'home',
             'icon' => 'fas fa-home',
         ],
-
-        /*[
-            'text'        => 'pages',
-            'url'         => 'admin/pages',
-            'icon'        => 'far fa-fw fa-file',
-            'label'       => 4,
-            'label_color' => 'success',
-        ],*/
-
         [
             'header' => 'Área de Parâmetros',
             'can' => 'is_parameter'
         ],
-
         [
             'text' => 'Parâmetros do Sistema',
             'icon' => 'fa-solid fa-gears',
@@ -552,30 +542,6 @@ return [
                 ],
             ],
         ],
-
-        /*['header' => 'Sistema Financeiro'],
-
-        [
-            'text'    => 'Financeiro',
-            'icon'    => 'fa-solid fa-hand-holding-dollar',
-            'submenu' => [
-                [
-                    'text' => 'Bancos',
-                    'url'  => 'bancos',
-                    'icon' => 'fa-solid fa-vault',
-                ],
-                [
-                    'text' => 'Contas a Pagar',
-                    'url'  => 'pagar',
-                    'icon' => 'fa-solid fa-money-bill-trend-up fa-flip-vertical',
-                ],
-                [
-                    'text' => 'Contas a Receber',
-                    'url'  => 'receber',
-                    'icon' => 'fa-solid fa-money-bill-trend-up',
-                ],
-            ],
-        ],*/
 
         /*
         [
