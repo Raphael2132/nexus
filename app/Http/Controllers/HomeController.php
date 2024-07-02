@@ -118,7 +118,7 @@ class HomeController extends Controller
             $dtPas = date('Y-m-d', strtotime('-'.$semPassada.' days'));
 
             //$diaSem = utf8_encode(ucfirst(strftime("%A", strtotime($dtAtu))));
-            $diaSem = strftime("%A", strtotime($dtAtu));
+            $diaSem = ucfirst(strftime("%A", strtotime($dtAtu)));
 
             $nfsSemAtu = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->where('nfs_dt_emi', $dtAtu)->count();
             $nfsSemPas = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->where('nfs_dt_emi', $dtPas)->count();
