@@ -20,8 +20,8 @@
     <div class="row">
         <div class="col-md-5">
             <div class="wow fadeInDown delay-03s" style="margin-top: 20px;">
-                <div class="row d-flex align-items-center justify-content-center">
-                    <div class="text-center">
+                <div class="row d-flex align-items-center justify-content-center"> 
+                    <div class="text-center logo-contato">
                         <img src="{{ asset('img/sistema/FusionTechLogo1.png') }}" class="rounded" alt="..." style="max-width:40%;  width: auto; height: auto;">
                     </div>
                 </div>

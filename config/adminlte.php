@@ -312,6 +312,7 @@ return [
             'type'         => 'fullscreen-widget',
             'topnav_right' => true,
         ],
+        /*
         [
             'type'           => 'darkmode-widget',
             'topnav_right'   => true, // Or "topnav => true" to place on the left.
@@ -320,16 +321,11 @@ return [
              'color_enabled'  => 'grey',
              'color_disabled' => 'yellow'
         ],
-
+        */
         // Sidebar items:
         [
             'type' => 'sidebar-menu-search',
             'text' => 'Pesquisar',
-        ],
-        [
-            'text' => 'blog',
-            'url'  => 'admin/blog',
-            'can'  => 'manage-blog',
         ],
         [
             'text' => 'Página Inicial',

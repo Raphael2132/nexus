@@ -69,9 +69,12 @@
 	.c-logo-part ul a{ margin-bottom:5px;}
 	.main-section.team{ padding:60px 0 50px;}
 	.business-talking h2{ font-size:36px;}
-	.contact-info-box{ margin:0 0 12px 30px; font-size:12px;}
+	.contact-info-box{ margin:0 0 12px 30px; font-size:12px; text-align: center;}
+	.contact-info-box h3{ width: auto; float: none; line-height: normal;}
 	.contact-info-box span{ line-height:18px;}
-	.social-link{ margin-left:30px;} 
+	.social-link{ margin-left:30px; height: auto;} 
+	.social-link.d-flex{ display: block !important;} 
+	.social-link li{ padding: 10px; } 
 	.form{ margin:0 30px;}
 	.copyright{ font-size:12px;}
 	.business-talking a{ padding:10px 25px; font-size:14px;}
@@ -87,8 +90,8 @@
 	.isotope{ width:400px; margin:0px auto;}
 	.Portfolio-box{}
 	.portfolioContainer{ width:350px; margin:0px auto !important; } */
-	
-	
+	.wow{ width: 100% }
+	.logo-contato img {max-width:60% !important}
 }
 
 @media only screen and (max-width: 479px) {
