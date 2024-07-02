@@ -63,7 +63,7 @@ class FaturamentoGeracaoNfController extends Controller
         ->update(['nfs_sts' => 'G',
             'nfs_dt_emi' => $dataGeracaoNF,
             'nfs_hr_emi' => $horaGeracaoNF]);
-        exit;
+        
         return view('/faturamento/notas/controleGeracaoNF', ['empresa' => $empresa, 'numControle' => $nfSelecionada, 'pathXML' => $pathXML]);
     }
 

@@ -64,9 +64,9 @@ class Config{
         $this->pathDownload = $_SERVER['DOCUMENT_ROOT'].'/'.$cnpj.'/file/doc/nfsxml/envio/';
         $this->pathDownloadRetorno = $_SERVER['DOCUMENT_ROOT'].'/'.$cnpj.'/file/doc/nfsxml/retorno/';
 
-        echo "<br> Document Root: path: ".$_SERVER['DOCUMENT_ROOT']."<br>";
-        echo "<br> Teste setXMLPath: path D: ".$this->path.' / pathDownload D: '.$this->pathDownload."<br>";
-        echo "<br> Teste setXMLPath: path R: ".$this->path.' / pathDownload R: '.$this->pathDownloadRetorno."<br>";
+        //echo "<br> Document Root: path: ".$_SERVER['DOCUMENT_ROOT']."<br>";
+        //echo "<br> Teste setXMLPath: path D: ".$this->path.' / pathDownload D: '.$this->pathDownload."<br>";
+        //echo "<br> Teste setXMLPath: path R: ".$this->path.' / pathDownload R: '.$this->pathDownloadRetorno."<br>";
     }
 
     /* Verifica se o diretório onde é gravado o XML para download existe e caso nõa exista cria-lo */
