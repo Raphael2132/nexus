@@ -73,7 +73,8 @@ class CadastroUsuarioController extends Controller
             'usuario_codigo' => $codigo,
             'usuario_status' => $request->statusUsuario,
             'usuario_tipo' => $request->tipoUsuario,
-            'usuario_tipo_email' => $request->tipoEmail
+            'usuario_tipo_email' => $request->tipoEmail,
+            'usuario_empresa' => $request->empresa
         ];
         
         $novoUsuario = User::create($dados);
@@ -196,7 +197,9 @@ class CadastroUsuarioController extends Controller
                 'usuario_sexo' => $request->sexo,
                 'usuario_tel_residencial' => $telefoneResidencial,
                 'usuario_tel_celular' => $telefoneCelular,
-                'usuario_data_nascimento' => $data_nas]);
+                'usuario_data_nascimento' => $data_nas,
+                'usuario_empresa' => $request->empUsuario
+            ]);
         
         }elseif($atualiza == 'permissao'){
 

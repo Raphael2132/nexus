@@ -54,13 +54,30 @@
                     @csrf 
                     @method('post')
                         <div class="row">
+                            @php 
+                                $data = DB::table('cadastro_empresas')->select('empresa_codigo', 'empresa_nome')->where('empresa_codigo', $dadosUsuario[0]['usuario_empresa'])->get();
+
+                                $new_array1 =[];
+                                $new_array2 =[];
+
+                                foreach ($data as $empresa) {
+                                    $new_array1[] = $empresa->empresa_codigo;
+                                    $new_array2[] = $empresa->empresa_codigo.' - '.$empresa->empresa_nome;
+                                }
+                                $array_opt = array_combine($new_array1, $new_array2);
+                            @endphp
+                            <!-- Empresa -->
+                            <x-adminlte-select name="empUsuario" label="Empresa" fgroup-class="col-md-6">
+                                <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_empresa']}}"/>
+                            </x-adminlte-select>
+
                             <!-- Tipo Usuario -->
-                            <x-adminlte-select name="tipoUsuario" label="Tipo de Usuário" fgroup-class="col-md-6" disabled>
+                            <x-adminlte-select name="tipoUsuario" label="Tipo de Usuário" fgroup-class="col-md-3" disabled>
                                 <x-adminlte-options :options="['A' => 'Administrador', 'P' => 'Padrão']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_tipo']}}"/>
                             </x-adminlte-select>
 
                             <!-- Status do Usuario -->
-                            <x-adminlte-select name="statusUsuario" label="Status" fgroup-class="col-md-6">
+                            <x-adminlte-select name="statusUsuario" label="Status" fgroup-class="col-md-3">
                                 <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_status']}}"/>
                             </x-adminlte-select>
                         </div>
@@ -509,6 +526,9 @@ $(function () {
             tipoEmail: {
                 required: true,
             },
+            empUsuario: {
+                required: true,
+            },
         },
         messages: {
             statusUsuario: {
@@ -524,6 +544,9 @@ $(function () {
             },
             tipoEmail: {
                 required: "Por Favor informe o Tipo do Email"
+            },
+            empUsuario: {
+                required: "Por Favor informe a Empresa"
             },
         },
         errorElement: 'span',

@@ -39,6 +39,7 @@
         @php
         $heads = [
             ['label' => '', 'no-export' => true, 'width' => 5],
+            'Empresa',
             'Código',
             'Nome',
             'Tipo do Usuário',
@@ -74,7 +75,7 @@
                     'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
                 ],
             ],
-            'columns' => [['orderable' => false], null, null, null, null, ['orderable' => false]],
+            'columns' => [['orderable' => false], null, null, null, null, null, ['orderable' => false]],
         ];
         @endphp
 
@@ -92,6 +93,8 @@
                         }else{
                             $sts_usu = 'Desativado';
                         }
+
+                        $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $usuario->usuario_empresa)->get();
                     @endphp
                     <tr>
                         <td>
@@ -164,11 +167,11 @@
                                                 @endphp
                                                 <div class="text-muted">
                                                     <div class="row">
+                                                        <p class="text-sm col-md-6">Empresa
+                                                            <b class="d-block">{{ $usuario->usuario_empresa.' - '.$dataEmp[0]->empresa_nome }}</b>
+                                                        </p>
                                                         <p class="text-sm col-md-6">Tipo do Usuário
                                                             <b class="d-block">{{ $tipo }}</b>
-                                                        </p>
-                                                        <p class="text-sm col-md-6">Status do Usuário
-                                                            <b class="d-block">{{ $status }}</b>
                                                         </p>
                                                     </div>
                                                     <div class="row">
@@ -190,6 +193,9 @@
                                                     <div class="row">
                                                         <p class="text-sm col-md-6">Sexo
                                                             <b class="d-block">{{ $sexo }}</b>
+                                                        </p>
+                                                        <p class="text-sm col-md-6">Status do Usuário
+                                                            <b class="d-block">{{ $status }}</b>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -309,6 +315,7 @@
                                 </a>
                             </nobr>
                         </td>   
+                        <td>{{ $usuario->usuario_empresa.' - '.$dataEmp[0]->empresa_nome }}</td>
                         <td>{{ $usuario->usuario_codigo }}</td>
                         <td>{{ $usuario->name }}</td>
                         <td>{{ $tip_usu }}</td>

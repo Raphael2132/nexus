@@ -32,14 +32,31 @@
             @method('post')
             <x-adminlte-card title="Cadastro de Usuário" theme="navy">
             
+                @php 
+                    $data = DB::table('cadastro_empresas')->select('empresa_codigo', 'empresa_nome')->orderBy('empresa_codigo', 'asc')->get();
+
+                    $new_array1 =[];
+                    $new_array2 =[];
+
+                    foreach ($data as $empresa) {
+                        $new_array1[] = $empresa->empresa_codigo;
+                        $new_array2[] = $empresa->empresa_codigo.' - '.$empresa->empresa_nome;
+                    }
+                    $array_opt = array_combine($new_array1, $new_array2);
+                @endphp
                 <div class="row">
+                    <!-- Empresa -->
+                    <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-6">
+                        <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
+                    </x-adminlte-select>
+
                     <!-- Tipo Usuario -->
-                    <x-adminlte-select name="tipoUsuario" label="Tipo de Usuário" fgroup-class="col-md-6">
+                    <x-adminlte-select name="tipoUsuario" label="Tipo de Usuário" fgroup-class="col-md-3">
                         <x-adminlte-options :options="['A' => 'Administrador', 'P' => 'Padrão']" empty-option="Selecione..."/>
                     </x-adminlte-select>
 
                     <!-- Status do Usuario -->
-                    <x-adminlte-select name="statusUsuario" label="Status" fgroup-class="col-md-6">
+                    <x-adminlte-select name="statusUsuario" label="Status" fgroup-class="col-md-3">
                         <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" empty-option="Selecione..."/>
                     </x-adminlte-select>
                 </div>
@@ -105,6 +122,9 @@ $(function () {
                 required: true,
                 email: true
             },
+            empresa: {
+                required: true
+            },
         },
         messages: {
             tipoUsuario: {
@@ -124,6 +144,9 @@ $(function () {
             email: {
                 required: "Por Favor informe um Email válido do Usuário",
                 email: "Infome um email válido"
+            },
+            empresa: {
+                required: "Por Favor informe uma Empresa"
             },
         },
         errorElement: 'span',

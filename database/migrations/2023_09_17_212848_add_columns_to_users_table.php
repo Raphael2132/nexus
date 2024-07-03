@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('usuario_tel_residencial',10)->nullable();
             $table->string('usuario_tel_celular',11)->nullable();
             $table->enum('usuario_tipo_email', ['P', 'C'])->nullable();
-            $table->unique('usuario_codigo, email', 'ak_users');
+            $table->unique(['usuario_codigo', 'email'], 'ak_users');
         });
     }
 

@@ -22,6 +22,7 @@
 
 @php
 $heads = [
+    'Empresa',
     'Código',
     'Nome',
     'Email',
@@ -56,7 +57,7 @@ $config = [
             'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
         ],
     ],
-    'columns' => [null, null, null, null, null, null, ['orderable' => false]],
+    'columns' => [null, null, null, null, null, null, null, ['orderable' => false]],
 ];
 
 if($tipo == 'T'){
@@ -89,8 +90,11 @@ if($tipo == 'T'){
 
                 $data = date('d/m/Y', strtotime($usuario->created_at));
 
+                $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $usuario->usuario_empresa)->get();
+
             @endphp
             <tr>
+                <td>{{ $usuario->usuario_empresa.' - '.$dataEmp[0]->empresa_nome }}</td>
                 <td>{{ $usuario->usuario_codigo }}</td>
                 <td>{{ $usuario->name }}</td>
                 <td>{{ $usuario->email }}</td>
