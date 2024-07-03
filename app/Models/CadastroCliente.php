@@ -31,6 +31,7 @@ class CadastroCliente extends Model
         'cliente_rg',
         'cliente_insc_estadual',
         'cliente_insc_municipal',
-        'cliente_tipo_email'
+        'cliente_tipo_email',
+        'cliente_dt_inc'
     ];
 }

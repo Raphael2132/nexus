@@ -115,6 +115,8 @@ class CadastroClienteController extends Controller
             $codigo = 'F'.str_pad($nextval,9,'0',STR_PAD_LEFT);
         }
 
+        $dataInc = date('Y-m-d');
+
         $dados = [
 
             'cliente_codigo' => $codigo,
@@ -126,55 +128,12 @@ class CadastroClienteController extends Controller
             'cliente_rg' => $rg,
             'cliente_insc_estadual' => $request->insEstadual,
             'cliente_insc_municipal' => $request->insMunicipal,    
-            'cliente_data_nascimento' => $data_nas,          
+            'cliente_data_nascimento' => $data_nas,  
+            'cliente_dt_inc' => $dataInc        
         ];
         
         $novoCliente = CadastroCliente::create($dados);
 
-        /*
-        //Monta variaveis dos cards
-        $cliJuridico = $this->cliente->where('tipo_pessoa','=','J')->count();
-        $cliFisico = $this->cliente->where('tipo_pessoa','=','F')->count();
-        $cliTot = $this->cliente->count();
-        
-        //Seta a data para português
-        setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese'); 
-        date_default_timezone_set('America/Sao_Paulo');
-
-        $meses = "[";
-        $grafJ = "[";
-        $grafF = "[";
-
-        //Monta as variaveis para o JS dos ultimos seis meses do gráfico
-        for ($i = 6; $i > 1; $i--) {
-            $dt_ini = date('Y-m-01', strtotime("-$i month"));
-            $dt_fin = date("Y-m-t", strtotime("-$i month"));
-            $mes_nom = utf8_encode(ucfirst(strftime("%B", strtotime($dt_ini))));
-
-            $meses .= "'".$mes_nom."',";
-
-            $cntJ = $this->cliente->where('tipo_pessoa','=','J')->whereBetween('created_at', [$dt_ini, $dt_fin])->count();
-            $grafJ .= $cntJ.",";
-
-            $cntF = $this->cliente->where('tipo_pessoa','=','F')->whereBetween('created_at', [$dt_ini, $dt_fin])->count();
-            $grafF .= $cntF.",";
-        }
-
-        //Pega o mês atual para o gráfico js
-        $dt_ini = date('Y-m-01');
-        $dt_fin = date("Y-m-t");
-        $mes_nom = ucfirst(strftime("%B", strtotime($dt_ini)));
-
-        $meses .= "'".$mes_nom."']";
-        
-        $cntJ = $this->cliente->where('tipo_pessoa','=','J')->whereBetween('created_at', [$dt_ini, $dt_fin])->count();
-        $grafJ .= $cntJ."]";
-
-        $cntF = $this->cliente->where('tipo_pessoa','=','F')->whereBetween('created_at', [$dt_ini, $dt_fin])->count();
-        $grafF .= $cntF."]";
-
-        return view('/cadastros/cliente/homeClientes',['cliJuridico'=>$cliJuridico,'cliFisico'=>$cliFisico,'cliTot'=>$cliTot,'meses'=>$meses,'grafJ'=>$grafJ,'grafF'=>$grafF]);
-        */
         $resultadoCliente = $this->cliente->where('cliente_codigo','=',$codigo)->get();
         
         return redirect(route('cliente.editarCadastro', ['dadosCliente' => $codigo, 'tipo' => 'C']))->with('success', 'Cliente cadastrado com sucesso!');

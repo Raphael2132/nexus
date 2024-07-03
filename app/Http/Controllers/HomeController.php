@@ -183,8 +183,8 @@ class HomeController extends Controller
             }
         }
 
-        $qtdCliAtu = DB::table('cadastro_clientes')->whereBetween('created_at', [$dtAtuIni.' 00:00:00', $dtAtuFin.' 23:59:59'])->count();
-        $qtdCliPas = DB::table('cadastro_clientes')->whereBetween('created_at', [$dtPasIni.' 00:00:00', $dtPasFin.' 23:59:59'])->count();
+        $qtdCliAtu = DB::table('cadastro_clientes')->whereBetween('cliente_dt_inc', [$dtAtuIni, $dtAtuFin])->count();
+        $qtdCliPas = DB::table('cadastro_clientes')->whereBetween('cliente_dt_inc', [$dtPasIni, $dtPasFin])->count();
 
         if($qtdCliPas > $qtdCliAtu){
             if(!empty($qtdCliAtu)){
@@ -246,10 +246,10 @@ class HomeController extends Controller
 
             $meses .= "'".$mes_nom."',";
 
-            $cntJ = $this->cliente->where('cliente_tipo_pessoa','=','J')->whereBetween('created_at', [$dt_ini, $dt_fin])->count();
+            $cntJ = $this->cliente->where('cliente_tipo_pessoa','=','J')->whereBetween('cliente_dt_inc', [$dt_ini, $dt_fin])->count();
             $grafJ .= $cntJ.",";
 
-            $cntF = $this->cliente->where('cliente_tipo_pessoa','=','F')->whereBetween('created_at', [$dt_ini, $dt_fin])->count();
+            $cntF = $this->cliente->where('cliente_tipo_pessoa','=','F')->whereBetween('cliente_dt_inc', [$dt_ini, $dt_fin])->count();
             $grafF .= $cntF.",";
         }
 
@@ -260,10 +260,10 @@ class HomeController extends Controller
 
         $meses .= "'".$mes_nom."']";
         
-        $cntJ = $this->cliente->where('cliente_tipo_pessoa','=','J')->whereBetween('created_at', [$dt_ini, $dt_fin])->count();
+        $cntJ = $this->cliente->where('cliente_tipo_pessoa','=','J')->whereBetween('cliente_dt_inc', [$dt_ini, $dt_fin])->count();
         $grafJ .= $cntJ."]";
 
-        $cntF = $this->cliente->where('cliente_tipo_pessoa','=','F')->whereBetween('created_at', [$dt_ini, $dt_fin])->count();
+        $cntF = $this->cliente->where('cliente_tipo_pessoa','=','F')->whereBetween('cliente_dt_inc', [$dt_ini, $dt_fin])->count();
         $grafF .= $cntF."]";
       
         return view('/cadastros/cliente/homeClientes',['cliJuridico'=>$cliJuridico,'cliFisico'=>$cliFisico,'cliTot'=>$cliTot,'meses'=>$meses,'grafJ'=>$grafJ,'grafF'=>$grafF]);
