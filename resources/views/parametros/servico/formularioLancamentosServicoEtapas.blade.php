@@ -52,11 +52,33 @@
                         }else{
                             $emp_sel = '';
                         }
+
+                        $data_cat = DB::table('lancamento_srv_categorias')->select('categoria_codigo', 'categoria_desc')->orderBy('categoria_codigo', 'asc')->get();
+
+                        $new_array1_cat =[];
+                        $new_array2_cat =[];
+
+                        foreach ($data_cat as $categoria) {
+                            $new_array1_cat[] = $categoria->categoria_codigo;
+                            $new_array2_cat[] = $categoria->categoria_codigo.' - '.$categoria->categoria_desc;
+                        }
+                        $array_opt_cat = array_combine($new_array1_cat, $new_array2_cat);
+
+                        if(!empty($dadosEAT[0]['eat_cat'])){
+                            $cat_sel = $dadosEAT[0]['eat_cat'];
+                        }else{
+                            $cat_sel = '';
+                        }
                     @endphp
 
                     <!-- Empresa do Setor -->
                     <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-6">
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$emp_sel}}"/>
+                    </x-adminlte-select>
+
+                    <!-- Categoria -->
+                    <x-adminlte-select name="categoria" label="Categoria" fgroup-class="col-md-6">
+                        <x-adminlte-options :options="$array_opt_cat" empty-option="Selecione..." selected="{{$cat_sel}}"/>
                     </x-adminlte-select>
                 </div>
 
@@ -81,60 +103,13 @@
                         }
                     @endphp                    
                     <!-- Código -->
-                    <x-adminlte-input name="codigo" label="Código" type="number" value="{{$codigo_sel}}" fgroup-class="col-md-4"/>
+                    <x-adminlte-input name="codigo" label="Grupo da Categoria" type="number" value="{{$codigo_sel}}" fgroup-class="col-md-4"/>
 
                     <!-- Ordem -->
                     <x-adminlte-input name="ordem" label="Ordem" type="number" value="{{$ordem_sel}}" fgroup-class="col-md-2"/>
                     
                     <!-- Descrição -->
                     <x-adminlte-input name="descricao" label="Descrição" type="text" value="{{$descricao_sel}}" fgroup-class="col-md-6"/>
-                </div>
-
-                <div class="row">
-                    @php
-                        $data_cat = DB::table('lancamento_srv_categorias')->select('categoria_codigo', 'categoria_desc')->orderBy('categoria_codigo', 'asc')->get();
-
-                        $new_array1_cat =[];
-                        $new_array2_cat =[];
-
-                        foreach ($data_cat as $categoria) {
-                            $new_array1_cat[] = $categoria->categoria_codigo;
-                            $new_array2_cat[] = $categoria->categoria_codigo.' - '.$categoria->categoria_desc;
-                        }
-                        $array_opt_cat = array_combine($new_array1_cat, $new_array2_cat);
-
-                        if(!empty($dadosEAT[0]['eat_cat'])){
-                            $cat_sel = $dadosEAT[0]['eat_cat'];
-                        }else{
-                            $cat_sel = '';
-                        }
-
-                        $data_are = DB::table('parametros_sistema_areas')->select('area_codigo', 'area_desc')->orderby('area_codigo', 'asc')->get();
-
-                        $new_array1_are =[];
-                        $new_array2_are =[];
-
-                        foreach ($data_are as $area) {
-                            $new_array1_are[] = $area->area_codigo;
-                            $new_array2_are[] = $area->area_codigo.' - '.$area->area_desc;
-                        }
-                        $array_opt_are = array_combine($new_array1_are, $new_array2_are);
-
-                        if(!empty($dadosEAT[0]['eat_are'])){
-                            $are_sel = $dadosEAT[0]['eat_are'];
-                        }else{
-                            $are_sel = '';
-                        }
-                    @endphp
-                    <!-- Categoria -->
-                    <x-adminlte-select name="categoria" label="Categoria" fgroup-class="col-md-6">
-                        <x-adminlte-options :options="$array_opt_cat" empty-option="Selecione..." selected="{{$cat_sel}}"/>
-                    </x-adminlte-select>
-
-                    <!-- Area -->
-                    <x-adminlte-select name="area" label="Área" fgroup-class="col-md-6">
-                        <x-adminlte-options :options="$array_opt_are" empty-option="Selecione..." selected="{{$are_sel}}"/>
-                    </x-adminlte-select>
                 </div>
 
                 <!-- /.card -->

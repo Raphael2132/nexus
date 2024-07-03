@@ -35,7 +35,8 @@ $glo_os_nos = session('glo_os_nos');
 $glo_os_estagioAPP = session('glo_os_estagioAPP');
 $glo_os_req_eat_cod = session('glo_os_req_eat_cod');
 $glo_os_req_eat_cat = session('glo_os_req_eat_cat');
-$glo_os_req_eat_are = session('glo_os_req_eat_are');
+//$glo_os_req_eat_are = session('glo_os_req_eat_are');
+$glo_os_req_eat_ord = session('glo_os_req_eat_ord');
 $glo_os_dadosServico = session('glo_os_dadosServico');
 $glo_os_dadosTMO = session('glo_os_dadosTMO');
 $glo_os_dadosTmoSelecionada = session('glo_os_dadosTmoSelecionada');
@@ -234,7 +235,7 @@ $status_servico = '';
                 <!-- ********** Bloco dos dados das etapas de atendimento da abertura de OS ********** -->
                 <x-adminlte-card title="Etapas de Atendimento" theme="navy" theme-mode="outline" collapsible maximizable>
                     @php 
-                        $etapas = DB::table('lancamento_srv_etapa_atendimentos')->where('eat_emp', $glo_os_empresa)->orderBy('eat_ord', 'asc')->get();
+                        $etapas = DB::table('lancamento_srv_etapa_atendimentos')->where('eat_emp', $glo_os_empresa)->orderBy('eat_ord', 'asc')->orderBy('eat_ord', 'asc')->get();
                         $cnt_etapa = 0;
                     @endphp
                     <table class="table">
@@ -245,9 +246,9 @@ $status_servico = '';
                                 @endphp
                                 <tr>
                                     @if($cnt_etapa == 1)
-                                    <td style="border: 0px;"><a href="{{ route('painelOS.abreRequisicao', ['empresa' => $glo_os_empresa, 'nos' => $glo_os_nos, 'estagioAPP' => 'INCLUSAO_REQUISICAO', 'glo_eat_cod' => $etapa->eat_cod]) }}">{{$etapa->eat_nom}}</a></td>
+                                    <td style="border: 0px;"><a href="{{ route('painelOS.abreRequisicao', ['empresa' => $glo_os_empresa, 'nos' => $glo_os_nos, 'estagioAPP' => 'INCLUSAO_REQUISICAO', 'glo_eat_cod' => $etapa->eat_cod, 'glo_eat_ord' => $etapa->eat_ord]) }}">{{$etapa->eat_nom}}</a></td>
                                     @else
-                                    <td><a href="{{ route('painelOS.abreRequisicao', ['empresa' => $glo_os_empresa, 'nos' => $glo_os_nos, 'estagioAPP' => 'INCLUSAO_REQUISICAO', 'glo_eat_cod' => $etapa->eat_cod]) }}">{{$etapa->eat_nom}}</a></td>
+                                    <td><a href="{{ route('painelOS.abreRequisicao', ['empresa' => $glo_os_empresa, 'nos' => $glo_os_nos, 'estagioAPP' => 'INCLUSAO_REQUISICAO', 'glo_eat_cod' => $etapa->eat_cod, 'glo_eat_ord' => $etapa->eat_ord]) }}">{{$etapa->eat_nom}}</a></td>
                                     @endif
                                 </tr>
                             @endforeach
@@ -379,7 +380,8 @@ $status_servico = '';
 
                             @php
                             
-                                $data_cat = DB::table('lancamento_srv_categorias')->select('categoria_codigo', 'categoria_desc')->orderBy('categoria_codigo', 'asc')->get();
+                                //Categoria
+                                $data_cat = DB::table('lancamento_srv_categorias')->where('categoria_codigo', $glo_os_req_eat_cat)->get();
 
                                 $new_array1_cat =[];
                                 $new_array2_cat =[];
@@ -390,7 +392,11 @@ $status_servico = '';
                                 }
                                 $array_opt_cat = array_combine($new_array1_cat, $new_array2_cat);
 
-                                $data_are = DB::table('parametros_sistema_areas')->select('area_codigo', 'area_desc')->orderBy('area_codigo', 'asc')->get();
+                                $eat_cat_sel = $glo_os_req_eat_cat;
+
+                                //Areas
+                                $whrIn = DB::table('parametros_srv_setores')->select('setor_area')->where('setor_empresa', $glo_os_empresa);
+                                $data_are = DB::table('parametros_sistema_areas')->select('area_codigo', 'area_desc')->wherein('area_codigo', $whrIn)->orderBy('area_codigo', 'asc')->get();
 
                                 $new_array1_are =[];
                                 $new_array2_are =[];
@@ -401,49 +407,19 @@ $status_servico = '';
                                 }
                                 $array_opt_are = array_combine($new_array1_are, $new_array2_are);
 
-                                if(!empty($glo_os_req_eat_are) && !empty($glo_os_req_eat_cat)){
-                                    $eat_are_sel = $glo_os_req_eat_are;
-                                    $eat_cat_sel = $glo_os_req_eat_cat;
-
-                                    $data_tos = DB::table('lancamento_srv_tipo_servicos')->select('tipsrv_cod', 'tipsrv_nom')->where('tipsrv_emp', $glo_os_empresa)->where('tipsrv_are', $glo_os_req_eat_are)->where('tipsrv_cat', $glo_os_req_eat_cat)->orderBy('tipsrv_cod', 'asc')->get();
-
-                                    $new_array1_tos =[];
-                                    $new_array2_tos =[];
-
-                                    foreach ($data_tos as $tos) {
-                                        $new_array1_tos[] = $tos->tipsrv_cod;
-                                        $new_array2_tos[] = $tos->tipsrv_cod.' - '.$tos->tipsrv_nom;
-                                    }
-                                    $array_opt_tos = array_combine($new_array1_tos, $new_array2_tos);
-
-                                    $data_set = DB::table('parametros_srv_setores')->select('setor_codigo', 'setor_desc')->where('setor_empresa', $glo_os_empresa)->where('setor_area', $glo_os_req_eat_are)->orderBy('setor_codigo', 'asc')->get();
-
-                                    $new_array1_set =[];
-                                    $new_array2_set =[];
-
-                                    foreach ($data_set as $setor) {
-                                        $new_array1_set[] = $setor->setor_codigo;
-                                        $new_array2_set[] = $setor->setor_codigo.' - '.$setor->setor_desc;
-                                    }
-                                    $array_opt_set = array_combine($new_array1_set, $new_array2_set);
-
-                                }else{
-                                    $eat_are_sel = '';
-                                    $eat_cat_sel = '';
-                                    $array_opt_set = null;
-                                    $array_opt_tos = null;
-                                }
+                                $array_opt_set = null;
+                                $array_opt_tos = null;
                                 
                             @endphp
 
                             <!-- Categoria -->
                             <x-adminlte-select name="categoriaReq" label="Categoria" fgroup-class="col-md-3">
-                                <x-adminlte-options :options="$array_opt_cat" empty-option="Selecione..." selected="{{$eat_cat_sel}}"/>
+                                <x-adminlte-options :options="$array_opt_cat" selected="{{$eat_cat_sel}}"/>
                             </x-adminlte-select>
 
                             <!-- área -->
                             <x-adminlte-select name="areaReq" label="Área" fgroup-class="col-md-3">
-                                <x-adminlte-options :options="$array_opt_are" empty-option="Selecione..." selected="{{$eat_are_sel}}"/>
+                                <x-adminlte-options :options="$array_opt_are" empty-option="Selecione..." selected=""/>
                             </x-adminlte-select>
 
                             <!-- Setor -->
@@ -3208,6 +3184,104 @@ $status_servico = '';
                 
             });
         }
+
+        if(estagioAPP == 'INCLUSAO_REQUISICAO'){
+
+            //Evento de carregamento ajax dos dados dos setores
+            $('#areaReq').change(function(){
+
+                if( $(this).val() && $('#areaReq').val() != '' ) {
+                    
+                    var emp = {!! json_encode($glo_os_empresa) !!};
+                    var area = $(this).val();
+
+                    var url = "{{ route('requisicaoOS.carregaSetAjax', [':area',':emp']) }}";
+                    url = url.replace(':area', area);
+                    url = url.replace(':emp', emp);
+
+                    console.log(url);
+
+                    $.ajax({
+                        url: url,
+                        dataType: "JSON",
+                        type: 'GET',
+                        data: {
+                            '_token': $('meta[name=csrf-token]').attr("content"),
+                            '_method': 'GET',
+                            "area": area,
+                            "emp": emp
+                        },
+                        success: function (data)
+                        {
+                            if(data.setores_ajax_existe == 'S'){
+
+                                var options = '<option value="">Selecione...</option>';	
+
+                                for (var i = 0; i < data.setores_ajax.length; i++) {
+
+                                    options += '<option value="' + data.setores_ajax[i].id + '">' + data.setores_ajax[i].cod_setor + '</option>';
+                                }	
+
+                                $('#setorReq').html(options);
+
+                            }else{
+                                $('#setorReq').html('<option value="">Selecione...</option>');
+                            }
+                        }
+                    });
+                } else {
+                    $('#setorReq').html('<option value="">Selecione...</option>');
+                }
+
+                if( $(this).val() && $('#areaReq').val() != '' ) {
+                    
+                    var emp = {!! json_encode($glo_os_empresa) !!};
+                    var area = $(this).val();
+                    var cat = $("#categoriaReq").val();
+
+                    var url = "{{ route('requisicaoOS.carregaTipSrvAjax', [':area',':emp',':cat']) }}";
+                    url = url.replace(':area', area);
+                    url = url.replace(':emp', emp);
+                    url = url.replace(':cat', cat);
+
+                    console.log(url);
+
+                    $.ajax({
+                        url: url,
+                        dataType: "JSON",
+                        type: 'GET',
+                        data: {
+                            '_token': $('meta[name=csrf-token]').attr("content"),
+                            '_method': 'GET',
+                            "area": area,
+                            "emp": emp,
+                            "cat": cat
+                        },
+                        success: function (data)
+                        {
+                            if(data.tos_ajax_existe == 'S'){
+
+                                var options = '<option value="">Selecione...</option>';	
+
+                                for (var i = 0; i < data.tos_ajax.length; i++) {
+
+                                    options += '<option value="' + data.tos_ajax[i].id + '">' + data.tos_ajax[i].cod_tipo + '</option>';
+                                }	
+
+                                $('#tipoServicoReq').html(options);
+
+                            }else{
+                                $('#tipoServicoReq').html('<option value="">Selecione...</option>');
+                            }
+                        }
+                    });
+                } else {
+                    $('#tipoServicoReq').html('<option value="">Selecione...</option>');
+                }
+            });
+
+
+        }
     });
 </script>
 
@@ -3256,6 +3330,7 @@ $status_servico = '';
                 $("#valLiqTMO").prop('disabled', false);
             });
         }
+        
     });
 </script>
 

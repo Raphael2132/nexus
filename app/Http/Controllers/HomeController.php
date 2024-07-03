@@ -604,7 +604,7 @@ class HomeController extends Controller
     //Redireciona a app para a parametrização das etapas de atendimento do lançamento de serviços
     public function homeLancSrvEtapas()
     {    
-        $etapas = $this->lancamentosServicoEtapas->reorder('eat_cod', 'asc')->get();
+        $etapas = $this->lancamentosServicoEtapas->reorder('eat_cod', 'asc')->reorder('eat_ord', 'asc')->get();
 
         return view('/parametros/servico/homeLancamentosServicoEtapas', ['etapas'=>$etapas]);
     }

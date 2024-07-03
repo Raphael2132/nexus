@@ -16,7 +16,6 @@ class LancamentoSrvEtapaAtendimento extends Model
         'eat_emp',
         'eat_nom',
         'eat_ord',
-        'eat_cat',
-        'eat_are'
+        'eat_cat'
     ];
 }

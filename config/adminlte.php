@@ -365,6 +365,17 @@ return [
             'can'  => 'is_parameter',
             'submenu' => [
                 [
+                    'text' => 'Gerencial',
+                    'icon' => 'fa-solid fa-list',
+                    'submenu' => [
+                        [
+                            'text' => 'Setores',
+                            'url'  => '/parametros/servico/homeParametrosServicoSetor',
+                            'icon' => '',
+                        ],
+                    ],
+                ],
+                [
                     'text' => 'Faturamento',
                     'icon' => 'fa-solid fa-list',
                     'submenu' => [
@@ -386,7 +397,7 @@ return [
                     ],
                 ],
                 [
-                    'text' => 'Lançamento de Serviços',
+                    'text' => 'Serviços',
                     'icon' => 'fa-solid fa-list',
                     'submenu' => [
                         [
@@ -404,11 +415,11 @@ return [
                             'url'  => '/parametros/servico/homeLancamentosServicoEtapas',
                             'icon' => '',
                         ],
-                        [
+                        /*[
                             'text' => 'Setor',
                             'url'  => '/parametros/servico/homeParametrosServicoSetor',
                             'icon' => '',
-                        ],
+                        ],*/
                         [
                             'text' => 'Tarefas Mão de Obra',
                             'url'  => '/parametros/servico/homeParametrosServicoTMO',

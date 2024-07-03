@@ -111,4 +111,48 @@ class LancamentoSrvOsRequisicoesController extends Controller
         
         return redirect(route('situacaoOS.carregaOS', ['empresa' => $empresa, 'cliente' => $cliente, 'nos' => $numOS, 'estagioAPP' => 'PRINCIPAL']))->with('success', 'Requisição excluída com sucesso!');
     }
+
+    //Retorna os setores via ajax
+    public function carregaSetAjax($area, $empresa)
+    {  
+        $setores = DB::table('parametros_srv_setores')->select('setor_codigo', 'setor_desc')->where('setor_empresa', $empresa)->where('setor_area', $area)->orderby('setor_codigo', 'asc')->get();
+
+        if(!empty($setores[0])){
+
+            foreach($setores as $setor) {
+                $setores_ajax[] = array(
+                    'id'	=> $setor->setor_codigo,
+                    'cod_setor' => $setor->setor_codigo.' - '.$setor->setor_desc,
+                );
+            }  
+            
+            return response()->json(['success' => true, 'setores_ajax' => $setores_ajax, 'setores_ajax_existe' => 'S']);
+
+        }else{
+
+            return response()->json(['success' => true, 'setores_ajax' => null, 'setores_ajax_existe' => 'N']);
+        }
+    }
+
+    //Retorna os tipos de serviço via ajax
+    public function carregaTipSrvAjax($area, $empresa, $cat)
+    {  
+        $tipos = DB::table('lancamento_srv_tipo_servicos')->select('tipsrv_cod', 'tipsrv_nom')->where('tipsrv_emp', $empresa)->where('tipsrv_are', $area)->where('tipsrv_cat', $cat)->orderby('tipsrv_cod', 'asc')->get();
+        
+        if(!empty($tipos[0])){
+
+            foreach($tipos as $tipo) {
+                $tos_ajax[] = array(
+                    'id'	=> $tipo->tipsrv_cod,
+                    'cod_tipo' => $tipo->tipsrv_cod.' - '.$tipo->tipsrv_nom,
+                );
+            }  
+            
+            return response()->json(['success' => true, 'tos_ajax' => $tos_ajax, 'tos_ajax_existe' => 'S']);
+
+        }else{
+
+            return response()->json(['success' => true, 'tos_ajax' => null, 'tos_ajax_existe' => 'N']);
+        }
+    }
 }

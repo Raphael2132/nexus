@@ -34,10 +34,10 @@ class LancamentoSrvEtapaAtendimentoController extends Controller
     public function insert(Request $request){
 
         //Verifica se a etapa ja foi cadastrado
-        $eat_cnt = $this->etapa->where('eat_emp','=',$request->empresa)->where('eat_cod','=',$request->codigo)->count();
+        $eat_cnt = $this->etapa->where('eat_emp','=',$request->empresa)->where('eat_cod','=',$request->codigo)->where('eat_ord','=',$request->ordem)->count();
 
         if($eat_cnt > 0){
-            return redirect()->back()->with('error', 'Para a empresa '.$request->empresa.' a Etapa '.$request->codigo.' já foi cadastrada!');
+            return redirect()->back()->with('error', 'Para a empresa '.$request->empresa.' a Etapa de Grupo: '.$request->codigo.' e Ordem: '.$request->ordem.' já foi cadastrada!');
         }
 
         $dados = [
@@ -46,7 +46,6 @@ class LancamentoSrvEtapaAtendimentoController extends Controller
             'eat_nom' => $request->descricao,
             'eat_ord' => $request->ordem,
             'eat_cat' => $request->categoria,
-            'eat_are' => $request->area
         ];
         
         LancamentoSrvEtapaAtendimento::create($dados);
@@ -62,8 +61,7 @@ class LancamentoSrvEtapaAtendimentoController extends Controller
             ->where('eat_emp', $request->empresa)
             ->update(['eat_nom' => $request->descricao,
             'eat_ord' => $request->ordem,
-            'eat_cat' => $request->categoria,
-            'eat_are' => $request->area]);
+            'eat_cat' => $request->categoria]);
         
         return redirect(route('lancamentosSrvEtapas.editarCadastro', ['empresa' => $request->empresa, 'codigo' => $request->codigo]))->with('success', 'Etapa atualizada com sucesso!');
     }

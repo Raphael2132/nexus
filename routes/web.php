@@ -256,7 +256,7 @@ Route::post('/lancamentos/servico/painelAberturaOS/descontoOS/{empresa}/{numOS}'
 
 /* ********** Rotas do painel de Abertura de OS - Contrele Utilizado: PainelAberturaOSController ********** */
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/consulta/{empresa}/{nos}/{estagioAPP}/{requisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'consultaRequisicao'])->name('painelOS.consultaRequisicao');
-Route::get('/lancamentos/servico/painelAberturaOS/requisicao/abrir/{empresa}/{nos}/{estagioAPP}/{glo_eat_cod}', [App\Http\Controllers\PainelAberturaOSController::class, 'abreRequisicao'])->name('painelOS.abreRequisicao');
+Route::get('/lancamentos/servico/painelAberturaOS/requisicao/abrir/{empresa}/{nos}/{estagioAPP}/{glo_eat_cod}/{glo_eat_ord}', [App\Http\Controllers\PainelAberturaOSController::class, 'abreRequisicao'])->name('painelOS.abreRequisicao');
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/abrir/{empresa}/{area}/{setor}/{estagioAPP}/{subEstagioRequisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'abrirServicoRequisicao'])->name('painelOS.abrirServicoRequisicao');
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/consulta/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}/{estagioAPP}/{subEstagioRequisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'consultaServicoRequisicao'])->name('painelOS.consultaServicoRequisicao');
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/selecionar/{empresa}/{area}/{setor}/{codigo}/{estagioAPP}/{subEstagioRequisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'selecionarTMO'])->name('painelOS.selecionarTMO');
@@ -269,6 +269,8 @@ Route::get('/lancamentos/servico/painelAberturaOS/orcamento/impressao/pdf/{empre
 /* ********** Rotas do painel de Abertura de OS - Contrele Utilizado: LancamentoSrvOsRequisicoesController ********** */
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/reabrir/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\LancamentoSrvOsRequisicoesController::class, 'reabrirRequisicao'])->name('requisicaoOS.reabrir');
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/finalizar/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\LancamentoSrvOsRequisicoesController::class, 'finalizarRequisicao'])->name('requisicaoOS.finalizar');
+Route::get('/lancamentos/servico/painelAberturaOS/requisicao/ajaxSetor/{area}/{emp}', [App\Http\Controllers\LancamentoSrvOsRequisicoesController::class, 'carregaSetAjax'])->name('requisicaoOS.carregaSetAjax');
+Route::get('/lancamentos/servico/painelAberturaOS/requisicao/ajaxSetor/{area}/{emp}/{cat}', [App\Http\Controllers\LancamentoSrvOsRequisicoesController::class, 'carregaTipSrvAjax'])->name('requisicaoOS.carregaTipSrvAjax');
 
 Route::post('/lancamentos/servico/painelAberturaOS/requisicao/inserir/{empresa}/{numOS}/{glo_eat_cod}', [App\Http\Controllers\LancamentoSrvOsRequisicoesController::class, 'inserir'])->name('requisicaoOS.inserir');
 

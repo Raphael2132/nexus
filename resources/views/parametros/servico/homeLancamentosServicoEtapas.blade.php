@@ -24,11 +24,10 @@
     @php    
     $heads = [
         'Empresa',
-        'Código',
-        'Descrição',
-        'Ordem',
         'Categoria',
-        'Área',
+        'Grupo Atendimento',
+        'Ordem',
+        'Descrição',
         ['label' => 'Editar', 'no-export' => true, 'width' => 10],
     ];
 
@@ -70,17 +69,13 @@
 
                     $data_cat = DB::table('lancamento_srv_categorias')->select('categoria_desc')->where('categoria_codigo', $etapa->eat_cat)->get();
                     $categoria = $etapa->eat_cat.' - '.$data_cat[0]->categoria_desc;
-
-                    $data_are = DB::table('parametros_sistema_areas')->select('area_desc')->where('area_codigo', $etapa->eat_are)->get();
-                    $area = $etapa->eat_are.' - '.$data_are[0]->area_desc;
                 @endphp
                 <tr>
                     <td>{{ $empresa }}</td>
-                    <td>{{ $etapa->eat_cod }}</td>
-                    <td>{{ $etapa->eat_nom }}</td>
-                    <td>{{ $etapa->eat_ord }}</td>
                     <td>{{ $categoria }}</td>
-                    <td>{{ $area }}</td>
+                    <td>{{ $etapa->eat_cod }}</td>
+                    <td>{{ $etapa->eat_ord }}</td>
+                    <td>{{ $etapa->eat_nom }}</td>
                     <td>
                         <nobr class="d-flex justify-content-center">
                             <form method="get" action="{{route('lancamentosSrvEtapas.editarCadastro', ['codigo' => $etapa->eat_cod, 'empresa' =>$etapa->eat_emp])}}" style="float: left;">

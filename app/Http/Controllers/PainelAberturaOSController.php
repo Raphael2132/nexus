@@ -31,22 +31,22 @@ class PainelAberturaOSController extends Controller
     /* *************** Área dos comandos de navegação da abertura/consulta da Requisição *************** */
 
     //Metodo de carregamento da etapa de inclusão de nova requisição
-    public function abreRequisicao($empresa, $nos, $estagioAPP, $glo_eat_cod)
+    public function abreRequisicao($empresa, $nos, $estagioAPP, $glo_eat_cod, $glo_eat_ord)
     {
         if($glo_eat_cod != 0){
-            $etapa = DB::table('lancamento_srv_etapa_atendimentos')->select('eat_cat', 'eat_are')->where('eat_emp', $empresa)->where('eat_cod', $glo_eat_cod)->get();
+            $etapa = DB::table('lancamento_srv_etapa_atendimentos')->where('eat_emp', $empresa)->where('eat_cod', $glo_eat_cod)->where('eat_ord', $glo_eat_ord)->get();
             
-            $glo_eat_are = $etapa[0]->eat_are;
+            $glo_eat_ord = $etapa[0]->eat_ord;
             $glo_eat_cat = $etapa[0]->eat_cat;
         }else{
-            $glo_eat_are = '';
+            $glo_eat_ord = '';
             $glo_eat_cat = '';
         }
         
         session(['glo_os_estagioAPP' => $estagioAPP]);
         session(['glo_os_req_eat_cod' => $glo_eat_cod]);
         session(['glo_os_req_eat_cat' => $glo_eat_cat]);
-        session(['glo_os_req_eat_are' => $glo_eat_are]);
+        session(['glo_os_req_eat_ord' => $glo_eat_ord]);
 
         return view('/lancamentos/servico/painelAberturaOS');
     }
