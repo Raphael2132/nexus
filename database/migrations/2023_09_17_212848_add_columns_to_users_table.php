@@ -18,7 +18,6 @@ return new class extends Migration
             $table->enum('usuario_altera_permissoes_acesso', ['S', 'N'])->default('N');
             $table->enum('usuario_acesso_pararametros', ['S', 'N'])->default('N');
             $table->enum('usuario_acesso_cadastros', ['S', 'N'])->default('N');
-            $table->unique('usuario_codigo', 'uk_usuario_codigo');
             $table->string('usuario_cpf',11)->nullable();
             $table->string('usuario_rg', 9)->nullable();
             $table->date('usuario_data_nascimento')->nullable();
@@ -26,6 +25,7 @@ return new class extends Migration
             $table->string('usuario_tel_residencial',10)->nullable();
             $table->string('usuario_tel_celular',11)->nullable();
             $table->enum('usuario_tipo_email', ['P', 'C'])->nullable();
+            $table->unique('usuario_codigo, email', 'ak_users');
         });
     }
 
