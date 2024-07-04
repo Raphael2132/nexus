@@ -203,6 +203,7 @@ $status_servico = '';
                                 @else
                                 @php 
                                     $usu_can = DB::table('users')->where('usuario_codigo', $glo_os_dadosOS[0]->os_res_abr)->get();
+                                    $mot_can = DB::table('parametros_sistema_can_motivos')->where('canmot_codigo', $glo_os_dadosOS[0]->os_mot_can)->get();
                                 @endphp
                                 <td colspan="2">
                                     <p class="text-sm">Responsável do Cancelamento OS
@@ -214,6 +215,18 @@ $status_servico = '';
                                         <b class="d-block">{{ Helper::formataData($glo_os_dadosOS[0]->os_dtc) }}</b>
                                     </p>
                                 </td>
+                                <tr>
+                                    <td colspan="2">
+                                        <p class="text-sm">Motivo do Cancelamento
+                                            <b class="d-block">{{ $glo_os_dadosOS[0]->os_mot_can }} - {{$mot_can[0]->canmot_desc}}</b>
+                                        </p>
+                                    </td>
+                                    <td colspan="2">
+                                        <p class="text-sm">Observações
+                                            <b class="d-block">{{ $glo_os_dadosOS[0]->os_obs_can }}</b>
+                                        </p>
+                                    </td>
+                                </tr>
                                 @endif
                             </tr>
                             <tr>
@@ -352,6 +365,51 @@ $status_servico = '';
                             </tr>
                         @endforeach
                     </x-adminlte-datatable>
+
+                    <!-- Modal de Liberação de Desconto da TMO -->
+                    <form method="post" action="{{ route('requisicaoOS.cancelarOS', ['empresa'=> $glo_os_empresa, 'numOS'=> $glo_os_nos]) }}" id="formulario-cancela-os" novalidate="novalidate">
+                        @csrf 
+                        @method('post')
+                        <x-adminlte-modal id="modalCancelamentoOS" title="Cancelamento da OS" size="xl" theme="navy" icon="" v-centered scrollable>
+                            
+                            <div class="col-md-12" style="height:auto;">
+                                <div class="row">
+                                    @php 
+                                        $data = DB::table('parametros_sistema_can_motivos')->orderby('canmot_codigo', 'asc')->get();
+
+                                        $new_array1 =[];
+                                        $new_array2 =[];
+
+                                        foreach ($data as $can) {
+                                            $new_array1[] = $can->canmot_codigo;
+                                            $new_array2[] = $can->canmot_codigo.' - '.$can->canmot_desc;
+                                        }
+                                        $array_opt = array_combine($new_array1, $new_array2);
+                                    @endphp
+                                    <!-- Motivo do Cancelamento -->
+                                    <x-adminlte-select name="canMot" label="Motivo do Cancelamento" fgroup-class="col-md-12">
+                                        <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
+                                    </x-adminlte-select>
+                                </div>
+
+                                <div class="row">    
+                                    <x-adminlte-textarea name="obsMot" label="Observações" rows=5 igroup-size="sm" label-class="text-dark" placeholder="Escreva sua menssagem..." fgroup-class="col-md-12" >
+                                        <x-slot name="prependSlot">
+                                            <div class="input-group-text bg-navy">
+                                                <i class="fas fa-lg fa-file-alt text-white"></i>
+                                            </div>
+                                        </x-slot>
+                                    </x-adminlte-textarea>
+                                </div>
+                            </div>
+                            <!-- Criação dos botões do Modal -->  
+                            <x-slot name="footerSlot">
+                                <x-adminlte-button class="mr-auto" theme="info" label="Cancelar OS" icon="fa-solid fa-ban" type="submit"/>
+                                <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                            </x-slot>
+                            
+                        </x-adminlte-modal>
+                    </form>
                 </x-adminlte-card>
                 @endif
                 <!-- Fechamento do bloco GERAL do painel principal da Abertura de OS ********** -->
@@ -2055,6 +2113,7 @@ $status_servico = '';
                 }
             @endphp
             <x-adminlte-button class="btn_geral" type="button" onclick="window.location='{{ route('situacaoOS.carregaOS', ['empresa' => $glo_os_empresa, 'cliente' => $glo_os_cliente, 'nos' => $glo_os_nos, 'estagioAPP' => 'PRINCIPAL']) }}'" label="Geral" theme="info" icon=""/>
+            <x-adminlte-button class="btn_cancelar_os" type="button" data-toggle="modal" data-target="#modalCancelamentoOS" label="Cancelar OS" theme="info" icon="fa-solid fa-ban"/>
             <x-adminlte-button class="btn_previsao_entrega" type="button" onclick="window.location='{{ route('painelOS.previsaoEntregaOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Previsão de Entrega" theme="info" icon="fa-solid fa-truck"/>
             <x-adminlte-button class="btn_total_os" type="button" onclick="window.location='{{ route('painelOS.totalOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Total OS" theme="info" icon=""/>
 
@@ -2239,6 +2298,10 @@ $status_servico = '';
                 $(".btn_previsao_entrega").hide();
             }
 
+            if(statusOS == 'C'){
+                $(".btn_cancelar_os").hide();
+            }
+
         }else if(estagioAPP == 'INCLUSAO_REQUISICAO'){
 
             $(".btn_novo_servico").hide();
@@ -2265,6 +2328,7 @@ $status_servico = '';
             $(".btn_desconto_os").hide();
             $(".btn_troca_cliente").hide();
             $(".btn_liberar_desconto_tmo").hide(); 
+            $(".btn_cancelar_os").hide(); 
 
         }else if(estagioAPP == 'CONSULTA_REQUISICAO'){
 
@@ -2286,6 +2350,7 @@ $status_servico = '';
             $(".btn_desconto_os").hide();
             $(".btn_troca_cliente").hide();
             $(".btn_liberar_desconto_tmo").hide(); 
+            $(".btn_cancelar_os").hide(); 
 
             var status_requisicao = {!! json_encode($status_requisicao) !!};
             if(status_requisicao == 'F'){
@@ -2327,7 +2392,8 @@ $status_servico = '';
             $(".btn_observacao").hide();
             $(".btn_desconto_os").hide();
             $(".btn_troca_cliente").hide();
-            $(".btn_liberar_desconto_tmo").hide();             
+            $(".btn_liberar_desconto_tmo").hide();   
+            $(".btn_cancelar_os").hide();           
 
             if(subEstagioRequisica != 'TMO_SELECIONADA'){
                 $(".btn_incluir_tmo").hide();
@@ -2354,6 +2420,7 @@ $status_servico = '';
             $(".btn_observacao").hide();
             $(".btn_desconto_os").hide();
             $(".btn_troca_cliente").hide();
+            $(".btn_cancelar_os").hide(); 
 
             var status_requisicao = {!! json_encode($status_requisicao) !!};
             if(status_requisicao == 'F'){
@@ -2406,6 +2473,7 @@ $status_servico = '';
             $(".btn_desconto_os").hide();
             $(".btn_troca_cliente").hide();
             $(".btn_liberar_desconto_tmo").hide(); 
+            $(".btn_cancelar_os").hide(); 
 
         }else if(estagioAPP == 'ORCAMENTO_OS_IMPRESSAO'){
 
@@ -2433,6 +2501,7 @@ $status_servico = '';
             $(".btn_desconto_os").hide();
             $(".btn_troca_cliente").hide();
             $(".btn_liberar_desconto_tmo").hide(); 
+            $(".btn_cancelar_os").hide(); 
 
         }else if(estagioAPP == 'ORCAMENTO_OS'){
 
@@ -2460,6 +2529,7 @@ $status_servico = '';
             $(".btn_desconto_os").hide();
             $(".btn_troca_cliente").hide();
             $(".btn_liberar_desconto_tmo").hide(); 
+            $(".btn_cancelar_os").hide(); 
 
         }else if(estagioAPP == 'TOTAIS_OS'){
 
@@ -2483,6 +2553,7 @@ $status_servico = '';
             $(".btn_gerar_orcamento").hide();
             $(".btn_total_os").hide();
             $(".btn_liberar_desconto_tmo").hide(); 
+            $(".btn_cancelar_os").hide(); 
 
             if(statusOS == 'F' || statusOS == 'C'){
                 $(".btn_encerra_os").hide();
@@ -3580,6 +3651,38 @@ $(function () {
         messages: {
             cliFatura: {
                 required: "Por Favor informe o Cliente"
+            }
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    //Atualização do cliente da fatura da os
+    $('#formulario-cancela-os').validate({
+        rules: {
+            canMot: {
+                required: true
+            },
+            obsMot: {
+                maxlength: 255
+            }
+        },
+        messages: {
+            canMot: {
+                required: "Por Favor informe o Motivo do Cancelamento",
+
+            },
+            obsMot: {
+                maxlength: "Informe no máximo 255 caracteres"
             }
         },
         errorElement: 'span',

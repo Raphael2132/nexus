@@ -90,13 +90,14 @@
             </x-adminlte-input></div>
 
             <div class="wow fadeInUp delay-10s col-md-12">
-            <x-adminlte-textarea name="msg" label="Menssagem" rows=5 igroup-size="sm" label-class="text-primary" placeholder="Escreva sua menssagem..." fgroup-class="col-md-12" disable-feedback>
-                <x-slot name="prependSlot">
-                    <div class="input-group-text">
-                        <i class="fas fa-lg fa-comment-dots text-primary"></i>
-                    </div>
-                </x-slot>
-            </x-adminlte-textarea></div>
+                <x-adminlte-textarea name="msg" label="Menssagem" rows=5 igroup-size="sm" label-class="text-primary" placeholder="Escreva sua menssagem..." fgroup-class="col-md-12" disable-feedback>
+                    <x-slot name="prependSlot">
+                        <div class="input-group-text">
+                            <i class="fas fa-lg fa-comment-dots text-primary"></i>
+                        </div>
+                    </x-slot>
+                </x-adminlte-textarea>
+            </div>
 
             <div class="wow fadeInUp delay-11s col-md-12">
             <x-adminlte-button class="btn-flat" type="submit" label="Enviar" theme="info" icon="fa-solid fa-paper-plane"/></div>

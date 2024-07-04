@@ -373,6 +373,11 @@ return [
                             'url'  => '/parametros/servico/homeParametrosServicoSetor',
                             'icon' => '',
                         ],
+                        [
+                            'text' => 'Motivos de Cancelamentos',
+                            'url'  => '/parametros/sistema/homeParametrosSistemaMotivosCancelamento',
+                            'icon' => '',
+                        ],
                     ],
                 ],
                 [
@@ -415,11 +420,6 @@ return [
                             'url'  => '/parametros/servico/homeLancamentosServicoEtapas',
                             'icon' => '',
                         ],
-                        /*[
-                            'text' => 'Setor',
-                            'url'  => '/parametros/servico/homeParametrosServicoSetor',
-                            'icon' => '',
-                        ],*/
                         [
                             'text' => 'Tarefas Mão de Obra',
                             'url'  => '/parametros/servico/homeParametrosServicoTMO',
@@ -513,11 +513,6 @@ return [
                     'text' => 'Lançamento de Notas',
                     'icon' => 'fa-solid fa-list',
                     'submenu' => [
-                        [
-                            'text' => 'Consulta Geral',
-                            'url'  => 'fiscal',
-                            'icon' => '',
-                        ],
                         [
                             'text' => 'Emissão de NF-e/NFS-e',
                             'url'  => 'faturamento/notas/controleEmissaoNF',

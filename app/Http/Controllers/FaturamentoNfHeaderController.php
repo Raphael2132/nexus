@@ -83,7 +83,7 @@ class FaturamentoNfHeaderController extends Controller
 
     public function consultaReemissaoNF()
     {
-        $dados = $this->headerNF->where('nfhdr_sts','<>', 'A')->orderby('nfhdr_dt_nf', 'desc')->orderby('nfhdr_num_nf', 'desc')->get();
+        $dados = $this->headerNF->wherenotin('nfhdr_sts', ['A','C'])->orderby('nfhdr_dt_nf', 'desc')->orderby('nfhdr_num_nf', 'desc')->get();
 
         return view('/faturamento/notas/consultaReemissaoNF',['dadosHeader'=>$dados]);
     }

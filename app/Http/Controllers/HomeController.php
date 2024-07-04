@@ -18,6 +18,7 @@ use App\Models\LancamentoSrvCategorias;
 use App\Models\LancamentoSrvTipoServico;
 use App\Models\LancamentoSrvEtapaAtendimento;
 use App\Models\CadastroPrestadores;
+use App\Models\ParametrosSistemaCanMotivos;
 use Illuminate\Http\Request;
 use stdClass;
 use Illuminate\Support\Facades\DB;
@@ -45,7 +46,8 @@ class HomeController extends Controller
                                 LancamentoSrvCategorias $lancamentosServicoCategoria,
                                 LancamentoSrvTipoServico $lancamentoSrvTipoServico,
                                 LancamentoSrvEtapaAtendimento  $lancamentosServicoEtapas,
-                                CadastroPrestadores $prestador)
+                                CadastroPrestadores $prestador,
+                                ParametrosSistemaCanMotivos $motCan)
     {
         $this->middleware('auth');
         $this->cliente = $cliente;
@@ -64,6 +66,7 @@ class HomeController extends Controller
         $this->lancamentoSrvTipoServico = $lancamentoSrvTipoServico;
         $this->lancamentosServicoEtapas = $lancamentosServicoEtapas;
         $this->prestador = $prestador;
+        $this->motCan = $motCan;
     }
 
     /**
@@ -619,5 +622,13 @@ class HomeController extends Controller
     public function reemissaoNF()
     {    
         return view('/faturamento/notas/controleReemissaoNF');
+    }
+
+    //Redireciona a app para os motivos de cancelamento
+    public function homeParMotCan()
+    {    
+        $motivos = $this->motCan->reorder('canmot_codigo', 'asc')->get();
+
+        return view('/parametros/sistema/homeParametrosSistemaMotivosCancelamento', ['motivos' => $motivos]);
     }
 }

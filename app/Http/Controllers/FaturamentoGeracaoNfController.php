@@ -50,17 +50,25 @@ class FaturamentoGeracaoNfController extends Controller
         $dataGeracaoNF = date('Y-m-d');
         $horaGeracaoNF = date('Hi');
 
+        $stsEnvio = DB::table('faturamento_nfs_xml_envios')->where('nfsenv_emp', $empresa)->where('nfsenv_nfhdr_num', $nfSelecionada)->get();
+
+        if($stsEnvio[0]->nfsenv_sts == 3){
+            $status = 'G';
+        }else{
+            $status = 'E';
+        }
+
         //Atualiza os dados da NF
         DB::table('faturamento_nf_headers')
                 ->where('nfhdr_emp', $empresa)
                 ->where('nfhdr_num', $nfSelecionada)
-                ->update(['nfhdr_sts' => 'G',
+                ->update(['nfhdr_sts' => $status,
                 'nfhdr_dt_nf' => $dataGeracaoNF]);
         
         DB::table('faturamento_nfs')
         ->where('nfs_emp', $empresa)
         ->where('nfs_nfhdr_num', $nfSelecionada)
-        ->update(['nfs_sts' => 'G',
+        ->update(['nfs_sts' => $status,
             'nfs_dt_emi' => $dataGeracaoNF,
             'nfs_hr_emi' => $horaGeracaoNF]);
         

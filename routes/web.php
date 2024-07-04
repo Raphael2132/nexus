@@ -86,6 +86,20 @@ Route::delete('/parametros/sistema/servico/{servico}/destroy', [App\Http\Control
 */
 
 /* ********** Rotas ligadas a parte de faturamento de nfs ********** */
+
+/* Setor */
+Route::get('/parametros/servico/homeParametrosServicoSetor', [App\Http\Controllers\HomeController::class, 'homeParSrvSetor'])->name('home.parSrvSetor');
+Route::get('/parametros/sistema/homeParametrosSistemaMotivosCancelamento', [App\Http\Controllers\HomeController::class, 'homeParMotCan'])->name('home.parMotCan');
+Route::get('/parametros/servico/formularioParametrosSisMotCancelamento/ajax', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'homeAjax'])->name('parametrosSisMotCan.homeAjax');
+
+Route::get('/parametros/servico/homeParametrosServicoSetor/ajax', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'homeAjax'])->name('parametrosSrvSetor.homeAjax');
+Route::get('/parametros/sistema/formularioParametrosSisMotCancelamento/{acao}/{dadosMotCan}', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'cadastroMotCan'])->name('parametrosSisMotCan.cadastroMotCan');
+
+Route::post('/parametros/sistema/formularioParametrosSisMotCancelamento/insert', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'insert'])->name('parametrosSisMotCan.insert');
+Route::post('/parametros/sistema/formularioParametrosSisMotCancelamento/update', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'update'])->name('parametrosSisMotCan.update');
+Route::delete('/parametros/sistema/motivoCancelamento/{motivo}/{origem}/destroy', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'destroy'])->name('parametrosSisMotCan.destroy');
+
+/* ********** Rotas ligadas a parte de faturamento de nfs ********** */
 Route::get('/parametros/faturamento/nfs/homeParametroFatNfs', [App\Http\Controllers\HomeController::class, 'homeParFatNfs'])->name('home.parFatNfs');
 
 /* Provedor */
@@ -136,10 +150,6 @@ Route::get('/parametros/servico/formularioLancamentosServicoTipo/{codigo}/{empre
 Route::post('/parametros/servico/formularioLancamentosServicoTipo/insert', [App\Http\Controllers\LancamentoSrvTipoServicoController::class, 'insert'])->name('lancamentosSrvTipo.insert');
 Route::post('/parametros/servico/formularioLancamentosServicoTipo/update', [App\Http\Controllers\LancamentoSrvTipoServicoController::class, 'update'])->name('lancamentosSrvTipo.update');
 Route::delete('/parametros/servico/tipo/{tipo}/{origem}/destroy', [App\Http\Controllers\LancamentoSrvTipoServicoController::class, 'destroy'])->name('lancamentosSrvTipo.destroy');
-
-/* Setor */
-Route::get('/parametros/servico/homeParametrosServicoSetor', [App\Http\Controllers\HomeController::class, 'homeParSrvSetor'])->name('home.parSrvSetor');
-Route::get('/parametros/servico/homeParametrosServicoSetor/ajax', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'homeAjax'])->name('parametrosSrvSetor.homeAjax');
 
 Route::get('/parametros/servico/formularioParametrosServicoSetor', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'cadastro'])->name('parametrosSrvSetor.cadastro');
 Route::get('/parametros/servico/formularioParametrosServicoSetor/{codigo}/{empresa}/{area}', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'editar'])->name('parametrosSrvSetor.editarCadastro');
@@ -265,6 +275,8 @@ Route::get('/lancamentos/servico/painelAberturaOS/orcamento/{empresa}/{numOS}', 
 Route::get('/lancamentos/servico/painelAberturaOS/total/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'totalOS'])->name('painelOS.totalOS');
 Route::get('/lancamentos/servico/painelAberturaOS/encerraOS/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'encerraOS'])->name('painelOS.encerraOS');
 Route::get('/lancamentos/servico/painelAberturaOS/orcamento/impressao/pdf/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'orcamentoGerarPDF'])->name('painelOS.orcamentoPDF');
+
+Route::post('/lancamentos/servico/painelAberturaOS/os/cancelar/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'cancelarOS'])->name('requisicaoOS.cancelarOS');
 
 /* ********** Rotas do painel de Abertura de OS - Contrele Utilizado: LancamentoSrvOsRequisicoesController ********** */
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/reabrir/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\LancamentoSrvOsRequisicoesController::class, 'reabrirRequisicao'])->name('requisicaoOS.reabrir');

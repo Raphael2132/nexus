@@ -412,4 +412,52 @@ class PainelAberturaOSController extends Controller
 
         return redirect(route('painelOS.totalOS', ['empresa' => $empresa, 'numOS' => $numOS]))->with('success2', 'OS '.$numOS.' encerrada com sucesso!');
     }
+
+    //Metodo de cancelamento da os
+    public function cancelarOS(Request $request, $empresa, $numOS)
+    {
+
+        $cnt_nfs = DB::table('faturamento_nf_headers')->where('nfhdr_emp', $empresa)->where('nfhdr_num_ped', $numOS)->count();
+
+        if($cnt_nfs > 0){
+            $nfs = DB::table('faturamento_nf_headers')->where('nfhdr_emp', $empresa)->where('nfhdr_num_ped', $numOS)->get();
+
+            if($nfs[0]->nfhdr_sts == 'G'){
+                return redirect()->back()->with('error', 'Não é possível cancelar a OS! A NFS-e referente a OS já foi emitida!');
+            }
+        }
+
+        $dadosOS = DB::table('lancamento_srv_os')->where('os_emp', $empresa)->where('os_nos', $numOS)->get();
+        
+        $data = date('Y-m-d');
+        $hora = date('Hi');
+
+        $usuario = Auth::user()->usuario_codigo;
+
+        DB::table('lancamento_srv_os')
+            ->where('os_emp', $empresa)
+            ->where('os_nos', $numOS)
+            ->update(['os_sts' => 'C',
+                'os_dtc' => $data,
+                'os_hrc' => $hora,
+                'os_mot_can' => $request->canMot,
+                'os_obs_can' => $request->obsMot,
+                'os_res_can' => $usuario]);  
+        
+        if($cnt_nfs > 0){
+
+            //Atualiza os dados da NF
+            DB::table('faturamento_nf_headers')
+            ->where('nfhdr_emp', $empresa)
+            ->where('nfhdr_num', $nfs[0]->nfhdr_num)
+            ->update(['nfhdr_sts' => 'C']);
+
+            DB::table('faturamento_nfs')
+            ->where('nfs_emp', $empresa)
+            ->where('nfs_nfhdr_num', $nfs[0]->nfhdr_num)
+            ->update(['nfs_sts' => 'C']);
+        }
+        
+        return redirect(route('situacaoOS.carregaOS', ['empresa' => $empresa, 'cliente' => $dadosOS[0]->os_cli, 'nos' => $numOS, 'estagioAPP' => 'PRINCIPAL']))->with('success2', 'OS '.$numOS.' cancelada com sucesso!');
+    }
 }
