@@ -12,6 +12,8 @@ class ParametrosFatNfsProvedores extends Model
     protected $primaryKey = 'provedor_id';
     
     protected $fillable = [
-        'provedor_desc'
+        'provedor_desc',
+        'provedor_ibge',
+        'provedor_uf'
     ];
 }

@@ -104,6 +104,7 @@ Route::get('/parametros/faturamento/nfs/homeParametroFatNfs', [App\Http\Controll
 
 /* Provedor */
 Route::get('/parametros/faturamento/nfs/parametrosNfsProvedor', [App\Http\Controllers\ParametrosFatNfsProvedoresController::class, 'provedor'])->name('parametrosNfsProvedor');
+Route::get('/parametros/faturamento/nfs/parametrosNfsProvedor/ajax/cidade/{uf}', [App\Http\Controllers\ParametrosFatNfsProvedoresController::class, 'carregaCidAjax'])->name('parametrosNfsProvedor.carregaCidAjax');
 Route::post('/parametros/faturamento/nfs/parametrosNfsProvedor', [App\Http\Controllers\ParametrosFatNfsProvedoresController::class, 'inserir'])->name('parametrosNfsProvedor.inserir');
 
 /* Conexão */

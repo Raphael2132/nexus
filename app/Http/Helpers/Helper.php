@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Helpers;
+use Illuminate\Support\Facades\DB;
+use stdClass;
+
 
 class Helper
 {
@@ -176,5 +179,13 @@ class Helper
         } 
 
         return $str;
+    }
+
+    public static function buscaEstadoUF(string $uf)
+    {
+        $estado = DB::table('ibge_estados')->where('ibge_sigla', $uf)->get();
+
+        $estadoFormatado = $uf.' - '.$estado[0]->ibge_nome;
+        return $estadoFormatado;
     }
 }

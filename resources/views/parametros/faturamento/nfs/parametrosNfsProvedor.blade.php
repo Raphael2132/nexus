@@ -23,6 +23,7 @@
 $heads = [
     ['label' => 'Código', 'no-export' => true, 'width' => 10],
     'Provedor',
+    'Estado'
 ];
 $config = [
     'searching' => false,
@@ -60,7 +61,8 @@ $config = [
             @foreach ($provedores as $provedor)
                 <tr>
                     <td>{{ $provedor->provedor_id }}</td>
-                    <td>{{ $provedor->provedor_desc }}</td>             
+                    <td>{{ $provedor->provedor_desc }}</td>     
+                    <td>{{ Helper::buscaEstadoUF($provedor->provedor_uf) }}</td>            
                 </tr>
             @endforeach
         </x-adminlte-datatable>
@@ -70,8 +72,37 @@ $config = [
     <form method="post" action="{{route('parametrosNfsProvedor.inserir')}}" id="quickForm" novalidate="novalidate">
         @csrf 
         <x-adminlte-card title="Cadastrar Novo Provedor" theme="navy" collapsible maximizable>
+
+            @php
+                $dados_ibge = DB::table('ibge_estados')->orderby('ibge_sigla')->get();
+
+                $new_array1 =[];
+                $new_array2 =[];
+
+                foreach ($dados_ibge as $ibge) {
+                    $new_array1[] = $ibge->ibge_sigla;
+                    $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
+                }
+                $array_opt = array_combine($new_array1, $new_array2);
+
+                //Faz o lookup do campo de cidades 
+                $dataIBGE = DB::table('ibge_municipios')->select('ibge_mun_codigo', 'ibge_mun_nome')->orderBy('ibge_mun_uf_codigo', 'asc')->orderBy('ibge_mun_codigo', 'asc')->get();
+                $html = '<datalist id="cidades">';
+                foreach($dataIBGE as $cidade){
+                    $html .= '<option value="'.$cidade->ibge_mun_nome.'">'.$cidade->ibge_mun_nome.'</option>';
+                }
+                $html .='</datalist>';
+                //Echo adiciona o html ao campo das cidades
+                echo $html;
+            @endphp
+
+            <!-- Estado -->
+            <x-adminlte-select name="uf" label="Estado do Provedor" fgroup-class="col-md-12">
+                <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
+            </x-adminlte-select>
+
             <!-- Nome do Provedor -->
-            <x-adminlte-input name="descricao" label="Provedor" type="text" placeholder="Nome do Provedor" fgroup-class="col-md-12"/>
+            <x-adminlte-input name="cidade" label="Cidade" type="search" list="cidades" placeholder="Nome do Provedor" fgroup-class="col-md-12"/>
 
             <x-slot name="footerSlot">
                 <x-adminlte-button class="btn-flat" type="submit" label="Incluir" theme="info" icon="fa-solid fa-share-from-square"/>
@@ -99,19 +130,75 @@ $config = [
 @stop
 
 @section('js')
+<!--
+|--------------------------------------------------------------------------
+| Eventos onChange da app
+|--------------------------------------------------------------------------
+-->
+<script>
+    $(document).ready(function() {
+
+        //Evento de carregamento ajax dos dados dos setores
+        $('#uf').change(function(){
+
+            if( $(this).val() && $('#uf').val() != '' ) {
+                
+                var uf = $(this).val();
+
+                var url = "{{ route('parametrosNfsProvedor.carregaCidAjax', [':uf']) }}";
+                url = url.replace(':uf', uf);
+
+                $.ajax({
+                    url: url,
+                    dataType: "JSON",
+                    type: 'GET',
+                    data: {
+                        '_token': $('meta[name=csrf-token]').attr("content"),
+                        '_method': 'GET',
+                        "uf": uf
+                    },
+                    success: function (data)
+                    {
+                        if(data.cidade_ajax_existe == 'S'){
+
+                            var options = '<';	
+
+                            for (var i = 0; i < data.cidade_ajax.length; i++) {
+
+                                options += '<option value="' + data.cidade_ajax[i].cidade + '">' + data.cidade_ajax[i].cidade + '</option>';
+                            }	
+
+
+                            $('#cidade').val('');
+                            $('#cidades').html(options);
+
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+
 <script>
 $(function () {
     $('#quickForm').validate({
         rules: {
-            descricao: {
+            cidade: {
                 required: true,
                 maxlength: 80
             },
+            uf: {
+                required: true
+            },
         },
         messages: {
-            descricao: {
-                required: "Por Favor informe o Nome do Provedor",
+            cidade: {
+                required: "Por Favor informe o Nome da Cidade Provedor",
                 maxlength: "Infome no máximo 80 caracteres"
+            },
+            uf: {
+                required: "Por Favor informe o Estado do Provedor"
             },
         },
         errorElement: 'span',
