@@ -1371,7 +1371,7 @@ $status_servico = '';
                                         "locale" => ["format" => "HH:mm"],
                                     ];
                                     if(!empty($glo_os_dadosOS[0]->os_dpe)){
-                                        $horaPrevEnt = substr($glo_os_dadosOS[0]->os_hpe,0,2).':'.substr($glo_os_dadosOS[0]->os_hpe,2,2);
+                                        $horaPrevEnt = Helper::formataHoraMinuto($glo_os_dadosOS[0]->os_hpe,0,2);
                                     }else{
                                         $horaPrevEnt = '';
                                     }

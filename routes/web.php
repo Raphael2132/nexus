@@ -85,14 +85,15 @@ Route::delete('/parametros/sistema/servico/{servico}/destroy', [App\Http\Control
 |
 */
 
-/* ********** Rotas ligadas a parte de faturamento de nfs ********** */
+/* ********** Rotas ligadas a parte Gerencial ********** */
 
 /* Setor */
 Route::get('/parametros/servico/homeParametrosServicoSetor', [App\Http\Controllers\HomeController::class, 'homeParSrvSetor'])->name('home.parSrvSetor');
+Route::get('/parametros/servico/homeParametrosServicoSetor/ajax', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'homeAjax'])->name('parametrosSrvSetor.homeAjax');
+
+/* Motivo de Cancelamento */
 Route::get('/parametros/sistema/homeParametrosSistemaMotivosCancelamento', [App\Http\Controllers\HomeController::class, 'homeParMotCan'])->name('home.parMotCan');
 Route::get('/parametros/servico/formularioParametrosSisMotCancelamento/ajax', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'homeAjax'])->name('parametrosSisMotCan.homeAjax');
-
-Route::get('/parametros/servico/homeParametrosServicoSetor/ajax', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'homeAjax'])->name('parametrosSrvSetor.homeAjax');
 Route::get('/parametros/sistema/formularioParametrosSisMotCancelamento/{acao}/{dadosMotCan}', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'cadastroMotCan'])->name('parametrosSisMotCan.cadastroMotCan');
 
 Route::post('/parametros/sistema/formularioParametrosSisMotCancelamento/insert', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'insert'])->name('parametrosSisMotCan.insert');
@@ -118,6 +119,12 @@ Route::get('/parametros/faturamento/nfs/editarParametrosNfsEmissao/{dadosEmissao
 Route::post('/parametros/faturamento/nfs/editarParametrosNfsEmissao/{empresa}', [App\Http\Controllers\ParametrosFatNfsController::class, 'update'])->name('parmetrosNfsEmi.atualizar');
 
 /* ********** Rotas ligadas a parte de lançamento de serviços ********** */
+
+/* Geral da Empresa */
+Route::get('/parametros/servico/homeParametrosServicoEmpresa', [App\Http\Controllers\HomeController::class, 'homeParametroSrvEmp'])->name('home.parametrosSrvEmp');
+Route::get('/parametros/servico/formularioParametrosServicoEmpresa/{empresa}', [App\Http\Controllers\ParametrosSrvEmpresasController::class, 'editar'])->name('parametrosSrvEmp.editarCadastro');
+
+Route::post('/parametros/servico/formularioParametrosServicoEmpresa/update', [App\Http\Controllers\ParametrosSrvEmpresasController::class, 'update'])->name('parametrosSrvEmp.update');
 
 /* Categorias de Atendimento */
 Route::get('/parametros/servico/homeLancamentosServicoCategoria', [App\Http\Controllers\HomeController::class, 'homeLancSrvCategoria'])->name('home.lancSrvCategoria');

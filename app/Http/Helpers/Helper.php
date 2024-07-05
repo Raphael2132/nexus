@@ -110,6 +110,7 @@ class Helper
 
     public static function formataHoraMinuto(string $hora)
     {
+        $hora = str_pad($hora, 4, "0", STR_PAD_LEFT);
         $horaFormatada = substr($hora,0,2).':'.substr($hora,2,2);
         return $horaFormatada;
     }

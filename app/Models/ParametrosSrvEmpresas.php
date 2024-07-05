@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class ParametrosSrvEmpresas extends Model
 {
     use HasFactory;
+
+    protected $primaryKey = 'parsrv_id';
+    
+    protected $fillable = [
+        'parsrv_emp',
+        'parsrv_alq_iss',
+        'parsrv_cfop',
+        'parsrv_hr_ini_ex',
+        'parsrv_hr_fin_ex'
+    ];
 }

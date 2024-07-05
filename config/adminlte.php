@@ -407,7 +407,7 @@ return [
                     'submenu' => [
                         [
                             'text' => 'Geral da Empresa',
-                            'url'  => '',
+                            'url'  => '/parametros/servico/homeParametrosServicoEmpresa',
                             'icon' => '',
                         ],
                         [

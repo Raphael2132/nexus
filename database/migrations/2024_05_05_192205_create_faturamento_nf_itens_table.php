@@ -160,7 +160,7 @@ return new class extends Migration
             $table->decimal('nfitm_vlr_fcp_st',15,2)->default(0); // Valor do FCP retido por Substituicao Tributaria 
             $table->decimal('nfitm_vlr_per_fcp_st_ret',7,4)->default(0); // Percentual do FCP retido anteriormente por Substituicao Tributaria 
             $table->decimal('nfitm_vlr_fcp_st_ret',15,2)->default(0); // Valor do FCP retido por Substituicao Tributaria 
-            $table->decimal('nfitm_vlr_alq_sup_cf ',7,4)->default(0); // Aliquota suportada pelo Consumidor Final 
+            $table->decimal('nfitm_vlr_alq_sup_cf',7,4)->default(0); // Aliquota suportada pelo Consumidor Final 
             $table->decimal('nfitm_vlr_bc_fcp_uf_dest',15,2)->default(0); // Valor da BC FCP na UF de destino 
             //campos cst 60
             $table->decimal('nfitm_vlr_bc_st_ret',15,2)->default(0); // Valor da BC do ICMS ST retido 

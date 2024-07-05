@@ -19,6 +19,7 @@ use App\Models\LancamentoSrvTipoServico;
 use App\Models\LancamentoSrvEtapaAtendimento;
 use App\Models\CadastroPrestadores;
 use App\Models\ParametrosSistemaCanMotivos;
+use App\Models\ParametrosSrvEmpresas;
 use Illuminate\Http\Request;
 use stdClass;
 use Illuminate\Support\Facades\DB;
@@ -47,7 +48,8 @@ class HomeController extends Controller
                                 LancamentoSrvTipoServico $lancamentoSrvTipoServico,
                                 LancamentoSrvEtapaAtendimento  $lancamentosServicoEtapas,
                                 CadastroPrestadores $prestador,
-                                ParametrosSistemaCanMotivos $motCan)
+                                ParametrosSistemaCanMotivos $motCan,
+                                ParametrosSrvEmpresas $parSrvEmp)
     {
         $this->middleware('auth');
         $this->cliente = $cliente;
@@ -67,6 +69,7 @@ class HomeController extends Controller
         $this->lancamentosServicoEtapas = $lancamentosServicoEtapas;
         $this->prestador = $prestador;
         $this->motCan = $motCan;
+        $this->parSrvEmp = $parSrvEmp;
     }
 
     /**
@@ -630,5 +633,13 @@ class HomeController extends Controller
         $motivos = $this->motCan->reorder('canmot_codigo', 'asc')->get();
 
         return view('/parametros/sistema/homeParametrosSistemaMotivosCancelamento', ['motivos' => $motivos]);
+    }
+
+    //Redireciona a app para os motivos de cancelamento
+    public function homeParametroSrvEmp()
+    {    
+        $parametros = $this->parSrvEmp->reorder('parsrv_emp', 'asc')->get();
+
+        return view('/parametros/servico/homeParametrosServicoEmpresa', ['dataParSrvEmp' => $parametros]);
     }
 }
