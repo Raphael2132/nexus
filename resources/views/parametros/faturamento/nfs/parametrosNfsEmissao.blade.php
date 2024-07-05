@@ -67,7 +67,7 @@ $config = [
                 $empresa = $emissao->parnfs_empresa.' - '.$data_emp[0]->empresa_nome;
                 
                 if(!empty($emissao->parnfs_provedor)){
-                    $nomePro = DB::table('parametros_fat_nfs_provedores')->selectRaw('provedor_desc')->where('provedor_id','=',$emissao->parnfs_provedor)->get();
+                    $nomePro = DB::table('parametros_fat_nfs_provedores')->where('provedor_codigo','=',$emissao->parnfs_provedor)->get();
                     $nomeProvedor = $emissao->parnfs_provedor.' - '.$nomePro[0]->provedor_desc;
                 }else{
                     $nomeProvedor ='Não Cadastrado';

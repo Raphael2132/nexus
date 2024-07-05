@@ -60,7 +60,7 @@ $config = [
         <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable>
             @foreach ($provedores as $provedor)
                 <tr>
-                    <td>{{ $provedor->provedor_id }}</td>
+                    <td>{{ $provedor->provedor_codigo }}</td>
                     <td>{{ $provedor->provedor_desc }}</td>     
                     <td>{{ Helper::buscaEstadoUF($provedor->provedor_uf) }}</td>            
                 </tr>
@@ -94,7 +94,12 @@ $config = [
                 $html .='</datalist>';
                 //Echo adiciona o html ao campo das cidades
                 echo $html;
+
+                $codigo = DB::table('parametros_fat_nfs_provedores')->max('provedor_codigo') +1;
             @endphp
+
+            <!-- Nome do Provedor -->
+            <x-adminlte-input name="codigo" label="Código" type="number" placeholder="Código do Provedor" value="{{$codigo}}" fgroup-class="col-md-12"/>
 
             <!-- Estado -->
             <x-adminlte-select name="uf" label="Estado do Provedor" fgroup-class="col-md-12">

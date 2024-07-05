@@ -64,7 +64,7 @@
                     $empresa = $nfs->parnfs_empresa.' - '.$data_emp[0]->empresa_nome;
 
                     if(!empty($nfs->provedor)){
-                        $data_prov = DB::table('parametros_fat_nfs_provedores')->where('provedor_id','=',$nfs->provedor)->get();
+                        $data_prov = DB::table('parametros_fat_nfs_provedores')->where('provedor_codigo','=',$nfs->provedor)->get();
                         $provedor = $nfs->parnfs_provedor.' - '.$data_prov[0]->provedor_desc;
                     }else{
                         $provedor = 'Não Cadastrado';
@@ -142,7 +142,7 @@
                     $empresa2 = $nfsCon->conexao_empresa.' - '.$data_emp2[0]->empresa_nome;
 
                     if(!empty($nfsCon->conexao_provedor)){
-                        $data_prov2 = DB::table('parametros_fat_nfs_provedores')->where('provedor_id','=',$nfsCon->conexao_provedor)->get();
+                        $data_prov2 = DB::table('parametros_fat_nfs_provedores')->where('provedor_codigo','=',$nfsCon->conexao_provedor)->get();
                         $provedor2 = $nfsCon->conexao_provedor.' - '.$data_prov2[0]->provedor_desc;
                     }else{
                         $provedor2 = 'Não Cadastrado';

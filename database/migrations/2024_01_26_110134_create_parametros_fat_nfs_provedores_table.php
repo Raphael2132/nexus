@@ -14,8 +14,10 @@ return new class extends Migration
     {
         Schema::create('parametros_fat_nfs_provedores', function (Blueprint $table) {
             $table->id('provedor_id');
+            $table->integer('provedor_codigo');
             $table->string('provedor_desc',80);
             $table->timestamps();
+            $table->unique('provedor_codigo', 'ak_parametros_fat_nfs_provedores');
         });
     }
 

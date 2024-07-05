@@ -52,10 +52,18 @@ class ParametrosFatNfsProvedoresController extends Controller
             }
         }
 
+        //Verifica se já existe provedor cadastrado com o mesmo nome
+        $cod_prov = DB::table('parametros_fat_nfs_provedores')->where('provedor_codigo', $request->codigo)->count();
+
+        if($cod_prov > 0){
+            return redirect()->back()->with('error', 'Já existe provedor cadstrado com o código '.$request->codigo.'!');
+        }
+
         //Busca o codigo do ibge da cidade
         $ibge_cod = DB::table('ibge_municipios')->where('ibge_mun_nome', $request->cidade)->where('ibge_mun_uf_codigo', $uf_ibge[0]->ibge_codigo)->get();
 
         $dados = [
+            'provedor_codigo' => $request->codigo, 
             'provedor_desc' => $request->cidade, 
             'provedor_ibge' => $ibge_cod[0]->ibge_mun_codigo,
             'provedor_uf' => $request->uf   

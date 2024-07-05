@@ -48,14 +48,14 @@
                     </x-adminlte-select>
 
                     @php
-                        $data = DB::table('parametros_fat_nfs_provedores')->orderBy('provedor_id', 'asc')->get();
+                        $data = DB::table('parametros_fat_nfs_provedores')->orderBy('provedor_codigo', 'asc')->get();
 
                         $new_array1 =[];
                         $new_array2 =[];
 
                         foreach ($data as $provedor) {
-                            $new_array1[] = $provedor->provedor_id;
-                            $new_array2[] = $provedor->provedor_id.' - '.$provedor->provedor_desc;
+                            $new_array1[] = $provedor->provedor_codigo;
+                            $new_array2[] = $provedor->provedor_codigo.' - '.$provedor->provedor_desc;
                         }
                         $array_opt = array_combine($new_array1, $new_array2);
                     @endphp
