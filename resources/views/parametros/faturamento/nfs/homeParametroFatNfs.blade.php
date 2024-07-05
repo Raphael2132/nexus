@@ -63,8 +63,8 @@
                     $data_emp = DB::table('cadastro_empresas')->where('empresa_codigo','=',$nfs->parnfs_empresa)->get();
                     $empresa = $nfs->parnfs_empresa.' - '.$data_emp[0]->empresa_nome;
 
-                    if(!empty($nfs->provedor)){
-                        $data_prov = DB::table('parametros_fat_nfs_provedores')->where('provedor_codigo','=',$nfs->provedor)->get();
+                    if(!empty($nfs->parnfs_provedor)){
+                        $data_prov = DB::table('parametros_fat_nfs_provedores')->where('provedor_codigo', $nfs->parnfs_provedor)->get();
                         $provedor = $nfs->parnfs_provedor.' - '.$data_prov[0]->provedor_desc;
                     }else{
                         $provedor = 'Não Cadastrado';
