@@ -101,7 +101,7 @@ $config = [
                 @elseif($stsNF == 3)
                 <td class="max-width-sts"><b class="text-success">{{$dadosXmlNfsEnv[0]->nfsenv_obs}}</b></td>
                 @else
-                <td class="max-width-sts"><b class="text-info">Geração Iniciada</b></td>
+                <td class="max-width-sts"><b class="text-info">Geração Iniciada</b><a href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num])}}"> Reenviar</a></td>
                 @endif
                 <td><a href="{{route('impresaoNF.nfsePDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num])}}" target="_blank">Abrir NFS-e</a></td>
             </tr>
