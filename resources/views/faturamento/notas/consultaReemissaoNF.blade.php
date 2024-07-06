@@ -69,10 +69,16 @@ $config = [
                 $data = DB::table('cadastro_empresas')->where('empresa_codigo', $header->nfhdr_emp)->get();
                 $data_cli = DB::table('cadastro_clientes')->where('cliente_codigo', $header->nfhdr_cli)->get();
                 $dadosXmlNfsEnv = DB::table('faturamento_nfs_xml_envios')->where('nfsenv_emp',$header->nfhdr_emp)->where('nfsenv_num',$header->nfhdr_num_nf)->get();
+                
+                if(!empty($header->nfhdr_dt_nf)){
+                    $dataNF = Helper::formataData($header->nfhdr_dt_nf);
+                }else{
+                    $dataNF = '';
+                }
             @endphp
             <tr>
                 <td>{{$header->nfhdr_emp.' - '.$data[0]->empresa_nome}}</td>
-                <td>{{Helper::formataData($header->nfhdr_dt_nf)}}</td>
+                <td>{{$dataNF}}</td>
                 <td>{{$header->nfhdr_cli.' - '.$data_cli[0]->cliente_nome}}</td>
                 <td>{{$header->nfhdr_num_ped}}</td>
                 <td>{{$header->nfhdr_num_nf.'-'.$header->nfhdr_ser_nf}}</td>
