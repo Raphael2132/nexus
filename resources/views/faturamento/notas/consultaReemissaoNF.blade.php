@@ -103,7 +103,11 @@ $config = [
                 @else
                 <td class="max-width-sts"><b class="text-info">Geração Iniciada</b><a href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num])}}"> Reenviar</a></td>
                 @endif
+                @if($stsNF != 4)
                 <td><a href="{{route('impresaoNF.nfsePDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num])}}" target="_blank">Abrir NFS-e</a></td>
+                @else
+                <td></td>
+                @endif
             </tr>
         @endforeach
     </x-adminlte-datatable>
