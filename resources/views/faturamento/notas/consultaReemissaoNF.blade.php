@@ -75,6 +75,16 @@ $config = [
                 }else{
                     $dataNF = '';
                 }
+
+                if(empty($dadosXmlNfsEnv[0]->nfsenv_sts)){
+                    $stsNF = 4;
+                }elseif($dadosXmlNfsEnv[0]->nfsenv_sts == 1){
+                    $stsNF = 1;
+                }elseif($dadosXmlNfsEnv[0]->nfsenv_sts == 2){
+                    $stsNF = 2;
+                }else{
+                    $stsNF = 3;
+                }
             @endphp
             <tr>
                 <td>{{$header->nfhdr_emp.' - '.$data[0]->empresa_nome}}</td>
@@ -84,12 +94,14 @@ $config = [
                 <td>{{$header->nfhdr_num_nf.'-'.$header->nfhdr_ser_nf}}</td>
                 <td>{{Helper::formataValorMonetario($header->nfhdr_vlr_tot_nf)}}</td>
                 <td>NFS-e</td>
-                @if($dadosXmlNfsEnv[0]->nfsenv_sts == 1)
+                @if($stsNF == 1)
                 <td class="max-width-sts"><b class="text-danger"><strong>NFS-e Não Enviada: </strong>{{$dadosXmlNfsEnv[0]->nfsenv_obs}}</b><a href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num])}}"> Reenviar</a></td>
-                @elseif($dadosXmlNfsEnv[0]->nfsenv_sts == 2)
+                @elseif($stsNF == 2)
                 <td class="max-width-sts"><b class="text-danger"><strong>NFS-e Rejeitada: Erro </strong>{{$dadosXmlNfsEnv[0]->nfsenv_sts_emi.' - '.$dadosXmlNfsEnv[0]->nfsenv_obs}}</b><a href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num])}}"> Reenviar</a></td>
-                @else
+                @elseif($stsNF == 3)
                 <td class="max-width-sts"><b class="text-success">{{$dadosXmlNfsEnv[0]->nfsenv_obs}}</b></td>
+                @else
+                <td class="max-width-sts"><b class="text-info">Geração Iniciada</b></td>
                 @endif
                 <td><a href="{{route('impresaoNF.nfsePDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num])}}" target="_blank">Abrir NFS-e</a></td>
             </tr>
