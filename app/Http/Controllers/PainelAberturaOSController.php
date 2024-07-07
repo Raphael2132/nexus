@@ -12,6 +12,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 //use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Helpers\Helper;
 
 class PainelAberturaOSController extends Controller
 {
@@ -257,93 +258,84 @@ class PainelAberturaOSController extends Controller
         //Busca os dados da OS
         $resulOS = DB::table('lancamento_srv_os')->select('os_qtd_hr','os_dha')->where('os_emp',$empresa)->where('os_nos',$numOS)->get();
 
-        //Verifica se a os foi aberta fora do expediente da empresa
-        if($resulOS[0]->os_dha < date('Y-m-d',strtotime($resulOS[0]->os_dha)).' 18:00:00' && $resulOS[0]->os_dha >= date('Y-m-d',strtotime($resulOS[0]->os_dha)).' 09:00:00'){
+        //Busca horas de inicio e termino de expediente
+        $hrIni = DB::table('parametros_srv_empresas')->select('parsrv_hr_ini_ex')->where('parsrv_emp',$empresa)->get();
+        $hrFin = DB::table('parametros_srv_empresas')->select('parsrv_hr_fin_ex')->where('parsrv_emp',$empresa)->get();
 
-            //Busca a diferença em minutos da data e hora da abertura da os com o final do expediente da empresa
-            $dataIniOS = new DateTime($resulOS[0]->os_dha);
-            $dataFinalDia = new DateTime(date('Y-m-d',strtotime($resulOS[0]->os_dha)).' 18:00:00');
+        //Monta a data e hora de inicio e final de expediente com a data e hora da abertura da os
+        $hrInicio = Helper::formataHoraMinuto($hrIni[0]->parsrv_hr_ini_ex).':00';
+        $hrFinal = Helper::formataHoraMinuto($hrFin[0]->parsrv_hr_fin_ex).':00';
+        $hrAbe = date('H:i:s', strtotime($resulOS[0]->os_dha));
+        $dtAbe = date('Y-m-d', strtotime($resulOS[0]->os_dha));
 
-            $diff = $dataIniOS->diff($dataFinalDia);
-            $horas = $diff->h + ($diff->days * 24);
-            $min = $diff->i;
+        //Monta a data e hora inicial da previsão de entrega para calculo com o tempo total da os
+        if($hrAbe >= $hrInicio && $hrAbe <= $hrFinal){
 
-            $minDif = $min + ($horas * 60);
+            $hrPrev = $hrAbe;
+            $dtPrev = $dtAbe;
 
         }else{
 
-            //Verifica se foi antes ou depois do expediente a abertura da os
-            if($resulOS[0]->os_dha < date('Y-m-d',strtotime($resulOS[0]->os_dha)).' 09:00:00'){
-
-                //Busca a diferença em minutos da data e hora da abertura da os com o final do expediente da empresa
-                $dataIniOS = new DateTime(date('Y-m-d',strtotime($resulOS[0]->os_dha)).' 09:00:00');
-                $dataFinalDia = new DateTime(date('Y-m-d',strtotime($resulOS[0]->os_dha)).' 18:00:00');
-    
-                $diff = $dataIniOS->diff($dataFinalDia);
-                $horas = $diff->h + ($diff->days * 24);
-                $min = $diff->i;
-    
-                $minDif = $min + ($horas * 60);
-    
+            if($hrAbe < $hrInicio){
+                $hrPrev = $hrInicio;
+                $dtPrev = $dtAbe;
             }else{
-
-                $minDif = 0;    
+                $dtPrev = date('Y-m-d', strtotime($dtAbe.' +1 day'));
+                $hrPrev = $hrInicio;
             }
-            
         }
+
+        //Busca a diferença em minutos da hora da previsão inicial para o final do expediente
+        $dataIniDif = new DateTime($dtPrev.' '.$hrPrev);
+        $dataFinDif = new DateTime($dtPrev.' '.$hrFinal);
+
+        $diff = $dataIniDif->diff($dataFinDif);
+        $horas = $diff->h + ($diff->days * 24);
+        $min = $diff->i;
+
+        $minDif = $min + ($horas * 60);
 
         //Calcula os minutos do tempo de serviço da os
         $minSrv = $resulOS[0]->os_qtd_hr * 60;
 
-        //Verifica se o tempo do serviço da os é maior que o tempo restante de expediente do dia da os
-        if($minSrv < $minDif){
-
-            //Monta a data da previsão de entrega com a data e hora da os mais o tempo do serviço
-            $dtPrevEnt = date('Y-m-d', strtotime($resulOS[0]->os_dha));
-
-            //Veriica se foi antes ou durante o expediente
-            if($resulOS[0]->os_dha < date('Y-m-d',strtotime($resulOS[0]->os_dha)).' 09:00:00'){
-                $hrPrevEnt = date('Hi', strtotime($dtPrevEnt.' 09:00:00 +'.$minSrv.' minutes'));
-            }else{
-                $hrPrevEnt = date('Hi', strtotime($resulOS[0]->os_dha.' +'.$minSrv.' minutes'));
-            }
-
+        //Calcula a nova hora de previsão de entrega
+        if($minDif >= $minSrv){
+            $novaHrPrevEnt = date('Hi', strtotime($dtPrev.' '.$hrPrev.' +'.$minSrv.' minutes'));
+            $novaDtPrevEnt = $dtPrev;
         }else{
 
-            //Pega o tempo de serviço restante
-            $minSrv = $minSrv - $minDif;
+            $minRest = $minSrv - $minDif;
 
-            $cnt_dias = 1;
+            $novaDtPrevEnt = date('Y-m-d', strtotime($dtPrev.' +1 day'));
 
-            //Verifica a quantidade de minutos do espediente do dia da empresa
-            //Até o momento ainda não existe parametro para isso e no futuro adicionar isso e assim está fixo entre 09:00 e 18:00
-            $dhIni = new DateTime(date('Y-m-d').' 09:00:00');
-            $dhFinal = new DateTime(date('Y-m-d').' 18:00:00');
+            //Busca a diferença em minutos da hora de inicio e final de expediente
+            $dataIniDif = new DateTime($novaDtPrevEnt.' '.$hrInicio);
+            $dataFinDif = new DateTime($novaDtPrevEnt.' '.$hrFinal);
 
-            $diff = $dhIni->diff($dhFinal);
+            $diff = $dataIniDif->diff($dataFinDif);
             $horas = $diff->h + ($diff->days * 24);
-            $minDia = $horas * 60;
+            $min = $diff->i;
 
-            //Verifica se o tempo restante de serviço é maior que o tempo de expediente do dia
-            if($minSrv > $minDia){
+            $tempoExp = $min + ($horas * 60);
 
-                //Verifica quantos dias inteiros ainda será necessário o o tempo restante descontado esses dias
-                while($minSrv > $minDia){
-                    $cnt_dias += 1;
-                    $minSrv = $minSrv - $minDia;
+            //Calcula a nova data e hora enquanto existir minutos restantes
+            while($minRest > 0){
+                
+                if($tempoExp >= $minRest){
+                    $novaHrPrevEnt = date('Hi', strtotime($novaDtPrevEnt.' '.$hrInicio.' +'.$minRest.' minutes'));
+                    $minRest = 0;
+                }else{
+                    $minRest = $minRest - $tempoExp;
+                    $novaDtPrevEnt = date('Y-m-d', strtotime($novaDtPrevEnt.' +1 day'));
                 }
             }
-
-            //Monta a data de previsão de entrega pela data e hora de abertura da OS e o tempo dos serviços adicionados
-            $dtPrevEnt = date('Y-m-d', strtotime($resulOS[0]->os_dha.' +'.$cnt_dias.' day'));
-            $hrPrevEnt = date('Hi', strtotime($dtPrevEnt.' 09:00:00 +'.$minSrv.' minutes'));
         }
 
         DB::table('lancamento_srv_os')
-            ->where('os_emp', $empresa)
-            ->where('os_nos', $numOS)
-            ->update(['os_dpe' => $dtPrevEnt,
-                'os_hpe' => $hrPrevEnt]);  
+        ->where('os_emp', $empresa)
+        ->where('os_nos', $numOS)
+        ->update(['os_dpe' => $novaDtPrevEnt,
+            'os_hpe' => $novaHrPrevEnt]);  
     }
 
     //Metodo de abertura da edição do serviço da requisição

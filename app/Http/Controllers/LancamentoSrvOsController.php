@@ -65,10 +65,28 @@ class LancamentoSrvOsController extends Controller
         return view('/lancamentos/servico/consultaSituacaoOS',['dadosOS'=>$dadosOS,'statusOS'=>$statusOS]);
     }
 
-    //Chama a app de controle de pré abertura de OS
+    //Cria a OS e chama a app de controle de pré abertura de OS
     public function abreOS(Request $request, $empresa, $cliente)
     {
         $data_abertura = date('Y-m-d H:i:s');
+        $hora = date('Hi');
+
+        //Busca horas de inicio e termino de expediente
+        $hrIni = DB::table('parametros_srv_empresas')->select('parsrv_hr_ini_ex')->where('parsrv_emp',$empresa)->get();
+        $hrFin = DB::table('parametros_srv_empresas')->select('parsrv_hr_fin_ex')->where('parsrv_emp',$empresa)->get();
+
+        if($hora >= $hrIni[0]->parsrv_hr_ini_ex && $hora <= $hrFin[0]->parsrv_hr_fin_ex){
+            $data = date('Y-m-d');
+        }else{
+            if($hora < $hrIni[0]->parsrv_hr_ini_ex){
+                $data = date('Y-m-d');
+                $hora = $hrIni[0]->parsrv_hr_ini_ex;
+            }else{
+                $data = date('Y-m-d');
+                $data = date('Y-m-d', strtotime($data.' +1 day'));
+                $hora = $hrIni[0]->parsrv_hr_ini_ex;
+            }
+        }
 
         $usuario = Auth::user()->usuario_codigo;
 
@@ -84,7 +102,9 @@ class LancamentoSrvOsController extends Controller
             'os_dha' => $data_abertura,
             'os_res_abr' => $usuario,
             'os_sts' => 'A',
-            'os_cli_fatura' => $cliente
+            'os_cli_fatura' => $cliente,
+            'os_dpe' => $data,
+            'os_hpe' => $hora,
         ];
         
         $novaOS = LancamentoSrvOs::create($dados);
