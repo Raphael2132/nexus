@@ -101,6 +101,14 @@ Route::post('/parametros/sistema/formularioParametrosSisMotCancelamento/update',
 Route::delete('/parametros/sistema/motivoCancelamento/{motivo}/{origem}/destroy', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'destroy'])->name('parametrosSisMotCan.destroy');
 
 /* ********** Rotas ligadas a parte de faturamento de nfs ********** */
+
+/* Geral da Empresa */
+Route::get('/parametros/faturamento/homeParametrosFatEmpresa', [App\Http\Controllers\HomeController::class, 'homeParametroFatEmp'])->name('home.parametrosFatEmp');
+Route::get('/parametros/faturamento/formularioParametrosFatEmpresa/{empresa}', [App\Http\Controllers\ParametrosFatEmpresasController::class, 'editar'])->name('parametrosFatEmp.editarCadastro');
+
+Route::post('/parametros/faturamento/formularioParametrosFatEmpresa/update', [App\Http\Controllers\ParametrosFatEmpresasController::class, 'update'])->name('parametrosFatEmp.update');
+
+/* Parâmetros da NFS-e */
 Route::get('/parametros/faturamento/nfs/homeParametroFatNfs', [App\Http\Controllers\HomeController::class, 'homeParFatNfs'])->name('home.parFatNfs');
 
 /* Provedor */

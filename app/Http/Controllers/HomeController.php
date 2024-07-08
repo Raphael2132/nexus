@@ -20,6 +20,7 @@ use App\Models\LancamentoSrvEtapaAtendimento;
 use App\Models\CadastroPrestadores;
 use App\Models\ParametrosSistemaCanMotivos;
 use App\Models\ParametrosSrvEmpresas;
+use App\Models\ParametrosFatEmpresas;
 use Illuminate\Http\Request;
 use stdClass;
 use Illuminate\Support\Facades\DB;
@@ -49,7 +50,8 @@ class HomeController extends Controller
                                 LancamentoSrvEtapaAtendimento  $lancamentosServicoEtapas,
                                 CadastroPrestadores $prestador,
                                 ParametrosSistemaCanMotivos $motCan,
-                                ParametrosSrvEmpresas $parSrvEmp)
+                                ParametrosSrvEmpresas $parSrvEmp,
+                                ParametrosFatEmpresas $parFatEmp)
     {
         $this->middleware('auth');
         $this->cliente = $cliente;
@@ -70,6 +72,7 @@ class HomeController extends Controller
         $this->prestador = $prestador;
         $this->motCan = $motCan;
         $this->parSrvEmp = $parSrvEmp;
+        $this->parFatEmp = $parFatEmp;
     }
 
     /**
@@ -635,11 +638,19 @@ class HomeController extends Controller
         return view('/parametros/sistema/homeParametrosSistemaMotivosCancelamento', ['motivos' => $motivos]);
     }
 
-    //Redireciona a app para os motivos de cancelamento
+    //Redireciona a app para a parametrização geral de serviços
     public function homeParametroSrvEmp()
     {    
         $parametros = $this->parSrvEmp->reorder('parsrv_emp', 'asc')->get();
 
         return view('/parametros/servico/homeParametrosServicoEmpresa', ['dataParSrvEmp' => $parametros]);
+    }
+
+    //Redireciona a app para a parametrização geral de faturamento
+    public function homeParametroFatEmp()
+    {    
+        $parametros = $this->parFatEmp->reorder('parfat_emp', 'asc')->get();
+
+        return view('/parametros/faturamento/homeParametrosFatEmpresa', ['dataParFatEmp' => $parametros]);
     }
 }

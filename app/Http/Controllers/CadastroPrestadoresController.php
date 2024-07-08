@@ -218,11 +218,17 @@ class CadastroPrestadoresController extends Controller
                 return redirect()->back()->with('error', 'Quando o Prestador tem acesso ao sistema é obrigatório informar o seu Código de Usuário!');
             }
 
-            //Verifica se já existe o codigo de usuario registrado em outro prestador
-            $cnt_usu = DB::table('cadastro_prestadores')->where('prestador_codigo','<>',$prestador_cod)->where('prestador_usuario_cod',$request->codUsuPrestador)->count();
+            if($request->prestadorUsuSis == 'S'){
+                //Verifica se já existe o codigo de usuario registrado em outro prestador
+                $cnt_usu = DB::table('cadastro_prestadores')->where('prestador_codigo','<>',$prestador_cod)->where('prestador_usuario_cod',$request->codUsuPrestador)->count();
 
-            if($cnt_usu > 0 ){
-                return redirect()->back()->with('error', 'O código de usuário selecionado já está cadastrado em outro prestador!');
+                if($cnt_usu > 0 ){
+                    return redirect()->back()->with('error', 'O código de usuário selecionado já está cadastrado em outro prestador!');
+                }
+
+                $codPrest = $request->codUsuPrestador;
+            }else{
+                $codPrest = null;
             }
 
             $atualizaPrestador = DB::table('cadastro_prestadores')
@@ -240,7 +246,7 @@ class CadastroPrestadoresController extends Controller
                 'prestador_set' => $request->setPrestador,
                 'prestador_are' => $request->areaPrestador,
                 'prestador_acesso_sis' => $request->prestadorUsuSis,
-                'prestador_usuario_cod' => $request->codUsuPrestador]);
+                'prestador_usuario_cod' => $codPrest]);
             
             $empresa = $request->empresaPrestador;
         

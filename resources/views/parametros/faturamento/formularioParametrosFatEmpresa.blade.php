@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Etapas de Atendimento')
+@section('title', 'Manutenção Parâmetros Gerais de Faturamento')
 
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Parâmetros Gerais de Serviços</h1>
+            <h1>Parâmetros Gerais de Faturamento</h1>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item active">
-                    <a href="{{route('home.parametrosSrvEmp')}}">Geral da Empresa</a>
+                    <a href="{{route('home.parametrosFatEmp')}}">Geral da Empresa</a>
                 </li>
-                <li class="breadcrumb-item active">Manutenção de Parâmetros Gerais</li>
+                <li class="breadcrumb-item active">Manutenção de Parâmetros Faturamento</li>
             </ol>
         </div>
     </div>
@@ -22,13 +22,13 @@
 <div class="d-flex justify-content-center">
     <div class="col-md-8">
         <!-- Define se o formulario é edição ou novo -->
-        <form method="post" action="{{route('parametrosSrvEmp.update')}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('parametrosFatEmp.update')}}" id="quickForm" novalidate="novalidate">
             @csrf 
-            <x-adminlte-card title="Manutenção dos Parâmetros Gerais de Serviço" theme="navy">
+            <x-adminlte-card title="Manutenção dos Parâmetros Gerais de Faturamento" theme="navy">
 
                 <div class="row">
                     @php
-                        $data = DB::table('cadastro_empresas')->where('empresa_codigo', $parametrosEmp[0]->parsrv_emp)->get();
+                        $data = DB::table('cadastro_empresas')->where('empresa_codigo', $parametrosEmp[0]->parfat_emp)->get();
 
                         $new_array1 =[];
                         $new_array2 =[];
@@ -43,65 +43,15 @@
 
                     <!-- Empresa do Setor -->
                     <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-12">
-                        <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parsrv_emp}}"/>
+                        <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parfat_emp}}"/>
                     </x-adminlte-select>
                 </div>
 
                 <div class="row">              
-                    <!-- Aliquota ISS -->
-                    <x-adminlte-input name="aliqISS" label="Aliq. ISS" type="text" placeholder="0,00" value="{{Helper::formataPorcentagem($parametrosEmp[0]->parsrv_alq_iss)}}" fgroup-class="col-md-6"/>
-
-                    <!-- CFOP Serviço -->
-                    <x-adminlte-input name="srvCFOP" label="CFOP Serviço" type="number" placeholder="Informe o CFOP" value="{{$parametrosEmp[0]->parsrv_cfop}}" fgroup-class="col-md-6"/>
-                </div>  
-                <div class="row">  
-                    @php
-                        $horaIniEx = Helper::formataHoraMinuto($parametrosEmp[0]->parsrv_hr_ini_ex);
-
-                        $config = [
-                            "singleDatePicker" => true,
-                            "showDropdowns" => true,
-                            "minYear" => 2000,
-                            "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                            "timePicker" => true,
-                            "timePicker24Hour" => true,
-                            "timePickerSeconds" => false,
-                            "cancelButtonClasses" => "btn-danger",
-                            "locale" => ["format" => "HH:mm"],
-                        ];
-                    @endphp
-                    <x-adminlte-date-range name="horaIniEx" label="Hora Ini. Expediente" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-6">
-                        <x-slot name="appendSlot">
-                            <div class="input-group-text">
-                                <i class="far fa-lg fa-clock"></i>
-                            </div>
-                        </x-slot>
-                    </x-adminlte-date-range>
-                    @push('js')<script>$(() => $("#horaIniEx").val('{{ $horaIniEx }}'))</script>@endpush
-
-                    @php
-                        $horaFinEx = Helper::formataHoraMinuto($parametrosEmp[0]->parsrv_hr_fin_ex);
-
-                        $config = [
-                            "singleDatePicker" => true,
-                            "showDropdowns" => true,
-                            "minYear" => 2000,
-                            "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                            "timePicker" => true,
-                            "timePicker24Hour" => true,
-                            "timePickerSeconds" => false,
-                            "cancelButtonClasses" => "btn-danger",
-                            "locale" => ["format" => "HH:mm"],
-                        ];
-                    @endphp
-                    <x-adminlte-date-range name="horaFinEx" label="Hora Fin. Expediente" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-6">
-                        <x-slot name="appendSlot">
-                            <div class="input-group-text">
-                                <i class="far fa-lg fa-clock"></i>
-                            </div>
-                        </x-slot>
-                    </x-adminlte-date-range>
-                    @push('js')<script>$(() => $("#horaFinEx").val('{{ $horaFinEx }}'))</script>@endpush
+                    <!-- Optante do Simples Nacional -->
+                    <x-adminlte-select name="optSimples" label="Optante do Simples Nacional" fgroup-class="col-md-6">
+                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{ $parametrosEmp[0]->parfat_sim }}" />
+                    </x-adminlte-select>
                 </div>
 
                 <!-- /.card -->

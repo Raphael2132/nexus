@@ -395,8 +395,8 @@ return [
                             'icon' => '',
                         ],
                         [
-                            'text' => 'Parâmetros Empresas',
-                            'url'  => '',
+                            'text' => 'Geral da Empresa',
+                            'url'  => '/parametros/faturamento/homeParametrosFatEmpresa',
                             'icon' => '',
                         ],
                     ],
