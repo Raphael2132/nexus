@@ -21,6 +21,10 @@ return new class extends Migration
             $table->string('nfitm_pro',21)->nullable(); // Código do Produto 
             $table->string('nfitm_dsc',80)->nullable();// Descricao do item 
 
+            $table->enum('nfitm_emi_simp_srv', ['S', 'N'])->default('N'); // Emissão Simplificada de Serviço
+            $table->string('nfitm_srv_desc',255)->nullable(); // descrição do serviço
+            $table->string('nfitm_inf_com',255)->nullable(); // Informações Complementares
+            $table->integer('nfitm_cod_srv')->default(0);// Código do Serviço 
             $table->integer('nfitm_num_req')->default(0);// Numero da Requisição 
             $table->string('nfitm_req_dsc',80)->nullable(); // descrição da requisição
             $table->integer('nfitm_seq_req')->default(0);// Sequencia do item na Requisição
@@ -78,6 +82,9 @@ return new class extends Migration
             $table->decimal('nfitm_vlr_bc_icms',15,2)->default(0); // Base de ICMS 
             $table->decimal('nfitm_vlr_alq_icms',5,2)->default(0); // Aliquota de ICMS 
             $table->decimal('nfitm_vlr_icms',15,2)->default(0); // Valor de ICMS    
+            $table->decimal('nfitm_vlr_bc_iss',15,2)->default(0); // Base de iss 
+            $table->decimal('nfitm_vlr_alq_iss',5,2)->default(0); // Aliquota de iss 
+            $table->decimal('nfitm_vlr_iss',15,2)->default(0); // Valor de iss  
             $table->enum('nfitm_itm_prm', ['N', 'S'])->default('N');// Item de promoção    
               
             $table->decimal('nfitm_vlr_adi',5,2)->default(0);// Aliquota de desconto do item 

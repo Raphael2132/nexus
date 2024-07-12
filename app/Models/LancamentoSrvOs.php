@@ -42,6 +42,16 @@ class LancamentoSrvOs extends Model
         'os_cli_avs',
         'os_sts',
         'os_cli_fatura',
-        'os_observacao'
+        'os_observacao',
+        'os_loc_srv',
+        'os_loc_srv_cep',
+        'os_loc_srv_logradouro',
+        'os_loc_srv_numero',
+        'os_loc_srv_complemento',
+        'os_loc_srv_bairro',
+        'os_loc_srv_cidade',
+        'os_loc_srv_uf',
+        'os_loc_srv_pais',
+        'os_loc_srv_ibge_cod_mun'
     ];
 }

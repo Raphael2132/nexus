@@ -21,7 +21,7 @@
 @section('content')
 <div class="d-flex justify-content-center">
     <div class="col-md-12">
-        <form method="post" action="{{route('emissaoOS.abreOS', ['empresa' => $empresa, 'cliente' => $cliente])}}" id="quickForm2" novalidate="novalidate">
+        <form method="post" action="{{route('emissaoOS.abreOS', ['empresa' => $empresa, 'cliente' => $cliente])}}" id="quickForm" novalidate="novalidate">
         @csrf 
         @method('post')
             <x-adminlte-card title="Abertura de Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
@@ -114,30 +114,33 @@
                     if(!empty($data_cli[0]->cliente_email)){
                         $email_cli = $data_cli[0]->cliente_email;
                     }
+
+                    $dataParEmp = DB::table('parametros_fat_empresas')->where('parfat_emp', $empresa)->get();
+
+                    if($dataParEmp[0]->parfat_sim == "S"){
+                        $optSimples = 'Sim';
+                    }else{
+                        $optSimples = 'Não';
+                    }
                 @endphp
 
                 <x-adminlte-callout theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-building" title="Dados da Empresa">
                     <div class="text-muted">
                         <div class="row quebra-linha">
-                            <p class="text-sm col-md-4">Empresa
+                            <p class="text-sm col-md-2">Empresa
                                 <b class="d-block">{{ $empresa_os }}</b>
                             </p>
-                            <p class="text-sm col-md-4">CNPJ
+                            <p class="text-sm col-md-2">CNPJ
                                 <b class="d-block">{{ $cnpj }}</b>
                             </p>
-                            <p class="text-sm col-md-4">Simples Nacional
-                                <b class="d-block">Sim</b>
+                            <p class="text-sm col-md-2">Simples Nacional
+                                <b class="d-block">{{$optSimples}}</b>
                             </p>
-                        </div>
-                        <div class="row quebra-linha">
-                            <p class="text-sm col-md-4">Inscrição Estadual
+                            <p class="text-sm col-md-2">Inscrição Estadual
                                 <b class="d-block">{{ $inscEstadual }}</b>
                             </p>
-                            <p class="text-sm col-md-4">Inscrição Municipal
+                            <p class="text-sm col-md-2">Inscrição Municipal
                                 <b class="d-block">{{ $inscMunicipal }}</b>
-                            </p>
-                            <p class="text-sm col-md-4">Simples Nacional
-                                <b class="d-block">Sim</b>
                             </p>
                         </div>
                     </div>
@@ -146,69 +149,59 @@
                 <x-adminlte-callout theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-user-tie" title="Dados do Cliente">
                     <div class="text-muted">
                         <div class="row quebra-linha">
-                            <p class="text-sm col-md-4">Cliente
+                            <p class="text-sm col-md-2">Cliente
                                 <b class="d-block">{{ $cliente_os }}</b>
                             </p>
-                            <p class="text-sm col-md-4">Tipo de Cadastro
+                            <p class="text-sm col-md-2">Tipo de Cadastro
                                 <b class="d-block">{{ $tipoCad }}</b>
                             </p>
-                            <p class="text-sm col-md-4">Tipo de Pessoa
+                            <p class="text-sm col-md-2">Tipo de Pessoa
                                 <b class="d-block">{{ $tipoPes }}</b>
                             </p>
-                        </div>
-                        @if($data_cli[0]->cliente_tipo_pessoa == 'J')
-                        <div class="row quebra-linha">
-                            <p class="text-sm col-md-4">CNPJ
+                            @if($data_cli[0]->cliente_tipo_pessoa == 'J')
+                            <p class="text-sm col-md-2">CNPJ
                                 <b class="d-block">{{ $cnpj_cli }}</b>
                             </p>
-                            <p class="text-sm col-md-4">Tipo de Cadastro
+                            <p class="text-sm col-md-2">Inscrição Estadual
                                 <b class="d-block">{{ $inscEst_cli }}</b>
                             </p>
-                            <p class="text-sm col-md-4">Tipo de Pessoa
+                            <p class="text-sm col-md-2">Inscrição Municipal
                                 <b class="d-block">{{ $inscMun_cli }}</b>
                             </p>
-                        </div>
-                        @else
-                        <div class="row quebra-linha">
-                            <p class="text-sm col-md-4">CPF
+                            @else
+                            <p class="text-sm col-md-2">CPF
                                 <b class="d-block">{{ $cpf_cli }}</b>
                             </p>
-                            <p class="text-sm col-md-4">RG
+                            <p class="text-sm col-md-2">RG
                                 <b class="d-block">{{ $rg_cli }}</b>
                             </p>
-                            <p class="text-sm col-md-4">Sexo
+                            <p class="text-sm col-md-2">Sexo
                                 <b class="d-block">{{ $sexo_cli }}</b>
                             </p>
+                            @endif
                         </div>
-                        @endif
                         <div class="row quebra-linha">
-                            <p class="text-sm col-md-4">Telefone Residencial
+                            <p class="text-sm col-md-2">Telefone Residencial
                                 <b class="d-block">{{ $telRes_cli }}</b>
                             </p>
-                            <p class="text-sm col-md-4">Telefone Celular
+                            <p class="text-sm col-md-2">Telefone Celular
                                 <b class="d-block">{{ $telCel_cli }}</b>
                             </p>
-                            <p class="text-sm col-md-4">Telefone Comercial
+                            <p class="text-sm col-md-2">Telefone Comercial
                                 <b class="d-block">{{ $telCom_cli }}</b>
                             </p>
-                        </div>
-                        <div class="row quebra-linha">
-                            <p class="text-sm col-md-4">Tipo do Email
+                            <p class="text-sm col-md-2">Tipo do Email
                                 <b class="d-block">{{ $tipEma_cli }}</b>
                             </p>
-                            <p class="text-sm col-md-4">Email
+                            <p class="text-sm col-md-2">Email
                                 <b class="d-block">{{ $email_cli }}</b>
                             </p>
                         </div>
                     </div>
-
-                    
                     <div class="post">
-                        <h4 class="text-secondary font-weight-bold">Endereços Cadastrados</h4>
+                        <h5 class="text-secondary font-weight-bold">Endereços Cadastrados do Cliente</h5>
                     </div>
-
                     <div class="main col-md-12" style="display: flex;flex-direction: column;"> 
-
                         @php
                             //Busca os dados dos endereços cadastrados do cliente
                             $end_cli = DB::table('cadastro_cliente_enderecos')->where('endereco_cliente_codigo', $cliente)->orderby('endereco_seq')->get();
@@ -217,7 +210,7 @@
                         @if(empty($end_cli[0]))
                         <!-- Se ainda não foi cadastrado endereço para o cliente cria card vazio -->
                         <div class="col-md-4">
-                            <x-adminlte-card theme="info" title="Endereço">
+                            <x-adminlte-card theme="info" title="Endereço" theme-mode="outline">
                                 <i>Registros não encontrados</i>
                             </x-adminlte-card>
                         </div>
@@ -295,7 +288,100 @@
                         @endif
                     </div>
                 </x-adminlte-callout>
+                <!-- Dados do Local do Serviço -->
+                <x-adminlte-callout theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-location-dot" title="Dados do Local do Serviço">
+                    <div class="row">
+                        <label for="form-group">Local da Prestação do Serviço</label>
+                    </div>
+                    <div class="row">
+                        <div class="form-group clearfix">
+                            <div class="icheck-primary d-inline" style="margin-right: 25px;">
+                                <input type="radio" id="radio_empresa" name="enderecoLocSrv" checked value="1">
+                                <label for="radio_empresa">Endereço da Empresa</label>
+                            </div>
+                            <div class="icheck-primary d-inline" style="margin-right: 25px;">
+                                <input type="radio" id="radio_cliente" name="enderecoLocSrv" value="2">
+                                <label for="radio_cliente">Endereço do Cliente</label>
+                            </div>
+                            <div class="icheck-primary d-inline" style="margin-right: 25px;">
+                                <input type="radio" id="radio_outro" name="enderecoLocSrv" value="3">
+                                <label for="radio_outro">Outro Endereço</label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Dados do serviço -->
+                    <x-adminlte-callout class="bloco-endereco" theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-file-invoice-dollar" title="Local da prestação do serviço">
+                        <div class="row">
+                            <!-- Campo escondido para tratamento interno -->
+                            <input id="ibgeCodMun" type="hidden" name="ibgeCodMun">
+                            
+                            <!-- CEP -->
+                            <x-adminlte-input name="cep" type="text" label="CEP" fgroup-class="col-md-2">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text">
+                                        <i class="fa-solid fa-location-dot"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
+                        </div>
+                        <div class="row">
+                            <!-- Logradouro -->
+                            <x-adminlte-input name="logradouro" type="text" label="Logradouro" fgroup-class="col-md-5">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text">
+                                        <i class="fa-solid fa-address-book"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
 
+                            <!-- Numero -->
+                            <x-adminlte-input name="numero" type="text" label="Número" fgroup-class="col-md-2">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text">
+                                        <i class="fa-solid fa-hashtag"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
+
+                            <!-- Complemento -->
+                            <x-adminlte-input name="complemento" type="text" label="Complemento" fgroup-class="col-md-5"></x-adminlte-input>
+                        </div>
+                        <div class="row">
+                            <!-- Bairro -->
+                            <x-adminlte-input name="bairro" type="text" label="Bairro" fgroup-class="col-md-4"></x-adminlte-input>
+
+                            <!-- Cidade -->
+                            <x-adminlte-input name="cidade" type="text" label="Cidade" fgroup-class="col-md-4">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text">
+                                        <i class="fa-solid fa-city"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
+
+                            @php
+                                $dados_ibge = DB::table('ibge_estados')->orderby('ibge_sigla')->get();
+
+                                $new_array1 =[];
+                                $new_array2 =[];
+
+                                foreach ($dados_ibge as $ibge) {
+                                    $new_array1[] = $ibge->ibge_sigla;
+                                    $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
+                                }
+                                $array_opt = array_combine($new_array1, $new_array2);
+                            @endphp
+
+                            <!-- Estado -->
+                            <x-adminlte-select name="uf" label="UF" fgroup-class="col-md-2">
+                                <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
+                            </x-adminlte-select>
+
+                            <!-- Pais -->
+                            <x-adminlte-input name="pais" type="text" label="Pais" fgroup-class="col-md-2"></x-adminlte-input>
+                        </div>
+                    </x-adminlte-callout>
+                </x-adminlte-callout>
                 <x-slot name="footerSlot">
                     <x-adminlte-button class="btn-flat" type="submit" label="Abrir OS" theme="info" icon="fa-solid fa-file-circle-plus"/>
                 </x-slot>
@@ -310,30 +396,206 @@
 @section('plugins.toastr', true)
 @section('plugins.jqueryValidation', true)
 @section('plugins.icheckBootstrap', true)
+@section('plugins.Inputmask', true)
 
 @section('css')
 
 @stop
 
 @section('js')
+<!--
+|--------------------------------------------------------------------------
+| Eventos Iniciais da app
+|--------------------------------------------------------------------------
+-->
+<script>
+    $(document).ready(function() {
+
+        // Init input mask on the target element.
+        $('#cep').inputmask({
+            "mask": "99999-999",
+            // Specify other options...
+        });
+
+        //Bloco ao iniciar app fica escondido
+        $('.bloco-endereco').hide();
+
+        // Busca os dados do CEP informado
+        $("#cep").blur(function(){
+
+            // Remove tudo o que não é número para fazer a pesquisa
+            var cep = this.value.replace(/[^0-9]/, "");
+            
+            // Validação do CEP; caso o CEP não possua 8 números, então cancela
+            // a consulta
+            if(cep.length != 8){
+                return false;
+            }
+            
+            // A url de pesquisa consiste no endereço do webservice + o cep que
+            // o usuário informou + o tipo de retorno desejado (entre "json",
+            // "jsonp", "xml", "piped" ou "querty")
+            var url = "https://viacep.com.br/ws/"+cep+"/json/";
+            
+            // Faz a pesquisa do CEP, tratando o retorno com try/catch para que
+            // caso ocorra algum erro (o cep pode não existir, por exemplo) a
+            // usabilidade não seja afetada, assim o usuário pode continuar//
+            // preenchendo os campos normalmente
+            $.getJSON(url, function(dadosRetorno){
+                try{
+                    //console.log(dadosRetorno);
+                    // Preenche os campos de acordo com o retorno da pesquisa
+                    $("#logradouro").val(dadosRetorno.logradouro);
+                    $("#bairro").val(dadosRetorno.bairro);
+                    $("#cidade").val(dadosRetorno.localidade);
+                    $("#uf").val(dadosRetorno.uf);
+                    $("#complemento").val(dadosRetorno.complemento);
+                    $("#ibgeCodMun").val(dadosRetorno.ibge);
+                    $("#numero").focus();
+                }catch(ex){}
+            });
+        });
+    });
+</script>
+
+<!--
+|--------------------------------------------------------------------------
+| Eventos onClick da app
+|--------------------------------------------------------------------------
+-->
+<script>
+    $(document).ready(function() {
+
+        $("#radio_empresa").click(function(){
+            $('.bloco-endereco').hide();
+
+            $('#cep').val('');
+            $('#logradouro').val('');
+            $('#numero').val('');
+            $('#complemento').val('');
+            $('#bairro').val('');
+            $('#cidade').val('');
+            $('#uf').val('');
+            $('#pais').val('');
+            $('#ibgeCodMun').val('');
+        });
+
+        $("#radio_cliente").click(function(){
+            $('.bloco-endereco').hide();
+
+            $('#cep').val('');
+            $('#logradouro').val('');
+            $('#numero').val('');
+            $('#complemento').val('');
+            $('#bairro').val('');
+            $('#cidade').val('');
+            $('#uf').val('');
+            $('#pais').val('');
+            $('#ibgeCodMun').val('');
+        });
+
+        $("#radio_outro").click(function(){
+            $('.bloco-endereco').show();
+        });
+    });
+</script>
+
 <script>
 $(function () {
   $('#quickForm').validate({
     rules: {
-      empresa: {
-        required: true
-      },
-      cliente: {
-        required: true
-      },
+        cep: {
+            required: {
+                depends: function(element) {
+                    return $("input[name='enderecoLocSrv']:checked").val() == "3";
+                }
+            },
+            minlength: 9,
+            maxlength: 9
+        },
+        logradouro: {
+            required: {
+                depends: function(element) {
+                    return $("input[name='enderecoLocSrv']:checked").val() == "3";
+                }
+            },
+            maxlength: 100
+        },
+        numero: {
+            required: {
+                depends: function(element) {
+                    return $("input[name='enderecoLocSrv']:checked").val() == "3";
+                }
+            },
+            maxlength: 5
+        },
+        complemento: {
+            maxlength: 60
+        },
+        bairro: {
+            required: {
+                depends: function(element) {
+                    return $("input[name='enderecoLocSrv']:checked").val() == "3";
+                }
+            },
+            maxlength: 60
+        },
+        cidade: {
+            required: {
+                depends: function(element) {
+                    return $("input[name='enderecoLocSrv']:checked").val() == "3";
+                }
+            },
+            maxlength: 80
+        },
+        uf: {
+            required: {
+                depends: function(element) {
+                    return $("input[name='enderecoLocSrv']:checked").val() == "3";
+                }
+            },
+        },
+        pais: {
+            required: {
+                depends: function(element) {
+                    return $("input[name='enderecoLocSrv']:checked").val() == "3";
+                }
+            },
+            maxlength: 40
+        },
     },
     messages: {
-      empresa: {
-        required: "Por Favor informe a Empresa"
-      },
-      cliente: {
-        required: "Por Favor informe o Cliente"
-      },
+        cep: {
+            required: "Por Favor informe o CEP do Local da Prestação do Serviço",
+            minlength: "O CEP deve ter 8 dígitos",
+            maxlength: "O CEP deve ter 8 dígitos"
+        },
+        logradouro: {
+            required: "Por Favor informe o Logradouro do Local da Prestação do Serviço",
+            maxlength: "Limite máximo do Logradouro é de 100 caracteres"
+        }, 
+        numero: {
+            required: "Por Favor informe o Número do Local da Prestação do Serviço",
+            maxlength: "Limite máximo do numero é de 5 caracteres"
+        }, 
+        complemento: {
+            maxlength: "Limite máximo do Complemento é de 60 caracteres"
+        },        
+        bairro: {
+            required: "Por Favor informe o Bairro do Local da Prestação do Serviço",
+            maxlength: "Limite máximo do Bairro é de 60 caracteres"
+        }, 
+        cidade: {
+            required: "Por Favor informe a Cidade do Local da Prestação do Serviço",
+            maxlength: "Limite máximo do Bairro é de 80 caracteres"
+        },
+        uf: {
+            required: "Por Favor informe a UF do Local da Prestação do Serviço",
+        },
+        pais: {
+            required: "Por Favor informe o País do Local da Prestação do Serviço",
+            maxlength: "Limite máximo do País é de 40 caracteres"
+        },
     },
     errorElement: 'span',
     errorPlacement: function (error, element) {

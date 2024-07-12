@@ -2,31 +2,31 @@
 <nfe>
   <notaFiscal/>
   <dadosPrestador>
-    <dataEmissao>08/07/2024</dataEmissao>
+    <dataEmissao>12/07/2024</dataEmissao>
     <im>123165100</im>
-    <numeroRps>000000010</numeroRps>
+    <numeroRps>000000018</numeroRps>
   </dadosPrestador>
   <dadosServico>
-    <bairro>CENTRO</bairro>
-    <cep>13870-110</cep>
+    <bairro>JARDIM ALMEIDA</bairro>
+    <cep>13876-341</cep>
     <cidade>SAO JOAO DA BOA VISTA</cidade>
-    <complemento>LOJA AO LADO DO CHIQUINHO</complemento>
-    <logradouro>AVENIDA DONA GERTRUDES</logradouro>
-    <numero>S/N</numero>
+    <complemento/>
+    <logradouro>RUA DAERCIO QUERO ROBLES</logradouro>
+    <numero>120</numero>
     <pais>BRASIL</pais>
     <uf>SP</uf>
   </dadosServico>
   <dadosTomador>
-    <bairro>JARDIM ALMEIDA</bairro>
-    <cep>13876-341</cep>
+    <bairro>CENTRO</bairro>
+    <cep>13870-100</cep>
     <cidade>SAO JOAO DA BOA VISTA</cidade>
     <complemento/>
     <documento>03130316346</documento>
     <email>thiago@gmail.com</email>
     <ie/>
-    <logradouro>RUA DAERCIO QUERO ROBLES</logradouro>
+    <logradouro>RUA GETULIO VARGAS</logradouro>
     <nomeTomador>THIAGO CARVALHO</nomeTomador>
-    <numero>1245</numero>
+    <numero>12</numero>
     <pais>BRASIL</pais>
     <tipoDoc>F</tipoDoc>
     <uf>SP</uf>
@@ -41,11 +41,11 @@
     <issRetido>0</issRetido>
     <item>
       <aliquota>4.00</aliquota>
-      <codigo>1401</codigo>
-      <descricao>TROCA DE SO - QTD. HORAS: 2.00 - VALOR LIQUIDO: 200.00</descricao>
-      <valor>200.00</valor>
+      <codigo>1402</codigo>
+      <descricao>TESTE DE IMPOSTOS</descricao>
+      <valor>500.00</valor>
     </item>
-    <obs/>
+    <obs>TESTEI OS IMPOSTOS</obs>
     <pisPasep>0.00</pisPasep>
   </detalheServico>
 </nfe>

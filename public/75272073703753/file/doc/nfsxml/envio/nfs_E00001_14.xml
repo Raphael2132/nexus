@@ -2,9 +2,9 @@
 <nfe>
   <notaFiscal/>
   <dadosPrestador>
-    <dataEmissao>08/07/2024</dataEmissao>
+    <dataEmissao>31/12/1969</dataEmissao>
     <im>123165100</im>
-    <numeroRps>000000010</numeroRps>
+    <numeroRps>000000014</numeroRps>
   </dadosPrestador>
   <dadosServico>
     <bairro>CENTRO</bairro>
@@ -42,8 +42,8 @@
     <item>
       <aliquota>4.00</aliquota>
       <codigo>1401</codigo>
-      <descricao>TROCA DE SO - QTD. HORAS: 2.00 - VALOR LIQUIDO: 200.00</descricao>
-      <valor>200.00</valor>
+      <descricao>TESTE</descricao>
+      <valor>111.11</valor>
     </item>
     <obs/>
     <pisPasep>0.00</pisPasep>

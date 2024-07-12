@@ -68,6 +68,61 @@ class LancamentoSrvOsController extends Controller
     //Cria a OS e chama a app de controle de pré abertura de OS
     public function abreOS(Request $request, $empresa, $cliente)
     {
+        //Verifica se o endereço foi do cliente foi informado
+        if(empty(trim($request->enderecoCliOS))){
+            return redirect()->route('emissaoOS.inicioErro',['empresa'=>$request->empresa,'cliente'=>$cliente])->with('error', 'Informe o endereço do cliente!');
+        }
+        
+        //Caso utilizar outro endereço para o local da prestação do serviço validar o cep
+        if($request->enderecoLocSrv == 3){
+            $cep = str_replace('-', '', $request->cep);
+            $cep = str_replace('_', '', $cep);
+
+            if(strlen($cep) < 8 || strlen($cep) > 8){
+                return redirect()->route('emissaoOS.inicioErro',['empresa' => $empresa, 'cliente' => $cliente])->with('error', 'Formato do CEP é inválido!');
+            }
+        }
+
+        if($request->enderecoLocSrv == 3){
+
+            $enderecoLocSrv = 'O';
+            $loc_srv_cep = Helper::limpaCEP($request->cep);
+            $loc_srv_logradouro = $request->logradouro;
+            $loc_srv_numero = $request->numero;
+            $loc_srv_complemento = $request->complemento;
+            $loc_srv_bairro = $request->bairro;
+            $loc_srv_cidade = $request->cidade;
+            $loc_srv_uf = $request->uf;
+            $loc_srv_pais = $request->pais;
+            $loc_srv_ibge_cod_mun = $request->ibgeCodMun;
+
+        }elseif($request->enderecoLocSrv == 2){
+
+            $enderecoLocSrv = 'C';
+            $loc_srv_cep = null;
+            $loc_srv_logradouro = null;
+            $loc_srv_numero = null;
+            $loc_srv_complemento = null;
+            $loc_srv_bairro = null;
+            $loc_srv_cidade = null;
+            $loc_srv_uf = null;
+            $loc_srv_pais = null;
+            $loc_srv_ibge_cod_mun = null;
+
+        }else{
+
+            $enderecoLocSrv = 'E';
+            $loc_srv_cep = null;
+            $loc_srv_logradouro = null;
+            $loc_srv_numero = null;
+            $loc_srv_complemento = null;
+            $loc_srv_bairro = null;
+            $loc_srv_cidade = null;
+            $loc_srv_uf = null;
+            $loc_srv_pais = null;
+            $loc_srv_ibge_cod_mun = null;
+        }
+
         $data_abertura = date('Y-m-d H:i:s');
         $hora = date('Hi');
 
@@ -105,6 +160,16 @@ class LancamentoSrvOsController extends Controller
             'os_cli_fatura' => $cliente,
             'os_dpe' => $data,
             'os_hpe' => $hora,
+            'os_loc_srv' => $enderecoLocSrv,
+            'os_loc_srv_cep' => $loc_srv_cep,
+            'os_loc_srv_logradouro' => $loc_srv_logradouro,
+            'os_loc_srv_numero' => $loc_srv_numero,
+            'os_loc_srv_complemento' => $loc_srv_complemento,
+            'os_loc_srv_bairro' => $loc_srv_bairro,
+            'os_loc_srv_cidade' => $loc_srv_cidade,
+            'os_loc_srv_uf' => $loc_srv_uf,
+            'os_loc_srv_pais' => $loc_srv_pais,
+            'os_loc_srv_ibge_cod_mun' => $loc_srv_ibge_cod_mun,
         ];
         
         $novaOS = LancamentoSrvOs::create($dados);

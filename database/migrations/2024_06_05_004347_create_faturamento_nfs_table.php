@@ -29,7 +29,7 @@ return new class extends Migration
             $table->integer('nfs_cod_srv')->default(0);// Codigo do Servico Prestado
             $table->decimal('nfs_vlr_iss',15,2)->default(0);// Valor do ISS
             $table->decimal('nfs_alq_nfs',5,2)->default(0);// Aliquota
-            $table->enum('nfs_iss_ret',['1','2'])->default('2');// ISS Retido: (1-SS Retido / 2-Sem ISS Retido)
+            $table->enum('nfs_iss_ret',['1','2'])->default('2');// ISS Retido: (1 - ISS Retido / 2 - Sem ISS Retido)
             $table->enum('nfs_tip_tom',['F','J'])->default('F');// Tipo de cadastro do cliente tomador (F - Fisica / J - Juridica)
             $table->string('nfs_cpf_cnpj_tom',14)->nullable();// CPF/ CNPJ do Tomador
             $table->string('nfs_ins_mun_tom',15)->nullable();// Inscricao Municipal do Tomador

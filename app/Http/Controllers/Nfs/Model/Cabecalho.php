@@ -16,6 +16,16 @@ class Cabecalho {
     private $valorTotalDeducoes;
     private $valorTotalNota;
     private $observacaoNota;
+    private $locServico;
+    private $locServicoCep;
+    private $locServicoLogradouro;
+    private $locServicoNumero;
+    private $locServicoComplemento;
+    private $locServicoBairro;
+    private $locServicoCidade;
+    private $locServicoUF;
+    private $locServicoPais;
+    private $locServicoIBGE;
 
     public function __construct(string $empresa, int $numero, int $numControle){
 
@@ -30,7 +40,17 @@ class Cabecalho {
                     valor_tot_servico,
                     valor_tot_deducoes,
                     valor_tot_nota,
-                    observacao_nfs
+                    observacao_nfs,
+                    local_servico,
+                    local_servico_cep,
+                    local_servico_logradouro,
+                    local_servico_numero,
+                    local_servico_complemento,
+                    local_servico_bairro,
+                    local_servico_cidade,
+                    local_servico_uf,
+                    local_servico_pais,
+                    local_servico_ibge_cod_mun
                 FROM vi_nfsxml_cabecalho 
                 WHERE 
                     empresa = '".$empresa."' and 
@@ -49,6 +69,16 @@ class Cabecalho {
         $this->valorTotalDeducoes = $dados->valor_tot_deducoes;
         $this->valorTotalNota = $dados->valor_tot_nota;
         $this->observacaoNota = $dados->observacao_nfs;
+        $this->locServico = $dados->local_servico;
+        $this->locServicoCep = $dados->local_servico_cep;
+        $this->locServicoLogradouro = $dados->local_servico_logradouro;
+        $this->locServicoNumero = $dados->local_servico_numero;
+        $this->locServicoComplemento = $dados->local_servico_complemento;
+        $this->locServicoBairro = $dados->local_servico_bairro;
+        $this->locServicoCidade = $dados->local_servico_cidade;
+        $this->locServicoUF = $dados->local_servico_uf;
+        $this->locServicoPais = $dados->local_servico_pais;
+        $this->locServicoIBGE = $dados->local_servico_ibge_cod_mun;
         
         //echo "<br> Teste dados Cabecalho: ".$this->razaoEmp." <br>";
         

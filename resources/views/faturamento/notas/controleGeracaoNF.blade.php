@@ -32,6 +32,11 @@
 
                             $pathXML = $dataNfsXML[0]->nfsenv_cnpj.'/file/doc/nfsxml/envio/'.$pathXML;
                             
+                            if($dataNfs[0]->nfs_origem == 'ES'){
+                                $origem = 'Emi. Simplificada';
+                            }else{
+                                $origem = 'OS';
+                            }
                         @endphp
                         <tr>
                             <td style="border: 0px; width: 15%;">
@@ -40,7 +45,7 @@
                                 </p>
                             </td>
                             <td style="border: 0px; width: 10%;">
-                                <p class="text-sm">OS
+                                <p class="text-sm">{{$origem}}
                                     <b class="d-block">{{$dataNfs[0]->nfs_nfhdr_num_ped}}</b>
                                 </p>
                             </td>

@@ -26,7 +26,7 @@ $heads = [
     'Empresa',
     'Data Emissao',
     'Cliente',
-    'Pedido / OS',
+    'Pedido / OS / ES',
     'Nota',
     'Valor',
     'Tipo',

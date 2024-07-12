@@ -665,7 +665,7 @@
 						$('#codSrv').html(options);
                     }
                 });
-            } else {console.log('amerda');
+            } else {
 				$('#codSrv').html('<option value="">Selecione...</option>');
 			}
         });

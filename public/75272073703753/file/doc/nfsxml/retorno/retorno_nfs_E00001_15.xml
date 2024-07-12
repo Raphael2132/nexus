@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<nfeResposta>
+                        <notaFiscal>
+                            <numeroNota>0</numeroNota>
+                            <numeroRps>5</numeroRps>
+                            <codigoVerificacao>45963RGOP0X</codigoVerificacao>
+                            <statusEmissao>500</statusEmissao>
+                            <messages code="500" message="O número de RPS 4 já existe."/>
+                        </notaFiscal>
+                    </nfeResposta>

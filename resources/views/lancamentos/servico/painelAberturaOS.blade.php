@@ -366,7 +366,7 @@ $status_servico = '';
                         @endforeach
                     </x-adminlte-datatable>
 
-                    <!-- Modal de Liberação de Desconto da TMO -->
+                    <!-- Modal do cancelamento da OS -->
                     <form method="post" action="{{ route('requisicaoOS.cancelarOS', ['empresa'=> $glo_os_empresa, 'numOS'=> $glo_os_nos]) }}" id="formulario-cancela-os" novalidate="novalidate">
                         @csrf 
                         @method('post')
@@ -2799,7 +2799,7 @@ $status_servico = '';
                 valLiqTot = String(valLiqTot).replaceAll(',','.');
             }            
 
-            console.log(cnt);console.log(pagValLiqTot);console.log(valLiqTot);
+            //console.log(cnt);console.log(pagValLiqTot);console.log(valLiqTot);
 
             //Atualiza o rodapé
             $( tableDetServ.column( 7 ).footer() ).html(new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagQtdTot) +' </br> '+ new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(qtdTot) );
@@ -3270,7 +3270,7 @@ $status_servico = '';
                     url = url.replace(':area', area);
                     url = url.replace(':emp', emp);
 
-                    console.log(url);
+                    //console.log(url);
 
                     $.ajax({
                         url: url,
@@ -3315,7 +3315,7 @@ $status_servico = '';
                     url = url.replace(':emp', emp);
                     url = url.replace(':cat', cat);
 
-                    console.log(url);
+                    //console.log(url);
 
                     $.ajax({
                         url: url,

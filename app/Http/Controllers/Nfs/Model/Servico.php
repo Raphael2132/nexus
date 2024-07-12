@@ -13,6 +13,9 @@ class Servico {
     private $valorTotal;
     private $valorDesconto;
     private $valorTotalLiquido;
+    private $emiSimplificada;
+    private $descServico;
+    private $infoComplementar;
 
     public function carregaServicos($empresa, $numero, $numControle)
     {
@@ -26,7 +29,10 @@ class Servico {
                     valor_unitario, 
                     valor_total,
                     valor_desconto,
-                    valor_total_liquido
+                    valor_total_liquido,
+                    emissao_simplificada,
+                    descricao_servico,
+                    informacoes_complementares
                 FROM vi_nfsxml_servicos 
                 WHERE 
                     empresa = '".$empresa."' and 
@@ -43,6 +49,9 @@ class Servico {
             $item->valorTotal= $dados->valor_total;
             $item->valorDesconto= $dados->valor_desconto;
             $item->valorTotalLiquido= $dados->valor_total_liquido;
+            $item->emiSimplificada= $dados->emissao_simplificada;
+            $item->descServico= $dados->descricao_servico;
+            $item->infoComplementar= $dados->informacoes_complementares;
 
             $itens[] = $item;
         }

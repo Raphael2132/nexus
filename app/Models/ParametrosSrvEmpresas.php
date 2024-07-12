@@ -16,6 +16,8 @@ class ParametrosSrvEmpresas extends Model
         'parsrv_alq_iss',
         'parsrv_cfop',
         'parsrv_hr_ini_ex',
-        'parsrv_hr_fin_ex'
+        'parsrv_hr_fin_ex',
+        'parsrv_grp_srv',
+        'parsrv_cod_srv'
     ];
 }

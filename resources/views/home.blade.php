@@ -58,7 +58,7 @@
 
     $headsNFS = [
         'Nº / Série',
-        'OS',
+        'Ped. / OS / Emi. Sim.',
         'empresa',
         'Cliente',
         'Situação',

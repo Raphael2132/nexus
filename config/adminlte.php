@@ -514,6 +514,11 @@ return [
                     'icon' => 'fa-solid fa-list',
                     'submenu' => [
                         [
+                            'text' => 'Emissão Simplificada NFS-e',
+                            'url'  => '/faturamento/notas/homeEmissaoSimplificadaNFS',
+                            'icon' => '',
+                        ],
+                        [
                             'text' => 'Emissão de NF-e/NFS-e',
                             'url'  => 'faturamento/notas/controleEmissaoNF',
                             'icon' => '',

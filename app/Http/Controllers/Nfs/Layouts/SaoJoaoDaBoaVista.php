@@ -46,30 +46,30 @@ class SaoJoaoDaBoaVista{
         //TAG REFERENTE AO LOCAL DE PRESTAÇÃO DO SERVIÇO
         $xmlServico = $dom->createElement("dadosServico");
 
-        if(!empty($prestador->pais)){
-            if(strtoupper($prestador->pais) == 'BRASIL'){
-                $cidadePres = $prestador->municipio;
-                $paisPres = $prestador->pais;
-                $ufPres = $prestador->uf;
+        if(!empty($cabecalho->locServicoPais)){
+            if(strtoupper($cabecalho->locServicoPais) == 'BRASIL'){
+                $cidadeSrv = $cabecalho->locServicoCidade;
+                $paisSrv = $cabecalho->locServicoPais;
+                $ufSrv = $cabecalho->locServicoUF;
             }else{
-                $cidadePres = "EXTERIOR";
-                $paisPres = $prestador->pais;
-                $ufPres = "EX";
+                $cidadeSrv = "EXTERIOR";
+                $paisSrv = $cabecalho->locServicoPais;
+                $ufSrv = "EX";
             }
         }else{
-            $cidadePres = $prestador->municipio;
-            $paisPres = 'BRASIL';
-            $ufPres = $prestador->uf;
+            $cidadeSrv = $cabecalho->locServicoCidade;
+            $paisSrv = 'BRASIL';
+            $ufSrv = $cabecalho->locServicoUF;
         }
 
-        $xmlServico->appendChild($dom->createElement("bairro", Helper::removerAcento($prestador->bairro,'S')));
-        $xmlServico->appendChild($dom->createElement("cep", Helper::mascaraCEP($prestador->cep)));
-        $xmlServico->appendChild($dom->createElement("cidade", Helper::removerAcento($cidadePres,'S')));
-        $xmlServico->appendChild($dom->createElement("complemento", Helper::removerAcento($prestador->complemento,'S')));
-        $xmlServico->appendChild($dom->createElement("logradouro",Helper::removerAcento($prestador->logradouro,'S')));
-        $xmlServico->appendChild($dom->createElement("numero", $prestador->numero));
-        $xmlServico->appendChild($dom->createElement("pais", Helper::removerAcento($paisPres,'S')));
-        $xmlServico->appendChild($dom->createElement("uf", $ufPres));
+        $xmlServico->appendChild($dom->createElement("bairro", Helper::removerAcento($cabecalho->locServicoBairro,'S')));
+        $xmlServico->appendChild($dom->createElement("cep", Helper::mascaraCEP($cabecalho->locServicoCep)));
+        $xmlServico->appendChild($dom->createElement("cidade", Helper::removerAcento($cidadeSrv,'S')));
+        $xmlServico->appendChild($dom->createElement("complemento", Helper::removerAcento($cabecalho->locServicoComplemento,'S')));
+        $xmlServico->appendChild($dom->createElement("logradouro",Helper::removerAcento($cabecalho->locServicoLogradouro,'S')));
+        $xmlServico->appendChild($dom->createElement("numero", $cabecalho->locServicoNumero));
+        $xmlServico->appendChild($dom->createElement("pais", Helper::removerAcento($paisSrv,'S')));
+        $xmlServico->appendChild($dom->createElement("uf", $ufSrv));
 
         //TAG REFERENTE AOS DADOS DO TOMADOR
         $xmlTomador = $dom->createElement("dadosTomador");
@@ -127,10 +127,25 @@ class SaoJoaoDaBoaVista{
         $descriminacao = '';
 
         foreach($servico as $item){
-            if(empty($descriminacao)){
-                $descriminacao = $item->discriminacaoServico.' - qtd. horas: '.$item->quantidade.' - valor Liquido: '.$item->valorTotalLiquido;
+
+            if($item->emiSimplificada == 'N'){
+                if(empty($descriminacao)){
+                    $descriminacao = $item->discriminacaoServico.' - qtd. horas: '.$item->quantidade.' - valor Liquido: '.$item->valorTotalLiquido;
+                }else{
+                    $descriminacao .= ' | '.$item->discriminacaoServico.' - qtd. horas: '.$item->quantidade.' - valor Liquido: '.$item->valorTotalLiquido;
+                }
             }else{
-                $descriminacao .= ' | '.$item->discriminacaoServico.' - qtd. horas: '.$item->quantidade.' - valor Liquido: '.$item->valorTotalLiquido;
+                if(empty($descriminacao)){
+                    $descriminacao = $item->descServico;
+                    if(!empty($item->infoComplementar)){
+                        $descriminacao .= ' | '.$item->infoComplementar;
+                    }
+                }else{
+                    $descriminacao .= ' | '.$item->descServico;
+                    if(!empty($item->infoComplementar)){
+                        $descriminacao .= ' | '.$item->infoComplementar;
+                    }
+                }
             }
         }
 
@@ -201,7 +216,7 @@ class SaoJoaoDaBoaVista{
                     </nfeResposta>';
                 
                 
-                $xmlRetorno = '
+                /*$xmlRetorno = '
                     <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
                     <nfeResposta>
                         <notaFiscal>
@@ -211,7 +226,7 @@ class SaoJoaoDaBoaVista{
                             <statusEmissao>500</statusEmissao>
                             <messages code="500" message="O número de RPS 4 já existe."/>
                         </notaFiscal>
-                    </nfeResposta>';
+                    </nfeResposta>';*/
                 
 
                 // Carregar o XML

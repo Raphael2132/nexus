@@ -357,6 +357,7 @@
     $dadosEmpEnd = DB::table('cadastro_empresa_enderecos')->where('endereco_empresa_codigo',$empresa)->get();
     $dadosCodSrv = DB::table('parametros_sistema_servicos')->where('servico_codigo',$dadosNFS[0]->nfs_cod_srv)->get();
     $dadosConexao = DB::table('parametros_fat_nfs')->where('parnfs_empresa',$empresa)->get();
+    $dadosParSrvEmp = DB::table('parametros_srv_empresas')->where('parsrv_emp',$empresa)->get();
 
     //O provedor é numeração fixa para todos os clientes, verifica qual provedor da Empresa e gera caminho da img
     if($dadosConexao[0]->parnfs_provedor == 1){
@@ -489,13 +490,32 @@
         <table class="tabela" cellpadding="0" cellspacing="0" border="1">
             <tbody>
                 <tr>
+                    @php 
+                        if($dadosParSrvEmp[0]->parsrv_exg_iss == '1'){
+                            $exg_iss = '1 - Exigível';
+                        }elseif($dadosParSrvEmp[0]->parsrv_exg_iss == '2'){
+                            $exg_iss = '2 - Não Incidência';
+                        }elseif($dadosParSrvEmp[0]->parsrv_exg_iss == '3'){
+                            $exg_iss = '3 - Isenção';
+                        }elseif($dadosParSrvEmp[0]->parsrv_exg_iss == '4'){
+                            $exg_iss = '4 - Exportação';
+                        }elseif($dadosParSrvEmp[0]->parsrv_exg_iss == '5'){
+                            $exg_iss = '5 - Imunidade';
+                        }elseif($dadosParSrvEmp[0]->parsrv_exg_iss == '6'){
+                            $exg_iss = '6 - Exigibilidade';
+                        }elseif($dadosParSrvEmp[0]->parsrv_exg_iss == '7'){
+                            $exg_iss = '7 - Suspensa por Decisão Judicial';
+                        }else{
+                            $exg_iss = '8 - Exigibilidade Suspensa por Processo Administrativo';
+                        }
+                    @endphp
                     <td style="width: 32mm">
                         <span class="nf-label">EXIGIBILIDADE DO ISS / NATUREZA DA OPERAÇÃO</span>
-                        <span class="info">1 - Exigível / Prestação de Serviços</span>
+                        <span class="info">{{$exg_iss}} / Prestação de Serviços</span>
                     </td>
                     <td style="width: 32mm">
                         <span class="nf-label">LOCAL DA PRESTAÇÃO DO(S) SERVIÇO(S)</span>
-                        <span class="info">{{$dadosEmpEnd[0]->endereco_cidade.' / '.$dadosEmpEnd[0]->endereco_uf}}</span>
+                        <span class="info">{{$dadosNFS[0]->nfs_loc_srv_cidade.' / '.$dadosNFS[0]->nfs_loc_srv_uf}}</span>
                     </td>
                     <td style="width: 32mm">
                         <span class="nf-label">LOCAL DA INCIDÊNCIA DO(S) SERVIÇO(S)</span>
@@ -741,16 +761,27 @@
                     @foreach($dadosSrvNFS as $servico)
                         @php  
                             $seq += 1;
+
+                            if($servico->nfssrv_emi_simp == 'N'){
+                                $desc_srv = $servico->nfssrv_tmo_dsc;
+                                $codigo = $servico->nfssrv_tmo;
+                            }else{
+                                $desc_srv = $servico->nfssrv_srv_desc;
+                                $codigo = 'SIM'.$dadosNFS[0]->nfs_nfhdr_num_ped;
+                                if(!empty($servico->nfssrv_inf_com)){
+                                    $desc_srv .= ' | '.$servico->nfssrv_inf_com;
+                                }
+                            }
                         @endphp
                         <tr>
                             <td style="width: 5%;border: 0px;text-align: center;">
                                 <span class="info">{{$seq}}</span>
                             </td>
                             <td style="width: 10%;border: 0px;text-align: center;">
-                                <span class="info">{{$servico->nfssrv_tmo}}</span>
+                                <span class="info">{{$codigo}}</span>
                             </td>
                             <td style="border: 0px;">
-                                <span style="border: 0px;" class="info">{{$servico->nfssrv_tmo_dsc}}</span>
+                                <span style="border: 0px;" class="info">{{$desc_srv}}</span>
                             </td>
                             <td style="width: 5%;border: 0px;text-align: center;">
                                 <span class="info">{{$servico->nfssrv_qtd_hr}}</span>
@@ -842,23 +873,23 @@
                     <tr>
                         <td>
                             <span class="nf-label">IMPOSTO DE RENDA</span>
-                            <span class="info">{{Helper::formataValorMonetario(0)}}</span>
+                            <span class="info">{{Helper::formataValorMonetario($dadosNFS[0]->nfs_ir_ret)}}</span>
                         </td>
                         <td>
                             <span class="nf-label">PIS</span>
-                            <span class="info">{{Helper::formataValorMonetario(0)}}</span>
+                            <span class="info">{{Helper::formataValorMonetario($dadosNFS[0]->nfs_pis_ret)}}</span>
                         </td>
                         <td>
                             <span class="nf-label">COFINS</span>
-                            <span class="info">{{Helper::formataValorMonetario(0)}}</span>
+                            <span class="info">{{Helper::formataValorMonetario($dadosNFS[0]->nfs_cofins_ret)}}</span>
                         </td>
                         <td>
                             <span class="nf-label">CSLL</span>
-                            <span class="info">{{Helper::formataValorMonetario(0)}}</span>
+                            <span class="info">{{Helper::formataValorMonetario($dadosNFS[0]->nfs_csll_ret)}}</span>
                         </td>
                         <td>
                             <span class="nf-label">INSS</span>
-                            <span class="info">{{Helper::formataValorMonetario(0)}}</span>
+                            <span class="info">{{Helper::formataValorMonetario($dadosNFS[0]->nfs_inss_ret)}}</span>
                         </td>
                         <td>
                             <span class="nf-label">OUTRAS RENTENÇÕES</span>

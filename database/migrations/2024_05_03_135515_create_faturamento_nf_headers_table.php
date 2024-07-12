@@ -17,17 +17,18 @@ return new class extends Migration
             $table->integer('nfhdr_num');// Numero de Controle -> sq_faturamento_nf_num
             $table->enum('nfhdr_sts', ['C', 'E', 'G', 'A', 'I'])->default('A');// Status da NF ( C - Cancelado, E - Erro, G - Gerado, A - Aberto, I - Iniciado )
             $table->enum('nfhdr_tip_reg', ['H'])->default('H');// Tipo de Registro ( H - Header )
-            $table->integer('nfhdr_num_ped')->default(0);// Numero do Pedido / OS
+            $table->integer('nfhdr_num_ped')->default(0);// Numero do Pedido / OS / Emissão Simplificada
             $table->decimal('nfhdr_num_nf',9,0)->default(0);// Numero da NF / Cupom 
             $table->string('nfhdr_ser_nf',5)->nullable();// Serie da NF / Cupom
             $table->date('nfhdr_dt_nf')->nullable();// Data da NF / Cupom
             $table->decimal('nfhdr_hr_nf',4,0)->default(0);// Hora da NF
             $table->decimal('nfhdr_cfop',4,0)->default(0);// Código Fiscal de Operações e de Prestações
             $table->decimal('nfhdr_cme',3,0)->default(0);// Codigo do CME
+            $table->integer('nfhdr_cod_srv')->default(0);// Codigo do serviço
             $table->date('nfhdr_dt_ped');// Data do Pedido / OS
             $table->date('nfhdr_dt_fec_ped');// Data do Fechamento do Pedido / OS 
             $table->string('nfhdr_usu',6);// Usuario / Vendedor do Pedido / OS
-            $table->string('nfhdr_ori',2);//Origem da NF - sera implementado no futuro e vai ter uma tabela para isso
+            $table->string('nfhdr_ori',2);//Origem da NF 
             $table->enum('nfhdr_tor', ['P', 'S']);// Tipo da Origem da NF ( P - Produtos, S - Serviços )
             $table->string('nfhdr_cli',10);// Cliente do Pedido / OS 
             $table->string('nfhdr_cpg',2)->default(0);// Condição de Pagamento - Será implementado no futuro e virá de uma tabela

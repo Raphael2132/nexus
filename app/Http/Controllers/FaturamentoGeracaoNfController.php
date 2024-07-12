@@ -31,22 +31,13 @@ class FaturamentoGeracaoNfController extends Controller
         }
 
         //Gera o xml de envio
-        //echo "<br> iniciando o Nfsxml <br>";
         $nfsxml = new Nfsxml($empresa, $nfSelecionada);
-
-        //envia o xml
-        //echo "<br> Finalizei a criação do xml na instanciação da classe Nfsxml <br>";
-        
-        //echo "<br> iniciando a emissão da nfs <br>";
-
         $nfsxml->emitirNFS();
 
         $pathXML = $nfsxml->nomeArquivo;
 
         $dadosNF = DB::table('faturamento_nf_headers')->where('nfhdr_emp', $empresa)->where('nfhdr_num', $nfSelecionada)->get();
-        $dadosEmi = DB::table('cadastro_empresas')->where('empresa_codigo', $empresa)->get();
 
-        $dataHoraGeracaoNF = date('Y-m-d H:i:s');
         $dataGeracaoNF = date('Y-m-d');
         $horaGeracaoNF = date('Hi');
 
@@ -63,7 +54,8 @@ class FaturamentoGeracaoNfController extends Controller
                 ->where('nfhdr_emp', $empresa)
                 ->where('nfhdr_num', $nfSelecionada)
                 ->update(['nfhdr_sts' => $status,
-                'nfhdr_dt_nf' => $dataGeracaoNF]);
+                'nfhdr_dt_nf' => $dataGeracaoNF,
+                'nfhdr_hr_nf' => $horaGeracaoNF]);
         
         DB::table('faturamento_nfs')
         ->where('nfs_emp', $empresa)
