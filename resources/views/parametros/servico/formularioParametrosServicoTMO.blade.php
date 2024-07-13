@@ -177,6 +177,7 @@
                     <x-adminlte-input name="complemento" label="Complemento" type="text" value="{{$cmp_sel}}" fgroup-class="col-md-6"/>
                 </div>
 
+                <!-- Não vamos mais informar aqui o grupo e codigo de atividade do serviço
                 <div class="row"> 
                     @php
                         $data_grp = DB::table('parametros_sistema_servico_grupos')->selectRaw('grupo_codigo, grupo_desc')->orderBy('grupo_codigo', 'asc')->get();
@@ -216,16 +217,15 @@
                             $array_opt_srv = null;
                         }
                     @endphp
-                    <!-- Empresa do Setor -->
                     <x-adminlte-select name="grpSrv" label="Grupo do Serviço" fgroup-class="col-md-6">
                         <x-adminlte-options :options="$array_opt_grp_srv" empty-option="Selecione..." selected="{{$grp_srv_sel}}"/>
                     </x-adminlte-select>
 
-                    <!-- Empresa do Setor -->
                     <x-adminlte-select name="codSrv" label="Código do Serviço" fgroup-class="col-md-6">
                         <x-adminlte-options :options="$array_opt_srv" empty-option="Selecione..." selected="{{$set_sel}}"/>
                     </x-adminlte-select>
                 </div>
+                -->
                                     
                 </br>
                 <div class="post">

@@ -32,8 +32,8 @@ return new class extends Migration
             $table->decimal('tmo_qtd_hr',5,2);//quantidade horas
             $table->decimal('tmo_val_hr',15,2);//valor da hora
             $table->decimal('tmo_val_tot',15,2);//valor total
-            $table->integer('tmo_srv_grp');//grupo do serviço
-            $table->integer('tmo_srv_cod');//código do serviço
+            $table->integer('tmo_srv_grp')->nullable();//grupo do serviço
+            $table->integer('tmo_srv_cod')->nullable();//código do serviço
             $table->string('tmo_for_cgt',10)->nullable();//Fornecedor terceiro
             $table->enum('tmo_tip_val_cgt', ['1', '2'])->default('1');//tipo custo gerencial da tarefa 1 valor 2 porcentagem
             $table->decimal('tmo_val_cgt',15,2);//valor Custo gerencial da tarefa
