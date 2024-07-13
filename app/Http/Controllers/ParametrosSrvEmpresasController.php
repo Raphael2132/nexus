@@ -36,8 +36,28 @@ class ParametrosSrvEmpresasController extends Controller
         ->update(['parsrv_alq_iss' => $aliqISS,
             'parsrv_cfop' => $request->srvCFOP,
             'parsrv_hr_ini_ex' => $hrIni,
-            'parsrv_hr_fin_ex' => $hrFin]);
+            'parsrv_hr_fin_ex' => $hrFin,
+            'parsrv_grp_srv' => $request->grupoSrv,
+            'parsrv_cod_srv' => $request->codigoSrv,
+            'parsrv_exg_iss' => $request->exiISS,
+            'parsrv_iss_ret' => $request->issRet]);
         
         return redirect(route('parametrosSrvEmp.editarCadastro', ['empresa' => $request->empresa]))->with('success', 'Parâmetros Gerais de Serviços atualizado com sucesso!');
+    }
+
+    //Redireciona a home depois da exclusão do registro via ajax
+    public function carregaCodSrvAjax($codigo)
+    {  
+        $servicos = DB::table('parametros_sistema_servicos')->select('servico_codigo', 'servico_desc')->where('servico_grupo', $codigo)->orderby('servico_codigo', 'asc')->get();
+       
+        foreach($servicos as $servico) {
+            
+            $servicos_ajax[] = array(
+                'id'	=> $servico->servico_codigo,
+                'cod_servico' => $servico->servico_codigo.' - '.$servico->servico_desc,
+            );
+        }  
+
+        return response()->json(['success' => true, 'servicos_ajax' => $servicos_ajax]);
     }
 }

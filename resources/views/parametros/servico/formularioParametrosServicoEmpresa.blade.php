@@ -53,7 +53,78 @@
 
                     <!-- CFOP Serviço -->
                     <x-adminlte-input name="srvCFOP" label="CFOP Serviço" type="number" placeholder="Informe o CFOP" value="{{$parametrosEmp[0]->parsrv_cfop}}" fgroup-class="col-md-6"/>
+                </div>
+
+                @php
+                    $exISS = DB::table('parametros_sis_exi_iss')->get();
+
+                    $new_array1Iss =[];
+                    $new_array2Iss =[];
+
+                    foreach ($exISS as $iss) {
+                        $new_array1Iss[] = $iss->exiiss_codigo;
+                        $new_array2Iss[] = $iss->exiiss_codigo.' - '.$iss->exiiss_desc;
+                    }
+
+                    $array_opt_iss = array_combine($new_array1Iss, $new_array2Iss);
+
+                @endphp
+                <div class="row">              
+                    <!-- Exigibilidade do ISS -->
+                    <x-adminlte-select name="exiISS" label="Exigibilidade do ISS" fgroup-class="col-md-6">
+                        <x-adminlte-options :options="$array_opt_iss" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parsrv_exg_iss}}"/>
+                    </x-adminlte-select>
+
+                    <!--  ISS Retido -->
+                    <x-adminlte-select name="issRet" label="ISS Retido" fgroup-class="col-md-6">
+                        <x-adminlte-options :options="['1' => 'ISS Retido', '2' => 'Sem ISS Retido']" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parsrv_iss_ret}}"/>
+                    </x-adminlte-select>
                 </div>  
+
+                @php
+                    $dadosGrupoSrv = DB::table('parametros_sistema_servico_grupos')->orderBy('grupo_codigo', 'asc')->get();
+
+                    $new_array1_grp =[];
+                    $new_array2_grp =[];
+
+                    foreach ($dadosGrupoSrv as $grupoSrv) {
+                        $new_array1_grp[] = $grupoSrv->grupo_codigo;
+                        $new_array2_grp[] = $grupoSrv->grupo_codigo.' - '.$grupoSrv->grupo_desc;
+                    }
+                    $array_opt_grp = array_combine($new_array1_grp, $new_array2_grp);
+
+                    if(!empty($parametrosEmp[0]->parsrv_grp_srv)){
+                        $dadosCodSrv = DB::table('parametros_sistema_servicos')->where('servico_grupo', $parametrosEmp[0]->parsrv_grp_srv)->orderBy('servico_codigo', 'asc')->get();
+
+                        $new_array1_srv =[];
+                        $new_array2_srv =[];
+
+                        foreach ($dadosCodSrv as $codSrv) {
+                            $new_array1_srv[] = $codSrv->servico_codigo;
+                            $new_array2_srv[] = $codSrv->servico_codigo.' - '.$codSrv->servico_desc;
+                        }
+                        $array_opt_srv = array_combine($new_array1_srv, $new_array2_srv);
+
+                        $grupo = $parametrosEmp[0]->parsrv_grp_srv;
+                        $codigo = $parametrosEmp[0]->parsrv_cod_srv;
+                    }else{
+                        $array_opt_srv = null;
+                        $grupo = null;
+                        $codigo = null;
+                    }
+                @endphp
+                <div class="row">
+                    <!-- Grupo do Serviço -->
+                    <x-adminlte-select name="grupoSrv" label="Grupo do Serviço" fgroup-class="col-md-6">
+                        <x-adminlte-options :options="$array_opt_grp" empty-option="Selecione..." selected="{{$grupo}}"/>
+                    </x-adminlte-select>
+
+                    <!-- Código do Serviço -->
+                    <x-adminlte-select name="codigoSrv" label="Código de Atividade do Serviço" fgroup-class="col-md-6">
+                        <x-adminlte-options :options="$array_opt_srv" empty-option="Selecione..." selected="{{$codigo}}"/>
+                    </x-adminlte-select>
+                </div>
+
                 <div class="row">  
                     @php
                         $horaIniEx = Helper::formataHoraMinuto($parametrosEmp[0]->parsrv_hr_ini_ex);
@@ -173,6 +244,50 @@
 
 <!--
 |--------------------------------------------------------------------------
+| Eventos onChange da app
+|--------------------------------------------------------------------------
+-->
+<script>
+    $(document).ready(function() {
+
+        //Evento de carregamento ajax dos dados dos códigos do serviço do grupo selecionado
+        $('#grupoSrv').change(function(){
+
+            if( $(this).val() ) {
+                var id = $(this).val();
+
+                var url = "{{ route('parametrosSrvTMO.carregaCodSrvAjax', [':id']) }}";
+                url = url.replace(':id', id);
+
+                $.ajax({
+                    url: url,
+                    dataType: "JSON",
+                    type: 'GET',
+                    data: {
+                        '_token': $('meta[name=csrf-token]').attr("content"),
+                        '_method': 'GET',
+                        "id": id
+                    },
+                    success: function (data)
+                    {
+                        var options = '<option value="">Selecione...</option>';	
+
+						for (var i = 0; i < data.servicos_ajax.length; i++) {
+
+							options += '<option value="' + data.servicos_ajax[i].id + '">' + data.servicos_ajax[i].cod_servico + '</option>';
+						}	
+						$('#codigoSrv').html(options);
+                    }
+                });
+            } else {
+				$('#codigoSrv').html('<option value="">Selecione...</option>');
+			}
+        });
+    });
+</script>
+
+<!--
+|--------------------------------------------------------------------------
 | Eventos Validate da app
 |--------------------------------------------------------------------------
 -->
@@ -203,6 +318,18 @@ $(function () {
             horaFinEx: {
                 required: true
             },
+            grupoSrv: {
+                required: true
+            },
+            codigoSrv: {
+                required: true
+            },
+            exiISS: {
+                required: true
+            },
+            issRet: {
+                required: true
+            },
         },
         messages: {
             empresa: {
@@ -221,6 +348,18 @@ $(function () {
             },
             horaFinEx: {
                 required: "Por Favor informe a hora do final do expediente"
+            },
+            grupoSrv: {
+                required: "Por Favor informe o Grupo do Serviço"
+            },
+            codigoSrv: {
+                required: "Por Favor informe o Código de Atividade do Serviço"
+            },
+            exiISS: {
+                required: "Por Favor informe a Exigibilidade do ISS"
+            },
+            issRet: {
+                required: "Por Favor informe o ISS Retido"
             },
         },
         errorElement: 'span',

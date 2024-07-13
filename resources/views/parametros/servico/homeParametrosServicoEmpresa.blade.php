@@ -24,6 +24,9 @@
             'Empresa',
             'Aliq. ISS',
             'CFOP de Serviços',
+            'Exigibilidade do ISS',
+            'ISS Retido',
+            'Código de Atividade',
             'Hora Ini. Expediente',
             'Hora Fin. Expediente',
             ['label' => 'Opções', 'no-export' => true, 'width' => 5],
@@ -65,12 +68,23 @@
                 @foreach ($dataParSrvEmp as $empresa)
                     @php
                         $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo',$empresa->parsrv_emp)->get();
-                        $emp = $empresa->parsrv_emp.' - '.$dataEmp[0]->empresa_nome
+                        $emp = $empresa->parsrv_emp.' - '.$dataEmp[0]->empresa_nome;
+
+                        $exISS = DB::table('parametros_sis_exi_iss')->where('exiiss_codigo', $empresa->parsrv_exg_iss)->get();
+
+                        if($empresa->parsrv_iss_ret == '2'){
+                            $issRet = 'Sem ISS Retido';
+                        }else{
+                            $issRet = 'ISS Retido';
+                        }
                     @endphp
                     <tr>
                         <td>{{ $emp }}</td>
                         <td>{{ Helper::formataPorcentagem($empresa->parsrv_alq_iss) }}</td>
                         <td>{{ $empresa->parsrv_cfop }}</td>
+                        <td>{{ $empresa->parsrv_exg_iss.' - '.$exISS[0]->exiiss_desc }}</td>
+                        <td>{{ $issRet }}</td>
+                        <td>{{ $empresa->parsrv_cod_srv }}</td>
                         <td>{{ Helper::formataHoraMinuto($empresa->parsrv_hr_ini_ex) }}</td>
                         <td>{{ Helper::formataHoraMinuto($empresa->parsrv_hr_fin_ex) }}</td>
                         <td>

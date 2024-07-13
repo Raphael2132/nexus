@@ -131,6 +131,7 @@ Route::post('/parametros/faturamento/nfs/editarParametrosNfsEmissao/{empresa}', 
 /* Geral da Empresa */
 Route::get('/parametros/servico/homeParametrosServicoEmpresa', [App\Http\Controllers\HomeController::class, 'homeParametroSrvEmp'])->name('home.parametrosSrvEmp');
 Route::get('/parametros/servico/formularioParametrosServicoEmpresa/{empresa}', [App\Http\Controllers\ParametrosSrvEmpresasController::class, 'editar'])->name('parametrosSrvEmp.editarCadastro');
+Route::get('/parametros/servico/formularioParametrosServicoEmpresa/ajax/{codigo}', [App\Http\Controllers\ParametrosSrvEmpresasController::class, 'carregaCodSrvAjax'])->name('parametrosSrvEmp.carregaCodSrvAjax');
 
 Route::post('/parametros/servico/formularioParametrosServicoEmpresa/update', [App\Http\Controllers\ParametrosSrvEmpresasController::class, 'update'])->name('parametrosSrvEmp.update');
 
