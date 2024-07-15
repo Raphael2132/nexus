@@ -215,8 +215,8 @@ class SaoJoaoDaBoaVista{
                         </notaFiscal>
                     </nfeResposta>';
                 
-                
-                /*$xmlRetorno = '
+                /*
+                $xmlRetorno = '
                     <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
                     <nfeResposta>
                         <notaFiscal>
@@ -226,8 +226,8 @@ class SaoJoaoDaBoaVista{
                             <statusEmissao>500</statusEmissao>
                             <messages code="500" message="O número de RPS 4 já existe."/>
                         </notaFiscal>
-                    </nfeResposta>';*/
-                
+                    </nfeResposta>';
+                */
 
                 // Carregar o XML
                 $dom = new \DOMDocument('1.0', 'utf-8');

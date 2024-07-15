@@ -10,9 +10,12 @@
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item active">
-                    <a href="{{route('home.emissaoNF')}}">Filtro Emissão de NF</a>
+                    <a href="{{route('home.emissaoNF')}}">Filtro de Emissão</a>
                 </li>
-                <li class="breadcrumb-item active">Painel Emissão de NF</li>
+                <li class="breadcrumb-item active">
+                    <a href="{{ route('emissaoNF.consultaNF') }}">Consulta de Emissão</a>
+                </li>
+                <li class="breadcrumb-item active">Painel de Emissão</li>
             </ol>
         </div>
     </div>
@@ -136,7 +139,7 @@
                 <x-adminlte-card title="Geração de Notas" theme="navy" theme-mode="outline" collapsible maximizable>
                     @if(!empty(trim($nfSelecionada)))
                     <div style="text-align: center">
-                        <a class="btn btn-info" title="Gerar NF-e / NFS-e" href="{{route('emissaoNF.gerarNF',['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $nfSelecionada])}}">Gerar NF-e / NFS-e</a>
+                        <a class="btn btn-info" title="Gerar NF-e / NFS-e" href="{{route('emissaoNF.gerarNF',['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $nfSelecionada, 'origem' => 'EMISSAO'])}}">Gerar NF-e / NFS-e</a>
                     </div>
                     @endif
                 </x-adminlte-card>

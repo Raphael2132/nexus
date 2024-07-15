@@ -255,10 +255,10 @@ Route::delete('/cadastros/prestador/formularioPrestador/{endereco}/{empresa}/des
 
 /*
 |--------------------------------------------------------------------------
-| Área de Lançamentos
+| Área de Serviços
 |--------------------------------------------------------------------------
 |
-| Área destina as rotas envolvidas no lançamento de informações.
+| Área destina as rotas envolvidas no lançamento de informações de serviço.
 |
 */
 
@@ -325,19 +325,20 @@ Route::delete('/lancamentos/servico/painelAberturaOS/requisicao/servico/{servico
 | Área de Faturamento
 |--------------------------------------------------------------------------
 |
-| Área destina as rotas envolvidas no lançamento de informações.
+| Área destina as rotas envolvidas no lançamento de informações de faturamento.
 |
 */
 
 /* ********** Rotas de Emissao simplificada de NFS-e ********** */
-Route::get('/faturamento/notas/homeEmissaoSimplificadaNFS', [App\Http\Controllers\HomeController::class, 'homeEmissaoSimpNFS'])->name('home.emissaoSimpNFS');
-Route::get('/faturamento/notas/formularioEmissaoSimplificadaNFS/{empresa}/{cliente}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'inicio'])->name('emissaoSimpNFS.inicioErro');
-Route::get('/faturamento/notas/formularioEmissaoSimplificadaNFSEtapa2/{empresa}/{cliente}/{enderecoCli}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'etapa2'])->name('emissaoSimpNFS.etapa2Erro');
-Route::get('/faturamento/notas/formularioEmissaoSimplificadaNFS/ajax/{codigo}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'carregaCodSrvAjax'])->name('emissaoSimpNFS.carregaCodSrvAjax');
+Route::get('/faturamento/notas/simplificada/homeEmissaoSimplificadaNFS', [App\Http\Controllers\HomeController::class, 'homeEmissaoSimpNFS'])->name('home.emissaoSimpNFS');
 
-Route::post('/faturamento/notas/formularioEmissaoSimplificadaNFS', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'inicio'])->name('emissaoSimpNFS.inicio');
-Route::post('/faturamento/notas/formularioEmissaoSimplificadaNFSEtapa2/etapa2/{empresa}/{cliente}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'etapa2'])->name('emissaoSimpNFS.etapa2');
-Route::post('/faturamento/notas/formularioEmissaoSimplificadaNFSE/emissao/{empresa}/{cliente}/{enderecoCli}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'emitirNFS'])->name('emissaoSimpNFS.emitirNFS');
+Route::get('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFS/{empresa}/{cliente}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'inicio'])->name('emissaoSimpNFS.inicioErro');
+Route::get('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFSEtapa2/{empresa}/{cliente}/{enderecoCli}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'etapa2'])->name('emissaoSimpNFS.etapa2Erro');
+Route::get('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFS/ajax/{codigo}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'carregaCodSrvAjax'])->name('emissaoSimpNFS.carregaCodSrvAjax');
+
+Route::post('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFS', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'inicio'])->name('emissaoSimpNFS.inicio');
+Route::post('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFSEtapa2/etapa2/{empresa}/{cliente}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'etapa2'])->name('emissaoSimpNFS.etapa2');
+Route::post('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFSE/emissao/{empresa}/{cliente}/{enderecoCli}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'emitirNFS'])->name('emissaoSimpNFS.emitirNFS');
 
 /* ********** Rotas de Impressão de NFS-e ********** */
 Route::get('/faturamento/notas/impressao/nfse/{empresa}/{numControle}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'nfseGerarPDF'])->name('impresaoNF.nfsePDF');
@@ -348,7 +349,7 @@ Route::get('/faturamento/notas/controleEmissaoNF', [App\Http\Controllers\HomeCon
 Route::get('/faturamento/notas/consultaEmissaoNF', [App\Http\Controllers\FaturamentoNfHeaderController::class, 'consultaNF'])->name('emissaoNF.consultaNF');
 Route::get('/faturamento/notas/painelEmissaoNF/{empresa}/{cliente}/{nfSelecionada}', [App\Http\Controllers\FaturamentoNfHeaderController::class, 'painelNF'])->name('emissaoNF.painelNF');
 
-Route::get('/faturamento/notas/controleGeracaoNF/{empresa}/{cliente}/{nfSelecionada}', [App\Http\Controllers\FaturamentoGeracaoNfController::class, 'gerarNF'])->name('emissaoNF.gerarNF');
+Route::get('/faturamento/notas/controleGeracaoNF/{empresa}/{cliente}/{nfSelecionada}/{origem}', [App\Http\Controllers\FaturamentoGeracaoNfController::class, 'gerarNF'])->name('emissaoNF.gerarNF');
 
 /* ********** Rotas de Reemissao de NF ********** */
 Route::get('/faturamento/notas/controleReemissaoNF', [App\Http\Controllers\HomeController::class, 'reemissaoNF'])->name('home.reemissaoNF');

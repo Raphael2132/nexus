@@ -9,10 +9,23 @@
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
+                @if($origem == 'REEMISSAO')
                 <li class="breadcrumb-item active">
-                    <a href="{{route('home.emissaoNF')}}">Filtro Emissão de NF</a>
+                    <a href="{{route('home.reemissaoNF')}}">Filtro de Reemissão</a>
                 </li>
-                <li class="breadcrumb-item active">Geração de NF-e / NFS-e</li>
+                <li class="breadcrumb-item active">
+                    <a href="{{ route('reemissaoNF.consultaReemissaoNF') }}">Consulta de Reemissão</a>
+                </li>
+                <li class="breadcrumb-item active">Geração de NF</li>
+                @else
+                <li class="breadcrumb-item active">
+                    <a href="{{route('home.emissaoNF')}}">Filtro Emissão</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    <a href="{{ route('emissaoNF.consultaNF') }}">Consulta de Emissão</a>
+                </li>
+                <li class="breadcrumb-item active">Geração de NF</li>
+                @endif
             </ol>
         </div>
     </div>
@@ -80,7 +93,11 @@
                 </table> 
             </div>
             <x-slot name="footerSlot">
-                <x-adminlte-button class="btn-flat" type="submit" label="Voltar" theme="info"/>
+                @if($origem == 'REEMISSAO')
+                <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('reemissaoNF.consultaReemissaoNF') }}'" label="Voltar" theme="info"/>
+                @else
+                <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('emissaoNF.consultaNF') }}'" label="Voltar" theme="info"/>
+                @endif
             </x-slot>
         </x-adminlte-card>
     </div>

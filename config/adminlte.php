@@ -478,7 +478,7 @@ return [
             ],
         ],
 
-        ['header' => 'Área de Lançamentos'],
+        ['header' => 'Área de Serviços'],
 
         [
             'text' => 'Lançamentos',
@@ -510,14 +510,25 @@ return [
             'icon' => 'fa-solid fa-file-invoice-dollar',
             'submenu' => [
                 [
-                    'text' => 'Lançamento de Notas',
+                    'text' => 'Emissão Simplificada',
                     'icon' => 'fa-solid fa-list',
                     'submenu' => [
                         [
-                            'text' => 'Emissão Simplificada NFS-e',
-                            'url'  => '/faturamento/notas/homeEmissaoSimplificadaNFS',
+                            'text' => 'Emissão de NFS-e',
+                            'url'  => '/faturamento/notas/simplificada/homeEmissaoSimplificadaNFS',
                             'icon' => '',
                         ],
+                        [
+                            'text' => 'Reemissão de NFS-e',
+                            'url'  => '',
+                            'icon' => '',
+                        ],
+                    ],
+                ],
+                [
+                    'text' => 'Lançamento de Notas',
+                    'icon' => 'fa-solid fa-list',
+                    'submenu' => [
                         [
                             'text' => 'Emissão de NF-e/NFS-e',
                             'url'  => 'faturamento/notas/controleEmissaoNF',

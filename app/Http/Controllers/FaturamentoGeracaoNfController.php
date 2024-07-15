@@ -11,7 +11,7 @@ class FaturamentoGeracaoNfController extends Controller
 {
     //private $nfsxml;
 
-    public function gerarNF($empresa, $cliente, $nfSelecionada)
+    public function gerarNF($empresa, $cliente, $nfSelecionada, $origem)
     {
 
         
@@ -64,7 +64,7 @@ class FaturamentoGeracaoNfController extends Controller
             'nfs_dt_emi' => $dataGeracaoNF,
             'nfs_hr_emi' => $horaGeracaoNF]);
         
-        return view('/faturamento/notas/controleGeracaoNF', ['empresa' => $empresa, 'numControle' => $nfSelecionada, 'pathXML' => $pathXML]);
+        return view('/faturamento/notas/controleGeracaoNF', ['empresa' => $empresa, 'numControle' => $nfSelecionada, 'pathXML' => $pathXML, 'origem' => $origem]);
     }
 
     public function abrirXml($xml,$nf,$empresa)

@@ -376,7 +376,7 @@ class HomeController extends Controller
     //Redireciona a app para a lançamento de os
     public function homeEmissaoSimpNFS()
     {    
-        return view('/faturamento/notas/homeEmissaoSimplificadaNFS');
+        return view('/faturamento/notas/simplificada/homeEmissaoSimplificadaNFS');
     }
 
     //Redireciona a app para a lançamento de os
