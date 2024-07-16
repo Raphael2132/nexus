@@ -38,10 +38,15 @@
             @include('adminlte::partials.cwrapper.cwrapper-iframe')
         @endempty
 
+        <!-- Rodapé da página -->
+        @include('vendor.adminlte.partials.footer.footer')
+
+        <!-- No Original só insere o footer se ele for adicionada na view por isso foi alterado o codigo para sempre exibir
         {{-- Footer --}}
         @hasSection('footer')
             @include('adminlte::partials.footer.footer')
         @endif
+        -->
 
         {{-- Right Control Sidebar --}}
         @if(config('adminlte.right_sidebar'))
