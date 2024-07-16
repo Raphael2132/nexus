@@ -2,7 +2,7 @@
 $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', Auth::user()->usuario_empresa)->get();
 @endphp
 
-<footer class="main-footer">
+<footer class="main-footer" style="padding: .6rem; !important">
     @yield('footer')
     <div class="float-right d-none d-sm-block">
         <strong>
