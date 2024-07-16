@@ -293,6 +293,7 @@ Route::get('/lancamentos/servico/painelAberturaOS/orcamento/{empresa}/{numOS}', 
 Route::get('/lancamentos/servico/painelAberturaOS/total/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'totalOS'])->name('painelOS.totalOS');
 Route::get('/lancamentos/servico/painelAberturaOS/encerraOS/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'encerraOS'])->name('painelOS.encerraOS');
 Route::get('/lancamentos/servico/painelAberturaOS/orcamento/impressao/pdf/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'orcamentoGerarPDF'])->name('painelOS.orcamentoPDF');
+Route::get('/lancamentos/servico/painelAberturaOS/previsaoEntrega/ajax/{empresa}/{numOS}/{qtdHoras}', [App\Http\Controllers\PainelAberturaOSController::class, 'atualizaPrevEntregaAjax'])->name('painelOS.atualizaPrevEntregaAjax');
 
 Route::post('/lancamentos/servico/painelAberturaOS/os/cancelar/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'cancelarOS'])->name('requisicaoOS.cancelarOS');
 

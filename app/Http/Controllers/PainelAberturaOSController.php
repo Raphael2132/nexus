@@ -338,6 +338,96 @@ class PainelAberturaOSController extends Controller
             'os_hpe' => $novaHrPrevEnt]);  
     }
 
+    //Função que atualiza a previsão de entrega do serviço da OS via Ajax
+    public function atualizaPrevEntregaAjax($empresa, $numOS, $qtdHoras)
+    {
+        //Busca os dados da OS
+        $resulOS = DB::table('lancamento_srv_os')->select('os_dha')->where('os_emp',$empresa)->where('os_nos',$numOS)->get();
+
+        //Busca horas de inicio e termino de expediente
+        $hrIni = DB::table('parametros_srv_empresas')->select('parsrv_hr_ini_ex')->where('parsrv_emp',$empresa)->get();
+        $hrFin = DB::table('parametros_srv_empresas')->select('parsrv_hr_fin_ex')->where('parsrv_emp',$empresa)->get();
+
+        //Monta a data e hora de inicio e final de expediente com a data e hora da abertura da os
+        $hrInicio = Helper::formataHoraMinuto($hrIni[0]->parsrv_hr_ini_ex).':00';
+        $hrFinal = Helper::formataHoraMinuto($hrFin[0]->parsrv_hr_fin_ex).':00';
+        $hrAbe = date('H:i:s', strtotime($resulOS[0]->os_dha));
+        $dtAbe = date('Y-m-d', strtotime($resulOS[0]->os_dha));
+
+        //Monta a data e hora inicial da previsão de entrega para calculo com o tempo total da os
+        if($hrAbe >= $hrInicio && $hrAbe <= $hrFinal){
+
+            $hrPrev = $hrAbe;
+            $dtPrev = $dtAbe;
+
+        }else{
+
+            if($hrAbe < $hrInicio){
+                $hrPrev = $hrInicio;
+                $dtPrev = $dtAbe;
+            }else{
+                $dtPrev = date('Y-m-d', strtotime($dtAbe.' +1 day'));
+                $hrPrev = $hrInicio;
+            }
+        }
+
+        //Busca a diferença em minutos da hora da previsão inicial para o final do expediente
+        $dataIniDif = new DateTime($dtPrev.' '.$hrPrev);
+        $dataFinDif = new DateTime($dtPrev.' '.$hrFinal);
+
+        $diff = $dataIniDif->diff($dataFinDif);
+        $horas = $diff->h + ($diff->days * 24);
+        $min = $diff->i;
+
+        $minDif = $min + ($horas * 60);
+
+        //Calcula os minutos do tempo de serviço da os
+        $minSrv = $qtdHoras * 60;
+
+        //Calcula a nova hora de previsão de entrega
+        if($minDif >= $minSrv){
+            $novaHrPrevEnt = date('Hi', strtotime($dtPrev.' '.$hrPrev.' +'.$minSrv.' minutes'));
+            $novaDtPrevEnt = $dtPrev;
+        }else{
+
+            $minRest = $minSrv - $minDif;
+
+            $novaDtPrevEnt = date('Y-m-d', strtotime($dtPrev.' +1 day'));
+
+            //Busca a diferença em minutos da hora de inicio e final de expediente
+            $dataIniDif = new DateTime($novaDtPrevEnt.' '.$hrInicio);
+            $dataFinDif = new DateTime($novaDtPrevEnt.' '.$hrFinal);
+
+            $diff = $dataIniDif->diff($dataFinDif);
+            $horas = $diff->h + ($diff->days * 24);
+            $min = $diff->i;
+
+            $tempoExp = $min + ($horas * 60);
+
+            //Calcula a nova data e hora enquanto existir minutos restantes
+            while($minRest > 0){
+                
+                if($tempoExp >= $minRest){
+                    $novaHrPrevEnt = date('Hi', strtotime($novaDtPrevEnt.' '.$hrInicio.' +'.$minRest.' minutes'));
+                    $minRest = 0;
+                }else{
+                    $minRest = $minRest - $tempoExp;
+                    $novaDtPrevEnt = date('Y-m-d', strtotime($novaDtPrevEnt.' +1 day'));
+                }
+            }
+        }
+
+        $novaDtPrevEnt = Helper::formataData($novaDtPrevEnt);
+        $novaHrPrevEnt = Helper::formataHoraMinuto($novaHrPrevEnt);
+
+        $prevEnt_ajax[] = array(
+            'hora'	=> $novaHrPrevEnt,
+            'data' => $novaDtPrevEnt,
+        );
+
+        return response()->json(['success' => true, 'prevEnt_ajax' => $prevEnt_ajax]);
+    }
+
     //Metodo de abertura da edição do serviço da requisição
     public function totalOS($empresa, $numOS)
     {

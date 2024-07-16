@@ -3350,8 +3350,45 @@ $status_servico = '';
                     $('#tipoServicoReq').html('<option value="">Selecione...</option>');
                 }
             });
+        }
 
+        if(estagioAPP == 'PREVISAO_ENTREGA'){
 
+            //Evento de carregamento ajax dos dados dos setores
+            $('#qtdHoraOS').change(function(){
+
+                if( $(this).val() && $('#qtdHoraOS').val() != '' ) {
+                    
+                    var emp = {!! json_encode($glo_os_empresa) !!};
+                    var numOS = {!! json_encode($glo_os_nos) !!};
+                    var qtdHr = $(this).val();
+
+                    var url = "{{ route('painelOS.atualizaPrevEntregaAjax', [':emp',':numOS',':qtdHr']) }}";
+                    url = url.replace(':emp', emp);
+                    url = url.replace(':numOS', numOS);
+                    url = url.replace(':qtdHr', qtdHr);
+
+                    //console.log(url);
+
+                    $.ajax({
+                        url: url,
+                        dataType: "JSON",
+                        type: 'GET',
+                        data: {
+                            '_token': $('meta[name=csrf-token]').attr("content"),
+                            '_method': 'GET',
+                            "emp": emp,
+                            "numOS": numOS,
+                            "qtdHr": qtdHr
+                        },
+                        success: function (data)
+                        {
+                            $("#dataPrevEnt").val(data.prevEnt_ajax[0].data);
+                            $("#horaPrevEnt").val(data.prevEnt_ajax[0].hora);
+                        }
+                    });
+                }
+            });
         }
     });
 </script>
