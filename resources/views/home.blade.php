@@ -5,11 +5,11 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Bem vind{{ Auth::user()->usuario_sexo == 'F' ? 'a' : 'o' }}, <b>{{ strtoupper(Auth::user()->name) }}</b></h1>
+            <h1>Página Inicial</h1>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Página Inicial</li>
+                <li class="breadcrumb-item active">Painel Principal</li>
             </ol>
         </div>
     </div>
