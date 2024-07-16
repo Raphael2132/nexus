@@ -2836,8 +2836,8 @@ $status_servico = '';
             //Ao carregar a app verifica o tipo do valor da tarefa
             if($("#tipoTMO").val() == 'P'){
                 $("#valTotHrTMO").prop('disabled', true);
-                $("#qtdHrTMO").prop('disabled', false);
-                $("#valUniHrTMO").prop('disabled', false);
+                $("#qtdHrTMO").prop('disabled', true);
+                $("#valUniHrTMO").prop('disabled', true);
                 $(".bloco-terceiros").hide();
             }else if($("#tipoTMO").val() == 'I'){
                 $("#valTotHrTMO").prop('disabled', true);
@@ -2846,8 +2846,8 @@ $status_servico = '';
                 $(".bloco-terceiros").hide();
             }else if($("#tipoTMO").val() == 'R'){
                 $("#valTotHrTMO").prop('disabled', true);
-                $("#qtdHrTMO").prop('disabled', true);
-                $("#valUniHrTMO").prop('disabled', false);
+                $("#qtdHrTMO").prop('disabled', false);
+                $("#valUniHrTMO").prop('disabled', true);
                 $(".bloco-terceiros").hide();
             }else if($("#tipoTMO").val() == 'T'){
                 $("#valTotHrTMO").prop('disabled', false);
@@ -2857,7 +2857,7 @@ $status_servico = '';
             }else{
                 $("#valTotHrTMO").prop('disabled', false);
                 $("#valUniHrTMO").prop('disabled', true);
-                $("#qtdHrTMO").prop('disabled', false);
+                $("#qtdHrTMO").prop('disabled', true);
                 $(".bloco-terceiros").hide();
             }
 
@@ -2865,12 +2865,12 @@ $status_servico = '';
             var altValor = {!! json_encode($altValorTOS) !!};
             var altHora = {!! json_encode($altHoraTOS) !!};
 
-            if(altValor == 'N' && $("#tipoTMO").val() != 'R'){
+            if(altValor == 'N' && ($("#tipoTMO").val() == 'I' || $("#tipoTMO").val() == 'F' || $("#tipoTMO").val() == 'T')){
                 $("#valUniHrTMO").prop('disabled', true);
                 $("#valTotHrTMO").prop('disabled', true);
             }
 
-            if(altHora == 'N' && $("#tipoTMO").val() != 'R'){
+            if(altHora == 'N' && $("#tipoTMO").val() == 'I'){
                 $("#qtdHrTMO").prop('disabled', true);
             }
            
@@ -3005,7 +3005,7 @@ $status_servico = '';
                     $("#valCustoTMO").val('');
                     $("#perCustoTMO").val('0.00');
                     $("#perCustoTMO").hide();
-                    $('label[for="perCGT"]').hide();
+                    $('label[for="perCustoTMO"]').hide();
                 }else{
                     $("#valCustoTMO").prop('disabled', true);
                     $("#valCustoTMO").val('');
@@ -3099,7 +3099,7 @@ $status_servico = '';
             /* *************** Evento ao trocar o valor do campo  quantidade de horas da tarefa - INCLUSAO_SERVICO / MANUTENCAO_SERVICO *************** */
             $("#qtdHrTMO").change(function(){
                 
-                if(($("#tipoTMO").val() == 'I' || $("#tipoTMO").val() == 'P') && $("#valUniHrTMO").val() != ''){
+                if(($("#tipoTMO").val() == 'I' || $("#tipoTMO").val() == 'R') && $("#valUniHrTMO").val() != ''){
                     
                     var valHr = $("#valUniHrTMO").val();
                     var qtdHr = this.value;
@@ -3409,10 +3409,11 @@ $status_servico = '';
 
         /* **************************************** Eventos onClick dos blocos - INCLUSAO_SERVICO   **************************************** */
 
+        /* foi adicionado nova propriedade no validate que resolve o problema
         if(estagioAPP == 'INCLUSAO_SERVICO'){
 
             //Ao clicar no botão incluir TMO retira o disabled do campo para não ter problema no request do update do campo
-            $(".btn_hide_incluir_tmo").click(function(){
+            /$(".btn_hide_incluir_tmo").click(function(){
                 $("#valTotHrTMO").prop('disabled', false);
                 $("#qtdHrTMO").prop('disabled', false);
                 $("#valUniHrTMO").prop('disabled', false);
@@ -3422,9 +3423,11 @@ $status_servico = '';
                 $("#valLiqTMO").prop('disabled', false);
             });
         }
+        */
 
         /* **************************************** Eventos onClick dos blocos - MANUTENCAO_SERVICO  **************************************** */
 
+        /*
         if(estagioAPP == 'MANUTENCAO_SERVICO'){
 
             //Ao clicar no botão atualizar TMO retira o disabled do campo para não ter problema no request do update do campo
@@ -3438,6 +3441,7 @@ $status_servico = '';
                 $("#valLiqTMO").prop('disabled', false);
             });
         }
+        */
         
     });
 </script>
@@ -3510,6 +3514,11 @@ $(function () {
         return this.optional(element) || /^(\d{1,3}|\d{1,3}\.\d{1,3}|999\.[0]{1,2}|999)$/i.test(value);
     }, "Quantidade de horas máxima de 999.99");
 
+    // Adicionando método de validação personalizado para qtdHrTMO
+    $.validator.addMethod("notZero", function (value, element) {
+        return this.optional(element) || parseFloat(value) > 0;
+    }, "A Quantidade de Horas deve ser maior que 0");
+
     //Inserção da TMO na requisição
     $('#quickForm-ins-upd-servico').validate({
         rules: {
@@ -3522,7 +3531,8 @@ $(function () {
             },
             qtdHrTMO: {
                 required: true,
-                maxqtdhr: true
+                maxqtdhr: true,
+                notZero: true
             },
             valUniHrTMO: {
                 required: true,
@@ -3582,6 +3592,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 

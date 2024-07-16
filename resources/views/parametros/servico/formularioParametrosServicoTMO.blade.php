@@ -586,7 +586,7 @@
 
         $("#qtdHora").change(function(){
             
-            if($("#tipoTMO").val() == 'I' && $("#valHora").val() != ''){
+            if(($("#tipoTMO").val() == 'I' || $("#tipoTMO").val() == 'P')  && $("#valHora").val() != ''){
                 
                 var valHr = $("#valHora").val();
                 var qtdHr = this.value;
