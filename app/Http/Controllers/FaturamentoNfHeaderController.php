@@ -88,7 +88,7 @@ class FaturamentoNfHeaderController extends Controller
 
     public function painelNF($empresa, $cliente, $nfSelecionada)
     {
-        $dados = $this->headerNF->where('nfhdr_emp', $empresa)->where('nfhdr_cli', $cliente)->where('nfhdr_sts', 'A')->orderby('nfhdr_num_ped', 'asc')->get();
+        $dados = $this->headerNF->where('nfhdr_emp', $empresa)->where('nfhdr_cli', $cliente)->where('nfhdr_sts', 'A')->where('nfhdr_ori',['01'])->orderby('nfhdr_num_ped', 'asc')->get();
 
         return view('/faturamento/notas/painelEmissaoNF',['dadosHeader'=>$dados, 'nfSelecionada' => $nfSelecionada, 'empresaNF' => $empresa, 'clienteNF' => $cliente]);
     }

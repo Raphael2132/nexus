@@ -3,6 +3,9 @@
 /public/build
 /public/hot
 /public/storage
+/public/75272073703753
+public/75272073703753/file/doc/nfsxml/envio/
+public/75272073703753/file/doc/nfsxml/retorno/
 /storage/*.key
 /vendor
 .env
@@ -17,4 +20,3 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-/public/75272073703753

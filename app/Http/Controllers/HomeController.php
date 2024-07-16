@@ -636,6 +636,12 @@ class HomeController extends Controller
         return view('/faturamento/notas/controleReemissaoNF');
     }
 
+    //Redireciona a app para o faturamento da reemissão simplificada de nf
+    public function reemissaoSimpNF()
+    {    
+        return view('/faturamento/notas/simplificada/controleReemissaoSimpNF');
+    }
+
     //Redireciona a app para os motivos de cancelamento
     public function homeParMotCan()
     {    

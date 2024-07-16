@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<?xml version="1.0"?>
 <nfeResposta>
                         <notaFiscal>
                             <numeroNota>0</numeroNota>
                             <numeroRps>5</numeroRps>
                             <codigoVerificacao>45963RGOP0X</codigoVerificacao>
-                            <statusEmissao>500</statusEmissao>
-                            <messages code="500" message="O número de RPS 4 já existe."/>
+                            <statusEmissao>200</statusEmissao>
+                            <messages code="200" message="NFSE emitida com sucesso"/>
                         </notaFiscal>
                     </nfeResposta>

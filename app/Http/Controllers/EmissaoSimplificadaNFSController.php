@@ -149,6 +149,6 @@ class EmissaoSimplificadaNFSController extends Controller
             'nfs_dt_emi' => $dataGeracaoNF,
             'nfs_hr_emi' => $horaGeracaoNF]);
         
-        return view('/faturamento/notas/controleGeracaoNF', ['empresa' => $empresa, 'numControle' => $numControle, 'pathXML' => $pathXML]);
+        return view('/faturamento/notas/controleGeracaoNF', ['empresa' => $empresa, 'numControle' => $numControle, 'pathXML' => $pathXML, 'origem' => 'EMISSAO_SIMP']);
     }
 }

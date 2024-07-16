@@ -520,7 +520,7 @@ return [
                         ],
                         [
                             'text' => 'Reemissão de NFS-e',
-                            'url'  => '',
+                            'url'  => 'faturamento/notas/simplificada/controleReemissaoSimpNF',
                             'icon' => '',
                         ],
                     ],

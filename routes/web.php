@@ -340,6 +340,11 @@ Route::post('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFS', 
 Route::post('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFSEtapa2/etapa2/{empresa}/{cliente}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'etapa2'])->name('emissaoSimpNFS.etapa2');
 Route::post('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFSE/emissao/{empresa}/{cliente}/{enderecoCli}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'emitirNFS'])->name('emissaoSimpNFS.emitirNFS');
 
+/* ********** Rotas de Reemissao simplificada de NFS-e ********** */
+Route::get('/faturamento/notas/simplificada/controleReemissaoSimpNF', [App\Http\Controllers\HomeController::class, 'reemissaoSimpNF'])->name('home.reemissaoSimpNF');
+
+Route::get('/faturamento/notas/simplificada/consultaReemissaoSimpNF', [App\Http\Controllers\FaturamentoNfsSimplificadaController::class, 'consultaReemissaoSimpNF'])->name('reemissaoSimpNF.consultaReemissaoSimpNF');
+
 /* ********** Rotas de Impressão de NFS-e ********** */
 Route::get('/faturamento/notas/impressao/nfse/{empresa}/{numControle}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'nfseGerarPDF'])->name('impresaoNF.nfsePDF');
 
