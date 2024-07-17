@@ -36,6 +36,12 @@ class EmissaoSimplificadaNFSController extends Controller
         return view('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFS',['empresa'=>$request->empresa,'cliente'=>$cliente]);
     }
 
+    //Chama a app de controle de pré abertura de OS por GET
+    public function inicioGet($empresa, $cliente)
+    {
+        return view('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFS',['empresa'=>$empresa,'cliente'=>$cliente]);
+    }
+
     //Chama a app de controle de pré abertura de OS
     public function etapa2(Request $request, $empresa, $cliente)
     {
@@ -101,7 +107,7 @@ class EmissaoSimplificadaNFSController extends Controller
         //Gera da tabela de nota fiscal de serviço
         $exec_fn = DB::select("select ret_sts, ret_msg from fn_faturamento_gera_nfs('".$empresa."',".$numControle.");");
 
-        if($exec_fn[0]->ret_sts != '*'){
+        if($exec_fn[0]->ret_sts == '*'){
             //Falha, desfaz as alterações no banco de dados
             DB::rollBack();
             return redirect()->route('emissaoSimpNFS.etapa2Erro',['empresa' => $empresa, 'cliente' => $cliente, 'enderecoCli' => $enderecoCli])->with('error', $exec_fn[0]->ret_msg);

@@ -336,6 +336,7 @@ Route::get('/faturamento/notas/simplificada/homeEmissaoSimplificadaNFS', [App\Ht
 Route::get('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFS/{empresa}/{cliente}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'inicio'])->name('emissaoSimpNFS.inicioErro');
 Route::get('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFSEtapa2/{empresa}/{cliente}/{enderecoCli}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'etapa2'])->name('emissaoSimpNFS.etapa2Erro');
 Route::get('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFS/ajax/{codigo}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'carregaCodSrvAjax'])->name('emissaoSimpNFS.carregaCodSrvAjax');
+Route::get('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFS/{empresa}/{cliente}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'inicioGet'])->name('emissaoSimpNFS.inicioGet');
 
 Route::post('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFS', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'inicio'])->name('emissaoSimpNFS.inicio');
 Route::post('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFSEtapa2/etapa2/{empresa}/{cliente}', [App\Http\Controllers\EmissaoSimplificadaNFSController::class, 'etapa2'])->name('emissaoSimpNFS.etapa2');
