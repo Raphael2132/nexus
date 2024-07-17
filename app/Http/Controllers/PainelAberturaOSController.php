@@ -222,6 +222,16 @@ class PainelAberturaOSController extends Controller
 
         $valLiquido = $sum_valores[0]->req_vlt - $descontoOS[0]->os_val_des;
 
+        //Busca os dados da OS
+        $resulOS = DB::table('lancamento_srv_os')->where('os_emp',$empresa)->where('os_nos',$numOS)->get();
+
+        //Se o cálculo automático estiver desligado manter a qtd. de horas da previsão
+        if($resulOS[0]->os_cal_aut_pre_ent == 'N'){
+            $qtd_hr_pe = $resulOS[0]->os_qtd_hr_pre_ent;
+        }else{
+            $qtd_hr_pe = $sum_valores[0]->req_qtd_hr;
+        }
+
         $atualizaOS = DB::table('lancamento_srv_os')
             ->where('os_emp', $empresa)
             ->where('os_nos', $numOS)
@@ -230,7 +240,8 @@ class PainelAberturaOSController extends Controller
                 'os_vlr' => $sum_valores[0]->req_vlr,
                 'os_vls' => $sum_valores[0]->req_vls,
                 'os_vlp' => $sum_valores[0]->req_vlp,
-                'os_val_des_srv' => $sum_valores[0]->req_val_des_srv]);  
+                'os_val_des_srv' => $sum_valores[0]->req_val_des_srv,
+                'os_qtd_hr_pre_ent' => $qtd_hr_pe]);  
     }
 
     //Função que atualiza o valor total da requisição, executada ao inserir, atualizar, excluir, reabrir, suspender, cancelar e excluir serviços e excluir requisição
@@ -256,7 +267,12 @@ class PainelAberturaOSController extends Controller
     static function atualizaPrevEntrega($empresa, $numOS)
     {
         //Busca os dados da OS
-        $resulOS = DB::table('lancamento_srv_os')->select('os_qtd_hr','os_dha')->where('os_emp',$empresa)->where('os_nos',$numOS)->get();
+        $resulOS = DB::table('lancamento_srv_os')->where('os_emp',$empresa)->where('os_nos',$numOS)->get();
+
+        //Se o cálculo automático estiver desligado não deve calcular ao alterar uma requisição
+        if($resulOS[0]->os_cal_aut_pre_ent == 'N'){
+            return;
+        }
 
         //Busca horas de inicio e termino de expediente
         $hrIni = DB::table('parametros_srv_empresas')->select('parsrv_hr_ini_ex')->where('parsrv_emp',$empresa)->get();

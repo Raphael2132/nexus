@@ -277,7 +277,7 @@ Route::get('/lancamentos/servico/consultaSituacaoOS/painelAberturaOS/{empresa}/{
 
 /* ********** Rotas do painel de Abertura de OS - Contrele Utilizado: LancamentoSrvOsController ********** */
 Route::post('/lancamentos/servico/painelAberturaOS/orcamento/gerar/{empresa}/{numOS}/{stsOS}/{stsOrc}/{cliente}/{dtOS}', [App\Http\Controllers\LancamentoSrvOsController::class, 'abrirOrcamento'])->name('painelOS.abrirOrcamento');
-Route::post('/lancamentos/servico/painelAberturaOS/previsaoEntrega/atualizar/{empresa}/{numOS}/{cliente}', [App\Http\Controllers\LancamentoSrvOsController::class, 'atualizaPrevEntrega'])->name('painelOS.atualizaPrevEntrega');
+Route::post('/lancamentos/servico/painelAberturaOS/previsaoEntrega/atualizar/{empresa}/{numOS}/{cliente}', [App\Http\Controllers\LancamentoSrvOsController::class, 'atualizaPrevEntrega'])->name('lancamentoOS.atualizaPrevEntrega');
 Route::post('/lancamentos/servico/painelAberturaOS/observacao/{empresa}/{numOS}', [App\Http\Controllers\LancamentoSrvOsController::class, 'atualizaObservacao'])->name('lancamentoOS.atualizaObservacao');
 Route::post('/lancamentos/servico/painelAberturaOS/trocaClienteFatura/{empresa}/{numOS}', [App\Http\Controllers\LancamentoSrvOsController::class, 'atualizaCliFatura'])->name('lancamentoOS.atualizaCliFatura');
 Route::post('/lancamentos/servico/painelAberturaOS/descontoOS/{empresa}/{numOS}', [App\Http\Controllers\LancamentoSrvOsController::class, 'atualizaDescontoOS'])->name('lancamentoOS.atualizaDescontoOS');

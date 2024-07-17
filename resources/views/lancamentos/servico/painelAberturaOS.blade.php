@@ -84,24 +84,22 @@ $status_servico = '';
                         <table class="table tabela-dados-os">
                             <tbody>
                                 <tr>
-                                    <td colspan="2" style="border: 0px;">
+                                    <td style="border: 0px;">
                                         <p class="text-sm">Empresa
                                             <b class="d-block">{{ $glo_os_empresa }} - {{$glo_os_dadosEmpresa[0]->empresa_nome}}</b>
                                         </p>
                                     </td>
-                                    <td colspan="2" style="border: 0px;">
+                                    <td style="border: 0px;">
                                         <p class="text-sm">Número da OS
                                             <b class="d-block">{{ $glo_os_nos }}</b>
                                         </p>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
+                                    <td style="border: 0px;">
                                         <p class="text-sm">Data e Hora de Abertura
                                             <b class="d-block">{{ $dataAbertura }}</b>
                                         </p>
                                     </td>
-                                    <td colspan="2">
+                                    <td style="border: 0px;">
                                         <p class="text-sm">Situação
                                             <b class="d-block">{{ $situacao }}</b>
                                         </p>
@@ -158,6 +156,85 @@ $status_servico = '';
                                     <td>
                                         <p class="text-sm">Pais
                                             <b class="d-block">{{$glo_os_dadosClienteEndereco[0]->endereco_pais}}</b>
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th colspan="4">Local da Prestação do Serviço</th>
+                                </tr>
+                                <tr>
+                                    @php
+                                        if($glo_os_dadosOS[0]->os_loc_srv == 'O'){
+
+                                            $loc_srv_cep = $glo_os_dadosOS[0]->os_loc_srv_cep;
+                                            $loc_srv_logradouro = $glo_os_dadosOS[0]->os_loc_srv_logradouro;
+                                            $loc_srv_numero = $glo_os_dadosOS[0]->os_loc_srv_numero;
+                                            $loc_srv_complemento = $glo_os_dadosOS[0]->os_loc_srv_complemento;
+                                            $loc_srv_bairro = $glo_os_dadosOS[0]->os_loc_srv_bairro;
+                                            $loc_srv_cidade = $glo_os_dadosOS[0]->os_loc_srv_cidade;
+                                            $loc_srv_uf = $glo_os_dadosOS[0]->os_loc_srv_uf;
+                                            $loc_srv_pais = $glo_os_dadosOS[0]->os_loc_srv_pais;
+
+                                        }elseif($glo_os_dadosOS[0]->os_loc_srv == 'C'){
+
+                                            $loc_srv_cep = $glo_os_dadosClienteEndereco[0]->endereco_cep;
+                                            $loc_srv_logradouro = $glo_os_dadosClienteEndereco[0]->endereco_logradouro;
+                                            $loc_srv_numero = $glo_os_dadosClienteEndereco[0]->endereco_numero;
+                                            $loc_srv_complemento = $glo_os_dadosClienteEndereco[0]->endereco_complemento;
+                                            $loc_srv_bairro = $glo_os_dadosClienteEndereco[0]->endereco_bairro;
+                                            $loc_srv_cidade = $glo_os_dadosClienteEndereco[0]->endereco_cidade;
+                                            $loc_srv_uf = $glo_os_dadosClienteEndereco[0]->endereco_uf;
+                                            $loc_srv_pais = $glo_os_dadosClienteEndereco[0]->endereco_pais;
+
+                                        }else{
+
+                                            $empresaEndereco = DB::table('cadastro_empresa_enderecos')->where('endereco_empresa_codigo', $glo_os_empresa)->where('endereco_principal', 'S')->get();
+
+                                            $loc_srv_cep = $empresaEndereco[0]->endereco_cep;
+                                            $loc_srv_logradouro = $empresaEndereco[0]->endereco_logradouro;
+                                            $loc_srv_numero = $empresaEndereco[0]->endereco_numero;
+                                            $loc_srv_complemento = $empresaEndereco[0]->endereco_complemento;
+                                            $loc_srv_bairro = $empresaEndereco[0]->endereco_bairro;
+                                            $loc_srv_cidade = $empresaEndereco[0]->endereco_cidade;
+                                            $loc_srv_uf = $empresaEndereco[0]->endereco_uf;
+                                            $loc_srv_pais = $empresaEndereco[0]->endereco_pais;
+                                        }
+                                    @endphp
+                                    <td colspan="2">
+                                        <p class="text-sm">Logradouro
+                                            <b class="d-block">{{$loc_srv_logradouro}}, {{$loc_srv_numero}}</b>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm">Complemento
+                                            <b class="d-block">@if(!empty($loc_srv_complemento)){{$loc_srv_complemento}}@endif</b>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm">CEP
+                                            <b class="d-block">{{Helper::mascaraCEP($loc_srv_cep)}}</b>
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p class="text-sm">Bairro
+                                            <b class="d-block">{{$loc_srv_bairro}}</b>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm">Cidade
+                                            <b class="d-block">{{$loc_srv_cidade}}</b>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm">UF
+                                            <b class="d-block">{{$loc_srv_uf}}</b>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p class="text-sm">Pais
+                                            <b class="d-block">{{$loc_srv_pais}}</b>
                                         </p>
                                     </td>
                                 </tr>
@@ -1316,12 +1393,22 @@ $status_servico = '';
                 <x-adminlte-card title="Previsão de Entrega da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
 
                     <x-adminlte-card title="Informações da Previsão de Entrega" theme="navy">
-                        <form method="post" action="{{ route('painelOS.atualizaPrevEntrega', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'cliente' => $glo_os_cliente]) }}" id="quickForm-upd-prev-entrega" novalidate="novalidate">
+                        <form method="post" action="{{ route('lancamentoOS.atualizaPrevEntrega', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'cliente' => $glo_os_cliente]) }}" id="quickForm-upd-prev-entrega" novalidate="novalidate">
                             @csrf 
                             @method('post')
                             <div class="row">
+
+                                @if($glo_os_dadosOS[0]->os_cal_aut_pre_ent[0] == 'N')
+                                <x-adminlte-input-switch name="calcAut" label="Cálculo Automático" data-on-text="Sim" data-off-text="Não" data-on-color="success" data-off-color="danger" fgroup-class="col-md-2" igroup-size="sm"/>
+                                @else
+                                <x-adminlte-input-switch name="calcAut" label="Cálculo Automático" data-on-text="Sim" data-off-text="Não" data-on-color="success" data-off-color="danger" fgroup-class="col-md-2" igroup-size="sm" checked/>
+                                @endif
+
                                 <!-- Grupo do serviço -->
-                                <x-adminlte-input name="qtdHoraOS" label="Duração Prevista" type="text" value="{{$glo_os_dadosOS[0]->os_qtd_hr}}" placeholder="0.00" fgroup-class="col-md-4"/>
+                                <x-adminlte-input name="qtdHrSrv" label="Tempo Serviço OS" type="text" value="{{$glo_os_dadosOS[0]->os_qtd_hr}}" placeholder="0.00" fgroup-class="col-md-2" disabled/>
+
+                                <!-- Grupo do serviço -->
+                                <x-adminlte-input name="qtdHoraOS" label="Duração Prevista" type="text" value="{{$glo_os_dadosOS[0]->os_qtd_hr_pre_ent}}" placeholder="0.00" fgroup-class="col-md-2"/>
 
                                 @php
                                     $config = [
@@ -1343,7 +1430,7 @@ $status_servico = '';
                                     }
                                 @endphp
                                 <!-- Data da Previsão de Entrega -->
-                                <x-adminlte-date-range name="dataPrevEnt" label="Data da Previsão de Entrega" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
+                                <x-adminlte-date-range name="dataPrevEnt" label="Data da Previsão de Entrega" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-3">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text">
                                             <i class="far fa-lg fa-calendar-alt"></i>
@@ -1376,7 +1463,7 @@ $status_servico = '';
                                         $horaPrevEnt = '';
                                     }
                                 @endphp
-                                <x-adminlte-date-range name="horaPrevEnt" label="Hora da Previsão de Entrega" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
+                                <x-adminlte-date-range name="horaPrevEnt" label="Hora da Previsão de Entrega" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-3">
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text">
                                             <i class="far fa-lg fa-clock"></i>
@@ -2181,6 +2268,7 @@ $status_servico = '';
     }
     .tabela-dados-os {
         border-left: 0px solid #001f3f;
+        margin-bottom: 0px;
     }
 
     .tabela-dados-req td, .tabela-dados-req th{

@@ -269,14 +269,21 @@ class LancamentoSrvOsController extends Controller
         $data = Helper::limpaData($request->dataPrevEnt);
         $hora = Helper::limpaHoraMinuto($request->horaPrevEnt);
 
+        if($request->calcAut == true){
+            $calAut = 'S';
+        }else{
+            $calAut = 'N';
+        }
+
         $atualiaServico = DB::table('lancamento_srv_os')
         ->where('os_emp', $empresa)
         ->where('os_nos', $numOS)
-        ->update(['os_qtd_hr' => $request->qtdHoraOS,
+        ->update(['os_qtd_hr_pre_ent' => $request->qtdHoraOS,
         'os_dpe' => $data,
         'os_hpe' => $hora,
         'os_cli_agr' => $request->clienteAguardaTermino,
-        'os_cli_avs' => $request->avisaClienteTermino]);  
+        'os_cli_avs' => $request->avisaClienteTermino,
+        'os_cal_aut_pre_ent' => $calAut]);  
         
         return redirect(route('situacaoOS.carregaOS', ['empresa' => $empresa, 'cliente' => $cliente, 'nos' => $numOS, 'estagioAPP' => 'PRINCIPAL']))->with('success', 'Previsão de Entrega Atualizada com Sucesso!');
     }
