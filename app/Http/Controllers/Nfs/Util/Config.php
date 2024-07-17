@@ -60,35 +60,30 @@ class Config{
         
         //echo "<br> Entrei no setXMLPath <br>";
 
-        $this->path = $_SERVER['DOCUMENT_ROOT'];//Por hora vai no root quando estiver em servidor ver como vai ficar
-        $this->pathDownload = $_SERVER['DOCUMENT_ROOT'].'/'.$cnpj.'/file/doc/nfsxml/envio/';
-        $this->pathDownloadRetorno = $_SERVER['DOCUMENT_ROOT'].'/'.$cnpj.'/file/doc/nfsxml/retorno/';
-
-        // Obter o endereço IP do servidor
-        if(!empty($_SERVER['SERVER_ADDR'])){
-            $serverIP = $_SERVER['SERVER_ADDR'];
-        }else{
-            $serverIP = '';
-        }
-
         // Obter o nome do host do servidor
-        if(!empty($_SERVER['SERVER_NAME'])){
+        /*if(!empty($_SERVER['SERVER_NAME'])){
             $serverName = $_SERVER['SERVER_NAME'];
         }else{
             $serverName = '';
         }
 
         // Verificar se está rodando no localhost
-        if ($serverIP == '127.0.0.1' || $serverIP == '::1' || stripos($serverName, 'localhost') !== false) {
+        if ($serverName == '127.0.0.1' || $serverIP == '' || stripos($serverName, 'localhost') !== false) {
+            
             echo "O servidor está rodando no localhost.";
+        
         } else {
-            echo "O servidor está rodando em um IP: " . $serverIP;
-        }
+            
+            echo "O servidor está rodando em um IP: " . $serverName;
+        }*/
 
-        echo "<br> serverIP: ".$serverIP." serverName: ".$serverName."<br>";
-        echo "<br> Document Root: path: ".$_SERVER['DOCUMENT_ROOT']."<br>";
-        echo "<br> Teste setXMLPath: path D: ".$this->path.' / pathDownload D: '.$this->pathDownload."<br>";
-        echo "<br> Teste setXMLPath: path R: ".$this->path.' / pathDownload R: '.$this->pathDownloadRetorno."<br>";exit;
+        $this->path = $_SERVER['DOCUMENT_ROOT'];//Por hora vai no root quando estiver em servidor ver como vai ficar
+        $this->pathDownload = $_SERVER['DOCUMENT_ROOT'].'/'.$cnpj.'/file/doc/nfsxml/envio/';
+        $this->pathDownloadRetorno = $_SERVER['DOCUMENT_ROOT'].'/'.$cnpj.'/file/doc/nfsxml/retorno/';
+
+        //echo "<br> Document Root: path: ".$_SERVER['DOCUMENT_ROOT']."<br>";
+        //echo "<br> Teste setXMLPath: path D: ".$this->path.' / pathDownload D: '.$this->pathDownload."<br>";
+        //echo "<br> Teste setXMLPath: path R: ".$this->path.' / pathDownload R: '.$this->pathDownloadRetorno."<br>";
     }
 
     /* Verifica se o diretório onde é gravado o XML para download existe e caso nõa exista cria-lo */
