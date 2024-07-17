@@ -1402,13 +1402,13 @@ $status_servico = '';
                                 <x-adminlte-input-switch name="calcAut" label="Cálculo Automático" data-on-text="Sim" data-off-text="Não" data-on-color="success" data-off-color="danger" fgroup-class="col-md-2" igroup-size="sm"/>
                                 @else
                                 <x-adminlte-input-switch name="calcAut" label="Cálculo Automático" data-on-text="Sim" data-off-text="Não" data-on-color="success" data-off-color="danger" fgroup-class="col-md-2" igroup-size="sm" checked/>
-                                @endif
+                                @endif 
 
                                 <!-- Grupo do serviço -->
                                 <x-adminlte-input name="qtdHrSrv" label="Tempo Serviço OS" type="text" value="{{$glo_os_dadosOS[0]->os_qtd_hr}}" placeholder="0.00" fgroup-class="col-md-2" disabled/>
 
                                 <!-- Grupo do serviço -->
-                                <x-adminlte-input name="qtdHoraOS" label="Duração Prevista" type="text" value="{{$glo_os_dadosOS[0]->os_qtd_hr_pre_ent}}" placeholder="0.00" fgroup-class="col-md-2"/>
+                                <x-adminlte-input name="qtdHoraOS" label="Duração Prevista OS" type="text" value="{{$glo_os_dadosOS[0]->os_qtd_hr_pre_ent}}" placeholder="0.00" fgroup-class="col-md-2"/>
 
                                 @php
                                     $config = [
