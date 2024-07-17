@@ -263,7 +263,7 @@
                         </div>
                         <div class="col-md-12">
                             <div class="col-sm-6">
-                                <label for="form-group">Endereço do Cliente para a NFS-e</label>
+                                <label for="form-group">Endereço do Cliente para a NFS-e <span style="color:red;">*</span></label>
                                 <div class="form-group clearfix">
                                     @php
                                         $cnt_end = 0;
@@ -299,7 +299,10 @@
                     </div>
                 </x-adminlte-callout>
                 <x-slot name="footerSlot">
-                    <x-adminlte-button class="btn-flat" type="submit" label="Prosseguir" theme="info" icon="fa-solid fa-circle-arrow-right"/>
+                    <div class="d-flex justify-content-between w-100">
+                        <x-adminlte-button class="btn-flat" type="submit" label="Prosseguir" theme="info" icon="fa-solid fa-circle-arrow-right"/>
+                        <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.emissaoSimpNFS') }}'" label="Voltar" theme="info" icon=""/>
+                    </div>
                 </x-slot>
             </x-adminlte-card>
         </form>

@@ -361,7 +361,7 @@
                         <x-adminlte-input name="vlrImpRec" label="Valor do Imposto a Recolher" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-4"/>
                     </div>
                     <div class="row">
-                        <label for="form-group">Local da Prestação do Serviço</label>
+                        <label for="form-group">Local da Prestação do Serviço <span style="color:red;">*</span></label>
                     </div>
                     <div class="row">
                         <div class="form-group clearfix">
