@@ -33,7 +33,7 @@ class EmissaoSimplificadaNFSController extends Controller
             return redirect()->back()->with('error', 'É obrigátorio informar o cliente!');
         }
 
-        return view('/faturamento/notas/formularioEmissaoSimplificadaNFS',['empresa'=>$request->empresa,'cliente'=>$cliente]);
+        return view('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFS',['empresa'=>$request->empresa,'cliente'=>$cliente]);
     }
 
     //Chama a app de controle de pré abertura de OS
@@ -44,7 +44,7 @@ class EmissaoSimplificadaNFSController extends Controller
             return redirect()->route('emissaoSimpNFS.inicioErro',['empresa'=>$request->empresa,'cliente'=>$cliente])->with('error', 'Informe o endereço do cliente!');
         }
         
-        return view('/faturamento/notas/formularioEmissaoSimplificadaNFSEtapa2',['empresa'=>$request->empresa,'cliente'=>$cliente,'enderecoCli'=>$request->enderecoCli]);
+        return view('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFSEtapa2',['empresa'=>$request->empresa,'cliente'=>$cliente,'enderecoCli'=>$request->enderecoCli]);
     }
     
     //Retorna os códigos de serviço do grupo selecionado
@@ -93,20 +93,15 @@ class EmissaoSimplificadaNFSController extends Controller
             DB::rollBack();
             return redirect()->route('emissaoSimpNFS.etapa2Erro',['empresa' => $empresa, 'cliente' => $cliente, 'enderecoCli' => $enderecoCli])->with('error', $exec_fn[0]->ret_msg);
         }else{
-            //Grava as alterações do banco
-            DB::commit();
             $numControle = $exec_fn[0]->ret_num;
         }
 
         //Faz a geração da NFS-e depois de gerar as tabelas da NF
 
-        //Inicia o Database Transaction
-        DB::beginTransaction();
-
         //Gera da tabela de nota fiscal de serviço
         $exec_fn = DB::select("select ret_sts, ret_msg from fn_faturamento_gera_nfs('".$empresa."',".$numControle.");");
 
-        if($exec_fn[0]->ret_sts == '*'){
+        if($exec_fn[0]->ret_sts != '*'){
             //Falha, desfaz as alterações no banco de dados
             DB::rollBack();
             return redirect()->route('emissaoSimpNFS.etapa2Erro',['empresa' => $empresa, 'cliente' => $cliente, 'enderecoCli' => $enderecoCli])->with('error', $exec_fn[0]->ret_msg);

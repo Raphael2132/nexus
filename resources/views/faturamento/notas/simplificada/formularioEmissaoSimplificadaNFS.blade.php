@@ -299,7 +299,7 @@
                     </div>
                 </x-adminlte-callout>
                 <x-slot name="footerSlot">
-                    <x-adminlte-button class="btn-flat" type="submit" label="Prosseguir" theme="info" icon="fa-solid fa-diagram-next"/>
+                    <x-adminlte-button class="btn-flat" type="submit" label="Prosseguir" theme="info" icon="fa-solid fa-circle-arrow-right"/>
                 </x-slot>
             </x-adminlte-card>
         </form>

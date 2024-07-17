@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('parametros_srv_empresas', function (Blueprint $table) {
             $table->integer('parsrv_grp_srv')->nullable();
             $table->integer('parsrv_cod_srv')->nullable();
-            $table->enum('parsrv_exg_iss',['1','2','3','4','5','6','7','8'])->default('1');//Exigibilidade do ISS 1 - Exigível, 2 - Não Incidência, 3 - Isenção, 4 - Exportação, 5 - Imunidade, 6 - Suspensa por Decisão Judicial, 7 - Suspensa por Processo Administrativo.
+            $table->enum('parsrv_exg_iss',['1','2','3','4','5','6','7'])->default('1');//Exigibilidade do ISS 1 - Exigível, 2 - Não Incidência, 3 - Isenção, 4 - Exportação, 5 - Imunidade, 6 - Suspensa por Decisão Judicial, 7 - Suspensa por Processo Administrativo.
             $table->enum('parsrv_iss_ret',['1','2'])->default('2');//ISS Retido 1 - ISS Retido, 2 - Sem ISS Retido
         });
     }

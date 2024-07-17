@@ -236,6 +236,7 @@
                 <!-- Dados do Serviço -->
                 <x-adminlte-card title="Dados do Serviço" theme="info" theme-mode="outline" icon="fa-solid fa-file-invoice-dollar" collapsible maximizable>
                     @php
+                        $dataParSrvEmp = DB::table('parametros_srv_empresas')->where('parsrv_emp', $empresa)->get();
                         $dadosGrupoSrv = DB::table('parametros_sistema_servico_grupos')->orderBy('grupo_codigo', 'asc')->get();
 
                         $new_array1 =[];
@@ -247,24 +248,51 @@
                         }
                         $array_opt = array_combine($new_array1, $new_array2);
 
-                        $array_opt2 = null;
+                        if(!empty($dataParSrvEmp[0]->parsrv_cod_srv) && $dataParSrvEmp[0]->parsrv_cod_srv != 0){
+                            
+                            $dadosCodSrv = DB::table('parametros_sistema_servicos')->where('servico_grupo', $dataParSrvEmp[0]->parsrv_grp_srv)->orderBy('servico_codigo', 'asc')->get();
 
-                        $dataParSrvEmp = DB::table('parametros_srv_empresas')->where('parsrv_emp', $empresa)->get();
+                            $new_array1 =[];
+                            $new_array2 =[];
+
+                            foreach ($dadosCodSrv as $codigoSrv) {
+                                $new_array1[] = $codigoSrv->servico_codigo;
+                                $new_array2[] = $codigoSrv->servico_codigo.' - '.$codigoSrv->servico_desc;
+                            }
+                            $array_opt2 = array_combine($new_array1, $new_array2);
+                            
+                            $grupo = $dataParSrvEmp[0]->parsrv_grp_srv;
+                            $codigo = $dataParSrvEmp[0]->parsrv_cod_srv;
+                        }else{
+                            
+                            $array_opt2 = null;
+                            $grupo = null;
+                            $codigo = null;
+                        }
                     @endphp
                     <div class="row">
                         <!-- Grupo do Serviço -->
-                        <x-adminlte-select name="grupoSrv" label="Grupo do Serviço" fgroup-class="col-md-6">
-                            <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
+                        <x-adminlte-select name="grupoSrv" fgroup-class="col-md-6">
+                            <x-slot name="label">
+                                Grupo do Serviço <span style="color:red;">*</span>
+                            </x-slot>
+                            <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$grupo}}"/>
                         </x-adminlte-select>
 
                         <!-- Código do Serviço -->
-                        <x-adminlte-select name="codigoSrv" label="Código do Serviço" fgroup-class="col-md-6">
-                            <x-adminlte-options :options="$array_opt2" empty-option="Selecione..."/>
+                        <x-adminlte-select name="codigoSrv" fgroup-class="col-md-6">
+                            <x-slot name="label">
+                                Código do Serviço <span style="color:red;">*</span>
+                            </x-slot>
+                            <x-adminlte-options :options="$array_opt2" empty-option="Selecione..." selected="{{$codigo}}"/>
                         </x-adminlte-select>
                     </div>
                     <div class="row">
                         <!-- Descrição do serviço -->
-                        <x-adminlte-textarea name="descSrv" label="Descrição dos Serviços Prestados" rows=5 igroup-size="sm" label-class="text-dark" placeholder="Escreva a descrição do serviço..." fgroup-class="col-md-12" >
+                        <x-adminlte-textarea name="descSrv" rows=5 igroup-size="sm" label-class="text-dark" placeholder="Escreva a descrição do serviço..." fgroup-class="col-md-12" >
+                            <x-slot name="label">
+                                Descrição dos Serviços Prestados <span style="color:red;">*</span>
+                            </x-slot>
                             <x-slot name="prependSlot">
                                 <div class="input-group-text bg-navy">
                                     <i class="fas fa-lg fa-file-alt text-white"></i>
@@ -294,7 +322,11 @@
                     </div>
                     <div class="row">
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="vlrNFS" label="Valor da Nota Fiscal" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-6"/>
+                        <x-adminlte-input name="vlrNFS" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-6">
+                            <x-slot name="label">
+                                Valor da Nota Fiscal <span style="color:red;">*</span>
+                            </x-slot>
+                        </x-adminlte-input>
                     </div>
                     <div class="row">
                         <!-- Valor da NFS -->
@@ -314,9 +346,17 @@
                     </div>
                     <div class="row">
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="vlrBase" label="Valor da Base de Cálculo" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-4"/>
+                        <x-adminlte-input name="vlrBase" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-4">
+                            <x-slot name="label">
+                                Valor da Base de Cálculo <span style="color:red;">*</span>
+                            </x-slot>
+                        </x-adminlte-input>
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="aliqISS" label="Aliquota de ISS" type="text" placeholder="0,00" value="{{$dataParSrvEmp[0]->parsrv_alq_iss}}" fgroup-class="col-md-4"/>
+                        <x-adminlte-input name="aliqISS" type="text" placeholder="0,00" value="{{$dataParSrvEmp[0]->parsrv_alq_iss}}" fgroup-class="col-md-4">
+                            <x-slot name="label">
+                                Aliquota de ISS <span style="color:red;">*</span>
+                            </x-slot>
+                        </x-adminlte-input>
                         <!-- Valor da NFS -->
                         <x-adminlte-input name="vlrImpRec" label="Valor do Imposto a Recolher" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-4"/>
                     </div>
