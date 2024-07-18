@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Parâmetros Gerencial</h1>
+            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -54,16 +54,23 @@
                 <!-- /.card -->
                 <x-slot name="footerSlot">
                     @php
-                        if(!empty($dadosMotCan[0])){
+                        if(!empty($dadosMotCan[0]->canmot_id)){
                             $motCan = $dadosMotCan[0]->canmot_id;
                         }else{
                             $motCan = '';
                         }
                     @endphp
-                    <x-adminlte-button class="btn-flat btn_novo" type="button" onclick="window.location='{{route('parametrosSisMotCan.cadastroMotCan',['acao' => 'N', 'dadosMotCan' => ' '])}}'" label="Novo" theme="info" icon="fa-solid fa-plus"/>
-                    <x-adminlte-button class="btn-flat btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                    <x-adminlte-button class="btn-flat btn_incluir" type="submit" label="Incluir" theme="info" icon="fa-solid fa-plus"/>
-                    <x-adminlte-button class="btn-flat btn_excluir" type="button" data-id="{{$motCan}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                    <div class="d-flex justify-content-between w-100">
+                        <div class="d-flex">
+                            <x-adminlte-button class="btn-flat mr-2 btn_novo" type="button" onclick="window.location='{{route('parametrosSisMotCan.cadastroMotCan',['acao' => 'N', 'dadosMotCan' => ' '])}}'" label="Novo" theme="info" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-flat mr-2 btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-flat mr-2 btn_incluir" type="submit" label="Incluir" theme="info" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-flat mr-2 btn_excluir" type="button" data-id="{{$motCan}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                        </div>
+                        <div class="d-flex">
+                            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parMotCan') }}'" label="Voltar" theme="info" icon=""/>
+                        </div>
+                    </div>
                 </x-slot>
             </x-adminlte-card>
         </form>

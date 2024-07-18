@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Parâmetros Gerais</h1>
+            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -15,7 +15,7 @@
                 @if($acao == 'N')
                     <li class="breadcrumb-item active">Cadastro de Setor</li>
                 @else
-                    <li class="breadcrumb-item active">Edição de Setor</li>
+                    <li class="breadcrumb-item active">Manutenção do Setor</li>
                 @endif
             </ol>
         </div>
@@ -116,9 +116,16 @@
                             $setor = '';
                         }
                     @endphp
-                    <x-adminlte-button class="btn-flat btn_novo" type="button" onclick="window.location='{{ route('parametrosSrvSetor.cadastro') }}'" label="Novo Setor" theme="info" icon="fa-solid fa-plus"/>
-                    <x-adminlte-button class="btn-flat btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                    <x-adminlte-button class="btn-flat btn_excluir" type="button" data-id="{{$setor}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                    <div class="d-flex justify-content-between w-100">
+                        <div class="d-flex">
+                            <x-adminlte-button class="btn-flat btn_novo mr-2" type="button" onclick="window.location='{{ route('parametrosSrvSetor.cadastro') }}'" label="Novo Setor" theme="info" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-flat btn_salvar mr-2" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-flat btn_excluir" type="button" data-id="{{$setor}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                        </div>
+                        <div class="d-flex">
+                            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parSrvSetor') }}'" label="Voltar" theme="info" icon=""/>
+                        </div>
+                    </div>
                 </x-slot>
             </x-adminlte-card>
         </form>

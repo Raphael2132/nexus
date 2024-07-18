@@ -5,14 +5,14 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Parâmetros Gerais</h1>
+            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item active">
-                    <a href="{{route('home.parFatNfs')}}">Emissão de NFS-e</a>
+                    <a href="{{route('home.parFatNfs')}}">Parâmetros da NFS-e</a>
                 </li>
-                <li class="breadcrumb-item active">Provedores Parâmetrizadas</li>
+                <li class="breadcrumb-item active">Provedores da NFS-e</li>
             </ol>
         </div>
     </div>
@@ -55,65 +55,70 @@ $config = [
     ],
 ];
 @endphp
-<div class="esquerdo col-md-6">
-    <x-adminlte-card title="Provedores Cadastrados de Geração da NFS-e" theme="navy" theme-mode="outline" collapsible maximizable>
-        <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable>
-            @foreach ($provedores as $provedor)
-                <tr>
-                    <td>{{ $provedor->provedor_codigo }}</td>
-                    <td>{{ $provedor->provedor_desc }}</td>     
-                    <td>{{ Helper::buscaEstadoUF($provedor->provedor_uf) }}</td>            
-                </tr>
-            @endforeach
-        </x-adminlte-datatable>
-    </x-adminlte-card>
-</div>
-<div class="direito col-md-6">
-    <form method="post" action="{{route('parametrosNfsProvedor.inserir')}}" id="quickForm" novalidate="novalidate">
-        @csrf 
-        <x-adminlte-card title="Cadastrar Novo Provedor" theme="navy" collapsible maximizable>
-
-            @php
-                $dados_ibge = DB::table('ibge_estados')->orderby('ibge_sigla')->get();
-
-                $new_array1 =[];
-                $new_array2 =[];
-
-                foreach ($dados_ibge as $ibge) {
-                    $new_array1[] = $ibge->ibge_sigla;
-                    $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
-                }
-                $array_opt = array_combine($new_array1, $new_array2);
-
-                //Faz o lookup do campo de cidades 
-                $dataIBGE = DB::table('ibge_municipios')->select('ibge_mun_codigo', 'ibge_mun_nome')->orderBy('ibge_mun_uf_codigo', 'asc')->orderBy('ibge_mun_codigo', 'asc')->get();
-                $html = '<datalist id="cidades">';
-                foreach($dataIBGE as $cidade){
-                    $html .= '<option value="'.$cidade->ibge_mun_nome.'">'.$cidade->ibge_mun_nome.'</option>';
-                }
-                $html .='</datalist>';
-                //Echo adiciona o html ao campo das cidades
-                echo $html;
-
-                $codigo = DB::table('parametros_fat_nfs_provedores')->max('provedor_codigo') +1;
-            @endphp
-
-            <!-- Nome do Provedor -->
-            <x-adminlte-input name="codigo" label="Código" type="number" placeholder="Código do Provedor" value="{{$codigo}}" fgroup-class="col-md-12"/>
-
-            <!-- Estado -->
-            <x-adminlte-select name="uf" label="Estado do Provedor" fgroup-class="col-md-12">
-                <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
-            </x-adminlte-select>
-
-            <!-- Nome do Provedor -->
-            <x-adminlte-input name="cidade" label="Cidade" type="search" list="cidades" placeholder="Nome do Provedor" fgroup-class="col-md-12"/>
-
-            <x-slot name="footerSlot">
-                <x-adminlte-button class="btn-flat" type="submit" label="Incluir" theme="info" icon="fa-solid fa-share-from-square"/>
-            </x-slot>
+<div class="row">
+    <div class="esquerdo col-md-6">
+        <x-adminlte-card title="Provedores Cadastrados de Emissão da NFS-e" theme="navy" theme-mode="outline" collapsible maximizable>
+            <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable>
+                @foreach ($provedores as $provedor)
+                    <tr>
+                        <td>{{ $provedor->provedor_codigo }}</td>
+                        <td>{{ $provedor->provedor_desc }}</td>     
+                        <td>{{ Helper::buscaEstadoUF($provedor->provedor_uf) }}</td>            
+                    </tr>
+                @endforeach
+            </x-adminlte-datatable>
         </x-adminlte-card>
-    </form>
+    </div>
+    <div class="direito col-md-6">
+        <form method="post" action="{{route('parametrosNfsProvedor.inserir')}}" id="quickForm" novalidate="novalidate">
+            @csrf 
+            <x-adminlte-card title="Cadastrar Novo Provedor" theme="navy" collapsible maximizable>
+
+                @php
+                    $dados_ibge = DB::table('ibge_estados')->orderby('ibge_sigla')->get();
+
+                    $new_array1 =[];
+                    $new_array2 =[];
+
+                    foreach ($dados_ibge as $ibge) {
+                        $new_array1[] = $ibge->ibge_sigla;
+                        $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
+                    }
+                    $array_opt = array_combine($new_array1, $new_array2);
+
+                    //Faz o lookup do campo de cidades 
+                    $dataIBGE = DB::table('ibge_municipios')->select('ibge_mun_codigo', 'ibge_mun_nome')->orderBy('ibge_mun_uf_codigo', 'asc')->orderBy('ibge_mun_codigo', 'asc')->get();
+                    $html = '<datalist id="cidades">';
+                    foreach($dataIBGE as $cidade){
+                        $html .= '<option value="'.$cidade->ibge_mun_nome.'">'.$cidade->ibge_mun_nome.'</option>';
+                    }
+                    $html .='</datalist>';
+                    //Echo adiciona o html ao campo das cidades
+                    echo $html;
+
+                    $codigo = DB::table('parametros_fat_nfs_provedores')->max('provedor_codigo') +1;
+                @endphp
+
+                <!-- Nome do Provedor -->
+                <x-adminlte-input name="codigo" label="Código" type="number" placeholder="Código do Provedor" value="{{$codigo}}" fgroup-class="col-md-12"/>
+
+                <!-- Estado -->
+                <x-adminlte-select name="uf" label="Estado do Provedor" fgroup-class="col-md-12">
+                    <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
+                </x-adminlte-select>
+
+                <!-- Nome do Provedor -->
+                <x-adminlte-input name="cidade" label="Cidade" type="search" list="cidades" placeholder="Nome do Provedor" fgroup-class="col-md-12"/>
+
+                <x-slot name="footerSlot">
+                    <div class="d-flex justify-content-between w-100">
+                        <x-adminlte-button class="btn-flat" type="submit" label="Incluir" theme="info" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parFatNfs') }}'" label="Voltar" theme="info" icon=""/>
+                    </div>
+                </x-slot>
+            </x-adminlte-card>
+        </form>
+    </div>
 </div>
 @stop
 

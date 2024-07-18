@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Parâmetros do Sistema</h1>
+            <h4 style="margin-bottom: 0px !important;">Parâmetros do Sistema</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -16,148 +16,150 @@
 @stop
 
 @section('content')
-<div class="esquerdo col-md-9">
-    {{-- Setup data for datatables --}}
-    @php
-    $heads = [
-        'Grupo',
-        'Descrição',
-        ['label' => 'Editar', 'no-export' => true, 'width' => 10],
-    ];
+<div class="row">
+    <div class="esquerdo col-md-9">
+        {{-- Setup data for datatables --}}
+        @php
+        $heads = [
+            'Grupo',
+            'Descrição',
+            ['label' => 'Editar', 'no-export' => true, 'width' => 10],
+        ];
 
-    $config = [
-        'lengthMenu' => [ 5, 10, 25, 50],
-        'language' => [
-            'decimal' =>        '',
-            'emptyTable' =>     'Sem dados disponíveis na tabela',
-            'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-            'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-            'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-            'infoPostFix' =>    '',
-            'thousands' =>      ',',
-            'lengthMenu' =>     'Mostrar _MENU_ registros',
-            'loadingRecords' => 'Carregando...',
-            'processing' =>     '',
-            'search' =>         'Pesquisar:',
-            'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-            'paginate' => [
-                'first' =>      'Primeiro',
-                'last' =>       'Último',
-                'next' =>       'Próximo',
-                'previous' =>   'Anterior'
+        $config = [
+            'lengthMenu' => [ 5, 10, 25, 50],
+            'language' => [
+                'decimal' =>        '',
+                'emptyTable' =>     'Sem dados disponíveis na tabela',
+                'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
+                'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
+                'infoPostFix' =>    '',
+                'thousands' =>      ',',
+                'lengthMenu' =>     'Mostrar _MENU_ registros',
+                'loadingRecords' => 'Carregando...',
+                'processing' =>     '',
+                'search' =>         'Pesquisar:',
+                'zeroRecords' =>    'Nenhum registro correspondente encontrado',
+                'paginate' => [
+                    'first' =>      'Primeiro',
+                    'last' =>       'Último',
+                    'next' =>       'Próximo',
+                    'previous' =>   'Anterior'
+                ],
+                'aria' => [
+                    'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
+                    'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
+                ],
             ],
-            'aria' => [
-                'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-            ],
-        ],
-        'columns' => [null, null, ['orderable' => false]],
-    ];
-    @endphp
-    <x-adminlte-card title="Parametrização dos Grupos de Serviço da NFS-e" theme="navy" theme-mode="outline" collapsible maximizable>
-        <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
-            @foreach ($grupos as $grupo)
-                <tr>
-                    <td>{{ $grupo->grupo_codigo }}</td>
-                    <td>{{ $grupo->grupo_desc }}</td>
-                    <td>
-                        <nobr class="d-flex justify-content-center">
-                            <form method="get" action="{{ route('parametrosSistemaGrpServico.editarCadastro' , ['dadosGrupo' => $grupo->grupo_codigo]) }}" style="float: left;">
-                                @csrf
-                                <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Edit" value="Edit" type="submit">
-                                    <i class="fa fa-lg fa-fw fa-pen"></i>
-                                </button>
-                            </form>
-                            <form method="post" action="{{route('parametrosSistemaGrpServico.destroy', ['grupo' => $grupo])}}" style="float: left;">
-                                @csrf 
-                                @method('delete')
-                                <button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" value="Delete" type="submit" >
-                                    <i class="fa fa-lg fa-fw fa-trash"></i>
-                                </button>
-                            </form>
-                        </nobr>
-                    </td>                
-                </tr>
-            @endforeach
-        </x-adminlte-datatable>
-    </x-adminlte-card>
+            'columns' => [null, null, ['orderable' => false]],
+        ];
+        @endphp
+        <x-adminlte-card title="Parametrização dos Grupos de Serviço da NFS-e" theme="navy" theme-mode="outline" collapsible maximizable>
+            <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
+                @foreach ($grupos as $grupo)
+                    <tr>
+                        <td>{{ $grupo->grupo_codigo }}</td>
+                        <td>{{ $grupo->grupo_desc }}</td>
+                        <td>
+                            <nobr class="d-flex justify-content-center">
+                                <form method="get" action="{{ route('parametrosSistemaGrpServico.editarCadastro' , ['dadosGrupo' => $grupo->grupo_codigo]) }}" style="float: left;">
+                                    @csrf
+                                    <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Edit" value="Edit" type="submit">
+                                        <i class="fa fa-lg fa-fw fa-pen"></i>
+                                    </button>
+                                </form>
+                                <form method="post" action="{{route('parametrosSistemaGrpServico.destroy', ['grupo' => $grupo])}}" style="float: left;">
+                                    @csrf 
+                                    @method('delete')
+                                    <button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" value="Delete" type="submit" >
+                                        <i class="fa fa-lg fa-fw fa-trash"></i>
+                                    </button>
+                                </form>
+                            </nobr>
+                        </td>                
+                    </tr>
+                @endforeach
+            </x-adminlte-datatable>
+        </x-adminlte-card>
 
-    {{-- Setup data for datatables --}}
-    @php
-    $heads2 = [
-        'Grupo',
-        'Descrição Grupo',
-        'Código',
-        'Descrição',
-        ['label' => 'Editar', 'no-export' => true, 'width' => 10],
-    ];
+        {{-- Setup data for datatables --}}
+        @php
+        $heads2 = [
+            'Grupo',
+            'Descrição Grupo',
+            'Código',
+            'Descrição',
+            ['label' => 'Editar', 'no-export' => true, 'width' => 10],
+        ];
 
-    $config2 = [
-        'lengthMenu' => [ 5, 10, 25, 50],
-        'language' => [
-            'decimal' =>        '',
-            'emptyTable' =>     'Sem dados disponíveis na tabela',
-            'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-            'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-            'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-            'infoPostFix' =>    '',
-            'thousands' =>      ',',
-            'lengthMenu' =>     'Mostrar _MENU_ registros',
-            'loadingRecords' => 'Carregando...',
-            'processing' =>     '',
-            'search' =>         'Pesquisar:',
-            'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-            'paginate' => [
-                'first' =>      'Primeiro',
-                'last' =>       'Último',
-                'next' =>       'Próximo',
-                'previous' =>   'Anterior'
+        $config2 = [
+            'lengthMenu' => [ 5, 10, 25, 50],
+            'language' => [
+                'decimal' =>        '',
+                'emptyTable' =>     'Sem dados disponíveis na tabela',
+                'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
+                'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
+                'infoPostFix' =>    '',
+                'thousands' =>      ',',
+                'lengthMenu' =>     'Mostrar _MENU_ registros',
+                'loadingRecords' => 'Carregando...',
+                'processing' =>     '',
+                'search' =>         'Pesquisar:',
+                'zeroRecords' =>    'Nenhum registro correspondente encontrado',
+                'paginate' => [
+                    'first' =>      'Primeiro',
+                    'last' =>       'Último',
+                    'next' =>       'Próximo',
+                    'previous' =>   'Anterior'
+                ],
+                'aria' => [
+                    'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
+                    'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
+                ],
             ],
-            'aria' => [
-                'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-            ],
-        ],
-        'columns' => [null, null, null, null, ['orderable' => false]],
-    ];
-    @endphp
-    <x-adminlte-card title="Parametrização dos Serviços da NFS-e" theme="navy" theme-mode="outline" collapsible maximizable>
-        <x-adminlte-datatable id="table2" :heads="$heads2" :config="$config2" theme="light" striped hoverable with-buttons>
-            @foreach ($servicos as $servico)
-                @php
-                    $data_dsc = DB::table('parametros_sistema_servico_grupos')->where('grupo_codigo','=',$servico->servico_grupo)->get();
-                    $grupo_completo = $servico->servico_grupo.' - '.$data_dsc[0]->grupo_desc;
-                @endphp
-                <tr>
-                    <td>{{ $servico->servico_grupo }}</td>
-                    <td>{{ $data_dsc[0]->grupo_desc }}</td>
-                    <td>{{ $servico->servico_codigo }}</td>
-                    <td>{{ $servico->servico_desc }}</td>
-                    <td>
-                        <nobr class="d-flex justify-content-center">
-                            <form method="get" action="{{ route('parametrosSistemaServico.editarCadastro', ['grupo' => $servico->servico_grupo, 'servico' => $servico->servico_codigo]) }}" style="float: left;">
-                                @csrf
-                                <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Edit" value="Edit" type="submit">
-                                    <i class="fa fa-lg fa-fw fa-pen"></i>
-                                </button>
-                            </form>
-                            <form method="post" action="{{route('parametrosSistemaServico.destroy', ['servico' => $servico])}}" style="float: left;">
-                                @csrf 
-                                @method('delete')
-                                <button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" value="Delete" type="submit" >
-                                    <i class="fa fa-lg fa-fw fa-trash"></i>
-                                </button>
-                            </form>
-                        </nobr>
-                    </td>                
-                </tr>
-            @endforeach
-        </x-adminlte-datatable>
-    </x-adminlte-card>
-</div>
-<div class="direito col-md-3">
-    <x-adminlte-small-box title="Grupo" text="Serviços de NFS-e" icon="fas fa-users-rays" theme="primary" url="{{ route('parametrosSistemaGrpServico.cadastro') }}" url-text="Cadastrar"/>
-    <x-adminlte-small-box title="Serviços" text="NFS-e" icon="fas fa-people-carry-box" theme="success" url="{{ route('parametrosSistemaServico.cadastro') }}" url-text="Cadastrar"/>
+            'columns' => [null, null, null, null, ['orderable' => false]],
+        ];
+        @endphp
+        <x-adminlte-card title="Parametrização dos Serviços da NFS-e" theme="navy" theme-mode="outline" collapsible maximizable>
+            <x-adminlte-datatable id="table2" :heads="$heads2" :config="$config2" theme="light" striped hoverable with-buttons>
+                @foreach ($servicos as $servico)
+                    @php
+                        $data_dsc = DB::table('parametros_sistema_servico_grupos')->where('grupo_codigo','=',$servico->servico_grupo)->get();
+                        $grupo_completo = $servico->servico_grupo.' - '.$data_dsc[0]->grupo_desc;
+                    @endphp
+                    <tr>
+                        <td>{{ $servico->servico_grupo }}</td>
+                        <td>{{ $data_dsc[0]->grupo_desc }}</td>
+                        <td>{{ $servico->servico_codigo }}</td>
+                        <td>{{ $servico->servico_desc }}</td>
+                        <td>
+                            <nobr class="d-flex justify-content-center">
+                                <form method="get" action="{{ route('parametrosSistemaServico.editarCadastro', ['grupo' => $servico->servico_grupo, 'servico' => $servico->servico_codigo]) }}" style="float: left;">
+                                    @csrf
+                                    <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Edit" value="Edit" type="submit">
+                                        <i class="fa fa-lg fa-fw fa-pen"></i>
+                                    </button>
+                                </form>
+                                <form method="post" action="{{route('parametrosSistemaServico.destroy', ['servico' => $servico])}}" style="float: left;">
+                                    @csrf 
+                                    @method('delete')
+                                    <button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" value="Delete" type="submit" >
+                                        <i class="fa fa-lg fa-fw fa-trash"></i>
+                                    </button>
+                                </form>
+                            </nobr>
+                        </td>                
+                    </tr>
+                @endforeach
+            </x-adminlte-datatable>
+        </x-adminlte-card>
+    </div>
+    <div class="direito col-md-3">
+        <x-adminlte-small-box title="Grupo" text="Serviços de NFS-e" icon="fas fa-users-rays" theme="primary" url="{{ route('parametrosSistemaGrpServico.cadastro') }}" url-text="Cadastrar"/>
+        <x-adminlte-small-box title="Serviços" text="NFS-e" icon="fas fa-people-carry-box" theme="success" url="{{ route('parametrosSistemaServico.cadastro') }}" url-text="Cadastrar"/>
+    </div>
 </div>
 @stop
 

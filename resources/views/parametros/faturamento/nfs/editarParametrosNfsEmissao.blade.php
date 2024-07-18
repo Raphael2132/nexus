@@ -5,19 +5,19 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Parâmetros Gerais</h1>
+            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item active">
-                    <a href="{{route('home.parFatNfs')}}">Emissão de NFS-e</a>
+                    <a href="{{route('home.parFatNfs')}}">Parâmetros da NFS-e</a>
                 </li>
                 @if($appOrigem == 'parametrosNfsEmissao')
                   <li class="breadcrumb-item active">
-                      <a href="{{route('parametrosNfsEmissao')}}">Emissões Parâmetrizadas</a>
+                      <a href="{{route('parametrosNfsEmissao')}}">Emissão da NFS-e</a>
                   </li>
                 @endif
-                <li class="breadcrumb-item active">Manutenção</li>
+                <li class="breadcrumb-item active">Manutenção Emissão da NFS-e</li>
             </ol>
         </div>
     </div>
@@ -29,7 +29,7 @@
         <form method="post" action="{{route('parmetrosNfsEmi.atualizar', [ 'empresa' => $dadosEmissao[0]['parnfs_empresa'] ] )}}" id="quickForm" novalidate="novalidate">
             @csrf 
             @method('post')
-            <x-adminlte-card title="Parametrização de Emissão de NFS-e" theme="navy">
+            <x-adminlte-card title="Manutenção da Parametrização de Emissão da NFS-e" theme="navy">
 
                 <div class="row">
                     @php
@@ -87,7 +87,14 @@
 
                 <!-- /.card -->
                 <x-slot name="footerSlot">
-                    <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                    <div class="d-flex justify-content-between w-100">
+                        <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        @if($appOrigem == 'parametrosNfsEmissao')
+                        <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('parametrosNfsEmissao') }}'" label="Voltar" theme="info" icon=""/>
+                        @else
+                        <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parFatNfs') }}'" label="Voltar" theme="info" icon=""/>
+                        @endif
+                    </div>
                 </x-slot>
             </x-adminlte-card>
         </form>

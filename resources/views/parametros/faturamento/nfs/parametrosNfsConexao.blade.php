@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Conexão da NFS-e')
+@section('title', 'Parametrização de Conexão da NFS-e')
 
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Parâmetros Gerais</h1>
+            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item active">
-                    <a href="{{route('home.parFatNfs')}}">Emissão de NFS-e</a>
+                    <a href="{{route('home.parFatNfs')}}">Parâmetros da NFS-e</a>
                 </li>
-                <li class="breadcrumb-item active">Conexões Parâmetrizadas</li>
+                <li class="breadcrumb-item active">Conexão da NFS-e</li>
             </ol>
         </div>
     </div>
@@ -59,7 +59,7 @@ $config = [
     'columns' => [null, null, null, null, null, null, null, ['orderable' => false]],
 ];
 @endphp
-<x-adminlte-card title="Conexões Parametrizadas" theme="navy" collapsible maximizable>
+<x-adminlte-card title="Parametrização das Conexões da NFS-e" theme="navy" collapsible maximizable>
     <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
         @foreach ($conexoes as $conexao)
             @php
@@ -100,6 +100,15 @@ $config = [
             </tr>
         @endforeach
     </x-adminlte-datatable>
+    <x-slot name="footerSlot">
+        <div class="d-flex justify-content-between w-100">
+            <div class="d-flex">
+            </div>
+            <div class="d-flex">
+                <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parFatNfs') }}'" label="Voltar" theme="info" icon=""/>
+            </div>
+        </div>
+    </x-slot>
 </x-adminlte-card>
 @stop
 

@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Parâmetros Gerais</h1>
+            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -32,6 +32,7 @@
 
     $config = [
         'lengthMenu' => [ 5, 10, 25, 50],
+        'pageLength' => 5,
         'language' => [
             'decimal' =>        '',
             'emptyTable' =>     'Sem dados disponíveis na tabela',
@@ -56,7 +57,7 @@
                 'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
             ],
         ],
-        'columns' => [null, null, null, ['orderable' => false]],
+        'columns' => [null, null, null, null, ['orderable' => false]],
     ];
     @endphp
     <x-adminlte-card title="Parametrização dos Setores" theme="navy" theme-mode="outline" collapsible maximizable>
