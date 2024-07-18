@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Página Inicial</h1>
+            <h4 style="margin-bottom: 0px !important;">Página Inicial</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -58,7 +58,7 @@
 
     $headsNFS = [
         'Nº / Série',
-        'Ped. / OS / Emi. Sim.',
+        'Ped. / OS / ES',
         'empresa',
         'Cliente',
         'Situação',
@@ -120,7 +120,7 @@
                         </div>
 
                         <div class="chart">
-                            <canvas id="visitors-chart" height="190" width="639" style="display: block; width: 639px; height: 190px;" class="chartjs-render-monitor"></canvas>
+                            <canvas id="visitors-chart" height="140" width="639" style="display: block; width: 639px; height: 140px;" class="chartjs-render-monitor"></canvas>
                         </div>
                         <div class="d-flex flex-row justify-content-end">
                             <span class="mr-2">

@@ -5,12 +5,12 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Faturamento</h1>
+            <h4 style="margin-bottom: 0px !important;">Faturamento</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item active">
-                    <a href="{{route('home.emissaoSimpNFS')}}">Filtro Reemissão Simplificada</a>
+                    <a href="{{route('home.reemissaoSimpNF')}}">Filtro Reemissão Simplificada</a>
                 </li>
                 <li class="breadcrumb-item active">Consulta Reemissão Simplificada</li>
             </ol>
@@ -31,7 +31,7 @@ $heads = [
     'Valor',
     'Tipo',
     'Situação',
-    'Impressão'
+    ['label' => 'Impressão', 'no-export' => true, 'width' => 10],
 ];
 $config = [
     'lengthMenu' => [ 10, 25, 50, 100],
@@ -59,6 +59,7 @@ $config = [
             'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
         ],
     ],
+    'columns' => [null, null, null, null, null, null, null, null, ['orderable' => false]],
 ];
 @endphp
 
@@ -112,6 +113,10 @@ $config = [
         @endforeach
     </x-adminlte-datatable>
     <x-slot name="footerSlot">
+        <div class="d-flex justify-content-between w-100">
+            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.emissaoSimpNFS') }}'" label="Nova NFS-e" theme="info" icon="fa-solid fa-plus"/>
+            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.reemissaoSimpNF') }}'" label="Voltar" theme="info" icon=""/>
+        </div>
     </x-slot>
 </x-adminlte-card>
 @stop
@@ -120,6 +125,11 @@ $config = [
 <style>
     .max-width-sts {
         max-width: 50ch;
+        white-space: normal; /* Permite quebra de linha */
+        overflow-wrap: break-word; /* Permite quebras de linha apenas em espaços */
+        word-break: keep-all; /* Evita quebras de linha no meio de palavras */
+    }
+    .badge, .badge-success {
         white-space: normal; /* Permite quebra de linha */
         overflow-wrap: break-word; /* Permite quebras de linha apenas em espaços */
         word-break: keep-all; /* Evita quebras de linha no meio de palavras */

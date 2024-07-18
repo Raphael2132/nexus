@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Área de Contato</h1>
+            <h4 style="margin-bottom: 0px !important;">Área de Contato</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">

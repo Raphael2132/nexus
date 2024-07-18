@@ -14,6 +14,9 @@ class ParametrosSistemaModulo extends Model
     protected $fillable = [
         'modulo_empresa_codigo',
         'modulo_emissao_nfs',
-        'modulo_emissao_nfe'
+        'modulo_emissao_nfe',
+        'modulo_emissao_nfs_simp',
+        'modulo_servico',
+        'modulo_emissao_rps'
     ];
 }

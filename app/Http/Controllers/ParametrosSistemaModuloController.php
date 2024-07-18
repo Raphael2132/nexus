@@ -27,9 +27,11 @@ class ParametrosSistemaModuloController extends Controller
 
         $atualizaEmi = DB::table('parametros_sistema_modulos')
             ->where('modulo_empresa_codigo', $empresa)
-            ->update(['modulo_emissao_nfe' => $request->emiNfe,
-            'modulo_emissao_nfs' => $request->emiNfs]); 
+            ->update(['modulo_emissao_nfs' => $request->emiNfs,
+            'modulo_emissao_nfs_simp' => $request->emiNfsSimp,
+            'modulo_servico' => $request->modSrv,
+            'modulo_emissao_rps' => $request->emiRps]); 
         
-        return redirect(route('home.parSisModulo'))->with('success', 'Dados do Módulo do Sistema atualizado com sucesso!');
+        return redirect(route('home.parSisModulo'))->with('success', 'Dados do Módulos do Sistema atualizado com sucesso!');
     }
 }

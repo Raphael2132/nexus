@@ -227,11 +227,6 @@ class HomeController extends Controller
         return view('contato');
     }
 
-    public function fiscal()
-    {
-        return view('fiscal');
-    }
-
     public function homeClientes()
     {
         //Monta variaveis dos cards
@@ -276,11 +271,6 @@ class HomeController extends Controller
         $grafF .= $cntF."]";
       
         return view('/cadastros/cliente/homeClientes',['cliJuridico'=>$cliJuridico,'cliFisico'=>$cliFisico,'cliTot'=>$cliTot,'meses'=>$meses,'grafJ'=>$grafJ,'grafF'=>$grafF]);
-    }
-
-    public function bancos()
-    {
-        return view('bancos');
     }
 
     public function homeUsuarios()

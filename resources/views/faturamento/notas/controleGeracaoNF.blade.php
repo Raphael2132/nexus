@@ -1,11 +1,11 @@
 @extends('adminlte::page')
 
-@section('title', 'Painel Emissão de NF')
+@section('title', 'Status de Emissão da NF')
 
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Faturamento</h1>
+            <h4 style="margin-bottom: 0px !important;">Faturamento</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -16,7 +16,6 @@
                 <li class="breadcrumb-item active">
                     <a href="{{ route('reemissaoNF.consultaReemissaoNF') }}">Consulta de Reemissão</a>
                 </li>
-                <li class="breadcrumb-item active">Geração de NF</li>
                 @elseif($origem == 'EMISSAO')
                 <li class="breadcrumb-item active">
                     <a href="{{route('home.emissaoNF')}}">Filtro Emissão</a>
@@ -24,7 +23,6 @@
                 <li class="breadcrumb-item active">
                     <a href="{{ route('emissaoNF.consultaNF') }}">Consulta de Emissão</a>
                 </li>
-                <li class="breadcrumb-item active">Geração de NF</li>
                 @elseif($origem == 'REEMISSAO_SIMP')
                 <li class="breadcrumb-item active">
                     <a href="{{route('home.reemissaoSimpNF')}}">Filtro Reemissão Simplificada</a>
@@ -32,13 +30,12 @@
                 <li class="breadcrumb-item active">
                     <a href="{{ route('reemissaoSimpNF.consultaReemissaoSimpNF') }}">Consulta Reemissão Simplificada</a>
                 </li>
-                <li class="breadcrumb-item active">Geração de NF</li>
                 @else
                 <li class="breadcrumb-item active">
                     <a href="{{route('home.emissaoSimpNFS')}}">Emissão Simplificada</a>
                 </li>
-                <li class="breadcrumb-item active">Geração de NF</li>
                 @endif
+                <li class="breadcrumb-item active">Status Emissão da NF</li>
             </ol>
         </div>
     </div>
@@ -48,7 +45,7 @@
 @section('content')
 <div class="d-flex justify-content-center">
     <div class="col-md-8">
-        <x-adminlte-card title="Status NFS-e" theme="navy" collapsible maximizable>
+        <x-adminlte-card title="Status de Emissão da Nota Fiscal" theme="navy" collapsible maximizable>
             <div class="row">
                 <table class="table tabela-dados-os">
                     <tbody>
@@ -59,19 +56,19 @@
                             $pathXML = $dataNfsXML[0]->nfsenv_cnpj.'/file/doc/nfsxml/envio/'.$pathXML;
                             
                             if($dataNfs[0]->nfs_origem == 'ES'){
-                                $origem = 'Emi. Simplificada';
+                                $origemLabel = 'ES';
                             }else{
-                                $origem = 'OS';
+                                $origemLabel = 'OS';
                             }
                         @endphp
                         <tr>
-                            <td style="border: 0px; width: 15%;">
+                            <td style="border: 0px; width: 20%;">
                                 <p class="text-sm">Data/Hora
                                     <b class="d-block">{{Helper::formataDataHora($dataNfsXML[0]->nfsenv_dt_atu)}}</b>
                                 </p>
                             </td>
-                            <td style="border: 0px; width: 10%;">
-                                <p class="text-sm">{{$origem}}
+                            <td style="border: 0px; width: 5%;">
+                                <p class="text-sm">{{$origemLabel}}
                                     <b class="d-block">{{$dataNfs[0]->nfs_nfhdr_num_ped}}</b>
                                 </p>
                             </td>
@@ -83,20 +80,20 @@
                             <td style="border: 0px; width: 35%;">
                                 <p class="text-sm">Status da Geração
                                     @if($dataNfsXML[0]->nfsenv_sts == 3)
-                                    <b class="d-block text-success">{{$dataNfsXML[0]->nfsenv_obs}}</b>
+                                    <b class="text-md d-block"><span class="badge badge-success">{{$dataNfsXML[0]->nfsenv_obs}}</span></b>
                                     @elseif($dataNfsXML[0]->nfsenv_sts == 2)
-                                    <b class="d-block text-danger">{{'Erro: '.$dataNfsXML[0]->nfsenv_sts_emi.' - '.$dataNfsXML[0]->nfsenv_obs}}</b>
+                                    <b class="text-md d-block"><span class="badge badge-danger">{{'Erro: '.$dataNfsXML[0]->nfsenv_sts_emi.' - '.$dataNfsXML[0]->nfsenv_obs}}</span></b>
                                     @else
-                                    <b class="d-block text-danger">{{'Erro: '.$dataNfsXML[0]->nfsenv_sts_emi.' - '.$dataNfsXML[0]->nfsenv_obs}}</b>
+                                    <b class="text-md d-block"><span class="badge badge-danger">{{'Erro: '.$dataNfsXML[0]->nfsenv_sts_emi.' - '.$dataNfsXML[0]->nfsenv_obs}}</span></b>
                                     @endif
                                 </p>
                             </td>
-                            <td style="border: 0px; width: 10%;">
+                            <td style="border: 0px; width: 15%;">
                                 <p class="text-sm">Impressão
                                     <b class="d-block"><a href="{{route('impresaoNF.nfsePDF',['empresa' => $dataNfs[0]->nfs_emp, 'numControle' => $dataNfs[0]->nfs_nfhdr_num])}}" target="_blank">Abrir NFS-e</a></b>
                                 </p>
                             </td>
-                            <td style="border: 0px; width: 15%;">
+                            <td style="border: 0px; width: 10%;">
                                 <p class="text-sm">Arquivo
                                     <b class="d-block"><a href="{{asset($pathXML)}}" target="_blank">XML</a></b>
                                 </p>
@@ -126,6 +123,13 @@
 @section('plugins.jqueryValidation', true)
 
 @section('css')
+<style>
+    .badge, .badge-success {
+        white-space: normal; /* Permite quebra de linha */
+        overflow-wrap: break-word; /* Permite quebras de linha apenas em espaços */
+        word-break: keep-all; /* Evita quebras de linha no meio de palavras */
+    }
+</style>
 @stop
 
 @section('js')

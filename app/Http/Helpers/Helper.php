@@ -189,4 +189,14 @@ class Helper
         $estadoFormatado = $uf.' - '.$estado[0]->ibge_nome;
         return $estadoFormatado;
     }
+
+    public static function formataSimNao(string $valor)
+    {
+        if($valor == 'S'){
+            $valorFormatado = 'Sim';
+        }else{
+            $valorFormatado = 'Não';
+        }
+        return $valorFormatado;
+    }
 }

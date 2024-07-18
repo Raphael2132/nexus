@@ -289,7 +289,7 @@
                     </div>
                     <div class="row">
                         <!-- Descrição do serviço -->
-                        <x-adminlte-textarea name="descSrv" rows=5 igroup-size="sm" label-class="text-dark" placeholder="Escreva a descrição do serviço..." fgroup-class="col-md-12" >
+                        <x-adminlte-textarea name="descSrv" rows=4 igroup-size="sm" label-class="text-dark" placeholder="Escreva a descrição do serviço..." fgroup-class="col-md-4" >
                             <x-slot name="label">
                                 Descrição dos Serviços Prestados <span style="color:red;">*</span>
                             </x-slot>
@@ -299,20 +299,18 @@
                                 </div>
                             </x-slot>
                         </x-adminlte-textarea>
-                    </div>
-                    <div class="row">
+                        
                         <!-- Informações Complementares -->
-                        <x-adminlte-textarea name="infoCmp" label="Informações Complementares" rows=5 igroup-size="sm" label-class="text-dark" placeholder="Escreva as informações complementares..." fgroup-class="col-md-12" >
+                        <x-adminlte-textarea name="infoCmp" label="Informações Complementares" rows=4 igroup-size="sm" label-class="text-dark" placeholder="Escreva as informações complementares..." fgroup-class="col-md-4" >
                             <x-slot name="prependSlot">
                                 <div class="input-group-text bg-navy">
                                     <i class="fas fa-lg fa-file-alt text-white"></i>
                                 </div>
                             </x-slot>
                         </x-adminlte-textarea>
-                    </div>
-                    <div class="row">
+                        
                         <!-- Informações Complementares -->
-                        <x-adminlte-textarea name="obsNFS" label="Observações da NFS-e" rows=5 igroup-size="sm" label-class="text-dark" placeholder="Escreva as observações..." fgroup-class="col-md-12" >
+                        <x-adminlte-textarea name="obsNFS" label="Observações da NFS-e" rows=4 igroup-size="sm" label-class="text-dark" placeholder="Escreva as observações..." fgroup-class="col-md-4" >
                             <x-slot name="prependSlot">
                                 <div class="input-group-text bg-navy">
                                     <i class="fas fa-lg fa-file-alt text-white"></i>
@@ -322,7 +320,7 @@
                     </div>
                     <div class="row">
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="vlrNFS" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-6">
+                        <x-adminlte-input name="vlrNFS" type="text" placeholder="0,00" fgroup-class="col-md-4">
                             <x-slot name="label">
                                 Valor da Nota Fiscal <span style="color:red;">*</span>
                             </x-slot>
@@ -330,15 +328,15 @@
                     </div>
                     <div class="row">
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="inssRet" label="Valor do INSS Retido" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-2"/>
+                        <x-adminlte-input name="inssRet" label="Valor do INSS Retido" type="text" placeholder="0,00" fgroup-class="col-md-2"/>
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="irrfRet" label="Valor do IRRF Retido" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-2"/>
+                        <x-adminlte-input name="irrfRet" label="Valor do IRRF Retido" type="text" placeholder="0,00" fgroup-class="col-md-2"/>
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="csllRet" label="Valor do CSLL Retido" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-2"/>
+                        <x-adminlte-input name="csllRet" label="Valor do CSLL Retido" type="text" placeholder="0,00" fgroup-class="col-md-2"/>
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="pisRet" label="Valor do PIS Retido" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-2"/>
+                        <x-adminlte-input name="pisRet" label="Valor do PIS Retido" type="text" placeholder="0,00" fgroup-class="col-md-2"/>
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="cofinsRet" label="Valor do COFINS Retido" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-2"/>
+                        <x-adminlte-input name="cofinsRet" label="Valor do COFINS Retido" type="text" placeholder="0,00" fgroup-class="col-md-2"/>
                         <!-- Valor da NFS -->
                          <!-- por hora não vai usar
                         <x-adminlte-input name="outRet" label="Outras Retenções" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-2"/>
@@ -505,6 +503,10 @@
 
         //Bloco ao iniciar app fica escondido
         $('.bloco-endereco').hide();
+
+        //Bloco ao iniciar app fica escondido
+        $('#vlrImpRec').prop('disabled', true);
+        $('#vlrBase').prop('disabled', true);
 
         // Busca os dados do CEP informado
         $("#cep").blur(function(){
@@ -1184,6 +1186,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 });

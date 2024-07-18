@@ -68,6 +68,13 @@ class FaturamentoNfsSimplificadaController extends Controller
             $nfssim_loc_srv_ibge_cod_mun = null;
         }
 
+        $inssRet = empty($dadosNfsSimp['inssRet']) ? 0.00 : Helper::limpaValorMonetario($dadosNfsSimp['inssRet']);
+        $irrfRet = empty($dadosNfsSimp['irrfRet']) ? 0.00 : Helper::limpaValorMonetario($dadosNfsSimp['irrfRet']);
+        $csllRet = empty($dadosNfsSimp['csllRet']) ? 0.00 : Helper::limpaValorMonetario($dadosNfsSimp['csllRet']);
+        $pisRet = empty($dadosNfsSimp['pisRet']) ? 0.00 : Helper::limpaValorMonetario($dadosNfsSimp['pisRet']);
+        $cofinsRet = empty($dadosNfsSimp['cofinsRet']) ? 0.00 : Helper::limpaValorMonetario($dadosNfsSimp['cofinsRet']);
+
+
         $dados = [
             'nfssim_emp' => $empresa,
             'nfssim_num' => $numNfsSimp,
@@ -81,11 +88,11 @@ class FaturamentoNfsSimplificadaController extends Controller
             'nfssim_vlr_nfs' => Helper::limpaValorMonetario($dadosNfsSimp['vlrNFS']),
             'nfssim_vlr_base' => Helper::limpaValorMonetario($dadosNfsSimp['vlrBase']),
             'nfssim_alq_iss' => Helper::limpaPorcentagem($dadosNfsSimp['aliqISS']),
-            'nfssim_vlr_inss_ret' => Helper::limpaValorMonetario($dadosNfsSimp['inssRet']),
-            'nfssim_vlr_ir_ret' => Helper::limpaValorMonetario($dadosNfsSimp['irrfRet']),
-            'nfssim_vlr_csll_ret' => Helper::limpaValorMonetario($dadosNfsSimp['csllRet']),
-            'nfssim_vlr_pis_ret' => Helper::limpaValorMonetario($dadosNfsSimp['pisRet']),
-            'nfssim_vlr_cofins_ret' => Helper::limpaValorMonetario($dadosNfsSimp['cofinsRet']),
+            'nfssim_vlr_inss_ret' => $inssRet,
+            'nfssim_vlr_ir_ret' => $irrfRet,
+            'nfssim_vlr_csll_ret' => $csllRet,
+            'nfssim_vlr_pis_ret' => $pisRet,
+            'nfssim_vlr_cofins_ret' => $cofinsRet,
             'nfssim_vlr_imp_rec' => Helper::limpaValorMonetario($dadosNfsSimp['vlrImpRec']),
             'nfssim_loc_srv' => $enderecoLocSrv,
             'nfssim_loc_srv_cep' => $nfssim_loc_srv_cep,

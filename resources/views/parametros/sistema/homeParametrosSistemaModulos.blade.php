@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Parâmetros do Sistema</h1>
+            <h4 style="margin-bottom: 0px !important;">Parâmetros do Sistema</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -22,8 +22,10 @@
         @php
         $heads = [
             'Empresa',
+            'Módulo de Serviços',
+            'Módulo Emissão de RPS',
             'Módulo Emissão de NFS-e',
-            'Módulo Emissão de NF-e',
+            'Módulo Emissão Simplificada de NFS-e',
             ['label' => 'Opção', 'no-export' => true, 'width' => 5],
         ];
         
@@ -55,7 +57,7 @@
                     'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
                 ],
             ],
-            'columns' => [null, null, null, ['orderable' => false]],
+            'columns' => [null, null, null, null, null, ['orderable' => false]],
         ];
         @endphp
 
@@ -66,22 +68,17 @@
                         $data_emp = DB::table('cadastro_empresas')->where('empresa_codigo','=',$modulo->modulo_empresa_codigo)->get();
                         $empresa = $modulo->modulo_empresa_codigo.' - '.$data_emp[0]->empresa_nome;
                         
-                        if($modulo->modulo_emissao_nfs == 'S'){
-                            $emiNFS = 'Sim';
-                        }else{
-                            $emiNFS = 'Não';
-                        }
-                        
-                        if($modulo->modulo_emissao_nfe == 'S'){
-                            $emiNFE = 'Sim';
-                        }else{
-                            $emiNFE = 'Não';
-                        }
+                        $emiNFS = Helper::formataSimNao($modulo->modulo_emissao_nfs);
+                        $emiRPS = Helper::formataSimNao($modulo->modulo_emissao_rps);
+                        $modSrv = Helper::formataSimNao($modulo->modulo_servico);
+                        $emiSimpNFS = Helper::formataSimNao($modulo->modulo_emissao_nfs_simp);
                     @endphp
                     <tr>   
                         <td>{{ $empresa }}</td>
-                        <td>{{ $emiNFE }}</td>
+                        <td>{{ $modSrv }}</td>
+                        <td>{{ $emiRPS }}</td>
                         <td>{{ $emiNFS }}</td>
+                        <td>{{ $emiSimpNFS }}</td>
                         <td>
                             <nobr class="d-flex justify-content-center">
                                 <form method="get" action="{{ route('parametrosSistemaModulos.editarCadastro', ['dadosModulo' => $modulo->modulo_empresa_codigo]) }}" style="float: left;">

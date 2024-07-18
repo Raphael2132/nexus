@@ -5,15 +5,15 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Faturamento</h1>
+            <h4 style="margin-bottom: 0px !important;">Faturamento</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item active">
-                    <a href="{{route('home.emissaoNF')}}">Filtro de Emissão</a>
+                    <a href="{{route('home.emissaoNF')}}">Filtro Emissão de NF</a>
                 </li>
                 <li class="breadcrumb-item active">
-                    <a href="{{ route('emissaoNF.consultaNF') }}">Consulta de Emissão</a>
+                    <a href="{{ route('emissaoNF.consultaNF') }}">Consulta Emissão de NF</a>
                 </li>
                 <li class="breadcrumb-item active">Painel de Emissão</li>
             </ol>
@@ -37,13 +37,13 @@
             <div style="width:100%; margin: 10px;">
                 <table style="width:100%; font-style: normal; color:#343232; border-collapse: separate; border-spacing: 5px 5px;">
                     <tbody>
-                        <tr style="border: 1px solid #000; background-color: #DCDCDC; text-align: center;">
-                            <td style="border: 1px solid #C0C0C0;"><strong>Empresa</strong></td>
-                            <td style="border: 1px solid #C0C0C0;"><strong>Cliente</strong></td>
+                        <tr style="text-align: center;">
+                            <td style="background-color: #DCDCDC; border-radius: 8px; border: 1px solid #C0C0C0;"><strong>Empresa</strong></td>
+                            <td style="background-color: #DCDCDC; border-radius: 8px; border: 1px solid #C0C0C0;"><strong>Cliente</strong></td>
                         </tr>
-                        <tr style="border: 1px solid #DDD; background-color: #fff; text-align: right;">
-                            <td style="border: 1px solid #C0C0C0; text-align: center;">{{$empresaNF.' - '.$data[0]->empresa_nome}}</td>
-                            <td style="border: 1px solid #C0C0C0; text-align: center;">{{$clienteNF.' - '.$data_cli[0]->cliente_nome}}</td>
+                        <tr style="border: 1px solid #DDD; background-color: #fff; text-align: center;">
+                            <td style="border: 1px solid #C0C0C0; border-radius: 8px; text-align: center;">{{$empresaNF.' - '.$data[0]->empresa_nome}}</td>
+                            <td style="border: 1px solid #C0C0C0; border-radius: 8px; text-align: center;">{{$clienteNF.' - '.$data_cli[0]->cliente_nome}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -58,7 +58,7 @@
                 @php
                 // Monta os dados da tabela do bloco
                 $heads = [
-                    ['label' => '', 'no-export' => true, 'width' => 15],
+                    ['label' => '', 'no-export' => true, 'width' => 10],
                     'Pedido / OS',
                     'Data',
                     'Origem',
@@ -94,7 +94,7 @@
                             'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
                         ],
                     ],
-                    'columns' => [['orderable' => false], null, null, null, null, null],
+                    'columns' => [['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false]],
                 ];
                 @endphp
                 <x-adminlte-card title="Lista de Notas Disponíveis" theme="navy" theme-mode="outline" collapsible maximizable>
