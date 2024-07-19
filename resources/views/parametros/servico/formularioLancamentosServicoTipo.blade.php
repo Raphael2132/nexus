@@ -1,25 +1,25 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Tipos de Serviço')
+@section('title', 'Tipos de Serviço')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Parâmetros Gerais</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.lancSrvTipo')}}">Tipos de Serviço</a>
-                </li>
-                @if($acao == 'N')
-                    <li class="breadcrumb-item active">Cadastro de Novo Tipo de Serviço</li>
-                @else
-                    <li class="breadcrumb-item active">Manutenção do Tipo de Serviço</li>
-                @endif
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais de Serviços</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.lancSrvTipo')}}">Tipos de Serviço</a>
+            </li>
+            @if($acao == 'N')
+                <li class="breadcrumb-item active">Cadastro Tipo de Serviço</li>
+            @else
+                <li class="breadcrumb-item active">Manutenção Tipo de Serviço</li>
+            @endif
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -72,17 +72,27 @@
                         }
                     @endphp
                     <!-- Empresa do Setor -->
-                    <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-5">
+                    <x-adminlte-select name="empresa" fgroup-class="col-md-5">
+                        <x-slot name="label">
+                            Empresa <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$emp_sel}}"/>
                     </x-adminlte-select>
                     
                     <!-- Status do tipo do serviço -->
-                    <x-adminlte-select name="status" label="Status" fgroup-class="col-md-2">
+                    <x-adminlte-select name="status" fgroup-class="col-md-2">
+                        <x-slot name="label">
+                            Status <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" selected="{{$sts_sel}}"/>
                     </x-adminlte-select>
                     
                     <!-- Descrição -->
-                    <x-adminlte-input name="descricao" label="Descrição" type="text" value="{{$descricao_sel}}" fgroup-class="col-md-5"/>
+                    <x-adminlte-input name="descricao" type="text" value="{{$descricao_sel}}" fgroup-class="col-md-5">
+                        <x-slot name="label">
+                            Descrição <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 <div class="row">
@@ -128,15 +138,25 @@
                         }
                     @endphp
                     <!-- Código -->
-                    <x-adminlte-input class="text-uppercase" name="codigo" label="Código" type="text" value="{{$codigo_sel}}" fgroup-class="col-md-4"/>
+                    <x-adminlte-input class="text-uppercase" name="codigo" type="text" value="{{$codigo_sel}}" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Código <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
 
                     <!--categoria -->
-                    <x-adminlte-select name="categoria" label="Categoria" fgroup-class="col-md-4">
+                    <x-adminlte-select name="categoria" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Categoria <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt_cat" empty-option="Selecione..." selected="{{$cat_sel}}"/>
                     </x-adminlte-select>
 
                     <!-- area -->
-                    <x-adminlte-select name="area" label="Área" fgroup-class="col-md-4">
+                    <x-adminlte-select name="area" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Área <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt_are" empty-option="Selecione..." selected="{{$are_sel}}"/>
                     </x-adminlte-select>
                 </div>
@@ -150,7 +170,10 @@
                         }
                     @endphp
                     <!-- Permite Desconto no Lançamento da TMO -->
-                    <x-adminlte-select name="permiteDesc" label="Permite Desconto na TMO" fgroup-class="col-md-4">
+                    <x-adminlte-select name="permiteDesc" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Permite Desconto na TMO <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$pmt_des_sel}}"/>
                     </x-adminlte-select>
                 </div>
@@ -170,10 +193,18 @@
                         }
                     @endphp
                     <!-- Percentual Máximo de Desconto -->
-                    <x-adminlte-input name="perMaxDes" label="Percentual Máximo de Desconto" type="text" placeholder="0,00" value="{{$pmd_sel}}" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="perMaxDes" type="text" placeholder="0,00" value="{{$pmd_sel}}" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Percentual Máximo de Desconto <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
 
                     <!-- Valor Máximo de Desconto -->
-                    <x-adminlte-input name="valMaxDes" label="Valor Máximo de Desconto" type="text" placeholder="0,00" value="{{$vmd_sel}}" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="valMaxDes" type="text" placeholder="0,00" value="{{$vmd_sel}}" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Valor Máximo de Desconto <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 <div class="row"> 
@@ -210,9 +241,16 @@
                             $tipoSRV = '';
                         }
                     @endphp
-                    <x-adminlte-button class="btn-flat btn_novo" type="button" onclick="window.location='{{ route('lancamentosSrvTipo.cadastro') }}'" label="Novo Tipo de Serviço" theme="info" icon="fa-solid fa-plus"/>
-                    <x-adminlte-button class="btn-flat btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                    <x-adminlte-button class="btn-flat btn_excluir" type="button" data-id="{{$tipoSRV}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                    <div class="d-flex justify-content-between w-100">
+                        <div class="d-flex">
+                            <x-adminlte-button class="btn-flat mr-2 btn_novo" type="button" onclick="window.location='{{ route('lancamentosSrvTipo.cadastro') }}'" label="Novo Tipo de Serviço" theme="info" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-flat mr-2 btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-flat mr-2 btn_excluir" type="button" data-id="{{$tipoSRV}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                        </div>
+                        <div class="d-flex">
+                            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.lancSrvTipo') }}'" label="Voltar" theme="info" icon=""/>
+                        </div>
+                    </div>
                 </x-slot>
             </x-adminlte-card>
         </form>
@@ -266,14 +304,6 @@
             $(".btn_excluir").hide();
             $(".valores-desconto").hide();
         }
-
-        //Ao clicar no botão salvar retira o disabled do campo para não ter problema no request do update do campo
-        $(".btn_salvar").click(function(){
-            $("#codigo").attr("disabled", false);
-            $("#empresa").attr("disabled", false);
-            $("#categoria").attr("disabled", false);
-            $("#area").attr("disabled", false);
-        });
     });
 </script>
 
@@ -393,6 +423,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 });

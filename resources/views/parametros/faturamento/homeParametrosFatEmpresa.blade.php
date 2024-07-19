@@ -1,11 +1,11 @@
 @extends('adminlte::page')
 
-@section('title', 'Parâmetros Gerais')
+@section('title', 'Parâmetros Gerais de Faturamento')
 
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Parâmetros Gerais de Faturamento</h1>
+            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais de Faturamento</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">

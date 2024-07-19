@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Parametrização dos Tipos de Serviço')
+@section('title', 'Tipos de Serviço')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Parâmetros Gerais</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Tipos de Serviço</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais de Serviços</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">Tipos de Serviço</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')

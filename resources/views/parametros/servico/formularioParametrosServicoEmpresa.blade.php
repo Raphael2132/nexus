@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Etapas de Atendimento')
+@section('title', 'Parâmetros Gerais de Serviço')
 
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Parâmetros Gerais de Serviços</h1>
+            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais de Serviços</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item active">
                     <a href="{{route('home.parametrosSrvEmp')}}">Geral da Empresa</a>
                 </li>
-                <li class="breadcrumb-item active">Manutenção de Parâmetros Gerais</li>
+                <li class="breadcrumb-item active">Manutenção Geral da Empresa</li>
             </ol>
         </div>
     </div>
@@ -42,17 +42,28 @@
                     @endphp
 
                     <!-- Empresa do Setor -->
-                    <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-12">
+                    <x-adminlte-select name="empresa" fgroup-class="col-md-12">
+                        <x-slot name="label">
+                            Empresa <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parsrv_emp}}"/>
                     </x-adminlte-select>
                 </div>
 
                 <div class="row">              
                     <!-- Aliquota ISS -->
-                    <x-adminlte-input name="aliqISS" label="Aliq. ISS" type="text" placeholder="0,00" value="{{Helper::formataPorcentagem($parametrosEmp[0]->parsrv_alq_iss)}}" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="aliqISS" type="text" placeholder="0,00" value="{{Helper::formataPorcentagem($parametrosEmp[0]->parsrv_alq_iss)}}" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Aliq. ISS <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
 
                     <!-- CFOP Serviço -->
-                    <x-adminlte-input name="srvCFOP" label="CFOP Serviço" type="number" placeholder="Informe o CFOP" value="{{$parametrosEmp[0]->parsrv_cfop}}" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="srvCFOP" type="number" placeholder="Informe o CFOP" value="{{$parametrosEmp[0]->parsrv_cfop}}" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            CFOP Serviço <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 @php
@@ -71,12 +82,18 @@
                 @endphp
                 <div class="row">              
                     <!-- Exigibilidade do ISS -->
-                    <x-adminlte-select name="exiISS" label="Exigibilidade do ISS" fgroup-class="col-md-6">
+                    <x-adminlte-select name="exiISS" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Exigibilidade do ISS <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt_iss" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parsrv_exg_iss}}"/>
                     </x-adminlte-select>
 
                     <!--  ISS Retido -->
-                    <x-adminlte-select name="issRet" label="ISS Retido" fgroup-class="col-md-6">
+                    <x-adminlte-select name="issRet" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            ISS Retido <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="['1' => 'ISS Retido', '2' => 'Sem ISS Retido']" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parsrv_iss_ret}}"/>
                     </x-adminlte-select>
                 </div>  
@@ -115,12 +132,18 @@
                 @endphp
                 <div class="row">
                     <!-- Grupo do Serviço -->
-                    <x-adminlte-select name="grupoSrv" label="Grupo do Serviço" fgroup-class="col-md-6">
+                    <x-adminlte-select name="grupoSrv" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Grupo do Serviço <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt_grp" empty-option="Selecione..." selected="{{$grupo}}"/>
                     </x-adminlte-select>
 
                     <!-- Código do Serviço -->
-                    <x-adminlte-select name="codigoSrv" label="Código de Atividade do Serviço" fgroup-class="col-md-6">
+                    <x-adminlte-select name="codigoSrv" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Código de Atividade do Serviço <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt_srv" empty-option="Selecione..." selected="{{$codigo}}"/>
                     </x-adminlte-select>
                 </div>
@@ -141,7 +164,10 @@
                             "locale" => ["format" => "HH:mm"],
                         ];
                     @endphp
-                    <x-adminlte-date-range name="horaIniEx" label="Hora Ini. Expediente" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-6">
+                    <x-adminlte-date-range name="horaIniEx" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Hora Ini. Expediente <span style="color:red;">*</span>
+                        </x-slot>
                         <x-slot name="appendSlot">
                             <div class="input-group-text">
                                 <i class="far fa-lg fa-clock"></i>
@@ -165,7 +191,10 @@
                             "locale" => ["format" => "HH:mm"],
                         ];
                     @endphp
-                    <x-adminlte-date-range name="horaFinEx" label="Hora Fin. Expediente" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-6">
+                    <x-adminlte-date-range name="horaFinEx" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Hora Fin. Expediente <span style="color:red;">*</span>
+                        </x-slot>
                         <x-slot name="appendSlot">
                             <div class="input-group-text">
                                 <i class="far fa-lg fa-clock"></i>
@@ -177,7 +206,10 @@
 
                 <!-- /.card -->
                 <x-slot name="footerSlot">
-                    <x-adminlte-button class="btn-flat btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                    <div class="d-flex justify-content-between w-100">
+                        <x-adminlte-button class="btn-flat btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parametrosSrvEmp') }}'" label="Voltar" theme="info" icon=""/>
+                    </div>
                 </x-slot>
             </x-adminlte-card>
         </form>
@@ -227,18 +259,6 @@
 
             }) 
         });
-    });
-</script>
-
-<!--
-|--------------------------------------------------------------------------
-| Eventos onClick da app
-|--------------------------------------------------------------------------
--->
-<script>
-    //Ao clicar no botão salvar retira o disabled do campo para não ter problema no request do update do campo
-    $(".btn_salvar").click(function(){
-        $("#empresa").attr("disabled", false);
     });
 </script>
 
@@ -372,6 +392,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 });

@@ -57,6 +57,23 @@ class ParametrosSrvTmoController extends Controller
             $prestador = null;
         }
 
+        if(!empty($request->fornecedor)){
+            $fornecedor = substr($request->fornecedor, 0, 10);
+
+            if(strlen($fornecedor) < 10){
+                return redirect()->back()->with('error', 'Código do fornecedor '.$fornecedor.' é inválido!');
+            }
+
+            $cnt_prest = DB::table('cadastro_clientes')->where('cliente_tipo_cadastro', 'F')->where('cliente_codigo', $fornecedor)->count();
+        
+            if($cnt_prest == 0){
+                return redirect()->back()->with('error', 'Código do fornecedor '.$fornecedor.' não existe!');
+            }
+        
+        }else{
+            $fornecedor = null;
+        }
+
         if(!empty($request->qtdHora)){
             $qtd_hora = str_replace(",",".",$request->qtdHora);
         }else{
@@ -102,7 +119,7 @@ class ParametrosSrvTmoController extends Controller
             'tmo_qtd_hr' => $qtd_hora,
             'tmo_val_hr' => $valor_hora,
             'tmo_val_tot' => $valor_tot,
-            'tmo_for_cgt' => $request->fornecedor,
+            'tmo_for_cgt' => $fornecedor,
             'tmo_tip_val_cgt' => $request->tipValCGT,
             'tmo_val_cgt' => $valor_cgt,
             'tmo_per_cgt' => $per_cgt,
@@ -133,6 +150,23 @@ class ParametrosSrvTmoController extends Controller
         
         }else{
             $prestador = null;
+        }
+
+        if(!empty($request->fornecedor)){
+            $fornecedor = substr($request->fornecedor, 0, 10);
+
+            if(strlen($fornecedor) < 10){
+                return redirect()->back()->with('error', 'Código do fornecedor '.$fornecedor.' é inválido!');
+            }
+
+            $cnt_prest = DB::table('cadastro_clientes')->where('cliente_tipo_cadastro', 'F')->where('cliente_codigo', $fornecedor)->count();
+        
+            if($cnt_prest == 0){
+                return redirect()->back()->with('error', 'Código do fornecedor '.$fornecedor.' não existe!');
+            }
+        
+        }else{
+            $fornecedor = null;
         }
 
         if(!empty($request->qtdHora)){
@@ -179,7 +213,7 @@ class ParametrosSrvTmoController extends Controller
             'tmo_qtd_hr' => $qtd_hora,
             'tmo_val_hr' => $valor_hora,
             'tmo_val_tot' => $valor_tot,
-            'tmo_for_cgt' => $request->fornecedor,
+            'tmo_for_cgt' => $fornecedor,
             'tmo_tip_val_cgt' => $request->tipValCGT,
             'tmo_val_cgt' => $valor_cgt,
             'tmo_per_cgt' => $per_cgt,

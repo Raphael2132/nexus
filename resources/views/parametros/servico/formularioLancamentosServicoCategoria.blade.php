@@ -1,11 +1,11 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Categoria de Atendimento')
+@section('title', 'Categoria de Atendimento')
 
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Parâmetros Gerais</h1>
+            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais de Serviços</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -13,9 +13,9 @@
                     <a href="{{route('home.lancSrvCategoria')}}">Categorias de Atendimento</a>
                 </li>
                 @if($acao == 'N')
-                    <li class="breadcrumb-item active">Cadastro de Categoria de Atendimento</li>
+                    <li class="breadcrumb-item active">Cadastro Categoria de Atendimento</li>
                 @else
-                    <li class="breadcrumb-item active">Manutenção da Categoria de Atendimento</li>
+                    <li class="breadcrumb-item active">Manutenção Categoria de Atendimento</li>
                 @endif
             </ol>
         </div>
@@ -49,10 +49,18 @@
                         }
                     @endphp
                     <!-- Código -->
-                    <x-adminlte-input class="text-uppercase" name="codigo" label="Código" type="text" value="{{$codigo_sel}}" fgroup-class="col-md-4"/>
+                    <x-adminlte-input class="text-uppercase" name="codigo" type="text" value="{{$codigo_sel}}" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Código <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                     
                     <!-- Descrição -->
-                    <x-adminlte-input name="descricao" label="Descrição" type="text" value="{{$descricao_sel}}" fgroup-class="col-md-8"/>
+                    <x-adminlte-input name="descricao" type="text" value="{{$descricao_sel}}" fgroup-class="col-md-8">
+                        <x-slot name="label">
+                            Descrição <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 <!-- /.card -->
@@ -64,9 +72,16 @@
                             $tipoCat = '';
                         }
                     @endphp
-                    <x-adminlte-button class="btn-flat btn_novo" type="button" onclick="window.location='{{ route('lancamentosSrvCategoria.cadastro') }}'" label="Nova Categoria" theme="info" icon="fa-solid fa-plus"/>
-                    <x-adminlte-button class="btn-flat btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                    <x-adminlte-button class="btn-flat btn_excluir" type="button" data-id="{{$tipoCat}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                    <div class="d-flex justify-content-between w-100">
+                        <div class="d-flex">
+                            <x-adminlte-button class="btn-flat mr-2 btn_novo" type="button" onclick="window.location='{{ route('lancamentosSrvCategoria.cadastro') }}'" label="Nova Categoria" theme="info" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-flat mr-2 btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-flat mr-2 btn_excluir" type="button" data-id="{{$tipoCat}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                        </div>
+                        <div class="d-flex">
+                            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.lancSrvCategoria') }}'" label="Voltar" theme="info" icon=""/>
+                        </div>
+                    </div>
                 </x-slot>
             </x-adminlte-card>
         </form>
@@ -179,6 +194,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 });

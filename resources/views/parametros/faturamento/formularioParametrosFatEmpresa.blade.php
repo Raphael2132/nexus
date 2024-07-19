@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Manutenção Parâmetros Gerais de Faturamento')
+@section('title', 'Parâmetros Gerais de Faturamento')
 
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Parâmetros Gerais de Faturamento</h1>
+            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais de Faturamento</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item active">
                     <a href="{{route('home.parametrosFatEmp')}}">Geral da Empresa</a>
                 </li>
-                <li class="breadcrumb-item active">Manutenção de Parâmetros Faturamento</li>
+                <li class="breadcrumb-item active">Manutenção Geral da Empresa</li>
             </ol>
         </div>
     </div>
@@ -56,7 +56,10 @@
 
                 <!-- /.card -->
                 <x-slot name="footerSlot">
-                    <x-adminlte-button class="btn-flat btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                    <div class="d-flex justify-content-between w-100">
+                        <x-adminlte-button class="btn-flat btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parametrosFatEmp') }}'" label="Voltar" theme="info" icon=""/>
+                    </div>
                 </x-slot>
             </x-adminlte-card>
         </form>

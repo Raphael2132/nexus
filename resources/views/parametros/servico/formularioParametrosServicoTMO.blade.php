@@ -1,25 +1,25 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Tarefas de Mão de Obra')
+@section('title', 'Tarefas de Mão de Obra')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Parâmetros Gerais</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.parSrvTMO')}}">Tarefas Mão de Obra</a>
-                </li>
-                @if($acao == 'N')
-                    <li class="breadcrumb-item active">Cadastro de Tarefas Mão de Obra</li>
-                @else
-                    <li class="breadcrumb-item active">Edição de Tarefas Mão de Obra</li>
-                @endif
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais de Serviços</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.parSrvTMO')}}">Tarefas Mão de Obra</a>
+            </li>
+            @if($acao == 'N')
+                <li class="breadcrumb-item active">Cadastro Tarefas Mão de Obra</li>
+            @else
+                <li class="breadcrumb-item active">Edição Tarefas Mão de Obra</li>
+            @endif
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -65,12 +65,18 @@
                         }
                     @endphp
                     <!-- Empresa -->
-                    <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-6">
+                    <x-adminlte-select name="empresa" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Empresa <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$emp_sel}}"/>
                     </x-adminlte-select>
 
                     <!-- Status da Tarefa -->
-                    <x-adminlte-select name="status" label="Status" fgroup-class="col-md-6">
+                    <x-adminlte-select name="status" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Status <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" selected="{{$sts_sel}}"/>
                     </x-adminlte-select>
                 </div>
@@ -115,12 +121,18 @@
                         }
                     @endphp
                     <!-- Area -->
-                    <x-adminlte-select name="area" label="Área" fgroup-class="col-md-6">
+                    <x-adminlte-select name="area" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Área <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt_are" empty-option="Selecione..." selected="{{$are_sel}}"/>
                     </x-adminlte-select>
 
                     <!-- Setor -->
-                    <x-adminlte-select name="setor" label="Setor" fgroup-class="col-md-6">
+                    <x-adminlte-select name="setor" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Setor <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt_set" empty-option="Selecione..." selected="{{$set_sel}}"/>
                     </x-adminlte-select>
                 </div>
@@ -152,9 +164,13 @@
                         }
                     @endphp
                     <!-- Código -->
-                    <x-adminlte-input name="codigo" label="Código da Tarefa de Mão de Obra" type="text" value="{{$codigo_sel}}" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="codigo" type="text" value="{{$codigo_sel}}" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Código da TMO <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                     <!-- Prestador responsavel da TMO -->
-                    <x-adminlte-input name="prestResp" label="Prestador Responsável da Tarefa" type="search" list="prestadores" value="{{$prestResp_sel}}" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="prestResp" label="Responsável da TMO" type="search" list="prestadores" value="{{$prestResp_sel}}" fgroup-class="col-md-6"/>
                 </div>
 
                 <div class="row">
@@ -172,7 +188,11 @@
                         }
                     @endphp
                     <!-- Descrição -->
-                    <x-adminlte-input name="descricao" label="Descrição da Tarefa de Mão de Obra" type="text" value="{{$desc_sel}}" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="descricao" type="text" value="{{$desc_sel}}" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Descrição da TMO <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                     <!-- Descrição -->
                     <x-adminlte-input name="complemento" label="Complemento" type="text" value="{{$cmp_sel}}" fgroup-class="col-md-6"/>
                 </div>
@@ -241,8 +261,11 @@
                         }
                     @endphp
                     <!-- Tipo da TMO -->
-                    <x-adminlte-select name="tipoTMO" label="Tipo da Tarefa" fgroup-class="col-md-6">
-                        <x-adminlte-options :options="['P' => 'Padrão', 'I' => 'Hora Informada', 'R' => 'Hora Real', 'F' => 'Valor Fixo', 'T' => 'Terceiros']" selected="{{$tipTMO_sel}}"/>
+                    <x-adminlte-select name="tipoTMO" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Tipo da TMO <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-adminlte-options :options="['P' => 'Padrão', 'I' => 'Hora / Valor Informada', 'R' => 'Hora Real', 'F' => 'Hora Fixa', 'T' => 'Terceiros']" selected="{{$tipTMO_sel}}"/>
                     </x-adminlte-select>
                 </div>
 
@@ -267,13 +290,25 @@
                         }
                     @endphp
                     <!-- Quantidade de horas da tarefa -->
-                    <x-adminlte-input name="qtdHora" label="Quantidade de Horas" type="text" value="{{$qtdHr_sel}}" placeholder="0.00" fgroup-class="col-md-4"/>
+                    <x-adminlte-input name="qtdHora" type="text" value="{{$qtdHr_sel}}" placeholder="0.00" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Quantidade de Horas <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
 
                     <!-- Valor da hora da tarefa -->
-                    <x-adminlte-input name="valHora" label="Valor da Hora" type="text" value="{{$valHr_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
+                    <x-adminlte-input name="valHora" type="text" value="{{$valHr_sel}}" placeholder="0,00" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Valor da Hora <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
 
                     <!-- Valor total da tarefa -->
-                    <x-adminlte-input name="valTot" label="Valor Total da Tarefa" type="text" value="{{$totTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
+                    <x-adminlte-input name="valTot" type="text" value="{{$totTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Valor Total da TMO <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 <div class="bloco-terceiros">
@@ -285,7 +320,10 @@
                     <div class="row"> 
                         @php
                             if(!empty($dadosTMO[0]['tmo_for_cgt'])){
-                                $fornecedor_sel = $dadosTMO[0]['tmo_for_cgt'];
+
+                                $dadosCli = DB::table('cadastro_clientes')->where('cliente_tipo_cadastro','F')->where('cliente_codigo',$dadosTMO[0]['tmo_for_cgt'])->orderBy('cliente_codigo', 'asc')->get();
+
+                                $fornecedor_sel = $dadosTMO[0]['tmo_for_cgt'].' - '.$dadosCli[0]->cliente_nome;
                             }else{
                                 $fornecedor_sel = '';
                             }
@@ -293,7 +331,7 @@
                             $data_cli = DB::table('cadastro_clientes')->selectRaw('cliente_codigo, cliente_nome')->where('cliente_tipo_cadastro','F')->orderBy('cliente_codigo', 'asc')->get();
                             $html = '<datalist id="fornecedores">';
                             foreach($data_cli as $cliente){
-                                $html .= '<option value="'.$cliente->cliente_codigo.'">'.$cliente->cliente_nome.'</option>';
+                                $html .= '<option value="'.$cliente->cliente_codigo.' - '.$cliente->cliente_nome.'">'.$cliente->cliente_codigo.' - '.$cliente->cliente_nome.'</option>';
                             }
                             $html .='</datalist>';
                             echo $html;
@@ -351,9 +389,16 @@
                             $tarefa = '';
                         }
                     @endphp
-                    <x-adminlte-button class="btn-flat btn_novo" type="button" onclick="window.location='{{ route('parametrosSrvTMO.cadastro') }}'" label="Nova Tarefa" theme="info" icon="fa-solid fa-plus"/>
-                    <x-adminlte-button class="btn-flat btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                    <x-adminlte-button class="btn-flat btn_excluir" type="button" data-id="{{$tarefa}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                    <div class="d-flex justify-content-between w-100">
+                        <div class="d-flex">
+                            <x-adminlte-button class="btn-flat mr-2 btn_novo" type="button" onclick="window.location='{{ route('parametrosSrvTMO.cadastro') }}'" label="Nova Tarefa" theme="info" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-flat mr-2 btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-flat mr-2 btn_excluir" type="button" data-id="{{$tarefa}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                        </div>
+                        <div class="d-flex">
+                            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parSrvTMO') }}'" label="Voltar" theme="info" icon=""/>
+                        </div>
+                    </div>
                 </x-slot>
             </x-adminlte-card>
         </form>
@@ -828,18 +873,6 @@
 <script>
     $(document).ready(function() {
 
-        //Ao clicar no botão salvar retira o disabled do campo para não ter problema no request do update do campo
-        $(".btn_salvar").click(function(){
-            $("#setor").attr("disabled", false);
-            $("#area").attr("disabled", false);
-            $("#empresa").attr("disabled", false);
-            $("#codigo").attr("disabled", false);
-            $("#valTot").prop('disabled', false);
-            $("#valHora").prop('disabled', false);
-            $("#qtdHora").prop('disabled', false);
-            $("#valCGT").prop('disabled', false);
-        });
-
         $(".btn_excluir").click(function(){
             var id = $(this).attr("data-id");
 
@@ -906,6 +939,10 @@ $(function () {
                 maxpercent: true
             }, 
             qtdHora: {
+                required: function(element) {
+                    let tipoTMO = $('#tipoTMO').val();
+                    return tipoTMO === 'P' || tipoTMO === 'I' || tipoTMO === 'F';
+                },
                 maxqtdhr: true
             }, 
             grpSrv: {
@@ -915,9 +952,17 @@ $(function () {
                 required: true
             },
             valHora: {
+                required: function(element) {
+                    let tipoTMO = $('#tipoTMO').val();
+                    return tipoTMO === 'P' || tipoTMO === 'I' || tipoTMO === 'R';
+                },
                 maxlength: 20
             },
             valTot: {
+                required: function(element) {
+                    let tipoTMO = $('#tipoTMO').val();
+                    return tipoTMO === 'F' || tipoTMO === 'T';
+                },
                 maxlength: 20
             },
             valCGT: {
@@ -952,14 +997,19 @@ $(function () {
                 required: "Por Favor informe um Código do Serviço"
             },
             valHora: {
+                required: "O valor da hora é obrigatório para os tipos Padrão, Informada e Real.",
                 maxlength: "Limite máximo do valor é de 15 digitos"
             },
             valTot: {
+                required: "O valor totala é obrigatório para os tipos Fixo e Terceiros.",
                 maxlength: "Limite máximo do valor é de 15 digitos"
             },
             valCGT: {
                 maxlength: "Limite máximo do valor é de 15 digitos"
             },
+            qtdHora: {
+                required: "A quantidade de horas é obrigatória para os tipos Padrão, Informada e Fixa."
+            }
         },
         errorElement: 'span',
         errorPlacement: function (error, element) {
@@ -971,6 +1021,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 });

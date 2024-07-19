@@ -1,11 +1,11 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Etapas de Atendimento')
+@section('title', 'Etapas de Atendimento')
 
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Parâmetros Gerais</h1>
+            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais de Serviços</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -13,9 +13,9 @@
                     <a href="{{route('home.lancSrvEtapas')}}">Etapas de Atendimento</a>
                 </li>
                 @if($acao == 'N')
-                    <li class="breadcrumb-item active">Cadastro de Etapas de Atendimento</li>
+                    <li class="breadcrumb-item active">Cadastro Etapas de Atendimento</li>
                 @else
-                    <li class="breadcrumb-item active">Manutenção de Etapas de Atendimento</li>
+                    <li class="breadcrumb-item active">Manutenção Etapas de Atendimento</li>
                 @endif
             </ol>
         </div>
@@ -71,13 +71,19 @@
                         }
                     @endphp
 
-                    <!-- Empresa do Setor -->
-                    <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-6">
+                    <!-- Empresa -->
+                    <x-adminlte-select name="empresa" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Empresa <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$emp_sel}}"/>
                     </x-adminlte-select>
 
                     <!-- Categoria -->
-                    <x-adminlte-select name="categoria" label="Categoria" fgroup-class="col-md-6">
+                    <x-adminlte-select name="categoria" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Categoria <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt_cat" empty-option="Selecione..." selected="{{$cat_sel}}"/>
                     </x-adminlte-select>
                 </div>
@@ -102,14 +108,26 @@
                             $descricao_sel = '';
                         }
                     @endphp                    
-                    <!-- Código -->
-                    <x-adminlte-input name="codigo" label="Grupo da Categoria" type="number" value="{{$codigo_sel}}" fgroup-class="col-md-4"/>
+                    <!-- Grupo da Categoria -->
+                    <x-adminlte-input name="codigo" type="number" value="{{$codigo_sel}}" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Grupo da Categoria <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
 
                     <!-- Ordem -->
-                    <x-adminlte-input name="ordem" label="Ordem" type="number" value="{{$ordem_sel}}" fgroup-class="col-md-2"/>
+                    <x-adminlte-input name="ordem" type="number" value="{{$ordem_sel}}" fgroup-class="col-md-2">
+                        <x-slot name="label">
+                            Ordem <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                     
                     <!-- Descrição -->
-                    <x-adminlte-input name="descricao" label="Descrição" type="text" value="{{$descricao_sel}}" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="descricao" type="text" value="{{$descricao_sel}}" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Descrição <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 <!-- /.card -->
@@ -121,9 +139,16 @@
                             $tipoEAT = '';
                         }
                     @endphp
-                    <x-adminlte-button class="btn-flat btn_novo" type="button" onclick="window.location='{{ route('lancamentosSrvEtapas.cadastro') }}'" label="Nova Categoria" theme="info" icon="fa-solid fa-plus"/>
-                    <x-adminlte-button class="btn-flat btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                    <x-adminlte-button class="btn-flat btn_excluir" type="button" data-id="{{$tipoEAT}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                    <div class="d-flex justify-content-between w-100">
+                        <div class="d-flex">
+                            <x-adminlte-button class="btn-flat mr-2 btn_novo" type="button" onclick="window.location='{{ route('lancamentosSrvEtapas.cadastro') }}'" label="Nova Categoria" theme="info" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-flat mr-2 btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-flat mr-2 btn_excluir" type="button" data-id="{{$tipoEAT}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                        </div>
+                        <div class="d-flex">
+                            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.lancSrvEtapas') }}'" label="Voltar" theme="info" icon=""/>
+                        </div>
+                    </div>
                 </x-slot>
             </x-adminlte-card>
         </form>
@@ -188,12 +213,6 @@
                 window.location = "{{ route('lancamentosSrvEtapas.homeAjax') }}";
             }
         });
-    });
-
-    //Ao clicar no botão salvar retira o disabled do campo para não ter problema no request do update do campo
-    $(".btn_salvar").click(function(){
-        $("#empresa").attr("disabled", false);
-        $("#codigo").attr("disabled", false);
     });
 </script>
 
@@ -262,6 +281,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 });
