@@ -4,23 +4,23 @@
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Cadastros</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.usuarios')}}">Usuários</a>
-                </li>
-                @if($tipo != 'newCad' && $tipo != 'editCad')
-                    <li class="breadcrumb-item active">
-                        <a href="{{route('usuarios', ['tipo' => $tipo])}}">Usuários Cadastrados</a>
-                    </li>
-                @endif
-                <li class="breadcrumb-item active">Cadastro de Usuários</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Cadastros</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.usuarios')}}">Usuários</a>
+            </li>
+            @if($tipo != 'newCad' && $tipo != 'editCad')
+                <li class="breadcrumb-item active">
+                    <a href="{{route('usuarios', ['tipo' => $tipo])}}">Usuários Cadastrados</a>
+                </li>
+            @endif
+            <li class="breadcrumb-item active">Cadastro de Usuários</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -46,35 +46,58 @@
                 @endphp
                 <div class="row">
                     <!-- Empresa -->
-                    <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-6">
+                    <x-adminlte-select name="empresa" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Empresa <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
                     </x-adminlte-select>
 
                     <!-- Tipo Usuario -->
-                    <x-adminlte-select name="tipoUsuario" label="Tipo de Usuário" fgroup-class="col-md-3">
+                    <x-adminlte-select name="tipoUsuario" fgroup-class="col-md-3">
+                        <x-slot name="label">
+                            Tipo de Usuário <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="['A' => 'Administrador', 'P' => 'Padrão']" empty-option="Selecione..."/>
                     </x-adminlte-select>
 
                     <!-- Status do Usuario -->
-                    <x-adminlte-select name="statusUsuario" label="Status" fgroup-class="col-md-3">
+                    <x-adminlte-select name="statusUsuario" fgroup-class="col-md-3">
+                        <x-slot name="label">
+                            Status <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" empty-option="Selecione..."/>
                     </x-adminlte-select>
                 </div>
                     
                 <!-- Nome -->
-                <x-adminlte-input name="nome" label="Nome" type="text" placeholder="Nome" fgroup-class="col-md-12"/>
+                <x-adminlte-input name="nome" type="text" placeholder="Nome" fgroup-class="col-md-12">
+                    <x-slot name="label">
+                        Nome <span style="color:red;">*</span>
+                    </x-slot>
+                </x-adminlte-input>
 
                 <!-- Senha -->
-                <x-adminlte-input name="senha" label="Senha" type="password" placeholder="Senha" fgroup-class="col-md-12"/>
+                <x-adminlte-input name="senha" type="password" placeholder="Senha" fgroup-class="col-md-12">
+                    <x-slot name="label">
+                        Senha <span style="color:red;">*</span>
+                    </x-slot>
+                </x-adminlte-input>
 
                 <div class="row">
                     <!-- Tipo do Email -->
-                    <x-adminlte-select name="tipoEmail" label="Tipo do Email" fgroup-class="col-md-4">
+                    <x-adminlte-select name="tipoEmail" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Tipo do Email <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="['P' => 'Pessoal', 'C' => 'Comercial']" empty-option="Selecione..."/>
                     </x-adminlte-select>
 
                     <!-- Email -->
-                    <x-adminlte-input name="email" type="email" label="Email" placeholder="email@exemplo.com" fgroup-class="col-md-8">
+                    <x-adminlte-input name="email" type="email" placeholder="email@exemplo.com" fgroup-class="col-md-8">
+                        <x-slot name="label">
+                            Email <span style="color:red;">*</span>
+                        </x-slot>
                         <x-slot name="prependSlot">
                             <div class="input-group-text">
                                 <i class="fa-solid fa-envelope"></i>
@@ -84,7 +107,10 @@
                 </div>
 
                 <x-slot name="footerSlot">
-                    <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                    <div class="d-flex justify-content-between w-100">
+                        <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button type="button" onclick="window.location='{{ route('home.usuarios') }}'" label="Voltar" theme="info" icon=""/>
+                    </div>
                 </x-slot>
             </x-adminlte-card>
         </form>
@@ -125,6 +151,9 @@ $(function () {
             empresa: {
                 required: true
             },
+            tipoEmail: {
+                required: true
+            },
         },
         messages: {
             tipoUsuario: {
@@ -147,6 +176,9 @@ $(function () {
             },
             empresa: {
                 required: "Por Favor informe uma Empresa"
+            },
+            tipoEmail: {
+                required: "Por Favor informe o Tipo do Email"
             },
         },
         errorElement: 'span',

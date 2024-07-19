@@ -1,21 +1,21 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Empresa')
+@section('title', 'Cadastro de Empresas')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Cadastros</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.empresa')}}">Empresas</a>
-                </li>
-                <li class="breadcrumb-item active">Cadastro de Empresa</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Cadastros</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.empresa')}}">Empresas</a>
+            </li>
+            <li class="breadcrumb-item active">Cadastro de Empresa</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -27,10 +27,18 @@
 
         <div class="row">
             <!-- Nome -->
-            <x-adminlte-input name="nome" label="Nome" type="text" placeholder="Nome Completo" fgroup-class="col-md-8"/>
+            <x-adminlte-input name="nome" type="text" placeholder="Nome Completo" fgroup-class="col-md-8">
+                <x-slot name="label">
+                    Nome da Empresa <span style="color:red;">*</span>
+                </x-slot>
+            </x-adminlte-input>
 
             <!-- CNPJ -->
-            <x-adminlte-input name="cnpj" type="text" label="CNPJ" fgroup-class="col-md-4"></x-adminlte-input>
+            <x-adminlte-input name="cnpj" type="text" fgroup-class="col-md-4">
+                <x-slot name="label">
+                    CNPJ <span style="color:red;">*</span>
+                </x-slot>
+            </x-adminlte-input>
         </div>
         
         <div class="row">
@@ -43,7 +51,10 @@
 
         <!-- /.card -->
         <x-slot name="footerSlot">
-            <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+            <div class="d-flex justify-content-between w-100">
+                <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.empresa') }}'" label="Voltar" theme="info" icon=""/>
+            </div>
         </x-slot>
     </x-adminlte-card>
 </form>

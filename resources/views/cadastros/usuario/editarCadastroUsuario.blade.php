@@ -4,23 +4,23 @@
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Cadastros</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.usuarios')}}">Usuários</a>
-                </li>
-                @if($tipo != 'newCad' && $tipo != 'editCad')
-                    <li class="breadcrumb-item active">
-                        <a href="{{route('usuarios', ['tipo' => $tipo])}}">Usuários Cadastrados</a>
-                    </li>
-                @endif
-                <li class="breadcrumb-item active">Manutenção do Usuário</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Cadastros</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.usuarios')}}">Usuários</a>
+            </li>
+            @if($tipo != 'newCad' && $tipo != 'editCad')
+                <li class="breadcrumb-item active">
+                    <a href="{{route('usuarios', ['tipo' => $tipo])}}">Usuários Cadastrados</a>
+                </li>
+            @endif
+            <li class="breadcrumb-item active">Manutenção do Usuário</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -33,7 +33,7 @@
     <div class="card card-navy card-tabs">
         <div class="card-header p-0 pt-1">
             <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
-                <li class="pt-2 px-3"><h3 class="card-title">Manutenção de Usuários</h3></li>
+                <li class="pt-2 px-3"><h3 class="card-title">Manutenção do Usuário</h3></li>
                 <li class="nav-item">
                     <a class="nav-link active" id="custom-tabs-two-dados-gerais-tab" data-toggle="pill" href="#custom-tabs-two-dados-gerais" role="tab" aria-controls="custom-tabs-two-dados-gerais" aria-selected="true">Dados Gerais</a>
                 </li>
@@ -67,36 +67,34 @@
                                 $array_opt = array_combine($new_array1, $new_array2);
                             @endphp
                             <!-- Empresa -->
-                            <x-adminlte-select name="empUsuario" label="Empresa" fgroup-class="col-md-6">
+                            <x-adminlte-select name="empUsuario" label="Empresa" fgroup-class="col-md-3">
                                 <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_empresa']}}"/>
                             </x-adminlte-select>
 
                             <!-- Tipo Usuario -->
-                            <x-adminlte-select name="tipoUsuario" label="Tipo de Usuário" fgroup-class="col-md-3" disabled>
+                            <x-adminlte-select name="tipoUsuario" label="Tipo de Usuário" fgroup-class="col-md-2" disabled>
                                 <x-adminlte-options :options="['A' => 'Administrador', 'P' => 'Padrão']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_tipo']}}"/>
                             </x-adminlte-select>
 
+                            <!-- Nome -->
+                            <x-adminlte-input name="codigo" label="Código" type="text" fgroup-class="col-md-2" value="{{$dadosUsuario[0]['usuario_codigo']}}" readonly/>
+
+                            <!-- Nome -->
+                            <x-adminlte-input name="nome" label="Nome" type="text" placeholder="Nome" fgroup-class="col-md-3" value="{{$dadosUsuario[0]['name']}}"/>
+
                             <!-- Status do Usuario -->
-                            <x-adminlte-select name="statusUsuario" label="Status" fgroup-class="col-md-3">
+                            <x-adminlte-select name="statusUsuario" label="Status" fgroup-class="col-md-2">
                                 <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_status']}}"/>
                             </x-adminlte-select>
                         </div>
-                
+
                         <div class="row">
-
-                            <!-- Nome -->
-                            <x-adminlte-input name="codigo" label="Código" type="text" fgroup-class="col-md-3" value="{{$dadosUsuario[0]['usuario_codigo']}}" readonly/>
-
-                            <!-- Nome -->
-                            <x-adminlte-input name="nome" label="Nome" type="text" placeholder="Nome" fgroup-class="col-md-6" value="{{$dadosUsuario[0]['name']}}"/>
 
                             <!-- CPF / CNPJ -->
                             <x-adminlte-input name="cpf" type="text" label="CPF" fgroup-class="col-md-3" value="{{$dadosUsuario[0]['usuario_cpf'] }}"></x-adminlte-input>
-                        </div>
 
-                        <div class="row">
                             <!-- RG -->
-                            <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosUsuario[0]['usuario_rg'] }}"></x-adminlte-input>
+                            <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-3" value="{{$dadosUsuario[0]['usuario_rg'] }}"></x-adminlte-input>
 
                             @php
                                 $config = [
@@ -118,7 +116,7 @@
                                 }
                             @endphp
                             <!-- Data de Nascimento -->
-                            <x-adminlte-date-range name="dataNascimento" label="Data de Nascimento" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
+                            <x-adminlte-date-range name="dataNascimento" label="Data de Nascimento" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-3">
                                 <x-slot name="prependSlot">
                                 <div class="input-group-text">
                                         <i class="far fa-lg fa-calendar-alt"></i>
@@ -128,7 +126,7 @@
                             @push('js')<script>$(() => $("#dataNascimento").val('{{ $data_nascimento }}'))</script>@endpush
 
                             <!-- Sexo -->
-                            <x-adminlte-select name="sexo" label="Sexo" fgroup-class="col-md-4">
+                            <x-adminlte-select name="sexo" label="Sexo" fgroup-class="col-md-3">
                                 <x-adminlte-options :options="['M' => 'Masculino', 'F' => 'Feminino']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_sexo'] }}" />
                             </x-adminlte-select>
                         </div>
@@ -393,15 +391,22 @@
             </div>
         </div>
         <div class="card-footer">
-            <form method="get" action="{{ route('usuario.cadastro', ['tipo' => $tipo]) }}" style="float: left; margin-right: 2px;">
-            @csrf 
-                <x-adminlte-button label="Novo Usuário" theme="info" icon="fas fa-user-plus" type="submit"/>
-            </form>
-            <form method="post" action="{{ route('usuario.destroy', ['usuario' => $dadosUsuario[0]]) }}" style="float: left;margin-left: 2px;">
-            @csrf 
-            @method('delete')
-                <x-adminlte-button label="Excluir Usuário" theme="info" icon="fa-solid fa-user-xmark" type="submit"/>
-            </form>
+            <div class="d-flex justify-content-between w-100">
+                <div class="d-flex">
+                    <form method="get" action="{{ route('usuario.cadastro', ['tipo' => $tipo]) }}" style="float: left; margin-right: 2px;">
+                    @csrf 
+                        <x-adminlte-button label="Novo Usuário" theme="info" icon="fas fa-user-plus" type="submit"/>
+                    </form>
+                    <form method="post" action="{{ route('usuario.destroy', ['usuario' => $dadosUsuario[0]]) }}" style="float: left;margin-left: 2px;">
+                    @csrf 
+                    @method('delete')
+                        <x-adminlte-button label="Excluir Usuário" theme="info" icon="fa-solid fa-user-xmark" type="submit"/>
+                    </form>
+                </div>
+                <div class="d-flex">
+                    <x-adminlte-button type="button" onclick="window.location='{{ route('home.usuarios') }}'" label="Voltar" theme="info" icon=""/>
+                </div>
+            </div>
         </div>
     </div>
 </div>

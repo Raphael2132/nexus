@@ -1,21 +1,21 @@
 @extends('adminlte::page')
 
-@section('title', 'Manutenção da Empresa')
+@section('title', 'Cadastro de Empresas')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Cadastros</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.empresa')}}">Empresas</a>
-                </li>
-                <li class="breadcrumb-item active">Manutenção da Empresa</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Cadastros</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.empresa')}}">Empresas</a>
+            </li>
+            <li class="breadcrumb-item active">Manutenção da Empresa</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -48,11 +48,25 @@
 
                         <div class="row">
                             <!-- Código -->
-                            <x-adminlte-input name="codigo" label="Código" type="text" fgroup-class="col-md-2" value="{{$dadosEmpresa[0]['empresa_codigo'] }}" readonly/>
+                            <x-adminlte-input name="codigo" type="text" fgroup-class="col-md-2" value="{{$dadosEmpresa[0]['empresa_codigo'] }}" readonly>
+                                <x-slot name="label">
+                                    Código <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
+
                             <!-- Nome -->
-                            <x-adminlte-input name="nome" label="Nome" type="text" placeholder="Nome Completo" fgroup-class="col-md-6" value="{{$dadosEmpresa[0]['empresa_nome'] }}"/>
+                            <x-adminlte-input name="nome" type="text" placeholder="Nome Completo" fgroup-class="col-md-6" value="{{$dadosEmpresa[0]['empresa_nome'] }}">
+                                <x-slot name="label">
+                                    Nome da Empresa <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
+
                             <!-- CNPJ -->
-                            <x-adminlte-input name="cnpj" type="text" label="CNPJ" fgroup-class="col-md-4" value="{{$dadosEmpresa[0]['empresa_cnpj'] }}"></x-adminlte-input>
+                            <x-adminlte-input name="cnpj" type="text" fgroup-class="col-md-4" value="{{$dadosEmpresa[0]['empresa_cnpj'] }}">
+                                <x-slot name="label">
+                                    CNPJ <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
                         </div>
                         <div class="row">
                             <!-- Inscrição Estadual -->
@@ -62,7 +76,7 @@
                             <x-adminlte-input name="insMunicipal" type="number" label="Inscrição Municipal" fgroup-class="col-md-6" value="{{$dadosEmpresa[0]['empresa_insc_municipal'] }}"></x-adminlte-input>
                         </div>
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -74,7 +88,10 @@
                     @method('post')
                         <div class="row">
                             <!-- Email -->
-                            <x-adminlte-input name="email" type="email" label="Email" placeholder="email@exemplo.com" fgroup-class="col-md-6" value="{{$dadosEmpresa[0]['empresa_email'] }}">
+                            <x-adminlte-input name="email" type="email" placeholder="email@exemplo.com" fgroup-class="col-md-6" value="{{$dadosEmpresa[0]['empresa_email'] }}">
+                                <x-slot name="label">
+                                    Email <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text">
                                         <i class="fa-solid fa-envelope"></i>
@@ -101,7 +118,7 @@
                             </x-adminlte-input>
                         </div>
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -201,7 +218,10 @@
                                         <input id="ibgeCodMun" type="hidden" name="ibgeCodMun">
 
                                         <!-- CEP -->
-                                        <x-adminlte-input name="cep" type="text" label="CEP" fgroup-class="col-md-4">
+                                        <x-adminlte-input name="cep" type="text" fgroup-class="col-md-4">
+                                            <x-slot name="label">
+                                                CEP <span style="color:red;">*</span>
+                                            </x-slot>
                                             <x-slot name="prependSlot">
                                                 <div class="input-group-text">
                                                     <i class="fa-solid fa-location-dot"></i>
@@ -211,7 +231,10 @@
 
                                         <div class="row">
                                             <!-- Logradouro -->
-                                            <x-adminlte-input name="logradouro" type="text" label="Logradouro" fgroup-class="col-md-9">
+                                            <x-adminlte-input name="logradouro" type="text" fgroup-class="col-md-9">
+                                                <x-slot name="label">
+                                                    Logradouro <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-address-book"></i>
@@ -220,7 +243,10 @@
                                             </x-adminlte-input>
 
                                             <!-- Numero -->
-                                            <x-adminlte-input name="numero" type="text" label="Número" fgroup-class="col-md-3">
+                                            <x-adminlte-input name="numero" type="text" fgroup-class="col-md-3">
+                                                <x-slot name="label">
+                                                    Número <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-hashtag"></i>
@@ -234,12 +260,19 @@
                                             <x-adminlte-input name="complemento" type="text" label="Complemento" fgroup-class="col-md-6"></x-adminlte-input>
 
                                             <!-- Bairro -->
-                                            <x-adminlte-input name="bairro" type="text" label="Bairro" fgroup-class="col-md-6"></x-adminlte-input>
+                                            <x-adminlte-input name="bairro" type="text" fgroup-class="col-md-6">
+                                                <x-slot name="label">
+                                                    Bairro <span style="color:red;">*</span>
+                                                </x-slot>
+                                            </x-adminlte-input>
                                         </div>
 
                                         <div class="row">
                                             <!-- Cidade -->
-                                            <x-adminlte-input name="cidade" type="text" label="Cidade" fgroup-class="col-md-6">
+                                            <x-adminlte-input name="cidade" type="text" fgroup-class="col-md-6">
+                                                <x-slot name="label">
+                                                    Cidade <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-city"></i>
@@ -261,12 +294,19 @@
                                             @endphp
 
                                             <!-- Estado -->
-                                            <x-adminlte-select name="uf" label="UF" fgroup-class="col-md-3">
+                                            <x-adminlte-select name="uf" fgroup-class="col-md-3">
+                                                <x-slot name="label">
+                                                    UF <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
                                             </x-adminlte-select>
 
                                             <!-- Pais -->
-                                            <x-adminlte-input name="pais" type="text" label="Pais" fgroup-class="col-md-3"></x-adminlte-input>
+                                            <x-adminlte-input name="pais" type="text" fgroup-class="col-md-3">
+                                                <x-slot name="label">
+                                                    Pais <span style="color:red;">*</span>
+                                                </x-slot>
+                                            </x-adminlte-input>
                                         </div>
                                         <!-- Criação dos botões do Modal -->  
                                         <x-slot name="footerSlot">
@@ -278,7 +318,7 @@
                             </form>
                             <!-- Botão de chamada do Modal -->  
                             <div class="d-flex justify-content-center">
-                                <x-adminlte-button label="Novo Endereço" data-toggle="modal" data-target="#modalCustom" class="bg-info" icon="fa-solid fa-address-book"/>
+                                <x-adminlte-button label="Novo Endereço" data-toggle="modal" data-target="#modalCustom" theme="info" icon="fa-solid fa-address-book"/>
                             </div>
                         </div>
                     </div>
@@ -286,15 +326,22 @@
             </div>
         </div>
         <div class="card-footer">
-            <form method="get" action="{{ route('empresa.cadastro') }}" style="float: left; margin-right: 2px;">
-            @csrf 
-                <x-adminlte-button label="Nova Empresa" theme="info" icon="fa-solid fa-plus" type="submit"/>
-            </form>
-            <form method="post" action="{{ route('empresa.destroy', ['empresa' => $dadosEmpresa[0]]) }}" style="float: left;margin-left: 2px;">
-            @csrf 
-            @method('delete')
-                <x-adminlte-button label="Excluir Empresa" theme="info" icon="fa-solid fa-trash" type="submit"/>
-            </form>
+            <div class="d-flex justify-content-between w-100">
+                <div class="d-flex">
+                    <form method="get" action="{{ route('empresa.cadastro') }}" style="float: left; margin-right: 2px;">
+                    @csrf 
+                        <x-adminlte-button label="Nova Empresa" theme="info" icon="fa-solid fa-plus" type="submit"/>
+                    </form>
+                    <form method="post" action="{{ route('empresa.destroy', ['empresa' => $dadosEmpresa[0]]) }}" style="float: left;margin-left: 2px;">
+                    @csrf 
+                    @method('delete')
+                        <x-adminlte-button label="Excluir Empresa" theme="info" icon="fa-solid fa-trash" type="submit"/>
+                    </form>
+                </div>
+                <div class="d-flex">
+                    <x-adminlte-button type="button" onclick="window.location='{{ route('home.empresa') }}'" label="Voltar" theme="info" icon=""/>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -482,6 +529,7 @@ $(function () {
         maxlength: 100
       },
 	  numero: {
+        required: true,
 		maxlength: 5
       },
 	  complemento: {
@@ -512,6 +560,7 @@ $(function () {
         maxlength: "Informe no máximo 100 caracteres para o Logradouro"
       },
 	  numero: {
+        required: "Por Favor informe o Número para o Endereço",
 		maxlength: "Informe no máximo 5 caracteres no Número"
       },
 	  complemento: {
