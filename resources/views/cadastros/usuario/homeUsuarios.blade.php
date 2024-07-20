@@ -104,7 +104,7 @@
                                         <!-- Conteudo da esquerda do modal -->
                                         <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
                                             <div class="post">
-                                                <h4 class="text-primary">Dados Gerais do Usuário</h4>
+                                                <h5 class="text-primary">Dados Gerais do Usuário</h5>
                                                 @php
                                                     if(!empty($usuario->usuario_cpf)){
                                                         $cpf = substr($usuario->usuario_cpf,0,3).'.'.substr($usuario->usuario_cpf,3,3).'.'.substr($usuario->usuario_cpf,6,3).'-'.substr($usuario->usuario_cpf,-2,2);
@@ -146,23 +146,12 @@
                                                         $status = "Desativado";
                                                     }
 
-                                                    if($usuario->usuario_acesso_cadastros == 'S'){
-                                                        $acessaCadastro = "Sim";
-                                                    }else{
-                                                        $acessaCadastro = "Não";
-                                                    }
-
-                                                    if($usuario->usuario_altera_permissoes_acesso == 'S'){
-                                                        $alteraPermissao = "Sim";
-                                                    }else{
-                                                        $alteraPermissao = "Não";
-                                                    }
-
-                                                    if($usuario->usuario_acesso_pararametros == 'S'){
-                                                        $acessaParametros = "Sim";
-                                                    }else{
-                                                        $acessaParametros = "Não";
-                                                    }
+                                                    $acessaCadastro = Helper::formataSimNao($usuario->usuario_acesso_cadastros);
+                                                    $alteraPermissao = Helper::formataSimNao($usuario->usuario_altera_permissoes_acesso);
+                                                    $acessaParametros = Helper::formataSimNao($usuario->usuario_acesso_pararametros);
+                                                    $autDesconto = Helper::formataSimNao($usuario->usuario_aut_desc);
+                                                    $acessaModSrv = Helper::formataSimNao($usuario->usuario_acesso_mod_servicos);
+                                                    $acessaModNf = Helper::formataSimNao($usuario->usuario_acesso_mod_nf);
                                                 @endphp
                                                 <div class="text-muted">
                                                     <div class="row">
@@ -200,19 +189,33 @@
                                                 </div>
                                             </div>
                                             <div class="post">
-                                                <h4 class="text-primary">Parametrização</h4>
+                                                <h5 class="text-primary">Módulos do Sistema</h5>
                                                 <div class="text-muted">
                                                     <div class="row">
                                                         <p class="text-sm col-md-6">Acessa Área de Cadastros
                                                             <b class="d-block">{{ $acessaCadastro }}</b>
                                                         </p>
-                                                        <p class="text-sm col-md-6">Altera Permissões de Acesso dos Usuários
-                                                            <b class="d-block">{{ $alteraPermissao }}</b>
+                                                        <p class="text-sm col-md-6">Acessa Área de Parametrização Geral
+                                                            <b class="d-block">{{ $acessaParametros }}</b>
                                                         </p>
                                                     </div>
                                                     <div class="row">
-                                                        <p class="text-sm col-md-6">Acessa Área de Parametrização Geral
-                                                            <b class="d-block">{{ $acessaParametros }}</b>
+                                                        <p class="text-sm col-md-6">Acessa o Módulo de Serviços
+                                                            <b class="d-block">{{ $acessaModSrv }}</b>
+                                                        </p>
+                                                        <p class="text-sm col-md-6">Acessa o Módulo de Emissão de NFS-e
+                                                            <b class="d-block">{{ $acessaModNf }}</b>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <h5 class="text-primary">Permissões do Sistema</h5>
+                                                <div class="text-muted">
+                                                    <div class="row">
+                                                        <p class="text-sm col-md-6">Permissão de Autorização de Desconto
+                                                            <b class="d-block">{{ $autDesconto }}</b>
+                                                        </p>
+                                                        <p class="text-sm col-md-6">Altera Permissões de Acesso dos Usuários
+                                                            <b class="d-block">{{ $alteraPermissao }}</b>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -220,7 +223,7 @@
                                         </div>
                                         <!-- Conteudo da direita do modal -->
                                         <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
-                                            <h4 class="text-primary">Endereço</h4>
+                                            <h5 class="text-primary">Endereço</h5>
                                             @php
                                                 //Busca os dados do endereço da empresa e faz o tratamento de dados
                                                 $endereco = DB::table('cadastro_usuario_enderecos')->where('endereco_usuario_codigo','=',$usuario->usuario_codigo)->where('endereco_principal','=','S')->get();
@@ -289,7 +292,7 @@
                                                     @endif
                                                 </address>
                                             </div>
-                                            <h4 class="text-primary">Contato</h4>
+                                            <h5 class="text-primary">Contato</h5>
                                             <!-- Dados do contato -->
                                             <div class="text-muted">
                                                 <p class="text-sm">Telefone Celular
