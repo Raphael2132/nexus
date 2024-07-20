@@ -4,18 +4,18 @@
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Cadastros</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.clientes')}}">Clientes</a>
-                </li>
-                <li class="breadcrumb-item active">Cadastro de Cliente</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Cadastros</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.clientes')}}">Clientes</a>
+            </li>
+            <li class="breadcrumb-item active">Cadastro de Cliente</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -26,22 +26,36 @@
     <x-adminlte-card title="Cadastro de Novo Cliente" theme="navy">
         <div class="row"> 
             <!-- Tipo de Cadastro -->
-            <x-adminlte-select name="tipoCadastro" label="Tipo de Cadastro" fgroup-class="col-md-6">
+            <x-adminlte-select name="tipoCadastro" fgroup-class="col-md-6">
+                <x-slot name="label">
+                    Tipo de Cadastro <span style="color:red;">*</span>
+                </x-slot>
                 <x-adminlte-options :options="['C' => 'Cliente', 'F' => 'Fornecedor']" empty-option="Selecione..."/>
             </x-adminlte-select>
 
             <!-- Tipo de Pessoa -->
-            <x-adminlte-select name="tipoPessoa" label="Tipo de Pessoa" fgroup-class="col-md-6">
+            <x-adminlte-select name="tipoPessoa" fgroup-class="col-md-6">
+                <x-slot name="label">
+                    Tipo de Pessoa <span style="color:red;">*</span>
+                </x-slot>
                 <x-adminlte-options :options="['F' => 'Física', 'J' => 'Jurídica']" empty-option="Selecione..."/>
             </x-adminlte-select>
         </div>
 
         <div class="row">
             <!-- Nome -->
-            <x-adminlte-input name="nome" label="Nome" type="text" placeholder="Nome Completo" fgroup-class="col-md-8"/>
+            <x-adminlte-input name="nome" type="text" placeholder="Nome Completo" fgroup-class="col-md-8">
+                <x-slot name="label">
+                    Nome <span style="color:red;">*</span>
+                </x-slot>
+            </x-adminlte-input>
 
             <!-- CPF / CNPJ -->
-            <x-adminlte-input name="cpfCnpj" type="text" label="CPF / CNPJ" fgroup-class="col-md-4"></x-adminlte-input>
+            <x-adminlte-input name="cpfCnpj" type="text" fgroup-class="col-md-4">
+                <x-slot name="label">
+                    CPF / CNPJ <span style="color:red;">*</span>
+                </x-slot>
+            </x-adminlte-input>
         </div>
 
         <div id="dadosPessoal">
@@ -91,7 +105,10 @@
         </div>
         <!-- /.card -->
         <x-slot name="footerSlot">
-            <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+            <div class="d-flex justify-content-between w-100">
+                <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                <x-adminlte-button type="button" onclick="window.location='{{ route('home.clientes') }}'" label="Voltar" theme="info" icon=""/>
+            </div>
         </x-slot>
     </x-adminlte-card>
 </form>
@@ -130,11 +147,6 @@
             $("#dadosPessoal").hide();
             $("#dadosJuridicos").hide();
         }
-        
-        //Ao clicar no botão salvar retira o disabled do campo para não ter problema no request do insert do campo
-        $(".btn-flat").click(function(){
-            $("#tipoPessoa").prop('disabled', false);
-        });
 
         $("#tipoCadastro").change(function(){
         
@@ -297,6 +309,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 });

@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Cadastros</h1>
+            <h4 style="margin-bottom: 0px !important;">Cadastros</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -298,9 +298,12 @@ if($tipo == 'J'){
         @endforeach
     </x-adminlte-datatable>
     <x-slot name="footerSlot">
-        <form method="get" action="{{ route('cliente.cadastro') }}">
-            <x-adminlte-button label="Novo Cliente" theme="info" icon="fas fa-user-plus" type="submit"/>
-        </form>
+        <div class="d-flex justify-content-between w-100">
+            <form method="get" action="{{ route('cliente.cadastro') }}">
+                <x-adminlte-button label="Novo Cliente" theme="info" icon="fas fa-user-plus" type="submit"/>
+            </form>
+            <x-adminlte-button type="button" onclick="window.location='{{ route('home.clientes') }}'" label="Voltar" theme="info" icon=""/>
+        </div>
     </x-slot>
 </x-adminlte-card>
 @stop

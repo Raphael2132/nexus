@@ -4,22 +4,27 @@
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Cadastros</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.prestadores')}}">Prestadores</a>
-                </li>
-                @if($acao == 'N')
-                    <li class="breadcrumb-item active">Cadastro de Prestadores</li>
-                @else
-                    <li class="breadcrumb-item active">Manutenção de Prestadores</li>
-                @endif
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Cadastros</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.prestadores')}}">Prestadores</a>
+            </li>
+            @if($acao == 'N')
+                <li class="breadcrumb-item active">Cadastro de Prestadores</li>
+            @else
+                @if(!empty(trim($tipo)))
+                <li class="breadcrumb-item active">
+                    <a href="{{route('prestador.consulta', ['tipo' => $tipo])}}">Prestadores Cadastrados</a>
+                </li>
+                @endif
+                <li class="breadcrumb-item active">Manutenção de Prestadores</li>
+            @endif
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -48,15 +53,26 @@
                         $array_opt = array_combine($new_array1, $new_array2);
                     @endphp
                     <!-- Empresa -->
-                    <x-adminlte-select name="empresaPrestador" label="Empresa" fgroup-class="col-md-4">
+                    <x-adminlte-select name="empresaPrestador" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Empresa <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
                     </x-adminlte-select>
 
                     <!-- Código -->
-                    <x-adminlte-input name="nomePrestador" label="Nome" type="text" value="" fgroup-class="col-md-4"/>
+                    <x-adminlte-input name="nomePrestador" type="text" placeholder="Nome Completo" value="" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Nome do Prestador <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                     
                     <!-- Descrição -->
-                    <x-adminlte-input name="cpfPrestador" label="CPF" type="text" value="" fgroup-class="col-md-4"/>
+                    <x-adminlte-input name="cpfPrestador" type="text" value="" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            CPF <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 <div class="row">
@@ -75,19 +91,28 @@
                         $array_opt_set = null;
                     @endphp
                     <!-- area -->
-                    <x-adminlte-select name="areaPrestador" label="Área" fgroup-class="col-md-6">
+                    <x-adminlte-select name="areaPrestador" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Área <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt_are" empty-option="Selecione..."/>
                     </x-adminlte-select>
                     
                     <!-- Setor -->
-                    <x-adminlte-select name="setPrestador" label="Setor" fgroup-class="col-md-6">
+                    <x-adminlte-select name="setPrestador" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Setor <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt_set" empty-option="Selecione..."/>
                     </x-adminlte-select>
                 </div>
 
                 <!-- /.card -->
                 <x-slot name="footerSlot">
-                    <x-adminlte-button class="btn-flat btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                    <div class="d-flex justify-content-between w-100">
+                        <x-adminlte-button class="btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button type="button" onclick="window.location='{{ route('home.prestadores') }}'" label="Voltar" theme="info" icon=""/>
+                    </div>
                 </x-slot>
             </x-adminlte-card>
         </form>
@@ -98,7 +123,7 @@
     <div class="card card-navy card-tabs">
         <div class="card-header p-0 pt-1">
             <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
-                <li class="pt-2 px-3"><h3 class="card-title">Manutenção de Prestadores</h3></li>
+                <li class="pt-2 px-3"><h3 class="card-title">Manutenção do Prestador</h3></li>
                 <li class="nav-item">
                     <a class="nav-link active" id="custom-tabs-two-dados-pessoais-tab" data-toggle="pill" href="#custom-tabs-two-dados-pessoais" role="tab" aria-controls="custom-tabs-two-dados-pessoais" aria-selected="true">Dados Pessoais</a>
                 </li>
@@ -115,7 +140,7 @@
 
                 <!-- Aba Dados Pessoais -->
                 <div class="tab-pane fade show active" id="custom-tabs-two-dados-pessoais" role="tabpanel" aria-labelledby="custom-tabs-two-dados-pessoais-tab">
-                    <form method="post" action="{{route('prestador.atualizar', ['prestador' => $dadosPrestador[0]['prestador_id'], 'prestador_cod' => $dadosPrestador[0]['prestador_codigo'], 'atualiza' => 'dados'])}}" id="formularioManuDados" novalidate="novalidate">
+                    <form method="post" action="{{route('prestador.atualizar', ['prestador' => $dadosPrestador[0]['prestador_id'], 'prestador_cod' => $dadosPrestador[0]['prestador_codigo'], 'atualiza' => 'dados', 'empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo])}}" id="formularioManuDados" novalidate="novalidate">
                     @csrf 
                     @method('post')
 
@@ -137,14 +162,26 @@
                                 $array_opt = array_combine($new_array1, $new_array2);
                             @endphp
                             <!-- Empresa -->
-                            <x-adminlte-select name="empresaPrestador" label="Empresa" fgroup-class="col-md-4">
+                            <x-adminlte-select name="empresaPrestador" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Empresa <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_empresa']}}"/>
                             </x-adminlte-select>
 
                             <!-- Nome -->
-                            <x-adminlte-input name="nomePrestador" label="Nome" type="text" placeholder="Nome Completo" fgroup-class="col-md-6" value="{{$dadosPrestador[0]['prestador_nome'] }}"/>
+                            <x-adminlte-input name="nomePrestador" type="text" placeholder="Nome Completo" fgroup-class="col-md-6" value="{{$dadosPrestador[0]['prestador_nome'] }}">
+                                <x-slot name="label">
+                                    Nome <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
+
                             <!-- CPF / CNPJ -->
-                            <x-adminlte-input name="cpfPrestador" type="text" label="CPF / CNPJ" fgroup-class="col-md-2" value="{{$dadosPrestador[0]['prestador_cpf'] }}"></x-adminlte-input>
+                            <x-adminlte-input name="cpfPrestador" type="text" fgroup-class="col-md-2" value="{{$dadosPrestador[0]['prestador_cpf'] }}">
+                                <x-slot name="label">
+                                    CPF <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
                         </div>
 
                         <div class="row">
@@ -221,12 +258,18 @@
                             @endphp
 
                             <!-- Status -->
-                            <x-adminlte-select name="statusPrestador" label="Situação" fgroup-class="col-md-4">
+                            <x-adminlte-select name="statusPrestador" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Situação <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Demitido']" selected="{{$dadosPrestador[0]['prestador_status']}}" />
                             </x-adminlte-select>
 
                             <!-- Data de Admissão -->
-                            <x-adminlte-date-range name="dataAdmissao" label="Data de Admissão" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
+                            <x-adminlte-date-range name="dataAdmissao" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Data de Admissão <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-slot name="prependSlot">
                                 <div class="input-group-text">
                                         <i class="far fa-lg fa-calendar-alt"></i>
@@ -271,18 +314,24 @@
                                 $array_opt_set = array_combine($new_array1_set, $new_array2_set);
                             @endphp
                             <!-- area -->
-                            <x-adminlte-select name="areaPrestador" label="Área" fgroup-class="col-md-6">
+                            <x-adminlte-select name="areaPrestador" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Área <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="$array_opt_are" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_are']}}"/>
                             </x-adminlte-select>
                             <!-- Setor -->
-                            <x-adminlte-select name="setPrestador" label="Setor" fgroup-class="col-md-6">
+                            <x-adminlte-select name="setPrestador" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Setor <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="$array_opt_set" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_set']}}" />
                             </x-adminlte-select>
                         </div>
 
                         </br>
                         <div class="post">
-                            <h5 class="text-secondary font-weight-bold">Detalhes do Sistema</h5>
+                            <h5 class="text-secondary font-weight-bold">Informações do Sistema</h5>
                         </div>
 
                         <div class="row">
@@ -309,35 +358,47 @@
                             @endphp
 
                             <!-- Prestador acessa o sistema -->
-                            <x-adminlte-select name="prestadorUsuSis" label="Usuário do Sistema" fgroup-class="col-md-6">
+                            <x-adminlte-select name="prestadorUsuSis" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Usuário do Sistema <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_acesso_sis']}}" />
                             </x-adminlte-select>
                             
                             <!-- Codigo de Usuario -->
-                            <x-adminlte-select name="codUsuPrestador" label="Código de Usuário" fgroup-class="col-md-6">
+                            <x-adminlte-select name="codUsuPrestador" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Código de Usuário do Sistema <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="$array_opt_usu" empty-option="Selecione..." selected="{{$usuario}}"/>
                             </x-adminlte-select>
                         </div>
 
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button class="btn-flat btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
 
                 <!-- Aba dos dados do Contato do prestador -->
                 <div class="tab-pane fade" id="custom-tabs-two-contato" role="tabpanel" aria-labelledby="custom-tabs-two-contato-tab">
-                    <form method="post" action="{{route('prestador.atualizar', ['prestador' => $dadosPrestador[0]['prestador_id'], 'prestador_cod' => $dadosPrestador[0]['prestador_codigo'], 'atualiza' => 'contato'])}}" id="quickForm2" novalidate="novalidate">
+                    <form method="post" action="{{route('prestador.atualizar', ['prestador' => $dadosPrestador[0]['prestador_id'], 'prestador_cod' => $dadosPrestador[0]['prestador_codigo'], 'atualiza' => 'contato', 'empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo])}}" id="formulario-contato" novalidate="novalidate">
                     @csrf 
                     @method('post')
                         <div class="row">
                             <!-- Tipo do Email -->
-                            <x-adminlte-select name="tipoEmail" label="Tipo do Email" fgroup-class="col-md-4">
+                            <x-adminlte-select name="tipoEmail" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Tipo do Email <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['P' => 'Pessoal', 'C' => 'Comercial']" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_tipo_email']}}"/>
                             </x-adminlte-select>
 
                             <!-- Email -->
-                            <x-adminlte-input name="emailPrestador" type="email" label="Email" placeholder="email@exemplo.com" fgroup-class="col-md-8" value="{{$dadosPrestador[0]['prestador_email'] }}">
+                            <x-adminlte-input name="emailPrestador" type="email" placeholder="email@exemplo.com" fgroup-class="col-md-8" value="{{$dadosPrestador[0]['prestador_email'] }}">
+                                <x-slot name="label">
+                                    Email <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text">
                                         <i class="fa-solid fa-envelope"></i>
@@ -366,7 +427,7 @@
                             </x-adminlte-input>
                         </div>
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -425,7 +486,7 @@
                                         </i>
                                         <!-- Gera a div dos botões do card -->
                                         <div style="padding: 10px; height:30px;">
-                                            <form method="post" action="{{ route('enderecoPrestador.destroy', ['endereco' => $endereco->endereco_id, 'empresa' => $dadosPrestador[0]['prestador_empresa']]) }}" style="float: left;" >
+                                            <form method="post" action="{{ route('enderecoPrestador.destroy', ['endereco' => $endereco->endereco_id, 'empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo]) }}" style="float: left;" >
                                             @csrf 
                                             @method('delete')
                                                 <x-adminlte-button class="btn-sm" theme="danger" icon="fa fa-lg fa-fw fa-trash" type="submit" style="margin-right: 5px;"/>
@@ -434,7 +495,7 @@
                                                 if($endereco->endereco_principal == "N"){
                                                     $endPrincipal = json_encode($endereco);
                                             @endphp
-                                            <form method="get" action="{{ route('enderecoPrestador.principal', ['endereco' => $endereco->endereco_id, 'prestador_cod' => $endereco->endereco_prestador_codigo, 'empresa' => $dadosPrestador[0]['prestador_empresa']]) }}" style="float: left;">
+                                            <form method="get" action="{{ route('enderecoPrestador.principal', ['endereco' => $endereco->endereco_id, 'prestador_cod' => $endereco->endereco_prestador_codigo, 'empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo]) }}" style="float: left;">
                                             @csrf 
                                             @method('get')
                                                 <x-adminlte-button class="btn-sm" label="Tornar Principal" theme="success" icon="fa-solid fa-location-dot" type="submit"/>
@@ -454,7 +515,7 @@
                            
                         <!-- Gera o Modal com os campos da inserção dos dados do endereço do prestador -->
                         <div>
-                            <form method="post" action="{{route('enderecoPrestador.inserir',['empresa' => $dadosPrestador[0]['prestador_empresa']])}}" id="formularioEndereco" novalidate="novalidate">
+                            <form method="post" action="{{route('enderecoPrestador.inserir',['empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo])}}" id="formularioEndereco" novalidate="novalidate">
                             @csrf 
                             @method('post')    
                                 <!-- Criação do Modal -->                           
@@ -465,7 +526,10 @@
                                         <input id="ibgeCodMun" type="hidden" name="ibgeCodMun">
                                     
                                         <!-- CEP -->
-                                        <x-adminlte-input name="cep" type="text" label="CEP" fgroup-class="col-md-4">
+                                        <x-adminlte-input name="cep" type="text" fgroup-class="col-md-4">
+                                            <x-slot name="label">
+                                                CEP <span style="color:red;">*</span>
+                                            </x-slot>
                                             <x-slot name="prependSlot">
                                                 <div class="input-group-text">
                                                     <i class="fa-solid fa-location-dot"></i>
@@ -475,7 +539,10 @@
 
                                         <div class="row">
                                             <!-- Logradouro -->
-                                            <x-adminlte-input name="logradouro" type="text" label="Logradouro" fgroup-class="col-md-9">
+                                            <x-adminlte-input name="logradouro" type="text" fgroup-class="col-md-9">
+                                                <x-slot name="label">
+                                                    Logradouro <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-address-book"></i>
@@ -484,7 +551,10 @@
                                             </x-adminlte-input>
 
                                             <!-- Numero -->
-                                            <x-adminlte-input name="numero" type="text" label="Número" fgroup-class="col-md-3">
+                                            <x-adminlte-input name="numero" type="text" fgroup-class="col-md-3">
+                                                <x-slot name="label">
+                                                    Número <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-hashtag"></i>
@@ -498,12 +568,19 @@
                                             <x-adminlte-input name="complemento" type="text" label="Complemento" placeholder="Exe.: Apto 1002, Casa A ou Chácara" fgroup-class="col-md-6"></x-adminlte-input>
 
                                             <!-- Bairro -->
-                                            <x-adminlte-input name="bairro" type="text" label="Bairro" fgroup-class="col-md-6"></x-adminlte-input>
+                                            <x-adminlte-input name="bairro" type="text" fgroup-class="col-md-6">
+                                                <x-slot name="label">
+                                                    Bairro <span style="color:red;">*</span>
+                                                </x-slot>
+                                            </x-adminlte-input>
                                         </div>
 
                                         <div class="row">
                                             <!-- Cidade -->
-                                            <x-adminlte-input name="cidade" type="text" label="Cidade" fgroup-class="col-md-6">
+                                            <x-adminlte-input name="cidade" type="text" fgroup-class="col-md-6">
+                                                <x-slot name="label">
+                                                    Cidade <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-city"></i>
@@ -525,12 +602,19 @@
                                             @endphp
 
                                             <!-- Estado -->
-                                            <x-adminlte-select name="uf" label="UF" fgroup-class="col-md-3">
+                                            <x-adminlte-select name="uf" fgroup-class="col-md-3">
+                                                <x-slot name="label">
+                                                    UF <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
                                             </x-adminlte-select>
 
                                             <!-- Pais -->
-                                            <x-adminlte-input name="pais" type="text" label="Pais" fgroup-class="col-md-3"></x-adminlte-input>
+                                            <x-adminlte-input name="pais" type="text" fgroup-class="col-md-3">
+                                                <x-slot name="label">
+                                                    País <span style="color:red;">*</span>
+                                                </x-slot>
+                                            </x-adminlte-input>
                                         </div>
                                         <!-- Criação dos botões do Modal -->  
                                         <x-slot name="footerSlot">
@@ -551,15 +635,26 @@
             </div>
         </div>
         <div class="card-footer">
-            <form method="get" action="{{ route('prestador.cadastro') }}" style="float: left; margin-right: 2px;">
-            @csrf 
-                <x-adminlte-button label="Novo Prestador" theme="info" icon="fa-solid fa-plus" type="submit"/>
-            </form>
-            <form method="post" action="{{ route('prestador.destroy', ['prestador' => $dadosPrestador[0]]) }}" style="float: left;margin-left: 2px;">
-            @csrf 
-            @method('delete')
-                <x-adminlte-button label="Excluir Prestador" theme="info" icon="fa-solid fa-trash" type="submit"/>
-            </form>
+            <div class="d-flex justify-content-between w-100">
+                <div class="d-flex">
+                    <form method="get" action="{{ route('prestador.cadastro') }}" style="float: left; margin-right: 2px;">
+                    @csrf 
+                        <x-adminlte-button label="Novo Prestador" theme="info" icon="fa-solid fa-plus" type="submit"/>
+                    </form>
+                    <form method="post" action="{{ route('prestador.destroy', ['prestador' => $dadosPrestador[0]]) }}" style="float: left;margin-left: 2px;">
+                    @csrf 
+                    @method('delete')
+                        <x-adminlte-button label="Excluir Prestador" theme="info" icon="fa-solid fa-trash" type="submit"/>
+                    </form>
+                </div>
+                <div class="d-flex">
+                    @if(!empty(trim($tipo)))
+                    <x-adminlte-button type="button" onclick="window.location='{{ route('prestador.consulta', ['tipo' => $tipo]) }}'" label="Voltar" theme="info" icon=""/>
+                    @else
+                    <x-adminlte-button type="button" onclick="window.location='{{ route('home.prestadores') }}'" label="Voltar" theme="info" icon=""/>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -812,6 +907,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 
@@ -839,6 +942,12 @@ $(function () {
             prestadorUsuSis: {
                 required: true
             },
+            codUsuPrestador: {
+                required: function(element) {
+                    let usuSis = $('#prestadorUsuSis').val();
+                    return usuSis === 'S';
+                }
+            },
         },
         messages: {
             empresaPrestador: {
@@ -862,6 +971,43 @@ $(function () {
             },
             prestadorUsuSis: {
                 required: "Por Favor informe se o Prestador tem acesso ao sistema"
+            },
+            codUsuPrestador: {
+                required: "Por Favor informe o Código de Usuário do Sistema"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    $('#formulario-contato').validate({
+        rules: {
+            tipoEmail: {
+                required: true
+            },
+            emailPrestador: {
+                email: true,
+                maxlength: 80,
+                required: true
+            },
+        },
+        messages: {
+            tipoEmail: {
+                required: "Por Favor informe o Tipo do Email"
+            },
+            emailPrestador: {
+                email: "Formato do Email inválido",
+                required: "Por Favor informe o Email",
+                maxlength: "Informe no máximo 80 caracteres no Email"
             },
         },
         errorElement: 'span',
@@ -887,6 +1033,7 @@ $(function () {
                 maxlength: 100
             },
             numero: {
+                required: true,
                 maxlength: 5
             },
             complemento: {
@@ -917,6 +1064,7 @@ $(function () {
                 maxlength: "Informe no máximo 100 caracteres para o Logradouro"
             },
             numero: {
+                required: "Por Favor informe o Número do Endereço",
                 maxlength: "Informe no máximo 5 caracteres no Número"
             },
             complemento: {

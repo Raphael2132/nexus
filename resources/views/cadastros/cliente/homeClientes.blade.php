@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Informações Gerais dos Clientes')
+@section('title', 'Cadastro de Clientes')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Cadastros</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Clientes</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Cadastros</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">Clientes</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')

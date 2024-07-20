@@ -35,11 +35,11 @@ class CadastroPrestadoresController extends Controller
         return view('/cadastros/prestador/formularioPrestador', ['acao' => 'N']);
     }
 
-    public function editar($dadosPrestador, $empresa)
+    public function editar($dadosPrestador, $empresa, $tipo)
     {
         $resultadoPrestador = $this->prestador->where('prestador_codigo','=',$dadosPrestador)->where('prestador_empresa','=',$empresa)->get();
 
-        return view('/cadastros/prestador/formularioPrestador',['dadosPrestador'=>$resultadoPrestador, 'acao' => 'M']);
+        return view('/cadastros/prestador/formularioPrestador',['dadosPrestador'=>$resultadoPrestador, 'acao' => 'M', 'tipo' => $tipo]);
     }
 
     //Redireciona a home depois da exclusão do registro via ajax
@@ -115,10 +115,10 @@ class CadastroPrestadoresController extends Controller
 
         CadastroPrestadores::create($dados);
         
-        return redirect(route('prestador.editarCadastro', ['dadosPrestador' => $codigo, 'empresa' => $request->empresaPrestador]))->with('success', 'Prestador cadastrado com sucesso!');
+        return redirect(route('prestador.editarCadastro', ['dadosPrestador' => $codigo, 'empresa' => $request->empresaPrestador, 'tipo' => 'T']))->with('success', 'Prestador cadastrado com sucesso!');
     }
 
-    public function update(Request $request, $prestador, $prestador_cod, $atualiza){
+    public function update(Request $request, $prestador, $prestador_cod, $atualiza, $empresa, $tipo){
 
         if($atualiza == 'contato'){
             if(!empty($request->telResidencial)){
@@ -252,7 +252,7 @@ class CadastroPrestadoresController extends Controller
         
         }        
         
-        return redirect(route('prestador.editarCadastro', ['dadosPrestador' => $prestador_cod, 'empresa' => $empresa]))->with('success', 'Prestador atualizado com sucesso!');
+        return redirect(route('prestador.editarCadastro', ['dadosPrestador' => $prestador_cod, 'empresa' => $empresa, 'tipo' => $tipo]))->with('success', 'Prestador atualizado com sucesso!');
     }
 
     public function destroy(CadastroPrestadores $prestador){

@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Informações Gerais dos Prestadores')
+@section('title', 'Cadastro de Prestadores')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Cadastros</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Prestadores</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Cadastros</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">Prestadores</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 
@@ -316,7 +316,7 @@
                         <td>{{ $sts }}</td>
                         <td>
                             <nobr class="d-flex justify-content-center">
-                                <form method="get" action="{{route('prestador.editarCadastro', ['dadosPrestador' => $prestador->prestador_codigo, 'empresa' => $prestador->prestador_empresa])}}" style="float: left;">
+                                <form method="get" action="{{route('prestador.editarCadastro', ['dadosPrestador' => $prestador->prestador_codigo, 'empresa' => $prestador->prestador_empresa, 'tipo' => ' '])}}" style="float: left;">
                                     @csrf 
                                     <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Editar Registro" value="Edit" type="submit">
                                         <i class="fa fa-lg fa-fw fa-pen"></i>

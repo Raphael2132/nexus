@@ -18,7 +18,7 @@ class CadastroPrestadoresEnderecoController extends Controller
     }
 
     //Insere o endereço da empresa
-    public function inserir(Request $request, $empresa){
+    public function inserir(Request $request, $empresa, $tipo){
 
         //busca a maior sequencia de endereço do prestador
         $seq=DB::select("SELECT coalesce(max(endereco_seq),0) as sequencia from cadastro_prestadores_enderecos where endereco_prestador_codigo = '$request->prestador_codigo'")[0]->sequencia+1;
@@ -60,11 +60,11 @@ class CadastroPrestadoresEnderecoController extends Controller
 
         $novoEndereco = CadastroPrestadoresEndereco::create($dados);
 
-        return redirect(route('prestador.editarCadastro', ['dadosPrestador' => $request->prestador_codigo, 'empresa' => $empresa]))->with('success', 'Endereço cadastrado com sucesso!');
+        return redirect(route('prestador.editarCadastro', ['dadosPrestador' => $request->prestador_codigo, 'empresa' => $empresa, 'tipo' => $tipo]))->with('success', 'Endereço cadastrado com sucesso!');
     }
 
     //Deleta o endereço do prestador
-    public function destroy(CadastroPrestadoresEndereco $endereco, $empresa){
+    public function destroy(CadastroPrestadoresEndereco $endereco, $empresa, $tipo){
 
         $codigo = $endereco->endereco_prestador_codigo;
         $principal = $endereco->endereco_principal;
@@ -87,11 +87,11 @@ class CadastroPrestadoresEnderecoController extends Controller
             }
         }
         
-        return redirect(route('prestador.editarCadastro', ['dadosPrestador' => $codigo, 'empresa' => $empresa]))->with('success', 'Endereço excluido com sucesso!');
+        return redirect(route('prestador.editarCadastro', ['dadosPrestador' => $codigo, 'empresa' => $empresa, 'tipo' =>  $tipo]))->with('success', 'Endereço excluido com sucesso!');
     }
 
     //Torna o endereço o principal do prestador
-    public function principal(Request $request, $endereco, $prestador_cod, $empresa){
+    public function principal(Request $request, $endereco, $prestador_cod, $empresa, $tipo){
 
         DB::table('cadastro_prestadores_enderecos')->where('endereco_id',$endereco)->update(array(
             'endereco_principal'=>'S',
@@ -101,6 +101,6 @@ class CadastroPrestadoresEnderecoController extends Controller
             'endereco_principal'=>'N',
         ));
         
-        return redirect(route('prestador.editarCadastro', ['dadosPrestador' => $prestador_cod, 'empresa' => $empresa]))->with('success', 'Endereço principal alterado com sucesso!');
+        return redirect(route('prestador.editarCadastro', ['dadosPrestador' => $prestador_cod, 'empresa' => $empresa, 'tipo' =>  $tipo]))->with('success', 'Endereço principal alterado com sucesso!');
     }
 }

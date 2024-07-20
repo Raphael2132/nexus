@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-6">
-        <h1>Cadastros</h1>
+        <h4 style="margin-bottom: 0px !important;">Cadastros</h4>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -13,9 +13,9 @@
                 <a href="{{route('home.prestadores')}}">Prestadores</a>
             </li>
             <li class="breadcrumb-item active">Prestadores Cadastrados</li>
-            </ol>
-        </div>
+        </ol>
     </div>
+</div>
 @stop
 
 
@@ -94,7 +94,7 @@ if($tipo == 'A'){
                 <td>{{ $status }}</td>
                 <td>
                     <nobr class="d-flex justify-content-center">
-                        <form method="get" action="{{route('prestador.editarCadastro', ['dadosPrestador' => $prestador->prestador_codigo, 'empresa' => $prestador->prestador_empresa])}}" style="float: left;">
+                        <form method="get" action="{{route('prestador.editarCadastro', ['dadosPrestador' => $prestador->prestador_codigo, 'empresa' => $prestador->prestador_empresa, 'tipo' => $tipo])}}" style="float: left;">
                             @csrf
                             <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Editar Registros" value="Edit" type="submit">
                                 <i class="fa fa-lg fa-fw fa-pen"></i>
@@ -113,10 +113,13 @@ if($tipo == 'A'){
         @endforeach
     </x-adminlte-datatable>
     <x-slot name="footerSlot">
-        <form method="get" action="{{ route('prestador.cadastro') }}">
-            @csrf 
-            <x-adminlte-button label="Novo Prestador" theme="info" icon="fas fa-user-plus" type="submit"/>
-        </form>
+        <div class="d-flex justify-content-between w-100">
+            <form method="get" action="{{ route('prestador.cadastro') }}">
+                @csrf 
+                <x-adminlte-button label="Novo Prestador" theme="info" icon="fas fa-user-plus" type="submit"/>
+            </form>
+            <x-adminlte-button type="button" onclick="window.location='{{ route('home.prestadores') }}'" label="Voltar" theme="info" icon=""/>
+        </div>
     </x-slot>
 </x-adminlte-card>
 @stop

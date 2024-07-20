@@ -241,15 +241,15 @@ Route::get('/cadastros/prestador/consultaPrestador/{tipo}', [App\Http\Controller
 Route::get('/cadastros/prestador/formularioPrestador/novo', [App\Http\Controllers\CadastroPrestadoresController::class, 'cadastro'])->name('prestador.cadastro');
 Route::get('/cadastros/prestador/formularioPrestador/ajaxSetor/{area}/{empresa}', [App\Http\Controllers\CadastroPrestadoresController::class, 'carregaSetAjax'])->name('prestador.carregaSetAjax');
 Route::get('/cadastros/prestador/formularioPrestador/ajaxUsuario', [App\Http\Controllers\CadastroPrestadoresController::class, 'carregaUsuAjax'])->name('prestador.carregaUsuAjax');
-Route::get('/cadastros/prestador/formularioPrestador/{dadosPrestador}/{empresa}', [App\Http\Controllers\CadastroPrestadoresController::class, 'editar'])->name('prestador.editarCadastro');
-Route::get('/cadastros/prestador/formularioPrestador/enderecoPrincipal/{endereco}/{prestador_cod}/{empresa}', [App\Http\Controllers\CadastroPrestadoresEnderecoController::class, 'principal'])->name('enderecoPrestador.principal');
+Route::get('/cadastros/prestador/formularioPrestador/{dadosPrestador}/{empresa}/{tipo}', [App\Http\Controllers\CadastroPrestadoresController::class, 'editar'])->name('prestador.editarCadastro');
+Route::get('/cadastros/prestador/formularioPrestador/enderecoPrincipal/{endereco}/{prestador_cod}/{empresa}/{tipo}', [App\Http\Controllers\CadastroPrestadoresEnderecoController::class, 'principal'])->name('enderecoPrestador.principal');
 
 Route::post('/cadastros/prestador/formularioPrestador', [App\Http\Controllers\CadastroPrestadoresController::class, 'inserir'])->name('prestador.inserir');
-Route::post('/cadastros/prestador/formularioPrestador/{prestador}/{prestador_cod}/{atualiza}', [App\Http\Controllers\CadastroPrestadoresController::class, 'update'])->name('prestador.atualizar');
-Route::post('/cadastros/prestador/formularioPrestador/endereco/{empresa}', [App\Http\Controllers\CadastroPrestadoresEnderecoController::class, 'inserir'])->name('enderecoPrestador.inserir');
+Route::post('/cadastros/prestador/formularioPrestador/{prestador}/{prestador_cod}/{atualiza}/{empresa}/{tipo}', [App\Http\Controllers\CadastroPrestadoresController::class, 'update'])->name('prestador.atualizar');
+Route::post('/cadastros/prestador/formularioPrestador/endereco/{empresa}/{tipo}', [App\Http\Controllers\CadastroPrestadoresEnderecoController::class, 'inserir'])->name('enderecoPrestador.inserir');
 
 Route::delete('/cadastros/prestador/formularioPrestador/{prestador}/destroy', [App\Http\Controllers\CadastroPrestadoresController::class, 'destroy'])->name('prestador.destroy');
-Route::delete('/cadastros/prestador/formularioPrestador/{endereco}/{empresa}/destroy', [App\Http\Controllers\CadastroPrestadoresEnderecoController::class, 'destroy'])->name('enderecoPrestador.destroy');
+Route::delete('/cadastros/prestador/formularioPrestador/{endereco}/{empresa}/{tipo}/destroy', [App\Http\Controllers\CadastroPrestadoresEnderecoController::class, 'destroy'])->name('enderecoPrestador.destroy');
 
 /*
 |--------------------------------------------------------------------------

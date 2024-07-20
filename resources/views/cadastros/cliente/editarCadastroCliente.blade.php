@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Cadastros</h1>
+        <h4 style="margin-bottom: 0px !important;">Cadastros</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -45,27 +45,49 @@
 
                 <!-- Aba Dados Pessoais -->
                 <div class="tab-pane fade show active" id="custom-tabs-two-dados-pessoais" role="tabpanel" aria-labelledby="custom-tabs-two-dados-pessoais-tab">
-                    <form method="post" action="{{route('cliente.atualizar', ['cliente' => $dadosCliente[0]['cliente_id'], 'cliente_cod' => $dadosCliente[0]['cliente_codigo'], 'atualiza' => 'dados', 'tipo' => $tipo])}}" id="quickForm" novalidate="novalidate">
+                    <form method="post" action="{{route('cliente.atualizar', ['cliente' => $dadosCliente[0]['cliente_id'], 'cliente_cod' => $dadosCliente[0]['cliente_codigo'], 'atualiza' => 'dados', 'tipo' => $tipo])}}" id="formulario-dados" novalidate="novalidate">
                     @csrf 
                     @method('post')
 
                         <div class="row">
                             <!-- Tipo de Cadastro -->
-                            <x-adminlte-select name="tipoCadastro" label="Tipo de Cadastro" fgroup-class="col-md-6" disabled>
+                            <x-adminlte-select name="tipoCadastro" fgroup-class="col-md-5">
+                                <x-slot name="label">
+                                    Tipo de Cadastro <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['C' => 'Cliente', 'F' => 'Fornecedor']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_tipo_cadastro'] }}"/>
                             </x-adminlte-select>
 
                             <!-- Tipo de Pessoa -->
-                            <x-adminlte-select name="tipoPessoa" label="Tipo de Pessoa" fgroup-class="col-md-6" disabled>
+                            <x-adminlte-select name="tipoPessoa" fgroup-class="col-md-5">
+                                <x-slot name="label">
+                                    Tipo de Pessoa <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['F' => 'Física', 'J' => 'Jurídica']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_tipo_pessoa'] }}"/>
                             </x-adminlte-select>
+
+                            <!-- Código do cliente -->
+                            <x-adminlte-input name="codCliente" type="text" placeholder="Nome Completo" fgroup-class="col-md-2" value="{{$dadosCliente[0]['cliente_codigo'] }}">
+                                <x-slot name="label">
+                                    Código do Cliente <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
                         </div>
 
                         <div class="row">
                             <!-- Nome -->
-                            <x-adminlte-input name="nome" label="Nome" type="text" placeholder="Nome Completo" fgroup-class="col-md-8" value="{{$dadosCliente[0]['cliente_nome'] }}"/>
+                            <x-adminlte-input name="nome" type="text" placeholder="Nome Completo" fgroup-class="col-md-8" value="{{$dadosCliente[0]['cliente_nome'] }}">
+                                <x-slot name="label">
+                                    Nome <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
+
                             <!-- CPF / CNPJ -->
-                            <x-adminlte-input name="cpfCnpj" type="text" label="CPF / CNPJ" fgroup-class="col-md-4" value="{{$dadosCliente[0]['cliente_cpf_cnpj'] }}"></x-adminlte-input>
+                            <x-adminlte-input name="cpfCnpj" type="text" fgroup-class="col-md-4" value="{{$dadosCliente[0]['cliente_cpf_cnpj'] }}">
+                                <x-slot name="label">
+                                    CPF / CNPJ <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
                         </div>
 
                         <!-- Dados do Cliente Fisico -->
@@ -122,7 +144,7 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -134,12 +156,18 @@
                     @method('post')
                         <div class="row">
                             <!-- Tipo do Email -->
-                            <x-adminlte-select name="tipoEmail" label="Tipo do Email" fgroup-class="col-md-4">
+                            <x-adminlte-select name="tipoEmail" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Tipo do Email <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['P' => 'Pessoal', 'C' => 'Comercial']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_tipo_email']}}"/>
                             </x-adminlte-select>
 
                             <!-- Email -->
-                            <x-adminlte-input name="email" type="email" label="Email" placeholder="email@exemplo.com" fgroup-class="col-md-8" value="{{$dadosCliente[0]['cliente_email'] }}">
+                            <x-adminlte-input name="email" type="email" placeholder="email@exemplo.com" fgroup-class="col-md-8" value="{{$dadosCliente[0]['cliente_email'] }}">
+                                <x-slot name="label">
+                                    Email <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text">
                                         <i class="fa-solid fa-envelope"></i>
@@ -177,7 +205,7 @@
                             </x-adminlte-input>
                         </div>
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -266,7 +294,7 @@
                            
                         <!-- Gera o Modal com os campos da inserção dos dados do endereço do cliente -->
                         <div>
-                            <form method="post" action="{{route('enderecoCliente.inserir',['tipo' => $tipo])}}" id="quickForm3" novalidate="novalidate">
+                            <form method="post" action="{{route('enderecoCliente.inserir',['tipo' => $tipo])}}" id="formulario-endereco" novalidate="novalidate">
                             @csrf 
                             @method('post')    
                                 <!-- Criação do Modal -->                           
@@ -277,7 +305,10 @@
                                         <input id="ibgeCodMun" type="hidden" name="ibgeCodMun">
                                     
                                         <!-- CEP -->
-                                        <x-adminlte-input name="cep" type="text" label="CEP" fgroup-class="col-md-4">
+                                        <x-adminlte-input name="cep" type="text" fgroup-class="col-md-4">
+                                            <x-slot name="label">
+                                                CEP <span style="color:red;">*</span>
+                                            </x-slot>
                                             <x-slot name="prependSlot">
                                                 <div class="input-group-text">
                                                     <i class="fa-solid fa-location-dot"></i>
@@ -287,7 +318,10 @@
 
                                         <div class="row">
                                             <!-- Logradouro -->
-                                            <x-adminlte-input name="logradouro" type="text" label="Logradouro" fgroup-class="col-md-9">
+                                            <x-adminlte-input name="logradouro" type="text" fgroup-class="col-md-9">
+                                                <x-slot name="label">
+                                                    Logradouro <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-address-book"></i>
@@ -296,7 +330,10 @@
                                             </x-adminlte-input>
 
                                             <!-- Numero -->
-                                            <x-adminlte-input name="numero" type="text" label="Número" fgroup-class="col-md-3">
+                                            <x-adminlte-input name="numero" type="text" fgroup-class="col-md-3">
+                                                <x-slot name="label">
+                                                    Número <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-hashtag"></i>
@@ -310,12 +347,19 @@
                                             <x-adminlte-input name="complemento" type="text" label="Complemento" placeholder="Exe.: Apto 1002, Casa A ou Chácara" fgroup-class="col-md-6"></x-adminlte-input>
 
                                             <!-- Bairro -->
-                                            <x-adminlte-input name="bairro" type="text" label="Bairro" fgroup-class="col-md-6"></x-adminlte-input>
+                                            <x-adminlte-input name="bairro" type="text" fgroup-class="col-md-6">
+                                                <x-slot name="label">
+                                                    Bairro <span style="color:red;">*</span>
+                                                </x-slot>
+                                            </x-adminlte-input>
                                         </div>
 
                                         <div class="row">
                                             <!-- Cidade -->
-                                            <x-adminlte-input name="cidade" type="text" label="Cidade" fgroup-class="col-md-6">
+                                            <x-adminlte-input name="cidade" type="text" fgroup-class="col-md-6">
+                                                <x-slot name="label">
+                                                    Cidade <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-city"></i>
@@ -337,12 +381,19 @@
                                             @endphp
 
                                             <!-- Estado -->
-                                            <x-adminlte-select name="uf" label="UF" fgroup-class="col-md-3">
+                                            <x-adminlte-select name="uf" fgroup-class="col-md-3">
+                                                <x-slot name="label">
+                                                    UF <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
                                             </x-adminlte-select>
 
                                             <!-- Pais -->
-                                            <x-adminlte-input name="pais" type="text" label="Pais" fgroup-class="col-md-3"></x-adminlte-input>
+                                            <x-adminlte-input name="pais" type="text" fgroup-class="col-md-3">
+                                                <x-slot name="label">
+                                                    País <span style="color:red;">*</span>
+                                                </x-slot>
+                                            </x-adminlte-input>
                                         </div>
                                         <!-- Criação dos botões do Modal -->  
                                         <x-slot name="footerSlot">
@@ -362,15 +413,26 @@
             </div>
         </div>
         <div class="card-footer">
-            <form method="get" action="{{ route('cliente.cadastro', ['tipo' => $tipo]) }}" style="float: left; margin-right: 2px;">
-            @csrf 
-                <x-adminlte-button label="Novo Cliente" theme="info" icon="fa-solid fa-plus" type="submit"/>
-            </form>
-            <form method="post" action="{{ route('cliente.destroy', ['cliente' => $dadosCliente[0]]) }}" style="float: left;margin-left: 2px;">
-            @csrf 
-            @method('delete')
-                <x-adminlte-button label="Excluir Cliente" theme="info" icon="fa-solid fa-trash" type="submit"/>
-            </form>
+            <div class="d-flex justify-content-between w-100">
+                <div class="d-flex">
+                    <form method="get" action="{{ route('cliente.cadastro', ['tipo' => $tipo]) }}" style="float: left; margin-right: 2px;">
+                    @csrf 
+                        <x-adminlte-button label="Novo Cliente" theme="info" icon="fa-solid fa-plus" type="submit"/>
+                    </form>
+                    <form method="post" action="{{ route('cliente.destroy', ['cliente' => $dadosCliente[0]]) }}" style="float: left;margin-left: 2px;">
+                    @csrf 
+                    @method('delete')
+                        <x-adminlte-button label="Excluir Cliente" theme="info" icon="fa-solid fa-trash" type="submit"/>
+                    </form>
+                </div>
+                <div class="d-flex">
+                    @if($tipo != 'C')
+                    <x-adminlte-button type="button" onclick="window.location='{{ route('clientes', ['tipo' => $tipo]) }}'" label="Voltar" theme="info" icon=""/>
+                    @else
+                    <x-adminlte-button type="button" onclick="window.location='{{ route('home.clientes') }}'" label="Voltar" theme="info" icon=""/>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -420,6 +482,10 @@
             "mask": "99999-999",
             // Specify other options...
         });
+
+        $("#tipoCadastro").prop('disabled', true);
+        $("#tipoPessoa").prop('disabled', true);
+        $("#codCliente").prop('disabled', true);
 
         if($("#tipoPessoa").val() == 'F'){
 
@@ -489,7 +555,7 @@
 
 <script>
 $(function () {
-    $('#quickForm').validate({
+    $('#formulario-dados').validate({
         rules: {
             tipoCadastro: {
                 required: true
@@ -499,9 +565,13 @@ $(function () {
             },
             nome: {
                 required: true,
-                minlength: 5
+                minlength: 5,
+                maxlength: 80
             },
             cpfCnpj: {
+                required: true
+            },
+            codCliente: {
                 required: true
             },
         },
@@ -514,10 +584,14 @@ $(function () {
             },
             nome: {
                 required: "Por Favor informe o Nome do Cliente",
-                minlength: "Infome no mínimo 5 caracteres"
+                minlength: "Infome no mínimo 5 caracteres",
+                maxlength: "Infome no máximo 80 caracteres"
             },
             cpfCnpj: {
                 required: "Por Favor informe um CPF / CNPJ"
+            },
+            codCliente: {
+                required: "Por Favor informe o Código do Cliente"
             },
         },
         errorElement: 'span',
@@ -530,6 +604,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 });
@@ -537,11 +619,12 @@ $(function () {
 
 <script>
 $(function () {
-    $('#quickForm2').validate({
+    $('#formulario-contato').validate({
         rules: {
             email: {
                 required: true,
-                email: true
+                email: true,
+                maxlength: 80
             },
             tipoEmail: {
                 required: true,
@@ -550,7 +633,8 @@ $(function () {
         messages: {
             email: {
                 required: "Por Favor informe um Email",
-                email: "Informe um email válido"
+                email: "Informe um email válido",
+                maxlength: "Infome no máximo 80 caracteres"
             },
             tipoEmail: {
                 required: "Por Favor informe o Tipo do Email"
@@ -573,7 +657,7 @@ $(function () {
 
 <script>
 $(function () {
-  $('#quickForm3').validate({
+  $('#formulario-endereco').validate({
     rules: {
       cep: {
         required: true
@@ -583,6 +667,7 @@ $(function () {
         maxlength: 100
       },
 	  numero: {
+        required: true,
 		maxlength: 5
       },
 	  complemento: {
@@ -613,6 +698,7 @@ $(function () {
         maxlength: "Informe no máximo 100 caracteres para o Logradouro"
       },
 	  numero: {
+        required: "Por Favor informe o Número do Endereço",
 		maxlength: "Informe no máximo 5 caracteres no Número"
       },
 	  complemento: {
