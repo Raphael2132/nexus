@@ -149,6 +149,27 @@ class CadastroUsuarioController extends Controller
                 }
             }
 
+            //Ajusta a data de nascimento para o formato do banco
+            if(!empty($request->dataNascimento)){
+                $data_nas = substr($request->dataNascimento,-4).'-'.substr($request->dataNascimento,3,2).'-'.substr($request->dataNascimento,0,2);
+            }else{
+                $data_nas = null;
+            }
+
+            $atualizausuario = DB::table('users')
+                ->where('id', $usuario)
+                ->where('usuario_codigo', $usuario_cod)
+                ->update(['name' => $request->nome,
+                'usuario_status' => $request->statusUsuario,
+                'usuario_cpf' => $cpfNew,
+                'usuario_rg' => $rgNew,
+                'usuario_sexo' => $request->sexo,
+                'usuario_data_nascimento' => $data_nas,
+                'usuario_empresa' => $request->empUsuario
+            ]);
+        
+        }elseif($atualiza == 'contato'){
+
             //Limpa a mascara do celular e verifica se informou corretamente
             if(!empty($request->telCelular)){
                 $replace = array("_", "(", ")", "-", " ");
@@ -178,27 +199,13 @@ class CadastroUsuarioController extends Controller
                 return redirect()->back()->with('error', 'Informe ao menos um dos Telefones');
             }
 
-            //Ajusta a data de nascimento para o formato do banco
-            if(!empty($request->dataNascimento)){
-                $data_nas = substr($request->dataNascimento,-4).'-'.substr($request->dataNascimento,3,2).'-'.substr($request->dataNascimento,0,2);
-            }else{
-                $data_nas = null;
-            }
-
             $atualizausuario = DB::table('users')
                 ->where('id', $usuario)
                 ->where('usuario_codigo', $usuario_cod)
-                ->update(['name' => $request->nome,
-                'email' => $request->email,
-                'usuario_status' => $request->statusUsuario,
+                ->update(['email' => $request->email,
                 'usuario_tipo_email' => $request->tipoEmail,
-                'usuario_cpf' => $cpfNew,
-                'usuario_rg' => $rgNew,
-                'usuario_sexo' => $request->sexo,
                 'usuario_tel_residencial' => $telefoneResidencial,
-                'usuario_tel_celular' => $telefoneCelular,
-                'usuario_data_nascimento' => $data_nas,
-                'usuario_empresa' => $request->empUsuario
+                'usuario_tel_celular' => $telefoneCelular
             ]);
         
         }elseif($atualiza == 'permissao'){
@@ -209,7 +216,9 @@ class CadastroUsuarioController extends Controller
                 ->update(['usuario_altera_permissoes_acesso' => $request->altPerAcesso,
                 'usuario_acesso_pararametros' => $request->acessoParametros,
                 'usuario_acesso_cadastros' => $request->acessoCadastros,
-                'usuario_aut_desc' => $request->autorizaDesconto]);
+                'usuario_aut_desc' => $request->autorizaDesconto,
+                'usuario_acesso_mod_servicos' => $request->acessoModSrv,
+                'usuario_acesso_mod_nf' => $request->acessoModNf]);
         
         }             
         

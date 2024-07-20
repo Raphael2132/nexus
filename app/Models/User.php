@@ -36,7 +36,9 @@ class User extends Authenticatable
         'usuario_tel_celular',
         'usuario_tipo_email',
         'usuario_aut_desc',
-        'usuario_empresa'
+        'usuario_empresa',
+        'usuario_acesso_mod_servicos',
+        'usuario_acesso_mod_nf'
     ];
 
     /**

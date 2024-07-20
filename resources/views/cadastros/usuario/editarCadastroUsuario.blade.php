@@ -38,6 +38,9 @@
                     <a class="nav-link active" id="custom-tabs-two-dados-gerais-tab" data-toggle="pill" href="#custom-tabs-two-dados-gerais" role="tab" aria-controls="custom-tabs-two-dados-gerais" aria-selected="true">Dados Gerais</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-contato-tab" data-toggle="pill" href="#custom-tabs-two-contato" role="tab" aria-controls="custom-tabs-two-contato" aria-selected="false">Contato</a>
+                 </li>
+                <li class="nav-item">
                     <a class="nav-link" id="custom-tabs-two-endereco-tab" data-toggle="pill" href="#custom-tabs-two-endereco" role="tab" aria-controls="custom-tabs-two-endereco" aria-selected="false">Endereco</a>
                 </li>
                 <li class="nav-item">
@@ -50,7 +53,7 @@
 
                 <!-- Aba Dados Gerais -->
                 <div class="tab-pane fade show active" id="custom-tabs-two-dados-gerais" role="tabpanel" aria-labelledby="custom-tabs-two-dados-gerais-tab">
-                    <form method="post" action="{{route('usuario.atualizar', ['usuario' => $dadosUsuario[0]['id'], 'usuario_cod' => $dadosUsuario[0]['usuario_codigo'], 'atualiza' => 'dados', 'tipo' => $tipo])}}" id="quickForm" novalidate="novalidate">
+                    <form method="post" action="{{route('usuario.atualizar', ['usuario' => $dadosUsuario[0]['id'], 'usuario_cod' => $dadosUsuario[0]['usuario_codigo'], 'atualiza' => 'dados', 'tipo' => $tipo])}}" id="formulario-dados" novalidate="novalidate">
                     @csrf 
                     @method('post')
                         <div class="row">
@@ -67,34 +70,57 @@
                                 $array_opt = array_combine($new_array1, $new_array2);
                             @endphp
                             <!-- Empresa -->
-                            <x-adminlte-select name="empUsuario" label="Empresa" fgroup-class="col-md-3">
+                            <x-adminlte-select name="empUsuario" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Empresa <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_empresa']}}"/>
                             </x-adminlte-select>
 
                             <!-- Tipo Usuario -->
-                            <x-adminlte-select name="tipoUsuario" label="Tipo de Usuário" fgroup-class="col-md-2" disabled>
+                            <x-adminlte-select name="tipoUsuario" fgroup-class="col-md-4" disabled>
+                                <x-slot name="label">
+                                    Tipo de Usuário <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['A' => 'Administrador', 'P' => 'Padrão']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_tipo']}}"/>
                             </x-adminlte-select>
 
-                            <!-- Nome -->
-                            <x-adminlte-input name="codigo" label="Código" type="text" fgroup-class="col-md-2" value="{{$dadosUsuario[0]['usuario_codigo']}}" readonly/>
-
-                            <!-- Nome -->
-                            <x-adminlte-input name="nome" label="Nome" type="text" placeholder="Nome" fgroup-class="col-md-3" value="{{$dadosUsuario[0]['name']}}"/>
-
                             <!-- Status do Usuario -->
-                            <x-adminlte-select name="statusUsuario" label="Status" fgroup-class="col-md-2">
+                            <x-adminlte-select name="statusUsuario" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Status <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_status']}}"/>
                             </x-adminlte-select>
                         </div>
 
                         <div class="row">
+                            <!-- Código do Usuário -->
+                            <x-adminlte-input name="codigo" type="text" fgroup-class="col-md-4" value="{{$dadosUsuario[0]['usuario_codigo']}}" readonly>
+                                <x-slot name="label">
+                                    Código do Usuário <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
 
-                            <!-- CPF / CNPJ -->
-                            <x-adminlte-input name="cpf" type="text" label="CPF" fgroup-class="col-md-3" value="{{$dadosUsuario[0]['usuario_cpf'] }}"></x-adminlte-input>
+                            <!-- Nome -->
+                            <x-adminlte-input name="nome" type="text" placeholder="Nome do Usuário" fgroup-class="col-md-4" value="{{$dadosUsuario[0]['name']}}">
+                                <x-slot name="label">
+                                    Nome do Usuário <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
+
+                            <!-- CPF -->
+                            <x-adminlte-input name="cpf" type="text" fgroup-class="col-md-4" value="{{$dadosUsuario[0]['usuario_cpf'] }}">
+                                <x-slot name="label">
+                                    CPF <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
+                        </div>
+
+                        <div class="row">
 
                             <!-- RG -->
-                            <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-3" value="{{$dadosUsuario[0]['usuario_rg'] }}"></x-adminlte-input>
+                            <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosUsuario[0]['usuario_rg'] }}"></x-adminlte-input>
 
                             @php
                                 $config = [
@@ -116,7 +142,7 @@
                                 }
                             @endphp
                             <!-- Data de Nascimento -->
-                            <x-adminlte-date-range name="dataNascimento" label="Data de Nascimento" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-3">
+                            <x-adminlte-date-range name="dataNascimento" label="Data de Nascimento" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
                                 <x-slot name="prependSlot">
                                 <div class="input-group-text">
                                         <i class="far fa-lg fa-calendar-alt"></i>
@@ -126,11 +152,22 @@
                             @push('js')<script>$(() => $("#dataNascimento").val('{{ $data_nascimento }}'))</script>@endpush
 
                             <!-- Sexo -->
-                            <x-adminlte-select name="sexo" label="Sexo" fgroup-class="col-md-3">
+                            <x-adminlte-select name="sexo" label="Sexo" fgroup-class="col-md-4">
                                 <x-adminlte-options :options="['M' => 'Masculino', 'F' => 'Feminino']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_sexo'] }}" />
                             </x-adminlte-select>
                         </div>
 
+                        <div class="d-flex justify-content-center">
+                            <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Aba dos dados do Contato do cliente -->
+                <div class="tab-pane fade" id="custom-tabs-two-contato" role="tabpanel" aria-labelledby="custom-tabs-two-contato-tab">
+                    <form method="post" action="{{route('usuario.atualizar', ['usuario' => $dadosUsuario[0]['id'], 'usuario_cod' => $dadosUsuario[0]['usuario_codigo'], 'atualiza' => 'contato', 'tipo' => $tipo])}}" id="formulario-contato" novalidate="novalidate">
+                    @csrf 
+                    @method('post')
                         <div class="row">
                             <!-- Telefone Residencial -->
                             <x-adminlte-input name="telResidencial" type="text" label="Telefone Residencial" fgroup-class="col-md-6" value="{{$dadosUsuario[0]['usuario_tel_residencial'] }}">
@@ -153,12 +190,18 @@
 
                         <div class="row">
                             <!-- Tipo do Email -->
-                            <x-adminlte-select name="tipoEmail" label="Tipo do Email" fgroup-class="col-md-4">
+                            <x-adminlte-select name="tipoEmail" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Tipo do Email <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['P' => 'Pessoal', 'C' => 'Comercial']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_tipo_email']}}"/>
                             </x-adminlte-select>
 
                             <!-- Email -->
-                            <x-adminlte-input name="email" type="email" label="Email" placeholder="email@exemplo.com" fgroup-class="col-md-8" value="{{$dadosUsuario[0]['email']}}">
+                            <x-adminlte-input name="email" type="email" placeholder="email@exemplo.com" fgroup-class="col-md-8" value="{{$dadosUsuario[0]['email']}}">
+                                <x-slot name="label">
+                                    Email <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text">
                                         <i class="fa-solid fa-envelope"></i>
@@ -363,25 +406,49 @@
                     @csrf 
                     @method('post')
 
-                        <!-- Usuario tem acesso aos cadastros -->
-                        <x-adminlte-select name="acessoCadastros" label="Acessa Área de Cadastros" fgroup-class="col-md-6">
-                            <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_cadastros']}}"/>
-                        </x-adminlte-select>
+                        <div class="post">
+                            <h4 class="text-secondary font-weight-bold">Módulos do Sistema</h4>
+                        </div>
 
-                        <!-- Usuario tem permissão de alterar permissoes -->
-                        <x-adminlte-select name="altPerAcesso" label="Altera Permissões de Acesso dos Usuários" fgroup-class="col-md-6">
-                            <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_altera_permissoes_acesso']}}"/>
-                        </x-adminlte-select>
+                        <div class="row">
+                            <!-- Usuario tem acesso aos parametros gerais -->
+                            <x-adminlte-select name="acessoParametros" label="Acessa Área de Parametrização Geral" fgroup-class="col-md-6">
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_pararametros']}}"/>
+                            </x-adminlte-select>
 
-                        <!-- Usuario tem acesso aos parametros gerais -->
-                        <x-adminlte-select name="acessoParametros" label="Acessa Área de Parametrização Geral" fgroup-class="col-md-6">
-                            <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_pararametros']}}"/>
-                        </x-adminlte-select>
+                            <!-- Usuario tem acesso aos cadastros -->
+                            <x-adminlte-select name="acessoCadastros" label="Acessa Área de Cadastros" fgroup-class="col-md-6">
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_cadastros']}}"/>
+                            </x-adminlte-select>
+                        </div>
 
-                        <!-- Usuario Tem permissão de autorizar desconto acima do permitido -->
-                        <x-adminlte-select name="autorizaDesconto" label="Permissão de Autorização de Desconto" fgroup-class="col-md-6">
-                            <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_aut_desc']}}"/>
-                        </x-adminlte-select>
+                        <div class="row">
+                            <!-- Usuario tem acesso ao modulo de serviços -->
+                            <x-adminlte-select name="acessoModSrv" label="Acessa o Módulo de Serviços" fgroup-class="col-md-6">
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_mod_servicos']}}"/>
+                            </x-adminlte-select>
+
+                            <!-- Usuario tem acesso ao modulo de emissão de NF -->
+                            <x-adminlte-select name="acessoModNf" label="Acessa o Módulo de Emissão de NFS-e" fgroup-class="col-md-6">
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_mod_nf']}}"/>
+                            </x-adminlte-select>
+                        </div>
+
+                        <div class="post">
+                            <h4 class="text-secondary font-weight-bold">Permissões no Sistema</h4>
+                        </div>
+
+                        <div class="row">
+                            <!-- Usuario Tem permissão de autorizar desconto acima do permitido -->
+                            <x-adminlte-select name="autorizaDesconto" label="Permissão de Autorização de Desconto" fgroup-class="col-md-6">
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_aut_desc']}}"/>
+                            </x-adminlte-select>
+
+                            <!-- Usuario tem permissão de alterar permissoes -->
+                            <x-adminlte-select name="altPerAcesso" label="Altera Permissões de Acesso dos Usuários" fgroup-class="col-md-6">
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_altera_permissoes_acesso']}}"/>
+                            </x-adminlte-select>
+                        </div>
 
                         <div class="d-flex justify-content-center">
                             <x-adminlte-button id="btn-submit-permissao" class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
@@ -515,7 +582,7 @@
 
 <script>
 $(function () {
-    $('#quickForm').validate({
+    $('#formulario-dados').validate({
         rules: {
             statusUsuario: {
                 required: true
@@ -524,15 +591,20 @@ $(function () {
                 required: true,
                 minlength: 5
             },
-            email: {
-                required: true,
-                email: true
+            tipoUsuario: {
+                required: true
             },
             tipoEmail: {
-                required: true,
+                required: true
             },
             empUsuario: {
-                required: true,
+                required: true
+            },
+            cpf: {
+                required: true
+            },
+            codigo: {
+                required: true
             },
         },
         messages: {
@@ -543,15 +615,17 @@ $(function () {
                 required: "Por Favor informe o Nome do Usuario",
                 minlength: "Infome no mínimo 5 caracteres"
             },
-            email: {
-                required: "Por Favor informe um Email",
-                email: "Informe um email válido"
-            },
-            tipoEmail: {
-                required: "Por Favor informe o Tipo do Email"
+            tipoUsuario: {
+                required: "Por Favor o Tipo do Usuário"
             },
             empUsuario: {
                 required: "Por Favor informe a Empresa"
+            },
+            cpf: {
+                required: "Por Favor informe o CPF"
+            },
+            codigo: {
+                required: "Por Favor informe o Código do Usuário"
             },
         },
         errorElement: 'span',
@@ -567,9 +641,41 @@ $(function () {
         }
     });
 });
-</script>
 
-<script>
+$(function () {
+    $('#formulario-contato').validate({
+        rules: {
+            email: {
+                required: true,
+                email: true
+            },
+            tipoEmail: {
+                required: true,
+            },
+        },
+        messages: {
+            email: {
+                required: "Por Favor informe um Email",
+                email: "Informe um email válido"
+            },
+            tipoEmail: {
+                required: "Por Favor informe o Tipo do Email"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+});
+
 $(function () {
     $('#quickForm2').validate({
         rules: {
@@ -607,9 +713,7 @@ $(function () {
         }
     });
 });
-</script>
 
-<script>
 $(function () {
   $('#quickForm3').validate({
     rules: {
