@@ -1,21 +1,21 @@
 @extends('adminlte::page')
 
-@section('title', 'Emissão de Ordem de Serviço')
+@section('title', 'Abertura de OS')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Lançamentos</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.emissaoOS')}}">Emissão de OS</a>
-                </li>
-                <li class="breadcrumb-item active">Abertura de OS</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Lançamento de Serviços</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.emissaoOS')}}">Emissão de OS</a>
+            </li>
+            <li class="breadcrumb-item active">Abertura de OS</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -383,7 +383,10 @@
                     </x-adminlte-callout>
                 </x-adminlte-callout>
                 <x-slot name="footerSlot">
-                    <x-adminlte-button class="btn-flat" type="submit" label="Abrir OS" theme="info" icon="fa-solid fa-file-circle-plus"/>
+                    <div class="d-flex justify-content-between w-100">
+                        <x-adminlte-button class="btn-flat" type="submit" label="Abrir OS" theme="info" icon="fa-solid fa-file-circle-plus"/>
+                        <x-adminlte-button type="button" onclick="window.location='{{ route('home.emissaoOS') }}'" label="Voltar" theme="info" icon=""/>
+                    </div>
                 </x-slot>
             </x-adminlte-card>
         </form>

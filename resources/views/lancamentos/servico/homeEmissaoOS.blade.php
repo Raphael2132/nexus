@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Emissão de Ordem de Serviço')
+@section('title', 'Emissão de OS')
 
 @section('content_header')
 <div class="row mb-2">
