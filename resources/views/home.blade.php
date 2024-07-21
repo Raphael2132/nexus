@@ -194,9 +194,9 @@
                             <td>{{$os->os_emp.' - '.$dataEmp[0]->empresa_nome}}</td>
                             <td>{{$os->os_cli_fatura.' - '.$dataCli[0]->cliente_nome}}</td>
                             @if($os->os_sts == 'F')
-                            <td style="text-align: center;"><span class="badge badge-success">Finalizado</span></td>
+                            <td style="text-align: center;"><span class="badge badge-success">Finalizada</span></td>
                             @elseif($os->os_sts == 'C')
-                            <td style="text-align: center;"><span class="badge badge-danger">Cancelado</span></td>
+                            <td style="text-align: center;"><span class="badge badge-danger">Cancelada</span></td>
                             @else
                             <td style="text-align: center;"><span class="badge badge-info">Andamento</span></td>
                             @endif

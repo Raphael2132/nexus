@@ -72,7 +72,7 @@ class PainelAberturaOSController extends Controller
     }
 
     //Metodo de abertura de um novo servico para a requisição
-    public function abrirServicoRequisicao($empresa, $area, $setor, $estagioAPP, $subEstagioRequisicao)
+    public function abrirServicoRequisicao($empresa, $area, $setor, $estagioAPP, $subEstagioRequisicao, $requisicao)
     {
         $dadosTMO = DB::table('parametros_srv_tmos')->where('tmo_emp', $empresa)->where('tmo_are', $area)->where('tmo_set', $setor)->where('tmo_sts', 'A')->orderby('tmo_cod','asc')->get();
 
@@ -81,11 +81,11 @@ class PainelAberturaOSController extends Controller
         session(['glo_os_dadosTMO' => $dadosTMO]);
         session(['glo_os_dadosTmoSelecionada' => '']);
         
-        return view('/lancamentos/servico/painelAberturaOS');
+        return view('/lancamentos/servico/painelAberturaOS',['requisicaoBTN' => $requisicao]);
     }
 
     //Metodo de seleção da TMO do serviço para inclusão na requisição
-    public function selecionarTMO($empresa, $area, $setor, $codigo, $estagioAPP, $subEstagioRequisicao)
+    public function selecionarTMO($empresa, $area, $setor, $codigo, $estagioAPP, $subEstagioRequisicao, $requisicao)
     {
         $dadosTmoSelecionada = DB::table('parametros_srv_tmos')->where('tmo_emp', $empresa)->where('tmo_are', $area)->where('tmo_set', $setor)->where('tmo_cod', $codigo)->orderby('tmo_cod','asc')->get();
 
@@ -93,7 +93,7 @@ class PainelAberturaOSController extends Controller
         session(['glo_os_subEstagioRequisicao' => $subEstagioRequisicao]);
         session(['glo_os_dadosTmoSelecionada' => $dadosTmoSelecionada]);
         
-        return view('/lancamentos/servico/painelAberturaOS');
+        return view('/lancamentos/servico/painelAberturaOS',['requisicaoBTN' => $requisicao]);
     }
 
     //Metodo de abertura da edição do serviço da requisição
@@ -107,7 +107,7 @@ class PainelAberturaOSController extends Controller
         session(['glo_os_dadosTMO' => '']);
         session(['glo_os_dadosTmoSelecionada' => '']);
         
-        return view('/lancamentos/servico/painelAberturaOS');
+        return view('/lancamentos/servico/painelAberturaOS',['requisicaoBTN' => $requisicao]);
     }
 
     //Metodo de abertura da edição do serviço da requisição

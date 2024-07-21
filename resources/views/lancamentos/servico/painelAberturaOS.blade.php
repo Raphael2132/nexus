@@ -464,7 +464,10 @@ $status_servico = '';
                                         $array_opt = array_combine($new_array1, $new_array2);
                                     @endphp
                                     <!-- Motivo do Cancelamento -->
-                                    <x-adminlte-select name="canMot" label="Motivo do Cancelamento" fgroup-class="col-md-12">
+                                    <x-adminlte-select name="canMot" fgroup-class="col-md-12">
+                                        <x-slot name="label">
+                                            Motivo do Cancelamento <span style="color:red;">*</span>
+                                        </x-slot>
                                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
                                     </x-adminlte-select>
                                 </div>
@@ -500,7 +503,10 @@ $status_servico = '';
                         <div class="row">
 
                             <!-- Descrição da tarefa -->
-                            <x-adminlte-textarea name="descricaoReq" label="Descriçao" rows=3 label-class="text-dark" igroup-size="sm" placeholder="Informe a descrição da tarefa da OS..." fgroup-class="col-md-12">
+                            <x-adminlte-textarea name="descricaoReq" rows=3 label-class="text-dark" igroup-size="sm" placeholder="Informe a descrição da tarefa da OS..." fgroup-class="col-md-12">
+                                <x-slot name="label">
+                                    Descriçao <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text bg-navy">
                                         <i class="fas fa-lg fa-file-alt text-white"></i>
@@ -548,22 +554,34 @@ $status_servico = '';
                             @endphp
 
                             <!-- Categoria -->
-                            <x-adminlte-select name="categoriaReq" label="Categoria" fgroup-class="col-md-3">
+                            <x-adminlte-select name="categoriaReq" fgroup-class="col-md-3">
+                                <x-slot name="label">
+                                    Categoria <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="$array_opt_cat" selected="{{$eat_cat_sel}}"/>
                             </x-adminlte-select>
 
                             <!-- área -->
-                            <x-adminlte-select name="areaReq" label="Área" fgroup-class="col-md-3">
+                            <x-adminlte-select name="areaReq" fgroup-class="col-md-3">
+                                <x-slot name="label">
+                                    Área <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="$array_opt_are" empty-option="Selecione..." selected=""/>
                             </x-adminlte-select>
 
                             <!-- Setor -->
-                            <x-adminlte-select name="setorReq" label="Setor" fgroup-class="col-md-3">
+                            <x-adminlte-select name="setorReq" fgroup-class="col-md-3">
+                                <x-slot name="label">
+                                    Setor <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="$array_opt_set" empty-option="Selecione..."/>
                             </x-adminlte-select>
 
                             <!-- Tipo Serviço -->
-                            <x-adminlte-select name="tipoServicoReq" label="Tipo do Serviço" fgroup-class="col-md-3">
+                            <x-adminlte-select name="tipoServicoReq" fgroup-class="col-md-3">
+                                <x-slot name="label">
+                                    Tipo do Serviço <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="$array_opt_tos" empty-option="Selecione..."/>
                             </x-adminlte-select>
 
@@ -963,7 +981,11 @@ $status_servico = '';
                         @endphp
 
                         <!-- Código da TMO -->
-                        <x-adminlte-input name="codigoTMO" label="Código" type="text" value="{{$cod_tmo_sel}}" fgroup-class="col-md-4" disabled/>
+                        <x-adminlte-input name="codigoTMO" type="text" value="{{$cod_tmo_sel}}" fgroup-class="col-md-4" disabled>
+                            <x-slot name="label">
+                                Código <span style="color:red;">*</span>
+                            </x-slot>
+                        </x-adminlte-input>
                         
                         @if($glo_os_estagioAPP == "MANUTENCAO_SERVICO")
                         <table class="table tabela-situacao-tmo col-md-8" style="text-align: center;">
@@ -1076,7 +1098,7 @@ $status_servico = '';
                                                             <tr>
                                                                 <td>
                                                                     <nobr class="d-flex justify-content-center">
-                                                                        <form method="get" action="{{route('painelOS.selecionarTMO', ['empresa' => $glo_os_empresa, 'area' => $glo_os_dadosRequisicoes[0]['req_are'], 'setor' => $glo_os_dadosRequisicoes[0]['req_set'], 'codigo' => $TMO->tmo_cod, 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'TMO_SELECIONADA'])}}">
+                                                                        <form method="get" action="{{route('painelOS.selecionarTMO', ['empresa' => $glo_os_empresa, 'area' => $glo_os_dadosRequisicoes[0]['req_are'], 'setor' => $glo_os_dadosRequisicoes[0]['req_set'], 'codigo' => $TMO->tmo_cod, 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'TMO_SELECIONADA', 'requisicao' => $glo_os_dadosRequisicoes[0]['req_seq']])}}">
                                                                             @csrf
                                                                             <x-adminlte-button class="btn-sm" type="submit" label="Selecionar" theme="info" icon="fa-solid fa-check"/>
                                                                         </form>
@@ -1126,7 +1148,11 @@ $status_servico = '';
                                 }
                             @endphp
                             <!-- Descrição da TMO -->
-                            <x-adminlte-input name="descricaoTMO" label="Descrição" type="text" value="{{$descricaoTMO_sel}}" fgroup-class="col-md-6"/>
+                            <x-adminlte-input name="descricaoTMO" type="text" value="{{$descricaoTMO_sel}}" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Descrição <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
                             <!-- Complemento da TMO -->
                             <x-adminlte-input name="complementoTMO" label="Complemento" type="text" value="{{$complementoTMO_sel}}" fgroup-class="col-md-6"/>
                         </div>
@@ -1163,7 +1189,10 @@ $status_servico = '';
                                 echo $html;
                             @endphp
                             <!-- Tipo da TMO -->
-                            <x-adminlte-select name="tipoTMO" label="Tipo da Tarefa" fgroup-class="col-md-4">
+                            <x-adminlte-select name="tipoTMO" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Tipo da Tarefa <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['P' => 'Padrão', 'I' => 'Hora Informada', 'R' => 'Hora Real', 'F' => 'Valor Fixo', 'T' => 'Terceiros']" selected="{{$tipoTMO_sel}}"/>
                             </x-adminlte-select>
                             <!-- Prestador responsavel da TMO -->
@@ -1183,11 +1212,23 @@ $status_servico = '';
                                 }
                             @endphp
                             <!-- Quantidade de Hortas -->
-                            <x-adminlte-input name="qtdHrTMO" label="Qtd. de Horas" type="text" value="{{$qtdHrTMO_sel}}" placeholder="0.00" fgroup-class="col-md-4"/>
+                            <x-adminlte-input name="qtdHrTMO" type="text" value="{{$qtdHrTMO_sel}}" placeholder="0.00" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Qtd. de Horas <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
                             <!-- Valor da Hora -->
-                            <x-adminlte-input name="valUniHrTMO" label="Valor Unitário" type="text" value="{{$valUniHrTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
+                            <x-adminlte-input name="valUniHrTMO" type="text" value="{{$valUniHrTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Valor Unitário <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
                             <!-- Valor Total -->
-                            <x-adminlte-input name="valTotHrTMO" label="Valor Total" type="text" value="{{$valTotHrTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
+                            <x-adminlte-input name="valTotHrTMO" type="text" value="{{$valTotHrTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Valor Total <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
                         </div>
 
                         @if($glo_os_estagioAPP == "MANUTENCAO_SERVICO")
@@ -1408,7 +1449,11 @@ $status_servico = '';
                                 <x-adminlte-input name="qtdHrSrv" label="Tempo Serviço OS" type="text" value="{{$glo_os_dadosOS[0]->os_qtd_hr}}" placeholder="0.00" fgroup-class="col-md-2" disabled/>
 
                                 <!-- Grupo do serviço -->
-                                <x-adminlte-input name="qtdHoraOS" label="Duração Prevista OS" type="text" value="{{$glo_os_dadosOS[0]->os_qtd_hr_pre_ent}}" placeholder="0.00" fgroup-class="col-md-2"/>
+                                <x-adminlte-input name="qtdHoraOS" type="text" value="{{$glo_os_dadosOS[0]->os_qtd_hr_pre_ent}}" placeholder="0.00" fgroup-class="col-md-2">
+                                    <x-slot name="label">
+                                        Duração Prevista OS <span style="color:red;">*</span>
+                                    </x-slot>
+                                </x-adminlte-input>
 
                                 @php
                                     $config = [
@@ -1430,7 +1475,10 @@ $status_servico = '';
                                     }
                                 @endphp
                                 <!-- Data da Previsão de Entrega -->
-                                <x-adminlte-date-range name="dataPrevEnt" label="Data da Previsão de Entrega" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-3">
+                                <x-adminlte-date-range name="dataPrevEnt" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-3">
+                                    <x-slot name="label">
+                                        Data da Previsão de Entrega <span style="color:red;">*</span>
+                                    </x-slot>
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text">
                                             <i class="far fa-lg fa-calendar-alt"></i>
@@ -1463,7 +1511,10 @@ $status_servico = '';
                                         $horaPrevEnt = '';
                                     }
                                 @endphp
-                                <x-adminlte-date-range name="horaPrevEnt" label="Hora da Previsão de Entrega" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-3">
+                                <x-adminlte-date-range name="horaPrevEnt" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-3">
+                                    <x-slot name="label">
+                                        Hora da Previsão de Entrega <span style="color:red;">*</span>
+                                    </x-slot>
                                     <x-slot name="appendSlot">
                                         <div class="input-group-text">
                                             <i class="far fa-lg fa-clock"></i>
@@ -2070,7 +2121,10 @@ $status_servico = '';
                             <div class="post col-md-12">
                                 <div class="row">
                                     <!-- Observação da tarefa -->
-                                    <x-adminlte-textarea name="observacaoOS" label="Observação" rows=3 label-class="text-dark" igroup-size="sm" placeholder="Informe a Observação da OS..." fgroup-class="col-md-12">
+                                    <x-adminlte-textarea name="observacaoOS" rows=3 label-class="text-dark" igroup-size="sm" placeholder="Informe a Observação da OS..." fgroup-class="col-md-12">
+                                        <x-slot name="label">
+                                            Observação <span style="color:red;">*</span>
+                                        </x-slot>
                                         <x-slot name="prependSlot">
                                             <div class="input-group-text bg-navy">
                                                 <i class="fas fa-lg fa-file-alt text-white"></i>
@@ -2110,7 +2164,11 @@ $status_servico = '';
                                         echo $html;
                                     @endphp
                                     <!-- Prestador responsavel da TMO -->
-                                    <x-adminlte-input name="cliFatura" label="Novo Cliente da Fatura" type="search" list="clientesFatura" fgroup-class="col-md-12"/>
+                                    <x-adminlte-input name="cliFatura" type="search" list="clientesFatura" fgroup-class="col-md-12">
+                                        <x-slot name="label">
+                                            Novo Cliente da Fatura <span style="color:red;">*</span>
+                                        </x-slot>
+                                    </x-adminlte-input>
                                 </div>
                             </div>
                         </div>
@@ -2199,40 +2257,56 @@ $status_servico = '';
                     $area_req  = ' ';
                 }
             @endphp
-            <x-adminlte-button class="btn_geral" type="button" onclick="window.location='{{ route('situacaoOS.carregaOS', ['empresa' => $glo_os_empresa, 'cliente' => $glo_os_cliente, 'nos' => $glo_os_nos, 'estagioAPP' => 'PRINCIPAL']) }}'" label="Geral" theme="info" icon=""/>
-            <x-adminlte-button class="btn_cancelar_os" type="button" data-toggle="modal" data-target="#modalCancelamentoOS" label="Cancelar OS" theme="info" icon="fa-solid fa-ban"/>
-            <x-adminlte-button class="btn_previsao_entrega" type="button" onclick="window.location='{{ route('painelOS.previsaoEntregaOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Previsão de Entrega" theme="info" icon="fa-solid fa-truck"/>
-            <x-adminlte-button class="btn_total_os" type="button" onclick="window.location='{{ route('painelOS.totalOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Total OS" theme="info" icon=""/>
+            <div style="float: left;">
+                <x-adminlte-button class="btn_geral" type="button" onclick="window.location='{{ route('situacaoOS.carregaOS', ['empresa' => $glo_os_empresa, 'cliente' => $glo_os_cliente, 'nos' => $glo_os_nos, 'estagioAPP' => 'PRINCIPAL']) }}'" label="Geral" theme="info" icon=""/>
+                <x-adminlte-button class="btn_cancelar_os" type="button" data-toggle="modal" data-target="#modalCancelamentoOS" label="Cancelar OS" theme="info" icon="fa-solid fa-ban"/>
+                <x-adminlte-button class="btn_previsao_entrega" type="button" onclick="window.location='{{ route('painelOS.previsaoEntregaOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Previsão de Entrega" theme="info" icon="fa-solid fa-truck"/>
+                <x-adminlte-button class="btn_total_os" type="button" onclick="window.location='{{ route('painelOS.totalOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Total OS" theme="info" icon=""/>
 
-            <x-adminlte-button class="btn_atualizar_previsao_entrega" type="button" onclick="document.querySelector('.btn_hide_atualizar_previsao_entrega').click()" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-            
-            <x-adminlte-button class="btn_gerar_orcamento" type="button" onclick="document.querySelector('.btn_hide_gerar_orcamento').click()" label="Gerar Orçamento" theme="info" icon=""/>
+                <x-adminlte-button class="btn_atualizar_previsao_entrega" type="button" onclick="document.querySelector('.btn_hide_atualizar_previsao_entrega').click()" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                
+                <x-adminlte-button class="btn_gerar_orcamento" type="button" onclick="document.querySelector('.btn_hide_gerar_orcamento').click()" label="Gerar Orçamento" theme="info" icon=""/>
 
-            <x-adminlte-button class="btn_observacao" type="button" data-toggle="modal" data-target="#modalObservacaoOS" label="Observações" theme="info" icon="fa-regular fa-eye"/>
-            <x-adminlte-button class="btn_troca_cliente" type="button" data-toggle="modal" data-target="#modalTrocaCliFatOS" label="Troca Cliente Fatura" theme="info" icon="fa-solid fa-right-left"/>
-            <x-adminlte-button class="btn_desconto_os" type="button" data-toggle="modal" data-target="#modalDescontoOS" label="Desconto" theme="info" icon="fa-solid fa-tag"/>
-            <x-adminlte-button class="btn_orcamento" type="button" onclick="window.location='{{ route('painelOS.orcamentoOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Orçamento" theme="info" icon="fa-solid fa-file-invoice-dollar"/>
-            <x-adminlte-button class="btn_encerra_os" type="button" onclick="window.location='{{ route('painelOS.encerraOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Encerrar OS" theme="info" icon="fa-solid fa-handshake"/>
+                <x-adminlte-button class="btn_observacao" type="button" data-toggle="modal" data-target="#modalObservacaoOS" label="Observações" theme="info" icon="fa-regular fa-eye"/>
+                <x-adminlte-button class="btn_troca_cliente" type="button" data-toggle="modal" data-target="#modalTrocaCliFatOS" label="Troca Cliente Fatura" theme="info" icon="fa-solid fa-right-left"/>
+                <x-adminlte-button class="btn_desconto_os" type="button" data-toggle="modal" data-target="#modalDescontoOS" label="Desconto" theme="info" icon="fa-solid fa-tag"/>
+                <x-adminlte-button class="btn_orcamento" type="button" onclick="window.location='{{ route('painelOS.orcamentoOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Orçamento" theme="info" icon="fa-solid fa-file-invoice-dollar"/>
+                <x-adminlte-button class="btn_encerra_os" type="button" onclick="window.location='{{ route('painelOS.encerraOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Encerrar OS" theme="info" icon="fa-solid fa-handshake"/>
 
-            <x-adminlte-button class="btn_orcamentoPDF" type="button" onclick="window.open('{{ route('painelOS.orcamentoPDF', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}');" label="Gerar PDF" theme="info" icon="fa-solid fa-file-pdf"/>
+                <x-adminlte-button class="btn_orcamentoPDF" type="button" onclick="window.open('{{ route('painelOS.orcamentoPDF', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}');" label="Gerar PDF" theme="info" icon="fa-solid fa-file-pdf"/>
 
-            <x-adminlte-button class="btn_incluir_requisicao" type="button" onclick="document.querySelector('.btn_hide_incluir_requisicao').click()" label="Incluir Requisição" theme="info" icon="fa-solid fa-plus"/>
+                <x-adminlte-button class="btn_incluir_requisicao" type="button" onclick="document.querySelector('.btn_hide_incluir_requisicao').click()" label="Incluir Requisição" theme="info" icon="fa-solid fa-plus"/>
 
-            <x-adminlte-button class="btn_finalizar_requisicao" type="button" onclick="document.querySelector('.btn_hide_finalizar_requisicao').click()" label="Finalizar Requisição" theme="info" icon="fa-solid fa-lock"/>
-            <x-adminlte-button class="btn_excluir_requisicao" type="button" onclick="document.querySelector('.btn_hide_excluir_requisicao').click()" label="Excluir Requisição" theme="info" icon="fa-solid fa-trash"/>
-            <x-adminlte-button class="btn_reabrir_requisicao" type="button" onclick="document.querySelector('.btn_hide_reabrir_requisicao').click()" label="Reabrir Requisição" theme="info" icon=""/>
-            <x-adminlte-button class="btn_iniciar_servicos" type="button" onclick="document.querySelector('.btn_hide_iniciar_servicos').click()" label="Iniciar Serviços" theme="info" icon=""/>
-            <x-adminlte-button class="btn_finalizar_servicos" type="button" onclick="document.querySelector('.btn_hide_finalizar_servicos').click()" label="Finalizar Serviços" theme="info" icon=""/>
-            <x-adminlte-button class="btn_novo_servico" type="button" onclick="window.location='{{ route('painelOS.abrirServicoRequisicao', ['empresa' => $glo_os_empresa, 'area' => $area_req, 'setor' => $setor_req, 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'SELECAO_TMO']) }}'" label="Novo Serviço" theme="info" icon="fa-solid fa-plus"/>
-
-            <x-adminlte-button class="btn_incluir_tmo" type="button" onclick="document.querySelector('.btn_hide_incluir_tmo').click()" label="Incluir" theme="info" icon="fa-solid fa-plus"/>
-            <x-adminlte-button class="btn_atualizar_tmo" type="button" onclick="document.querySelector('.btn_hide_atualizar_tmo').click()" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-            <x-adminlte-button class="btn_liberar_desconto_tmo" type="button" data-toggle="modal" data-target="#modalLibDescTMO" label="Liberar Desconto" theme="info" icon="fa-solid fa-unlock"/>
-            <x-adminlte-button class="btn_suspender_tmo" type="button" onclick="document.querySelector('.btn_hide_suspender_tmo').click()" label="Suspender TMO" theme="info" icon="fa-solid fa-triangle-exclamation"/>
-            <x-adminlte-button class="btn_cancelar_tmo" type="button" onclick="document.querySelector('.btn_hide_cancelar_tmo').click()" label="Cancelar TMO" theme="info" icon="fa-solid fa-ban"/>
-            <x-adminlte-button class="btn_reabrir_tmo" type="button" onclick="document.querySelector('.btn_hide_reabrir_tmo').click()" label="Reabrir TMO" theme="info" icon="fa-solid fa-folder-open"/>
-            <x-adminlte-button class="btn_excluir_tmo" type="button" onclick="document.querySelector('.btn_hide_excluir_tmo').click()" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
-
+                @if($glo_os_estagioAPP == "CONSULTA_REQUISICAO")
+                <x-adminlte-button class="btn_finalizar_requisicao" type="button" onclick="document.querySelector('.btn_hide_finalizar_requisicao').click()" label="Finalizar Requisição" theme="info" icon="fa-solid fa-lock"/>
+                <x-adminlte-button class="btn_excluir_requisicao" type="button" onclick="document.querySelector('.btn_hide_excluir_requisicao').click()" label="Excluir Requisição" theme="info" icon="fa-solid fa-trash"/>
+                <x-adminlte-button class="btn_reabrir_requisicao" type="button" onclick="document.querySelector('.btn_hide_reabrir_requisicao').click()" label="Reabrir Requisição" theme="info" icon=""/>
+                <x-adminlte-button class="btn_iniciar_servicos" type="button" onclick="document.querySelector('.btn_hide_iniciar_servicos').click()" label="Iniciar Serviços" theme="info" icon=""/>
+                <x-adminlte-button class="btn_finalizar_servicos" type="button" onclick="document.querySelector('.btn_hide_finalizar_servicos').click()" label="Finalizar Serviços" theme="info" icon=""/>
+                <x-adminlte-button class="btn_novo_servico" type="button" onclick="window.location='{{ route('painelOS.abrirServicoRequisicao', ['empresa' => $glo_os_empresa, 'area' => $area_req, 'setor' => $setor_req, 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'SELECAO_TMO', 'requisicao' => $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Novo Serviço" theme="info" icon="fa-solid fa-plus"/>
+                @endif
+                
+                <x-adminlte-button class="btn_liberar_desconto_tmo" type="button" data-toggle="modal" data-target="#modalLibDescTMO" label="Liberar Desconto" theme="info" icon="fa-solid fa-unlock"/>
+                <x-adminlte-button class="btn_suspender_tmo" type="button" onclick="document.querySelector('.btn_hide_suspender_tmo').click()" label="Suspender TMO" theme="info" icon="fa-solid fa-triangle-exclamation"/>
+                <x-adminlte-button class="btn_cancelar_tmo" type="button" onclick="document.querySelector('.btn_hide_cancelar_tmo').click()" label="Cancelar TMO" theme="info" icon="fa-solid fa-ban"/>
+                <x-adminlte-button class="btn_reabrir_tmo" type="button" onclick="document.querySelector('.btn_hide_reabrir_tmo').click()" label="Reabrir TMO" theme="info" icon="fa-solid fa-folder-open"/>
+                <x-adminlte-button class="btn_excluir_tmo" type="button" onclick="document.querySelector('.btn_hide_excluir_tmo').click()" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                <x-adminlte-button class="btn_atualizar_tmo" type="button" onclick="document.querySelector('.btn_hide_atualizar_tmo').click()" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                <x-adminlte-button class="btn_incluir_tmo" type="button" onclick="document.querySelector('.btn_hide_incluir_tmo').click()" label="Incluir" theme="info" icon="fa-solid fa-plus"/>
+            </div>
+            <div style="float: right;">
+                @if($glo_os_estagioAPP == "CONSULTA_REQUISICAO" || $glo_os_estagioAPP == "PREVISAO_ENTREGA" || $glo_os_estagioAPP == "TOTAIS_OS" || $glo_os_estagioAPP == "INCLUSAO_REQUISICAO")
+                <x-adminlte-button type="button" onclick="window.location='{{ route('situacaoOS.carregaOS', ['empresa' => $glo_os_empresa, 'cliente' => $glo_os_cliente, 'nos' => $glo_os_nos, 'estagioAPP' => 'PRINCIPAL']) }}'" label="Voltar" theme="info" icon=""/>
+                @elseif($glo_os_estagioAPP == "ORCAMENTO_OS") 
+                <x-adminlte-button type="button" onclick="window.location='{{ route('painelOS.totalOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Voltar" theme="info" icon=""/>
+                @elseif($glo_os_estagioAPP == "ORCAMENTO_OS_IMPRESSAO")
+                <x-adminlte-button type="button" onclick="window.location='{{ route('painelOS.orcamentoOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Voltar" theme="info" icon=""/>
+                @elseif($glo_os_estagioAPP == "MANUTENCAO_SERVICO")
+                <x-adminlte-button type="button" onclick="window.location='{{ route('painelOS.consultaRequisicao', ['empresa' => $glo_os_empresa, 'nos' => $glo_os_nos, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicaoBTN]) }}'" label="Voltar" theme="info" icon=""/>
+                @elseif($glo_os_estagioAPP == "INCLUSAO_SERVICO")
+                <x-adminlte-button type="button" onclick="window.location='{{ route('painelOS.consultaRequisicao', ['empresa' => $glo_os_empresa, 'nos' => $glo_os_nos, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicaoBTN]) }}'" label="Voltar" theme="info" icon=""/>
+                @endif 
+            </div>
         </x-slot>
     </x-adminlte-card><!-- Fechamento do Painel Principal da Abertura de OS -->
 

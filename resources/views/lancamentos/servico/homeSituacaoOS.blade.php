@@ -1,11 +1,11 @@
 @extends('adminlte::page')
 
-@section('title', 'Situação das Ordens de Serviço Emitidas')
+@section('title', 'Situação de OS')
 
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Lançamentos</h1>
+            <h4 style="margin-bottom: 0px !important;">Lançamento de Serviços</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">

@@ -1,14 +1,17 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Clientes')
+@section('title', 'Situação de OS')
 
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h1>Lançamentos</h1>
+            <h4 style="margin-bottom: 0px !important;">Lançamento de Serviços</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item active">
+                    <a href="{{route('home.situacaoOS')}}">Situação de OS</a>
+                </li>
                 <li class="breadcrumb-item active">Consulta Situação de OS</li>
             </ol>
         </div>
@@ -56,7 +59,7 @@ $config = [
 ];
 @endphp
 
-<x-adminlte-card title="Situação de OS" theme="navy" collapsible maximizable>
+<x-adminlte-card title="Consulta da Situação das OS Emitidas" theme="navy" collapsible maximizable>
     <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
         @foreach ($dadosOS as $os)
             @php
@@ -68,14 +71,6 @@ $config = [
 
                 $data_os = date('d/m/Y H:i:s', strtotime($os->os_dha));
 
-                if($os->os_sts == 'F'){
-                    $sts = 'Finalizado';
-                }elseif($os->os_sts == 'C'){
-                    $sts = 'Cancelado';
-                }else{
-                    $sts = 'Aberta';
-                }
-
                 $res = DB::table('users')->where('usuario_codigo',$os->os_res_abr)->get();
                 $responsavel = $os->os_res_abr.' - '.$res[0]->name;
 
@@ -84,16 +79,25 @@ $config = [
                 <td>{{ $empresa }}</td>
                 <td>{{ $cliente }}</td>
                 <td><a href="{{route('situacaoOS.carregaOS', ['empresa' => $os->os_emp, 'cliente' => $os->os_cli, 'nos' => $os->os_nos, 'estagioAPP' => 'PRINCIPAL'])}}">{{ $os->os_nos.' - '.$data_os }}</a></td>
-                <td>{{ $sts }}</td>          
+                @if($os->os_sts == 'F')
+                <td class="text-xl-center" style="text-align: center;"><span class="text-xl-center badge badge-success">Finalizada</span></td>
+                @elseif($os->os_sts == 'A')
+                <td class="text-xl-center" style="text-align: center;"><span class="text-xl-center badge badge-info">Andamento</span></td>
+                @else
+                <td class="text-xl-center" style="text-align: center;"><span class="text-xl-center badge badge-danger">Cancelada</span></td>
+                @endif         
                 <td>{{ Helper::formataValorMonetario($os->os_vlt) }}</td>   
                 <td>{{ $responsavel }}</td>         
             </tr>
         @endforeach
     </x-adminlte-datatable>
     <x-slot name="footerSlot">
-        <form method="get" action="{{ route('home.emissaoOS') }}">
-            <x-adminlte-button label="Nova OS" theme="info" icon="fas fa-user-plus" type="submit"/>
-        </form>
+        <div class="d-flex justify-content-between w-100">
+            <form method="get" action="{{ route('home.emissaoOS') }}">
+                <x-adminlte-button label="Nova OS" theme="info" icon="fas fa-user-plus" type="submit"/>
+            </form>
+            <x-adminlte-button type="button" onclick="window.location='{{ route('home.situacaoOS') }}'" label="Voltar" theme="info" icon=""/>
+        </div>
     </x-slot>
 </x-adminlte-card>
 @stop
