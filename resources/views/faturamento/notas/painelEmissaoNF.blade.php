@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Faturamento</h4>
+            <h4 style="margin-bottom: 0px !important;">Faturamento de Notas</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -146,7 +146,11 @@
             </div>
 
         </div>
-
+        <x-slot name="footerSlot">
+            <div style="float: right;">
+                <x-adminlte-button type="button" onclick="window.location='{{ route('emissaoNF.consultaNF') }}'" label="Voltar" theme="info" icon=""/>
+            </div>
+        </x-slot>
     </x-adminlte-card>
 
 </div>

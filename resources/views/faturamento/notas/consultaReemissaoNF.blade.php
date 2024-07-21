@@ -1,11 +1,11 @@
 @extends('adminlte::page')
 
-@section('title', 'Consulta Reemissão de NF')
+@section('title', 'Reemissão de NF')
 
 @section('content_header')
 <div class="row mb-2">
         <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Faturamento</h4>
+            <h4 style="margin-bottom: 0px !important;">Faturamento de Notas</h4>
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -62,7 +62,7 @@ $config = [
 ];
 @endphp
 
-<x-adminlte-card title="Reemissão de NF" theme="navy" collapsible maximizable>
+<x-adminlte-card title="Consulta de Notas para Reemissão" theme="navy" collapsible maximizable>
     <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
         @foreach($dadosHeader as $header)
             @php 
@@ -112,6 +112,10 @@ $config = [
         @endforeach
     </x-adminlte-datatable>
     <x-slot name="footerSlot">
+        <div class="d-flex justify-content-between w-100">
+            <x-adminlte-button type="button" onclick="window.location='{{ route('home.emissaoNF') }}'" label="Emissão de NF" theme="info" icon="fa-solid fa-plus"/>
+            <x-adminlte-button type="button" onclick="window.location='{{ route('home.reemissaoNF') }}'" label="Voltar" theme="info" icon=""/>
+        </div>
     </x-slot>
 </x-adminlte-card>
 @stop

@@ -1,11 +1,11 @@
 @extends('adminlte::page')
 
-@section('title', 'Filtro Reemissão de NF')
+@section('title', 'Reemissão de NF')
 
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-6">
-        <h4 style="margin-bottom: 0px !important;">Faturamento</h4>
+        <h4 style="margin-bottom: 0px !important;">Faturamento de Notas</h4>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
