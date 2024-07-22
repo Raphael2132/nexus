@@ -7,6 +7,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Local Arquivo do configução inicial da aplicação
+    |--------------------------------------------------------------------------
+    |
+    | Informamos no arquivo .env o local onde vai estar o arquivo config.ini
+    | Ele é usado para pelo dominio acessado verificar qual a empresa e banco vai utilizar
+    |
+    */
+    'empresa_ini_path' => env('EMPRESA_INI_PATH', storage_path('app/config.ini')),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Name
     |--------------------------------------------------------------------------
     |

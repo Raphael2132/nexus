@@ -5,6 +5,7 @@
 /public/storage
 /public/75272073703753/file/doc/nfsxml
 /storage/*.key
+/storage/app/config.ini
 /vendor
 .env
 .env.backup

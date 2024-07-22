@@ -87,9 +87,9 @@ return [
     'auth_logo' => [
         'enabled' => true,
         'img' => [
-            'path' => '75272073703753/file/img/E00001_logo.png',
-            'alt' => 'Empresa Logo',
-            'class' => 'img-fluid',
+            'path' => 'img/sistema/logo_nexus_c.png',
+            'alt' => 'Nexus',
+            'class' => 'img-fluid mt-3',
             'width' => 500,
             'height' => 500,
         ],

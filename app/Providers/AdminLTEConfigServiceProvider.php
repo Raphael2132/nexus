@@ -32,9 +32,9 @@ class AdminLTEConfigServiceProvider extends ServiceProvider
                         'adminlte.title' => $empresa->empresa_nome,
                     ]);
 
-                    $logoPath = public_path($empresa->empresa_cnpj.'/file/img/'.$empresa->empresa_codigo.'_logo_ico.png');
+                    $icoLogoPath = public_path($empresa->empresa_cnpj.'/file/img/'.$empresa->empresa_codigo.'_logo_ico.png');
 
-                    if (file_exists($logoPath)) {
+                    if (file_exists($icoLogoPath)) {
                         config([
                             //Admin Panel Logo
                             'adminlte.logo_img' => $empresa->empresa_cnpj.'/file/img/'.$empresa->empresa_codigo.'_logo_ico.png',
