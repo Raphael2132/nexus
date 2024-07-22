@@ -21,7 +21,9 @@ class LoadConfigIniAPP
     {
         $host = $request->getHost();
         $domain = str_replace(['http://', 'https://', 'www.'], '', $host);
-        //$domain = explode('.', $domain)[0];
+        echo $domain;
+        $domain = explode('.', $domain)[0];
+        echo " / ".$domain;exit;
 
         // Carregar o caminho do arquivo .ini da configuração
         $iniPath = config('app.empresa_ini_path');
