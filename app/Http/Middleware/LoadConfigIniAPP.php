@@ -31,6 +31,7 @@ class LoadConfigIniAPP
 
             if (isset($ini[$domain])) {
                 $cnpj = $ini[$domain]['cnpj'];
+                $codigo = $ini[$domain]['codigo'];
                 $database = $ini[$domain]['database'];
                 $username = $ini[$domain]['username'];
                 $password = $ini[$domain]['password'];
@@ -51,6 +52,7 @@ class LoadConfigIniAPP
 
                 DB::setDefaultConnection('empresa');
 
+                /*
                 // Carregar dados da empresa para configurar o AdminLTE
                 $empresa = DB::table('cadastro_empresas')->where('empresa_cnpj', $cnpj)->first();
 
@@ -63,6 +65,16 @@ class LoadConfigIniAPP
                         ]);
                     }
                 }
+                */
+
+                $logoPath = public_path($cnpj . '/file/img/' . $codigo . '_logo.png');
+                    
+                if (file_exists($logoPath)) {
+                    config([
+                        'adminlte.auth_logo.img.path' => $cnpj . '/file/img/' . $codigo . '_logo.png',
+                    ]);
+                }
+
             } else {
                 Log::warning("Configuração para o domínio {$domain} não encontrada no arquivo ini.");
             }
