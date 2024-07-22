@@ -148,7 +148,8 @@ class CadastroEmpresaController extends Controller
                 ->update(['empresa_nome' => $request->nome,
                 'empresa_cnpj' => $cnpjNew,
                 'empresa_insc_estadual' => $request->insEstadual,
-                'empresa_insc_municipal' => $request->insMunicipal]);
+                'empresa_insc_municipal' => $request->insMunicipal,
+                'empresa_nome_logo' => $request->nomeLogo]);
         }        
         
         return redirect(route('empresa.editarCadastro', ['dadosEmpresa' => $empresa_cod]))->with('success', 'Dados atualizados com sucesso!');

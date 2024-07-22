@@ -19,6 +19,14 @@ class CadastroEmpresa extends Model
         'empresa_tel_celular',
         'empresa_tel_comercial',
         'empresa_insc_estadual',
-        'empresa_insc_municipal'
+        'empresa_insc_municipal',
+        'empresa_nome_logo'
     ];
+
+    protected $table = 'cadastro_empresas';
+
+    public function usuarios()
+    {
+        return $this->hasMany(User::class, 'usuario_empresa', 'empresa_codigo');
+    }
 }

@@ -169,6 +169,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         //Barryvdh\DomPDF\ServiceProvider::class,
+        App\Providers\EmpresaServiceProvider::class,
+        App\Providers\AdminLTEConfigServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -186,6 +188,7 @@ return [
         'Helper' => App\Http\Helpers\Helper::class,
         //'PDF' => Barryvdh\DomPDF\Facade::class,
         //'PDF' => Mpdf\MpdfFacade::class,
+        'Empresa' => App\Facades\Empresa::class,
     ])->toArray(),
 
 ];

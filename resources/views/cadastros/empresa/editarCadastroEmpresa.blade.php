@@ -55,14 +55,22 @@
                             </x-adminlte-input>
 
                             <!-- Nome -->
-                            <x-adminlte-input name="nome" type="text" placeholder="Nome Completo" fgroup-class="col-md-6" value="{{$dadosEmpresa[0]['empresa_nome'] }}">
+                            <x-adminlte-input name="nome" type="text" placeholder="Nome Completo" fgroup-class="col-md-4" value="{{$dadosEmpresa[0]['empresa_nome'] }}">
                                 <x-slot name="label">
                                     Nome da Empresa <span style="color:red;">*</span>
                                 </x-slot>
                             </x-adminlte-input>
 
+                            
+                            <!-- Nome da Empresa Painel Administrador -->
+                            <x-adminlte-input name="nomeLogo" type="text" fgroup-class="col-md-4" value="{{$dadosEmpresa[0]['empresa_nome_logo'] }}">
+                                <x-slot name="label">
+                                    Nome da Empresa Painel Administrador <span style="color:red;">*</span>
+                                </x-slot>
+                            </x-adminlte-input>
+
                             <!-- CNPJ -->
-                            <x-adminlte-input name="cnpj" type="text" fgroup-class="col-md-4" value="{{$dadosEmpresa[0]['empresa_cnpj'] }}">
+                            <x-adminlte-input name="cnpj" type="text" fgroup-class="col-md-2" value="{{$dadosEmpresa[0]['empresa_cnpj'] }}">
                                 <x-slot name="label">
                                     CNPJ <span style="color:red;">*</span>
                                 </x-slot>
@@ -445,9 +453,9 @@ $(function () {
 	  insMunicipal: {
 		maxlength: 15
       },
-      email: {
-		email: true,
-        maxlength: 80
+      nomeLogo: {
+		required: true,
+        maxlength: 18
       },
     },
     messages: {
@@ -465,9 +473,9 @@ $(function () {
 	  insMunicipal: {
 		maxlength: "Informe no máximo 15 dígitos na Incrição Municipal"
       },
-      email: {
-		email: "Formato do Email inválido",
-        maxlength: "Informe no máximo 80 caracteres no Email"
+      nomeLogo: {
+		required: "Por Favor informe o Nome da Empresa Painel Administrador",
+        maxlength: "Informe no máximo 18 caracteres"
       },
     },
     errorElement: 'span',

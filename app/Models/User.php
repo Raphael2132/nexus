@@ -60,4 +60,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function empresa()
+    {
+        return $this->belongsTo(CadastroEmpresa::class, 'usuario_empresa', 'empresa_codigo');
+    }
 }
