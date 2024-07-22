@@ -27,7 +27,7 @@ class LoadConfigIniAPP
         // Carregar o caminho do arquivo .ini da configuração
         $iniPath = config('app.empresa_ini_path');
 
-        echo ' / '.$iniPath;exit;
+        echo ' / '.$iniPath;
         
         if (file_exists($iniPath)) {
             echo 'achei o arquivo';exit;
@@ -73,6 +73,8 @@ class LoadConfigIniAPP
         } else {
             Log::error("Arquivo ini não encontrado: {$iniPath}");
         }
+
+        exit;
 
         return $next($request);
     }
