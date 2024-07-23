@@ -546,12 +546,12 @@ return [
                     'can'  => 'is_mod_nfs',
                     'submenu' => [
                         [
-                            'text' => 'Emissão de NF-e/NFS-e',
+                            'text' => 'Emissão de NFS-e',
                             'url'  => 'faturamento/notas/controleEmissaoNF',
                             'icon' => '',
                         ],
                         [
-                            'text' => 'Reemissão de NF-e/NFS-e',
+                            'text' => 'Reemissão de NFS-e',
                             'url'  => 'faturamento/notas/controleReemissaoNF',
                             'icon' => '',
                         ],
