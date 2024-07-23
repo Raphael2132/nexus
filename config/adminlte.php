@@ -383,6 +383,7 @@ return [
                 [
                     'text' => 'Faturamento',
                     'icon' => 'fa-solid fa-list',
+                    'can'  => 'is_par_faturamento',
                     'submenu' => [
                         /*[
                             'text' => 'Emissão de NF-e',
@@ -404,6 +405,7 @@ return [
                 [
                     'text' => 'Serviços',
                     'icon' => 'fa-solid fa-list',
+                    'can' => 'is_par_servico',
                     'submenu' => [
                         [
                             'text' => 'Geral da Empresa',
@@ -414,21 +416,25 @@ return [
                             'text' => 'Categorias de Atendimento',
                             'url'  => '/parametros/servico/homeLancamentosServicoCategoria',
                             'icon' => '',
+                            'can' => 'is_mod_servico',
                         ],
                         [
                             'text' => 'Etapas de Atendimento',
                             'url'  => '/parametros/servico/homeLancamentosServicoEtapas',
                             'icon' => '',
+                            'can' => 'is_mod_servico',
                         ],
                         [
                             'text' => 'Tarefas Mão de Obra',
                             'url'  => '/parametros/servico/homeParametrosServicoTMO',
                             'icon' => '',
+                            'can' => 'is_mod_servico',
                         ],
                         [
                             'text' => 'Tipos de Serviço',
                             'url'  => '/parametros/servico/homeLancamentosServicoTipo',
                             'icon' => '',
+                            'can' => 'is_mod_servico',
                         ],
                     ],
                 ],
@@ -478,11 +484,15 @@ return [
             ],
         ],
 
-        ['header' => 'Área de Serviços'],
+        [
+            'header' => 'Área de Serviços',
+            'can' => 'is_emite_os',
+        ],
 
         [
             'text' => 'Lançamentos',
             'icon' => 'fa-solid fa-file-pen',
+            'can' => 'is_emite_os',
             'submenu' => [
                 [
                     'text' => 'Serviços',
@@ -503,15 +513,20 @@ return [
             ],
         ],
 
-        ['header' => 'Área de Faturamento'],
+        [
+            'header' => 'Área de Faturamento',
+            'can'  => 'is_emite_nf',
+        ],
 
         [
             'text' => 'Faturamento de Notas',
             'icon' => 'fa-solid fa-file-invoice-dollar',
+            'can'  => 'is_emite_nf',
             'submenu' => [
                 [
                     'text' => 'Emissão Simplificada',
                     'icon' => 'fa-solid fa-list',
+                    'can'  => 'is_mod_nfs_simp',
                     'submenu' => [
                         [
                             'text' => 'Emissão de NFS-e',
@@ -528,6 +543,7 @@ return [
                 [
                     'text' => 'Lançamento de Notas',
                     'icon' => 'fa-solid fa-list',
+                    'can'  => 'is_mod_nfs',
                     'submenu' => [
                         [
                             'text' => 'Emissão de NF-e/NFS-e',
@@ -541,6 +557,7 @@ return [
                         ],
                     ],
                 ],
+                /*
                 [
                     'text' => 'Eventos de NF-e/NFS-e',
                     'icon' => 'fa-solid fa-list',
@@ -562,6 +579,7 @@ return [
                         ],
                     ],
                 ],
+                */
             ],
         ],
 

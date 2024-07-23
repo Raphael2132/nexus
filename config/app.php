@@ -181,6 +181,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         //Barryvdh\DomPDF\ServiceProvider::class,
         App\Providers\EmpresaServiceProvider::class,
+        App\Providers\ModulosServiceProvider::class,
         App\Providers\AdminLTEConfigServiceProvider::class,
     ])->toArray(),
 
@@ -200,6 +201,7 @@ return [
         //'PDF' => Barryvdh\DomPDF\Facade::class,
         //'PDF' => Mpdf\MpdfFacade::class,
         'Empresa' => App\Facades\Empresa::class,
+        'Modulos' => App\Facades\Modulos::class,
     ])->toArray(),
 
 ];

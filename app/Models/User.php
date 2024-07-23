@@ -65,4 +65,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(CadastroEmpresa::class, 'usuario_empresa', 'empresa_codigo');
     }
+
+    public function modulos()
+    {
+        return $this->belongsTo(ParametrosSistemaModulo::class, 'usuario_empresa', 'modulo_empresa_codigo');
+    }
 }

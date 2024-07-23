@@ -71,16 +71,37 @@
                 </div>
                     
                 <!-- Nome -->
-                <x-adminlte-input name="nome" type="text" placeholder="Nome" fgroup-class="col-md-12">
+                <x-adminlte-input name="nome" type="text" placeholder="Nome" fgroup-class="col-md-12" autocomplete="off">
                     <x-slot name="label">
                         Nome <span style="color:red;">*</span>
                     </x-slot>
                 </x-adminlte-input>
 
                 <!-- Senha -->
-                <x-adminlte-input name="senha" type="password" placeholder="Senha" fgroup-class="col-md-12">
+                <x-adminlte-input name="senha" type="password" placeholder="Nova Senha" igroup-size="md" fgroup-class="col-md-12" autocomplete="new-password">
+                    <x-slot name="prependSlot">
+                        <div class="input-group-text bg-info">
+                            <i class="fa-solid fa-key"></i>
+                        </div>
+                    </x-slot>
                     <x-slot name="label">
                         Senha <span style="color:red;">*</span>
+                    </x-slot>
+                    <x-slot name="appendSlot">
+                        <x-adminlte-button class="toggle-password" theme="outline-info" data-target="senha" icon="fa fa-eye"/>
+                    </x-slot>
+                </x-adminlte-input>
+                <x-adminlte-input name="senha2" type="password" placeholder="Confirmar Nova Senha" igroup-size="md" fgroup-class="col-md-12" autocomplete="new-password">
+                    <x-slot name="prependSlot">
+                        <div class="input-group-text bg-info">
+                            <i class="fa-solid fa-key"></i>
+                        </div>
+                    </x-slot>
+                    <x-slot name="label">
+                        Confirmar Senha <span style="color:red;">*</span>
+                    </x-slot>
+                    <x-slot name="appendSlot">
+                        <x-adminlte-button class="toggle-password" theme="outline-info" data-target="senha2" icon="fa fa-eye"/>
                     </x-slot>
                 </x-adminlte-input>
 
@@ -127,6 +148,29 @@
 
 @section('js')
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+
+        togglePasswordButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const targetInput = document.querySelector(`input[name="${this.getAttribute('data-target')}"]`);
+                const icon = this.querySelector('i');
+
+                if (targetInput.type === 'password') {
+                    targetInput.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    targetInput.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+    });
+</script>
+
+<script>
 $(function () {
     $('#quickForm').validate({
         rules: {
@@ -143,6 +187,11 @@ $(function () {
             senha: {
                 required: true,
                 minlength: 6
+            },
+            senha2: {
+                required: true,
+                minlength: 6,
+                equalTo: "#senha"
             },
             email: {
                 required: true,
@@ -167,8 +216,13 @@ $(function () {
                 minlength: "Infome no mínimo 5 caracteres"
             },
             senha: {
-                required: "Por Favor informe a Senha do Usuário",
-                minlength: "Infome no mínimo 6 caracteres"
+                required: "Por favor, insira a nova senha.",
+                minlength: "A senha deve ter pelo menos 6 caracteres."
+            },
+            senha2: {
+                required: "Por favor, confirme a nova senha.",
+                minlength: "A senha deve ter pelo menos 6 caracteres.",
+                equalTo: "As senhas não coincidem."
             },
             email: {
                 required: "Por Favor informe um Email válido do Usuário",

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use stdClass;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class CadastroUsuarioController extends Controller
 {
@@ -199,7 +200,7 @@ class CadastroUsuarioController extends Controller
                 return redirect()->back()->with('error', 'Informe ao menos um dos Telefones');
             }
 
-            $atualizausuario = DB::table('users')
+            DB::table('users')
                 ->where('id', $usuario)
                 ->where('usuario_codigo', $usuario_cod)
                 ->update(['email' => $request->email,
@@ -210,7 +211,16 @@ class CadastroUsuarioController extends Controller
         
         }elseif($atualiza == 'permissao'){
 
-            $atualizausuario = DB::table('users')
+            if($request->altPerAcesso == 'S'){
+                //Verifica o tipo do usuario
+                $dadosUsu = DB::table('users')->where('usuario_codigo', $usuario_cod)->get();
+
+                if($dadosUsu[0]->usuario_tipo != 'A'){
+                    return redirect()->back()->with('error', 'Apenas usuários do tipo administrador podem alterar permissões no sistema!');
+                }
+            }
+
+            DB::table('users')
                 ->where('id', $usuario)
                 ->where('usuario_codigo', $usuario_cod)
                 ->update(['usuario_altera_permissoes_acesso' => $request->altPerAcesso,
@@ -220,7 +230,16 @@ class CadastroUsuarioController extends Controller
                 'usuario_acesso_mod_servicos' => $request->acessoModSrv,
                 'usuario_acesso_mod_nf' => $request->acessoModNf]);
         
-        }             
+        }elseif($atualiza == 'senha'){
+
+            $senha = Hash::make($request->novaSenha);
+
+            $atualizausuario = DB::table('users')
+                ->where('id', $usuario)
+                ->where('usuario_codigo', $usuario_cod)
+                ->update(['password' => $senha]);
+        
+        }                
         
         return redirect(route('usuario.editarCadastro', ['dadosUsuario' => $usuario_cod, 'tipo' => $tipo]))->with('success', 'Usuário atualizado com sucesso!');
     }

@@ -1370,7 +1370,7 @@ $status_servico = '';
                         </form>
 
                         <!-- Modal de Liberação de Desconto da TMO -->
-                        <form method="post" action="{{ route('requisicaoOS.autorizaDescTMO', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao' => $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'tmo' => $glo_os_dadosServicoSelecionado[0]->srv_tmo]) }}" id="quickForm-aut-desconto" novalidate="novalidate">
+                        <form method="post" action="{{ route('requisicaoOS.autorizaDescTMO', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao' => $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'tmo' => $glo_os_dadosServicoSelecionado[0]->srv_tmo]) }}" id="formulario-aut-desconto" novalidate="novalidate">
                             @csrf 
                             @method('post')
                             <x-adminlte-modal id="modalLibDescTMO" title="Liberação de Desconto na TMO" size="xl" theme="navy" icon="fa-solid fa-lock-open" v-centered scrollable>
@@ -1410,9 +1410,30 @@ $status_servico = '';
                                             <x-adminlte-input-switch name="liberaDesc" label="Desconto Liberado" data-on-text="Sim" data-off-text="Não" data-on-color="success" data-off-color="danger" fgroup-class="col-md-2" igroup-size="sm" checked/>
                                             @endif
                                             <!-- Usuário com permissão de dar o desconto -->
-                                            <x-adminlte-input name="usuarioDesconto" label="Código do Usuário" type="text" placeholder="Usuário" fgroup-class="col-md-5" igroup-size="sm"/>
+                                            <x-adminlte-input class="text-uppercase" name="usuarioDesconto" type="text" placeholder="Usuário" fgroup-class="col-md-5" igroup-size="sm" autocomplete="off">
+                                                <x-slot name="prependSlot">
+                                                    <div class="input-group-text bg-info">
+                                                        <i class="fa-solid fa-user"></i>
+                                                    </div>
+                                                </x-slot>    
+                                            <x-slot name="label">
+                                                    Código do Usuário <span style="color:red;">*</span>
+                                                </x-slot>
+                                            </x-adminlte-input>
                                             <!-- Senha -->
-                                            <x-adminlte-input name="senhaDesconto" label="Senha" placeholder="Senha" type="password" fgroup-class="col-md-5" igroup-size="sm"/>
+                                            <x-adminlte-input name="senhaDesconto" placeholder="Senha" type="password" fgroup-class="col-md-5" igroup-size="sm" autocomplete="new-password">
+                                                <x-slot name="prependSlot">
+                                                    <div class="input-group-text bg-info">
+                                                        <i class="fa-solid fa-key"></i>
+                                                    </div>
+                                                </x-slot>
+                                                <x-slot name="label">
+                                                    Senha <span style="color:red;">*</span>
+                                                </x-slot>
+                                                <x-slot name="appendSlot">
+                                                    <x-adminlte-button class="toggle-password" theme="outline-info" data-target="senhaDesconto" icon="fa fa-eye"/>
+                                                </x-slot>
+                                            </x-adminlte-input>
                                         </div>
                                     </div>
                                 </div>
@@ -3048,6 +3069,29 @@ $status_servico = '';
             }
         }
 
+        /* **************************************** Eventos Iniciais dos blocos  - MANUTENCAO_SERVICO **************************************** */
+        if(estagioAPP == 'MANUTENCAO_SERVICO'){
+
+            const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+
+            togglePasswordButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const targetInput = document.querySelector(`input[name="${this.getAttribute('data-target')}"]`);
+                    const icon = this.querySelector('i');
+
+                    if (targetInput.type === 'password') {
+                        targetInput.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        targetInput.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            });
+        }
+
         /* **************************************** Eventos Iniciais do bloco  - PREVISAO_ENTREGA **************************************** */
 
         if(estagioAPP == 'PREVISAO_ENTREGA'){
@@ -3900,6 +3944,41 @@ $(function () {
             },
             obsMot: {
                 maxlength: "Informe no máximo 255 caracteres"
+            }
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+
+    //Atualização do cliente da fatura da os
+    $('#formulario-aut-desconto').validate({
+        rules: {
+            usuarioDesconto: {
+                required: true,
+                maxlength: 6,
+                minlength: 6
+            },
+            senhaDesconto: {
+                required: true
+            }
+        },
+        messages: {
+            usuarioDesconto: {
+                required: "Por Favor informe o Usuário",
+                maxlength: "Informe o código de 6 caracteres",
+                minlength: "Informe o código de 6 caracteres",
+            },
+            senhaDesconto: {
+                required: "Por Favor informe a Senha",
             }
         },
         errorElement: 'span',

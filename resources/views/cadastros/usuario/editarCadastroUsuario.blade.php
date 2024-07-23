@@ -26,6 +26,7 @@
 @section('content')
 @php
     $altera_permissoes_acesso = Auth::user()->usuario_altera_permissoes_acesso;
+    $tipo_usuario = Auth::user()->usuario_tipo;
 @endphp
 <div class="col-12 col-sm-12">
     
@@ -36,6 +37,9 @@
                 <li class="pt-2 px-3"><h3 class="card-title">Manutenção do Usuário</h3></li>
                 <li class="nav-item">
                     <a class="nav-link active" id="custom-tabs-two-dados-gerais-tab" data-toggle="pill" href="#custom-tabs-two-dados-gerais" role="tab" aria-controls="custom-tabs-two-dados-gerais" aria-selected="true">Dados Gerais</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-senha-tab" data-toggle="pill" href="#custom-tabs-two-senha" role="tab" aria-controls="custom-tabs-two-senha" aria-selected="true">Senha</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="custom-tabs-two-contato-tab" data-toggle="pill" href="#custom-tabs-two-contato" role="tab" aria-controls="custom-tabs-two-contato" aria-selected="false">Contato</a>
@@ -144,7 +148,7 @@
                             <!-- Data de Nascimento -->
                             <x-adminlte-date-range name="dataNascimento" label="Data de Nascimento" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
                                 <x-slot name="prependSlot">
-                                <div class="input-group-text">
+                                    <div class="input-group-text">
                                         <i class="far fa-lg fa-calendar-alt"></i>
                                     </div>
                                 </x-slot>
@@ -158,7 +162,65 @@
                         </div>
 
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Aba dos dados da senha do usuario -->
+                <div class="tab-pane fade" id="custom-tabs-two-senha" role="tabpanel" aria-labelledby="custom-tabs-two-senha">
+                    <form method="post" action="{{route('usuario.atualizar', ['usuario' => $dadosUsuario[0]['id'], 'usuario_cod' => $dadosUsuario[0]['usuario_codigo'], 'atualiza' => 'senha', 'tipo' => $tipo])}}" id="formulario-senha" novalidate="novalidate">
+                    @csrf 
+                    @method('post')
+                        <div class="row">
+                            <div class="d-flex justify-content-center col-md-12">
+                                <div class="col-md-4">
+                                    <x-adminlte-callout theme="info" title="Redefinir Senha do Usuário">
+                                        <div class="text-muted">
+                                            <div class="row">
+                                                <p class="text-sm col-md-6">Usuário
+                                                    <b class="d-block">{{ $dadosUsuario[0]['usuario_codigo'].' - '.$dadosUsuario[0]['name'] }}</b>
+                                                </p>
+                                                <p class="text-sm col-md-6">Email
+                                                    <b class="d-block">{{ $dadosUsuario[0]['email'] }}</b>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        </br>
+                                        <!-- Senha -->
+                                        <x-adminlte-input name="novaSenha" type="password" placeholder="Nova Senha" igroup-size="md" fgroup-class="col-md-12" autocomplete="new-password">
+                                            <x-slot name="prependSlot">
+                                                <div class="input-group-text bg-info">
+                                                    <i class="fa-solid fa-key"></i>
+                                                </div>
+                                            </x-slot>
+                                            <x-slot name="label">
+                                                Nova Senha <span style="color:red;">*</span>
+                                            </x-slot>
+                                            <x-slot name="appendSlot">
+                                                <x-adminlte-button class="toggle-password" theme="outline-info" data-target="novaSenha" icon="fa fa-eye"/>
+                                            </x-slot>
+                                        </x-adminlte-input>
+                                        <x-adminlte-input name="novaSenha2" type="password" placeholder="Confirmar Nova Senha" igroup-size="md" fgroup-class="col-md-12" autocomplete="new-password">
+                                            <x-slot name="prependSlot">
+                                                <div class="input-group-text bg-info">
+                                                    <i class="fa-solid fa-key"></i>
+                                                </div>
+                                            </x-slot>
+                                            <x-slot name="label">
+                                                Confirmar Nova Senha <span style="color:red;">*</span>
+                                            </x-slot>
+                                            <x-slot name="appendSlot">
+                                                <x-adminlte-button class="toggle-password" theme="outline-info" data-target="novaSenha2" icon="fa fa-eye"/>
+                                            </x-slot>
+                                        </x-adminlte-input>
+                                    </x-adminlte-callout>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center">
+                            <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -211,7 +273,7 @@
                         </div>
 
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -306,7 +368,7 @@
                            
                         <!-- Gera o Modal com os campos da inserção dos dados do endereço do usuario -->
                         <div>
-                            <form method="post" action="{{route('enderecoUsuario.inserir', ['tipo' => $tipo])}}" id="quickForm3" novalidate="novalidate">
+                            <form method="post" action="{{route('enderecoUsuario.inserir', ['tipo' => $tipo])}}" id="formulario-endereco" novalidate="novalidate">
                             @csrf 
                             @method('post')    
                                 <!-- Criação do Modal -->                           
@@ -317,7 +379,10 @@
                                         <input id="ibgeCodMun" type="hidden" name="ibgeCodMun">
                                     
                                         <!-- CEP -->
-                                        <x-adminlte-input name="cep" type="text" label="CEP" fgroup-class="col-md-4">
+                                        <x-adminlte-input name="cep" type="text" fgroup-class="col-md-4">
+                                            <x-slot name="label">
+                                                CEP <span style="color:red;">*</span>
+                                            </x-slot>
                                             <x-slot name="prependSlot">
                                                 <div class="input-group-text">
                                                     <i class="fa-solid fa-location-dot"></i>
@@ -327,7 +392,10 @@
 
                                         <div class="row">
                                             <!-- Logradouro -->
-                                            <x-adminlte-input name="logradouro" type="text" label="Logradouro" fgroup-class="col-md-9">
+                                            <x-adminlte-input name="logradouro" type="text" fgroup-class="col-md-9">
+                                                <x-slot name="label">
+                                                    Logradouro <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-address-book"></i>
@@ -336,7 +404,10 @@
                                             </x-adminlte-input>
 
                                             <!-- Numero -->
-                                            <x-adminlte-input name="numero" type="text" label="Número" fgroup-class="col-md-3">
+                                            <x-adminlte-input name="numero" type="text" fgroup-class="col-md-3">
+                                                <x-slot name="label">
+                                                    Número <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-hashtag"></i>
@@ -350,12 +421,19 @@
                                             <x-adminlte-input name="complemento" type="text" label="Complemento" fgroup-class="col-md-6"></x-adminlte-input>
 
                                             <!-- Bairro -->
-                                            <x-adminlte-input name="bairro" type="text" label="Bairro" fgroup-class="col-md-6"></x-adminlte-input>
+                                            <x-adminlte-input name="bairro" type="text" fgroup-class="col-md-6">
+                                                <x-slot name="label">
+                                                    Bairro <span style="color:red;">*</span>
+                                                </x-slot>
+                                            </x-adminlte-input>
                                         </div>
 
                                         <div class="row">
                                             <!-- Cidade -->
-                                            <x-adminlte-input name="cidade" type="text" label="Cidade" fgroup-class="col-md-6">
+                                            <x-adminlte-input name="cidade" type="text" fgroup-class="col-md-6">
+                                                <x-slot name="label">
+                                                    Cidade <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-slot name="prependSlot">
                                                     <div class="input-group-text">
                                                         <i class="fa-solid fa-city"></i>
@@ -377,12 +455,19 @@
                                             @endphp
 
                                             <!-- Estado -->
-                                            <x-adminlte-select name="uf" label="UF" fgroup-class="col-md-3">
+                                            <x-adminlte-select name="uf" fgroup-class="col-md-3">
+                                                <x-slot name="label">
+                                                    UF <span style="color:red;">*</span>
+                                                </x-slot>
                                                 <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
                                             </x-adminlte-select>
 
                                             <!-- Pais -->
-                                            <x-adminlte-input name="pais" type="text" label="Pais" fgroup-class="col-md-3"></x-adminlte-input>
+                                            <x-adminlte-input name="pais" type="text" fgroup-class="col-md-3">
+                                                <x-slot name="label">
+                                                    País <span style="color:red;">*</span>
+                                                </x-slot>
+                                            </x-adminlte-input>
                                         </div>
                                         <!-- Criação dos botões do Modal -->  
                                         <x-slot name="footerSlot">
@@ -402,7 +487,7 @@
 
                 <!-- Aba das permissões do usuario -->
                 <div class="tab-pane fade" id="custom-tabs-two-permissoes" role="tabpanel" aria-labelledby="custom-tabs-two-permissoes-tab">
-                    <form method="post" action="{{route('usuario.atualizar', ['usuario' => $dadosUsuario[0]['id'], 'usuario_cod' => $dadosUsuario[0]['usuario_codigo'], 'atualiza' => 'permissao', 'tipo' => $tipo])}}" id="quickForm2" novalidate="novalidate">
+                    <form method="post" action="{{route('usuario.atualizar', ['usuario' => $dadosUsuario[0]['id'], 'usuario_cod' => $dadosUsuario[0]['usuario_codigo'], 'atualiza' => 'permissao', 'tipo' => $tipo])}}" id="formulario-permissao" novalidate="novalidate">
                     @csrf 
                     @method('post')
 
@@ -412,12 +497,18 @@
 
                         <div class="row">
                             <!-- Usuario tem acesso aos parametros gerais -->
-                            <x-adminlte-select name="acessoParametros" label="Acessa Área de Parametrização Geral" fgroup-class="col-md-6">
+                            <x-adminlte-select name="acessoParametros" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Acessa Área de Parametrização Geral <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_pararametros']}}"/>
                             </x-adminlte-select>
 
                             <!-- Usuario tem acesso aos cadastros -->
                             <x-adminlte-select name="acessoCadastros" label="Acessa Área de Cadastros" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Acessa Área de Cadastros <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_cadastros']}}"/>
                             </x-adminlte-select>
                         </div>
@@ -425,11 +516,17 @@
                         <div class="row">
                             <!-- Usuario tem acesso ao modulo de serviços -->
                             <x-adminlte-select name="acessoModSrv" label="Acessa o Módulo de Serviços" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Acessa o Módulo de Serviços <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_mod_servicos']}}"/>
                             </x-adminlte-select>
 
                             <!-- Usuario tem acesso ao modulo de emissão de NF -->
-                            <x-adminlte-select name="acessoModNf" label="Acessa o Módulo de Emissão de NFS-e" fgroup-class="col-md-6">
+                            <x-adminlte-select name="acessoModNf" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Acessa o Módulo de Emissão de NFS-e <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_mod_nf']}}"/>
                             </x-adminlte-select>
                         </div>
@@ -440,18 +537,24 @@
 
                         <div class="row">
                             <!-- Usuario Tem permissão de autorizar desconto acima do permitido -->
-                            <x-adminlte-select name="autorizaDesconto" label="Permissão de Autorização de Desconto" fgroup-class="col-md-6">
+                            <x-adminlte-select name="autorizaDesconto" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Permissão de Autorização de Desconto <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_aut_desc']}}"/>
                             </x-adminlte-select>
 
                             <!-- Usuario tem permissão de alterar permissoes -->
-                            <x-adminlte-select name="altPerAcesso" label="Altera Permissões de Acesso dos Usuários" fgroup-class="col-md-6">
+                            <x-adminlte-select name="altPerAcesso" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Altera Permissões de Acesso dos Usuários <span style="color:red;">*</span>
+                                </x-slot>
                                 <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_altera_permissoes_acesso']}}"/>
                             </x-adminlte-select>
                         </div>
 
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button id="btn-submit-permissao" class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button id="btn-submit-permissao" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -528,19 +631,28 @@
                 $("#altPerAcesso").val('N');
                 $("#altPerAcesso").attr("disabled", true);
             }else{
-                $("#altPerAcesso").val('NS');
+                $("#altPerAcesso").val('N');
                 $("#altPerAcesso").attr("disabled", false);
             }
         });
 
         //Verifica se o usuario logado pode alterar as permissões
         var altera_permissoes_acesso = {!! json_encode($altera_permissoes_acesso) !!};
+        var tipo_usuario = {!! json_encode($tipo_usuario) !!};
 
-        if(altera_permissoes_acesso == 'N'){
+        if(altera_permissoes_acesso == 'N' || tipo_usuario != 'A'){
             $("#btn-submit-permissao").hide();
             $("#acessoCadastros").attr("disabled", true);
             $("#altPerAcesso").attr("disabled", true);
             $("#acessoParametros").attr("disabled", true);
+            $("#acessoModSrv").attr("disabled", true);
+            $("#acessoModNf").attr("disabled", true);
+            $("#autorizaDesconto").attr("disabled", true);
+        }else{
+            if($("#acessoCadastros").val() == 'N'){
+                $("#altPerAcesso").val('N');
+                $("#altPerAcesso").attr("disabled", true);
+            }
         }
 
         // Busca os dados do CEP informado
@@ -575,6 +687,29 @@
                     $("#ibgeCodMun").val(dadosRetorno.ibge);
                     $("#numero").focus();
                 }catch(ex){}
+            });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+
+        togglePasswordButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const targetInput = document.querySelector(`input[name="${this.getAttribute('data-target')}"]`);
+                const icon = this.querySelector('i');
+
+                if (targetInput.type === 'password') {
+                    targetInput.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    targetInput.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
             });
         });
     });
@@ -642,6 +777,45 @@ $(function () {
     });
 });
 
+$(document).ready(function() {
+    // Adiciona a validação ao formulário
+    $("#formulario-senha").validate({
+        rules: {
+            novaSenha: {
+                required: true,
+                minlength: 6
+            },
+            novaSenha2: {
+                required: true,
+                minlength: 6,
+                equalTo: "#novaSenha"
+            }
+        },
+        messages: {
+            novaSenha: {
+                required: "Por favor, insira a nova senha.",
+                minlength: "A senha deve ter pelo menos 6 caracteres."
+            },
+            novaSenha2: {
+                required: "Por favor, confirme a nova senha.",
+                minlength: "A senha deve ter pelo menos 6 caracteres.",
+                equalTo: "As senhas não coincidem."
+            }
+        },
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.input-group').append(error);
+        },
+        highlight: function(element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+});
+
 $(function () {
     $('#formulario-contato').validate({
         rules: {
@@ -677,7 +851,7 @@ $(function () {
 });
 
 $(function () {
-    $('#quickForm2').validate({
+    $('#formulario-permissao').validate({
         rules: {
             acessoCadastros: {
                 required: true
@@ -688,16 +862,34 @@ $(function () {
             acessoParametros: {
                 required: true
             },
+            acessoModSrv: {
+                required: true
+            },
+            acessoModNf: {
+                required: true
+            },
+            autorizaDesconto: {
+                required: true
+            },
         },
         messages: {
             acessoCadastros: {
-                required: "Por Favor informe o Acesso da Área de Cadastros"
+                required: "Por Favor informe se o Usuário Acessa a Área de Cadastros"
             },
             altPerAcesso: {
                 required: "Por Favor informe se o Usuário Altera Permissões de Acesso"
             },
             acessoParametros: {
-                required: "Por Favor informe o Acesso da Área de Parametrização Geral"
+                required: "Por Favor informe se o Usuário Acessa a Área de Parametrização Geral"
+            },
+            acessoModSrv: {
+                required: "Por Favor informe se o Usuário Acessa o Módulo de Serviços"
+            },
+            acessoModNf: {
+                required: "Por Favor informe se o Usuário Acessa o Módulo de NF"
+            },
+            autorizaDesconto: {
+                required: "Por Favor informe se o Usuário tem Permissão de Autorização de Desconto"
             },
         },
         errorElement: 'span',
@@ -715,7 +907,7 @@ $(function () {
 });
 
 $(function () {
-  $('#quickForm3').validate({
+  $('#formulario-endereco').validate({
     rules: {
       cep: {
         required: true
@@ -725,6 +917,7 @@ $(function () {
         maxlength: 100
       },
 	  numero: {
+        required: true,
 		maxlength: 5
       },
 	  complemento: {
@@ -755,6 +948,7 @@ $(function () {
         maxlength: "Informe no máximo 100 caracteres para o Logradouro"
       },
 	  numero: {
+        required: "Por Favor informe o Número para o Endereço",
 		maxlength: "Informe no máximo 5 caracteres no Número"
       },
 	  complemento: {

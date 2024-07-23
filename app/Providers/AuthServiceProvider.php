@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Models\ParametrosSistemaModulo;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -41,6 +42,77 @@ class AuthServiceProvider extends ServiceProvider
             return $user->usuario_acesso_cadastros == 'S'
                         ? true
                         : false;
+        });
+
+        Gate::define('is_par_faturamento', function ($user) {
+
+            $modulos = ParametrosSistemaModulo::where('modulo_empresa_codigo', $user->usuario_empresa)->first();
+            
+            if($user->usuario_acesso_pararametros == 'S' && ($modulos->modulo_emissao_nfs == 'S' || $modulos->modulo_emissao_nfs_simp == 'S')){
+                return true;
+            }else{
+                return false;
+            }
+        });
+
+        Gate::define('is_par_servico', function ($user) {
+
+            $modulos = ParametrosSistemaModulo::where('modulo_empresa_codigo', $user->usuario_empresa)->first();
+            
+            if($user->usuario_acesso_pararametros == 'S' && ($modulos->modulo_servico == 'S' || $modulos->modulo_emissao_nfs_simp == 'S')){
+                return true;
+            }else{
+                return false;
+            }
+        });
+
+        Gate::define('is_mod_servico', function ($user) {
+
+            $modulos = ParametrosSistemaModulo::where('modulo_empresa_codigo', $user->usuario_empresa)->first();
+            
+            return $modulos->modulo_servico == 'S'
+                        ? true
+                        : false;
+        });
+
+        Gate::define('is_mod_nfs', function ($user) {
+
+            $modulos = ParametrosSistemaModulo::where('modulo_empresa_codigo', $user->usuario_empresa)->first();
+            
+            return $modulos->modulo_emissao_nfs == 'S'
+                        ? true
+                        : false;
+        });
+
+        Gate::define('is_mod_nfs_simp', function ($user) {
+
+            $modulos = ParametrosSistemaModulo::where('modulo_empresa_codigo', $user->usuario_empresa)->first();
+            
+            return $modulos->modulo_emissao_nfs_simp == 'S'
+                        ? true
+                        : false;
+        });
+
+        Gate::define('is_emite_os', function ($user) {
+
+            $modulos = ParametrosSistemaModulo::where('modulo_empresa_codigo', $user->usuario_empresa)->first();
+            
+            if($user->usuario_acesso_mod_servicos == 'S' && $modulos->modulo_servico == 'S'){
+                return true;
+            }else{
+                return false;
+            }
+        });
+
+        Gate::define('is_emite_nf', function ($user) {
+
+            $modulos = ParametrosSistemaModulo::where('modulo_empresa_codigo', $user->usuario_empresa)->first();
+            
+            if($user->usuario_acesso_mod_nf == 'S' && ($modulos->modulo_emissao_nfs == 'S' || $modulos->modulo_emissao_nfs_simp == 'S')){
+                return true;
+            }else{
+                return false;
+            }
         });
     }
 }

@@ -19,4 +19,11 @@ class ParametrosSistemaModulo extends Model
         'modulo_servico',
         'modulo_emissao_rps'
     ];
+
+    protected $table = 'parametros_sistema_modulos';
+
+    public function usuarios()
+    {
+        return $this->hasMany(User::class, 'usuario_empresa', 'modulo_empresa_codigo');
+    }
 }
