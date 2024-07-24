@@ -52,8 +52,8 @@
                 'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
             ],
         ],
-        'order' => [null,null,null,null,null],
-        'columns' => [null, null, null, null, null],
+        'order' => [[0, 'desc']],
+        'columns' => [['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false]],
     ];
 
     $headsNFS = [
@@ -92,7 +92,7 @@
                 'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
             ],
         ],
-        'order' => [null,null,null,null,null,null],
+        'order' => [[0, 'desc']],
         'columns' => [['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false]],
     ];
 @endphp

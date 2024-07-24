@@ -279,9 +279,40 @@ class LancamentoSrvOsServicoController extends Controller
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'TMO aprovada com sucesso!');
     }
 
+    //Metodo de atualização dos dados do serviço da requisição do botão Aprovar
+    public function aprovaServicoBtn(Request $request, $empresa, $numOS, $requisicao)
+    {        
+        // Validação adicional no servidor
+        $selectedServices = $request->selected_srvApr;
+
+        if (empty($selectedServices)) {
+            return redirect()->back()->with('error', 'Nenhum serviço foi selecionado.');
+        }
+
+        $srvSel = explode(',', $selectedServices);
+
+        foreach ($srvSel as $srv) {
+            $data = date('Y-m-d H:i:s');
+
+            $usuario = Auth::user()->usuario_codigo;
+
+            $atualiaServico = DB::table('lancamento_srv_os_servicos')
+                ->where('srv_emp', $empresa)
+                ->where('srv_nos', $numOS)
+                ->where('srv_req', $requisicao)
+                ->where('srv_seq', $srv)
+                ->update(['srv_flg_apr' => 'S',
+                    'srv_res_apr' => $usuario,
+                    'srv_dh_apr' => $data]);   
+        }
+        
+        return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'TMO aprovada com sucesso!');
+    }
+
     //Metodo de inicialização dos serviços em espera
-    public function iniciarServico($empresa, $numOS, $requisicao)
+    public function iniciarServico(Request $request, $empresa, $numOS, $requisicao)
     {    
+        /*
         $cnt_apr = $this->servicoOS->where('srv_nos', $numOS)->where('srv_emp', $empresa)->where('srv_req', $requisicao)->where('srv_flg_apr', 'N')->count();
         if($cnt_apr > 0){
             return redirect()->back()->with('info', 'A Requisição contém servico(s) que ainda não foram aprovados!');
@@ -290,42 +321,67 @@ class LancamentoSrvOsServicoController extends Controller
         $cnt_espera = $this->servicoOS->where('srv_nos', $numOS)->where('srv_emp', $empresa)->where('srv_req', $requisicao)->where('srv_sts', 'E')->count();
         if($cnt_espera == 0){
             return redirect()->back()->with('info', 'Não existe TMO em espera para ser iniciada!');
+        }*/
+        
+        // Validação adicional no servidor
+        $selectedServices = $request->selected_srvIni;
+
+        if (empty($selectedServices)) {
+            return redirect()->back()->with('error', 'Nenhum serviço foi selecionado.');
         }
 
-        $data = date('Y-m-d');
-        $hora = date('Hi');
+        $srvSel = explode(',', $selectedServices);
 
-        $atualiaServico = DB::table('lancamento_srv_os_servicos')
-            ->where('srv_emp', $empresa)
-            ->where('srv_nos', $numOS)
-            ->where('srv_req', $requisicao)
-            ->where('srv_sts', 'E')
-            ->update(['srv_sts' => 'A',
-                'srv_dti' => $data,
-                'srv_hri' => $hora]);   
+        foreach ($srvSel as $srv) {
+            
+            $data = date('Y-m-d');
+            $hora = date('Hi');
+
+            $atualiaServico = DB::table('lancamento_srv_os_servicos')
+                ->where('srv_emp', $empresa)
+                ->where('srv_nos', $numOS)
+                ->where('srv_req', $requisicao)
+                ->where('srv_seq', $srv)
+                ->update(['srv_sts' => 'A',
+                    'srv_dti' => $data,
+                    'srv_hri' => $hora]);   
+        }
         
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'Serviço(s) em espera iniciado(s)!');
     }
 
     //Metodo de finalização dos serviços em andamento
-    public function finalizarServico($empresa, $numOS, $requisicao)
+    public function finalizarServico(Request $request, $empresa, $numOS, $requisicao)
     {        
+        /*
         $cnt_andamento = $this->servicoOS->where('srv_nos', $numOS)->where('srv_emp', $empresa)->where('srv_req', $requisicao)->where('srv_sts', 'A')->count();
         if($cnt_andamento == 0){
             return redirect()->back()->with('info', 'Não existe TMO em andamento para ser finalizada!');
+        }*/
+
+        // Validação adicional no servidor
+        $selectedServices = $request->selected_srvFin;
+
+        if (empty($selectedServices)) {
+            return redirect()->back()->with('error', 'Nenhum serviço foi selecionado.');
         }
 
-        $data = date('Y-m-d');
-        $hora = date('Hi');
+        $srvSel = explode(',', $selectedServices);
 
-        $atualiaServico = DB::table('lancamento_srv_os_servicos')
-            ->where('srv_emp', $empresa)
-            ->where('srv_nos', $numOS)
-            ->where('srv_req', $requisicao)
-            ->where('srv_sts', 'A')
-            ->update(['srv_sts' => 'F',
-                'srv_dtf' => $data,
-                'srv_hrf' => $hora]);   
+        foreach ($srvSel as $srv) {
+
+            $data = date('Y-m-d');
+            $hora = date('Hi');
+
+            $atualiaServico = DB::table('lancamento_srv_os_servicos')
+                ->where('srv_emp', $empresa)
+                ->where('srv_nos', $numOS)
+                ->where('srv_req', $requisicao)
+                ->where('srv_seq', $srv)
+                ->update(['srv_sts' => 'F',
+                    'srv_dtf' => $data,
+                    'srv_hrf' => $hora]);   
+        }
         
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'Serviço(s) em andamento finalizados(s)!');
     }

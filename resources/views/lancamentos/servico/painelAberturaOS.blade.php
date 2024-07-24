@@ -746,7 +746,7 @@ $status_servico = '';
                                 }
 
                                 if($servico->srv_flg_apr == 'S'){
-                                    $icone_apr_servico = "fa-solid fa-circle-check fa-lg text-success";
+                                    $icone_apr_servico = "fa-solid fa-clipboard-check fa-lg text-success";
                                 }else{
                                     $icone_apr_servico = "fa-solid fa-circle-xmark fa-lg text-danger";
                                 }
@@ -847,7 +847,7 @@ $status_servico = '';
                                         <x-slot name="footerSlot">
                                             <form method="get" action="{{route('servicoOS.aprovar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $servico->srv_req,'sequencia'=> $servico->srv_seq,'codTMO'=> $servico->srv_tmo])}}">
                                                 @csrf 
-                                                <x-adminlte-button class="mr-auto" theme="info" label="Aprovar" value="Aprovar" type="submit"/>
+                                                <x-adminlte-button class="mr-auto" theme="info" label="Aprovar" value="Aprovar" type="submit" icon="fa-solid fa-thumbs-up"/>
                                             </form>
                                             <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
                                         </x-slot>
@@ -871,8 +871,8 @@ $status_servico = '';
                     </x-adminlte-datatable>
 
                     <!-- Botão hide de inclusão de nova requisição -->
-                    <x-adminlte-button class="btn_hide_iniciar_servicos" type="button" onclick="window.location='{{ route('servicoOS.iniciar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Iniciar Serviços" theme="info"/>
-                    <x-adminlte-button class="btn_hide_finalizar_servicos" type="button" onclick="window.location='{{ route('servicoOS.finalizar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Finalizar Serviços" theme="info"/>
+                    <!-- <x-adminlte-button class="btn_hide_iniciar_servicos" type="button" onclick="window.location='{{ route('servicoOS.iniciar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Iniciar Serviços" theme="info"/> -->
+                    <!--<x-adminlte-button class="btn_hide_finalizar_servicos" type="button" onclick="window.location='{{ route('servicoOS.finalizar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Finalizar Serviços" theme="info"/>-->
                     <x-adminlte-button class="btn_hide_finalizar_requisicao" type="button" onclick="window.location='{{ route('requisicaoOS.finalizar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Finalizar Requisição" theme="info"/>
                     <x-adminlte-button class="btn_hide_reabrir_requisicao" type="button" onclick="window.location='{{ route('requisicaoOS.reabrir', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Reabrir Requisição" theme="info"/>
 
@@ -881,6 +881,352 @@ $status_servico = '';
                         @method('delete')
                         <x-adminlte-button class="btn_hide_excluir_requisicao" type="submit" label="Excluir Requisição" value="Excluir Requisição" theme="info"/>
                     </form>
+
+                    <!-- ********** Modal do Botão de Iniciar Serviços ********** -->
+                    <x-adminlte-modal id="modalIniSrvReq" title="Serviços em Espera" size="xl" theme="navy" icon="fa-solid fa-hourglass-start" v-centered scrollable>
+                        <div class="row" style="height:auto;">  
+                            @php
+                            $headsIniSrv = [
+                                ['label' => '', 'no-export' => true, 'width' => '5%'],
+                                'Seq.',
+                                'Código',
+                                'Descrição',
+                                'Prestador',
+                                'Tipo Hr.',
+                                'Qtd. Hr.'
+                            ];
+
+                                $configIniSrv = [
+                                    'paging' => false,
+                                    'searching' => false,
+                                    'language' => [
+                                        'decimal' =>        '',
+                                        'emptyTable' =>     'Sem dados disponíveis na tabela',
+                                        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                                        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
+                                        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
+                                        'infoPostFix' =>    '',
+                                        'thousands' =>      ',',
+                                        'lengthMenu' =>     'Mostrar _MENU_ registros',
+                                        'loadingRecords' => 'Carregando...',
+                                        'processing' =>     '',
+                                        'search' =>         'Pesquisar:',
+                                        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
+                                        'paginate' => [
+                                            'first' =>      'Primeiro',
+                                            'last' =>       'Último',
+                                            'next' =>       'Próximo',
+                                            'previous' =>   'Anterior'
+                                        ],
+                                        'aria' => [
+                                            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
+                                            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
+                                        ],
+                                    ],
+                                    'order' => [[1, 'asc']],// Ordena pela primeira coluna (Seq.) em ordem ascendente
+                                    'columns' => [
+                                        ['orderable' => false],  // Seq.
+                                        ['orderable' => false],  // Código
+                                        ['orderable' => false],  // Descrição
+                                        ['orderable' => false],  // Prestador
+                                        ['orderable' => false],  // Tipo Hr.
+                                        ['orderable' => false],  // Qtd. Hr.
+                                    ],
+                                ];   
+                                $cntSrv = 0;
+                            @endphp
+                            <x-adminlte-datatable id="table-inisrv" :heads="$headsIniSrv" :config="$configIniSrv" theme="light" striped hoverable>
+                                @foreach($glo_os_dadosServico as $servico)
+
+                                    @php
+                                        if(!empty($servico->srv_prt)){
+                                            $data_prest = DB::table('cadastro_prestadores')->where('prestador_empresa', $glo_os_empresa)->where('prestador_codigo', $servico->srv_prt)->get();
+
+                                            $prestador = $servico->srv_prt.' - '.$data_prest[0]->prestador_nome;
+                                        }else{
+                                            $prestador = '';
+                                        }
+
+                                        if($servico->srv_ths == 'F'){
+                                            $tipo_hora = "Fixo";
+                                        }elseif($servico->srv_ths == 'P'){
+                                            $tipo_hora = "Padrão";
+                                        }elseif($servico->srv_ths == 'I'){
+                                            $tipo_hora = "Informada";
+                                        }elseif($servico->srv_ths == 'R'){
+                                            $tipo_hora = "Real";
+                                        }else{
+                                            $tipo_hora = "Terceiros";
+                                        }
+                                    @endphp
+
+                                    @if($servico->srv_sts == 'E' && $servico->srv_flg_apr == 'S')
+                                    @php
+                                        $cntSrv += 1;
+                                    @endphp
+                                    <tr>
+                                        <td><input type="checkbox" class="record-checkbox" value="{{$servico->srv_seq}}">
+                                        <td>{{$servico->srv_seq}}</td>
+                                        <td>{{$servico->srv_tmo}}</td>
+                                        <td>{{$servico->srv_dsc}}</td>
+                                        <td>{{$prestador}}</td>
+                                        <td>{{$tipo_hora}}</td>
+                                        <td>{{$servico->srv_qhr}}</td>
+                                    </tr>
+                                    @endif
+                                @endforeach
+
+                                @if($cntSrv == 0)
+                                <tr class="odd"><td valign="top" colspan="7" class="dataTables_empty">Não existe serviços para serem iniciados na requisição.</td></tr>
+                                @endif
+                            </x-adminlte-datatable>
+                        </div>
+                        <!-- Criação dos botões do Modal -->  
+                        <x-slot name="footerSlot">
+                            <form id="update-form" action="{{ route('servicoOS.iniciar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="selected_srvIni" id="selected-srvIni">
+                                <x-adminlte-button class="mr-auto" theme="info" label="Iniciar Serviços" icon="fa-solid fa-circle-play" type="submit"/>
+                            </form>
+                            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                        </x-slot>   
+                    </x-adminlte-modal>
+
+                    <!-- ********** Modal do Botão de Iniciar Serviços ********** -->
+                    <x-adminlte-modal id="modalFinSrvReq" title="Serviços em Andamento" size="xl" theme="navy" icon="fa-solid fa-clock-rotate-left" v-centered scrollable>
+                        <div class="row" style="height:auto;">  
+                            @php
+                            $headsFinSrv = [
+                                ['label' => '', 'no-export' => true, 'width' => '5%'],
+                                'Seq.',
+                                'Código',
+                                'Descrição',
+                                'Prestador',
+                                'Tipo Hr.',
+                                'Qtd. Hr.',
+                                'Data Inicio',
+                                'Hora Inicio'
+                            ];
+
+                                $configFinSrv = [
+                                    'paging' => false,
+                                    'searching' => false,
+                                    'language' => [
+                                        'decimal' =>        '',
+                                        'emptyTable' =>     'Sem dados disponíveis na tabela',
+                                        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                                        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
+                                        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
+                                        'infoPostFix' =>    '',
+                                        'thousands' =>      ',',
+                                        'lengthMenu' =>     'Mostrar _MENU_ registros',
+                                        'loadingRecords' => 'Carregando...',
+                                        'processing' =>     '',
+                                        'search' =>         'Pesquisar:',
+                                        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
+                                        'paginate' => [
+                                            'first' =>      'Primeiro',
+                                            'last' =>       'Último',
+                                            'next' =>       'Próximo',
+                                            'previous' =>   'Anterior'
+                                        ],
+                                        'aria' => [
+                                            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
+                                            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
+                                        ],
+                                    ],
+                                    'order' => [[1, 'asc']],// Ordena pela primeira coluna (Seq.) em ordem ascendente
+                                    'columns' => [
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                    ],
+                                ];   
+                                $cntSrv = 0;
+                            @endphp
+                            <x-adminlte-datatable id="table-finsrv" :heads="$headsFinSrv" :config="$configFinSrv" theme="light" striped hoverable>
+                                @foreach($glo_os_dadosServico as $servico)
+
+                                    @php
+                                        if(!empty($servico->srv_prt)){
+                                            $data_prest = DB::table('cadastro_prestadores')->where('prestador_empresa', $glo_os_empresa)->where('prestador_codigo', $servico->srv_prt)->get();
+
+                                            $prestador = $servico->srv_prt.' - '.$data_prest[0]->prestador_nome;
+                                        }else{
+                                            $prestador = '';
+                                        }
+
+                                        if($servico->srv_ths == 'F'){
+                                            $tipo_hora = "Fixo";
+                                        }elseif($servico->srv_ths == 'P'){
+                                            $tipo_hora = "Padrão";
+                                        }elseif($servico->srv_ths == 'I'){
+                                            $tipo_hora = "Informada";
+                                        }elseif($servico->srv_ths == 'R'){
+                                            $tipo_hora = "Real";
+                                        }else{
+                                            $tipo_hora = "Terceiros";
+                                        }
+                                    @endphp
+
+                                    @if($servico->srv_sts == 'A')
+                                    @php
+                                        $cntSrv += 1;
+                                    @endphp
+                                    <tr>
+                                        <td><input type="checkbox" class="record-checkbox-fin" value="{{$servico->srv_seq}}">
+                                        <td>{{$servico->srv_seq}}</td>
+                                        <td>{{$servico->srv_tmo}}</td>
+                                        <td>{{$servico->srv_dsc}}</td>
+                                        <td>{{$prestador}}</td>
+                                        <td>{{$tipo_hora}}</td>
+                                        <td>{{$servico->srv_qhr}}</td>
+                                        <td>{{Helper::formataData($servico->srv_dti)}}</td>
+                                        <td>{{Helper::formataHoraMinuto($servico->srv_hri)}}</td>
+                                    </tr>
+                                    @endif
+                                @endforeach
+
+                                @if($cntSrv == 0)
+                                <tr class="odd"><td valign="top" colspan="9" class="dataTables_empty">Não existe serviços para serem finalizados na requisição.</td></tr>
+                                @endif
+                            </x-adminlte-datatable>
+                        </div>
+                        <!-- Criação dos botões do Modal -->  
+                        <x-slot name="footerSlot">
+                            <form id="update-form-fin" action="{{ route('servicoOS.finalizar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="selected_srvFin" id="selected-srvFin">
+                                <x-adminlte-button class="mr-auto" theme="info" label="Finalizar Serviços" icon="fa-solid fa-stopwatch" type="submit"/>
+                            </form>
+                            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                        </x-slot>   
+                    </x-adminlte-modal>
+
+                    <!-- ********** Modal do Botão de Iniciar Serviços ********** -->
+                    <x-adminlte-modal id="modalAprSrvReq" title="Serviços para Aprovação" size="xl" theme="navy" icon="fa-solid fa-clipboard-check" v-centered scrollable>
+                        <div class="row" style="height:auto;">  
+                            @php
+                            $headsAprSrv = [
+                                ['label' => '', 'no-export' => true, 'width' => '5%'],
+                                'Seq.',
+                                'Código',
+                                'Descrição',
+                                'Tipo Hora.',
+                                'Qtd.',
+                                'Valor Uni.',
+                                'Valor Total',
+                                'Valor Desc.',
+                                'Valor Liq.'
+                            ];
+
+                                $configAprSrv = [
+                                    'paging' => false,
+                                    'searching' => false,
+                                    'language' => [
+                                        'decimal' =>        '',
+                                        'emptyTable' =>     'Sem dados disponíveis na tabela',
+                                        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                                        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
+                                        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
+                                        'infoPostFix' =>    '',
+                                        'thousands' =>      ',',
+                                        'lengthMenu' =>     'Mostrar _MENU_ registros',
+                                        'loadingRecords' => 'Carregando...',
+                                        'processing' =>     '',
+                                        'search' =>         'Pesquisar:',
+                                        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
+                                        'paginate' => [
+                                            'first' =>      'Primeiro',
+                                            'last' =>       'Último',
+                                            'next' =>       'Próximo',
+                                            'previous' =>   'Anterior'
+                                        ],
+                                        'aria' => [
+                                            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
+                                            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
+                                        ],
+                                    ],
+                                    'order' => [[1, 'asc']],// Ordena pela primeira coluna (Seq.) em ordem ascendente
+                                    'columns' => [
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                        ['orderable' => false],
+                                    ],
+                                ];   
+                                $cntSrv = 0;
+                            @endphp
+                            <x-adminlte-datatable id="table-aprsrv" :heads="$headsAprSrv" :config="$configAprSrv" theme="light" striped hoverable>
+                                @foreach($glo_os_dadosServico as $servico)
+
+                                    @php
+                                        if(!empty($servico->srv_prt)){
+                                            $data_prest = DB::table('cadastro_prestadores')->where('prestador_empresa', $glo_os_empresa)->where('prestador_codigo', $servico->srv_prt)->get();
+
+                                            $prestador = $servico->srv_prt.' - '.$data_prest[0]->prestador_nome;
+                                        }else{
+                                            $prestador = '';
+                                        }
+
+                                        if($servico->srv_ths == 'F'){
+                                            $tipo_hora = "Fixo";
+                                        }elseif($servico->srv_ths == 'P'){
+                                            $tipo_hora = "Padrão";
+                                        }elseif($servico->srv_ths == 'I'){
+                                            $tipo_hora = "Informada";
+                                        }elseif($servico->srv_ths == 'R'){
+                                            $tipo_hora = "Real";
+                                        }else{
+                                            $tipo_hora = "Terceiros";
+                                        }
+                                    @endphp
+
+                                    @if($servico->srv_flg_apr == 'N')
+                                    @php
+                                        $cntSrv += 1;
+                                    @endphp
+                                    <tr>
+                                        <td><input type="checkbox" class="record-checkbox-apr" value="{{$servico->srv_seq}}">
+                                        <td>{{$servico->srv_seq}}</td>
+                                        <td>{{$servico->srv_tmo}}</td>
+                                        <td>{{$servico->srv_dsc}}</td>
+                                        <td>{{$tipo_hora}}</td>
+                                        <td>{{$servico->srv_qhr}}</td>
+                                        <td>{{Helper::formataValorMonetario($servico->srv_vhr)}}</td>
+                                        <td>{{Helper::formataValorMonetario($servico->srv_vts)}}</td>
+                                        <td>{{Helper::formataValorMonetario($servico->srv_val_des)}}</td>
+                                        <td>{{Helper::formataValorMonetario($servico->srv_vtl)}}</td>
+                                    </tr>
+                                    @endif
+                                @endforeach
+
+                                @if($cntSrv == 0)
+                                <tr class="odd"><td valign="top" colspan="10" class="dataTables_empty">Não existe serviços para serem aprovados na requisição.</td></tr>
+                                @endif
+                            </x-adminlte-datatable>
+                        </div>
+                        <!-- Criação dos botões do Modal -->  
+                        <x-slot name="footerSlot">
+                            <form id="update-form-apr" action="{{ route('servicoOS.aprovarBtn', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="selected_srvApr" id="selected-srvApr">
+                                <x-adminlte-button class="mr-auto" theme="info" label="Aprovar Serviços" icon="fa-solid fa-thumbs-up" type="submit"/>
+                            </form>
+                            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                        </x-slot>   
+                    </x-adminlte-modal>
 
                 </x-adminlte-card><!-- Fechamento do bloco de consulta de requisição da OS ********** -->
                 @endif
@@ -996,7 +1342,7 @@ $status_servico = '';
                                             <b class="d-block" style="padding: 5px;">
                                                 @if($glo_os_dadosServicoSelecionado[0]->srv_flg_apr == 'S')
                                                 <a class="text-muted" title="Aprovado">
-                                                    <i class="fa-solid fa-circle-check fa-2xl text-success"></i>
+                                                    <i class="fa-solid fa-clipboard-check fa-2xl text-success"></i>
                                                 </a>
                                                 @else
                                                 <a class="text-muted" title="Não Aprovado">
@@ -2302,8 +2648,11 @@ $status_servico = '';
                 <x-adminlte-button class="btn_finalizar_requisicao" type="button" onclick="document.querySelector('.btn_hide_finalizar_requisicao').click()" label="Finalizar Requisição" theme="info" icon="fa-solid fa-lock"/>
                 <x-adminlte-button class="btn_excluir_requisicao" type="button" onclick="document.querySelector('.btn_hide_excluir_requisicao').click()" label="Excluir Requisição" theme="info" icon="fa-solid fa-trash"/>
                 <x-adminlte-button class="btn_reabrir_requisicao" type="button" onclick="document.querySelector('.btn_hide_reabrir_requisicao').click()" label="Reabrir Requisição" theme="info" icon=""/>
-                <x-adminlte-button class="btn_iniciar_servicos" type="button" onclick="document.querySelector('.btn_hide_iniciar_servicos').click()" label="Iniciar Serviços" theme="info" icon=""/>
-                <x-adminlte-button class="btn_finalizar_servicos" type="button" onclick="document.querySelector('.btn_hide_finalizar_servicos').click()" label="Finalizar Serviços" theme="info" icon=""/>
+                <x-adminlte-button class="btn_aprovar_servicos" type="button" data-toggle="modal" data-target="#modalAprSrvReq" label="Aprovar Serviços" theme="info" icon=""/>
+                <!--<x-adminlte-button class="btn_iniciar_servicos" type="button" onclick="document.querySelector('.btn_hide_iniciar_servicos').click()" label="Iniciar Serviços" theme="info" icon=""/>-->
+                <x-adminlte-button class="btn_iniciar_servicos" type="button" data-toggle="modal" data-target="#modalIniSrvReq" label="Iniciar Serviços" theme="info" icon=""/>
+                <!--<x-adminlte-button class="btn_finalizar_servicos" type="button" onclick="document.querySelector('.btn_hide_finalizar_servicos').click()" label="Finalizar Serviços" theme="info" icon=""/>-->
+                <x-adminlte-button class="btn_finalizar_servicos" type="button" data-toggle="modal" data-target="#modalFinSrvReq" label="Finalizar Serviços" theme="info" icon=""/>
                 <x-adminlte-button class="btn_novo_servico" type="button" onclick="window.location='{{ route('painelOS.abrirServicoRequisicao', ['empresa' => $glo_os_empresa, 'area' => $area_req, 'setor' => $setor_req, 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'SELECAO_TMO', 'requisicao' => $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Novo Serviço" theme="info" icon="fa-solid fa-plus"/>
                 @endif
                 
@@ -2476,6 +2825,7 @@ $status_servico = '';
             $(".btn_desconto_os").hide();
             $(".btn_troca_cliente").hide();
             $(".btn_liberar_desconto_tmo").hide();  
+            $(".btn_aprovar_servicos").hide();
             
             if(statusOS == 'F' || statusOS == 'C'){
                 $(".btn_previsao_entrega").hide();
@@ -2512,6 +2862,7 @@ $status_servico = '';
             $(".btn_troca_cliente").hide();
             $(".btn_liberar_desconto_tmo").hide(); 
             $(".btn_cancelar_os").hide(); 
+            $(".btn_aprovar_servicos").hide();
 
         }else if(estagioAPP == 'CONSULTA_REQUISICAO'){
 
@@ -2542,6 +2893,7 @@ $status_servico = '';
                 $(".btn_finalizar_servicos").hide();
                 $(".btn_novo_servico").hide();
                 $(".btn_excluir_requisicao").hide();
+                $(".btn_aprovar_servicos").hide();
             }else{
                 $(".btn_reabrir_requisicao").hide();
             }
@@ -2576,7 +2928,8 @@ $status_servico = '';
             $(".btn_desconto_os").hide();
             $(".btn_troca_cliente").hide();
             $(".btn_liberar_desconto_tmo").hide();   
-            $(".btn_cancelar_os").hide();           
+            $(".btn_cancelar_os").hide();  
+            $(".btn_aprovar_servicos").hide();         
 
             if(subEstagioRequisica != 'TMO_SELECIONADA'){
                 $(".btn_incluir_tmo").hide();
@@ -2604,6 +2957,7 @@ $status_servico = '';
             $(".btn_desconto_os").hide();
             $(".btn_troca_cliente").hide();
             $(".btn_cancelar_os").hide(); 
+            $(".btn_aprovar_servicos").hide();
 
             var status_requisicao = {!! json_encode($status_requisicao) !!};
             if(status_requisicao == 'F'){
@@ -2657,6 +3011,7 @@ $status_servico = '';
             $(".btn_troca_cliente").hide();
             $(".btn_liberar_desconto_tmo").hide(); 
             $(".btn_cancelar_os").hide(); 
+            $(".btn_aprovar_servicos").hide();
 
         }else if(estagioAPP == 'ORCAMENTO_OS_IMPRESSAO'){
 
@@ -2685,6 +3040,7 @@ $status_servico = '';
             $(".btn_troca_cliente").hide();
             $(".btn_liberar_desconto_tmo").hide(); 
             $(".btn_cancelar_os").hide(); 
+            $(".btn_aprovar_servicos").hide();
 
         }else if(estagioAPP == 'ORCAMENTO_OS'){
 
@@ -2713,6 +3069,7 @@ $status_servico = '';
             $(".btn_troca_cliente").hide();
             $(".btn_liberar_desconto_tmo").hide(); 
             $(".btn_cancelar_os").hide(); 
+            $(".btn_aprovar_servicos").hide();
 
         }else if(estagioAPP == 'TOTAIS_OS'){
 
@@ -2737,6 +3094,7 @@ $status_servico = '';
             $(".btn_total_os").hide();
             $(".btn_liberar_desconto_tmo").hide(); 
             $(".btn_cancelar_os").hide(); 
+            $(".btn_aprovar_servicos").hide();
 
             if(statusOS == 'F' || statusOS == 'C'){
                 $(".btn_encerra_os").hide();
@@ -2751,6 +3109,111 @@ $status_servico = '';
         /* **************************************** Eventos Iniciais do bloco  - CONSULTA_REQUISICAO **************************************** */
 
         if(estagioAPP == 'CONSULTA_REQUISICAO'){
+
+            /* ******************** Evento de seleção dos serviços a serem iniciados - CONSULTA_REQUISICAO ******************** */
+
+            // Adicionar o checkbox "Selecionar todos" ao cabeçalho da tabela de seleção de serviços para serem iniciados
+            $('#table-inisrv thead th:first-child').html('<input type="checkbox" id="select-all" class="select-all-checkbox">');
+
+            // Selecionar/Deselecionar todos os checkboxes da tabela de seleção de serviços para serem iniciados
+            $('#select-all').on('change', function() {
+                const isChecked = $(this).is(':checked');
+                $('.record-checkbox').prop('checked', isChecked);
+            });
+
+            // Gera o submit enviando os dados dos serviços que serão aprovados
+            document.getElementById('update-form').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                let selectedSrvIni = [];
+                document.querySelectorAll('.record-checkbox:checked').forEach(function (checkbox) {
+                    selectedSrvIni.push(checkbox.value);
+                });
+
+                if (selectedSrvIni.length === 0) {
+                    Swal.fire({
+                        confirmButtonColor: "#007bff",
+                        title: "Erro!!!",
+                        text: "Por favor, selecione pelo menos um serviço para iniciar.",
+                        icon: "error"
+                    });
+                    return;
+                }
+
+                document.getElementById('selected-srvIni').value = selectedSrvIni.join(',');
+
+                this.submit();
+            });
+
+            /* ******************** Evento de seleção dos serviços a serem finalizados - CONSULTA_REQUISICAO ******************** */
+
+            // Adicionar o checkbox "Selecionar todos" ao cabeçalho da tabela de seleção de serviços para serem finalizados
+            $('#table-finsrv thead th:first-child').html('<input type="checkbox" id="select-all-fin" class="select-all-checkbox">');
+
+            // Selecionar/Deselecionar todos os checkboxes da tabela de seleção de serviços para serem finalizados
+            $('#select-all-fin').on('change', function() {
+                const isChecked = $(this).is(':checked');
+                $('.record-checkbox-fin').prop('checked', isChecked);
+            });
+
+            // Gera o submit enviando os dados dos serviços que serão aprovados
+            document.getElementById('update-form-fin').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                let selectedSrvFin = [];
+                document.querySelectorAll('.record-checkbox-fin:checked').forEach(function (checkbox) {
+                    selectedSrvFin.push(checkbox.value);
+                });
+
+                if (selectedSrvFin.length === 0) {
+                    Swal.fire({
+                        confirmButtonColor: "#007bff",
+                        title: "Erro!!!",
+                        text: "Por favor, selecione pelo menos um serviço para finalizar.",
+                        icon: "error"
+                    });
+                    return;
+                }
+
+                document.getElementById('selected-srvFin').value = selectedSrvFin.join(',');
+
+                this.submit();
+            });
+
+            /* ******************** Evento de seleção dos serviços a serem aprovados - CONSULTA_REQUISICAO ******************** */
+
+            // Adicionar o checkbox "Selecionar todos" ao cabeçalho da tabela de seleção de serviços para serem aprovados
+            $('#table-aprsrv thead th:first-child').html('<input type="checkbox" id="select-all-apr" class="select-all-checkbox">');
+
+            // Selecionar/Deselecionar todos os checkboxes da tabela de seleção de serviços para serem aprovados
+            $('#select-all-apr').on('change', function() {
+                const isChecked = $(this).is(':checked');
+                $('.record-checkbox-apr').prop('checked', isChecked);
+            });
+
+            // Gera o submit enviando os dados dos serviços que serão aprovados
+            document.getElementById('update-form-apr').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                let selectedSrvApr = [];
+                document.querySelectorAll('.record-checkbox-apr:checked').forEach(function (checkbox) {
+                    selectedSrvApr.push(checkbox.value);
+                });
+
+                if (selectedSrvApr.length === 0) {
+                    Swal.fire({
+                        confirmButtonColor: "#007bff",
+                        title: "Erro!!!",
+                        text: "Por favor, selecione pelo menos um serviço para aprovar.",
+                        icon: "error"
+                    });
+                    return;
+                }
+
+                document.getElementById('selected-srvApr').value = selectedSrvApr.join(',');
+
+                this.submit();
+            });
 
             /* ******************** Eventos de totalização do rodapé das tabelas - CONSULTA_REQUISICAO ******************** */
 

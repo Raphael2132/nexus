@@ -81,6 +81,8 @@ class FaturamentoNfHeaderController extends Controller
             $where .= " and nfhdr_vlr_tot_nf >= ".$vlr_ini;
         }
 
+        session(['glo_where_emissao_nf' => $where]);
+
         $dados = DB::select("select nfhdr_emp, nfhdr_cli, count(nfhdr_num_ped) as qtd_reg, sum(nfhdr_vlr_tot_nf) as total_pedidos from faturamento_nf_headers where nfhdr_sts = 'A' and nfhdr_ori in('01') ".$where." group by nfhdr_emp, nfhdr_cli order by nfhdr_cli asc");
 
         return view('/faturamento/notas/consultaEmissaoNF',['dadosHeader'=>$dados]);
@@ -88,7 +90,10 @@ class FaturamentoNfHeaderController extends Controller
 
     public function painelNF($empresa, $cliente, $nfSelecionada)
     {
-        $dados = $this->headerNF->where('nfhdr_emp', $empresa)->where('nfhdr_cli', $cliente)->where('nfhdr_sts', 'A')->where('nfhdr_ori',['01'])->orderby('nfhdr_num_ped', 'asc')->get();
+        $where = session('glo_where_emissao_nf');
+
+        $dados = DB::select("select * from faturamento_nf_headers where nfhdr_sts = 'A' and nfhdr_ori in('01') ".$where." order by nfhdr_num_ped asc");
+        //$dados = $this->headerNF->where('nfhdr_emp', $empresa)->where('nfhdr_cli', $cliente)->where('nfhdr_sts', 'A')->where('nfhdr_ori',['01'])->orderby('nfhdr_num_ped', 'asc')->get();
 
         return view('/faturamento/notas/painelEmissaoNF',['dadosHeader'=>$dados, 'nfSelecionada' => $nfSelecionada, 'empresaNF' => $empresa, 'clienteNF' => $cliente]);
     }

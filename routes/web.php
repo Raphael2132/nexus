@@ -307,8 +307,9 @@ Route::delete('/lancamentos/servico/painelAberturaOS/requisicao/{requisicaoOS}/{
 
 /* ********** Rotas do painel de Abertura de OS - Contrele Utilizado: LancamentoSrvOsServicoController ********** */
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/aprovar/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'aprovaServico'])->name('servicoOS.aprovar');
-Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/iniciar/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'iniciarServico'])->name('servicoOS.iniciar');
-Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/finalizar/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'finalizarServico'])->name('servicoOS.finalizar');
+Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/aprovar/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'aprovaServicoBtn'])->name('servicoOS.aprovarBtn');
+Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/iniciar/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'iniciarServico'])->name('servicoOS.iniciar');
+Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/finalizar/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'finalizarServico'])->name('servicoOS.finalizar');
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/suspender/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'suspenderServico'])->name('servicoOS.suspender');
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/cancelar/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'cancelarServico'])->name('servicoOS.cancelar');
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/reabrir/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'reabrirServico'])->name('servicoOS.reabrir');
