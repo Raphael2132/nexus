@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\LancamentoSrvOsServico;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
+use DateTime;
+use DateTimeZone;
 use App\Http\Helpers\Helper;
 use App\Http\Helpers\HelperControleProducao;
 use App\Http\Controllers\PainelAberturaOSController;
@@ -401,13 +403,7 @@ class LancamentoSrvOsServicoController extends Controller
 
     //Metodo de finalização dos serviços em andamento
     public function finalizarServico(Request $request, $empresa, $numOS, $requisicao)
-    {        
-        /*
-        $cnt_andamento = $this->servicoOS->where('srv_nos', $numOS)->where('srv_emp', $empresa)->where('srv_req', $requisicao)->where('srv_sts', 'A')->count();
-        if($cnt_andamento == 0){
-            return redirect()->back()->with('info', 'Não existe TMO em andamento para ser finalizada!');
-        }*/
-
+    {       
         // Validação adicional no servidor
         $selectedServices = $request->selected_srvFin;
 
@@ -421,6 +417,7 @@ class LancamentoSrvOsServicoController extends Controller
 
             $data = date('Y-m-d');
             $hora = date('Hi');
+            $dataHora = date('Y-m-d H:i:s');
 
             $atualiaServico = DB::table('lancamento_srv_os_servicos')
                 ->where('srv_emp', $empresa)
@@ -430,6 +427,42 @@ class LancamentoSrvOsServicoController extends Controller
                 ->update(['srv_sts' => 'F',
                     'srv_dtf' => $data,
                     'srv_hrf' => $hora]);   
+            
+            $servico = $this->servicoOS->where('srv_nos', $numOS)->where('srv_emp', $empresa)->where('srv_req', $requisicao)->where('srv_seq', $srv)->first();
+
+            if(!empty($servico->srv_prt)){
+                //Monta os arrays de horario de expediente e almoço do prestador
+                $businessHours = HelperControleProducao::geraBusinessHoursPHP($empresa, $servico->srv_prt);
+                $lunchBreaks = HelperControleProducao::geraLunchHoursPHP($empresa, $servico->srv_prt);
+            }else{
+                //Monta os arrays de horario de expediente e almoço da empresa
+                $businessHours = HelperControleProducao::geraBusinessHoursEmpPHP($empresa);
+                $lunchBreaks = HelperControleProducao::geraLunchHoursEmpPHP($empresa);
+            }
+
+            //Monta variaveis de hora de inicio e final de serviço para calculo do tempo de serviço
+            $startDateTime = new DateTime($servico->srv_dti.' '.Helper::formataHoraMinuto($servico->srv_hri).':00');
+            $endDateTime = new DateTime($dataHora);
+
+            //Calcula o tempo de serviço
+            $tempoServico = HelperControleProducao::calculaDuracaoServico($startDateTime, $endDateTime, $businessHours, $lunchBreaks);
+
+            //Calcula o saldo entre o tempo previsto e o tempo real
+            $tempoSaldo = $servico->srv_qhr - $tempoServico;
+            $tempoSaldo =  number_format($tempoSaldo, 2, '.', '');
+
+            DB::table('lancamento_srv_exe_tarefas')
+            ->where('exetrf_emp', $empresa)
+            ->where('exetrf_nos', $numOS)
+            ->where('exetrf_req', $requisicao)
+            ->where('exetrf_seq', $srv)
+            ->update([
+                'exetrf_sts' => 'F',
+                'exetrf_dt_fin_srv' => $data,
+                'exetrf_hr_fin_srv' => $hora,
+                'exetrf_qhr_real' => $tempoServico,
+                'exetrf_qhr_saldo' => $tempoSaldo
+            ]);
         }
         
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'Serviço(s) em andamento finalizados(s)!');

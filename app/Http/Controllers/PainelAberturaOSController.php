@@ -555,10 +555,10 @@ class PainelAberturaOSController extends Controller
     public function cancelarOS(Request $request, $empresa, $numOS)
     {
 
-        $cnt_nfs = DB::table('faturamento_nf_headers')->where('nfhdr_emp', $empresa)->where('nfhdr_num_ped', $numOS)->count();
+        $cnt_nfs = DB::table('faturamento_nf_headers')->where('nfhdr_emp', $empresa)->where('nfhdr_num_ped', $numOS)->where('nfhdr_ori', '01')->count();
 
         if($cnt_nfs > 0){
-            $nfs = DB::table('faturamento_nf_headers')->where('nfhdr_emp', $empresa)->where('nfhdr_num_ped', $numOS)->get();
+            $nfs = DB::table('faturamento_nf_headers')->where('nfhdr_emp', $empresa)->where('nfhdr_num_ped', $numOS)->where('nfhdr_ori', '01')->get();
 
             if($nfs[0]->nfhdr_sts == 'G'){
                 return redirect()->back()->with('error', 'Não é possível cancelar a OS! A NFS-e referente a OS já foi emitida!');
@@ -569,18 +569,38 @@ class PainelAberturaOSController extends Controller
         
         $data = date('Y-m-d');
         $hora = date('Hi');
+        $dataHora = date('Y-m-d H:i:s');
 
         $usuario = Auth::user()->usuario_codigo;
 
         DB::table('lancamento_srv_os')
-            ->where('os_emp', $empresa)
-            ->where('os_nos', $numOS)
-            ->update(['os_sts' => 'C',
-                'os_dtc' => $data,
-                'os_hrc' => $hora,
-                'os_mot_can' => $request->canMot,
-                'os_obs_can' => $request->obsMot,
-                'os_res_can' => $usuario]);  
+        ->where('os_emp', $empresa)
+        ->where('os_nos', $numOS)
+        ->update(['os_sts' => 'C',
+            'os_dtc' => $data,
+            'os_hrc' => $hora,
+            'os_mot_can' => $request->canMot,
+            'os_obs_can' => $request->obsMot,
+            'os_res_can' => $usuario]);  
+
+        DB::table('lancamento_srv_os_servicos')
+        ->where('srv_emp', $empresa)
+        ->where('srv_nos', $numOS)
+        ->whereIn('srv_sts', ['A','E'])
+        ->update(['srv_sts' => 'C',
+            'srv_dhc' => $dataHora,
+            'srv_res_can' => $usuario,
+            'srv_mot_can' => $request->canMot]); 
+
+        DB::table('lancamento_srv_exe_tarefas')
+        ->where('exetrf_emp', $empresa)
+        ->where('exetrf_nos', $numOS)
+        ->whereIn('exetrf_sts', ['A','E'])
+        ->update(['exetrf_sts' => 'C',
+            'exetrf_dt_can_srv' => $data,
+            'exetrf_hr_can_srv' => $hora,
+            'exetrf_mot_can_srv' => $request->canMot,
+            'exetrf_res_can' => $usuario]); 
         
         if($cnt_nfs > 0){
 
@@ -588,11 +608,13 @@ class PainelAberturaOSController extends Controller
             DB::table('faturamento_nf_headers')
             ->where('nfhdr_emp', $empresa)
             ->where('nfhdr_num', $nfs[0]->nfhdr_num)
+            ->where('nfhdr_ori', '01')
             ->update(['nfhdr_sts' => 'C']);
 
             DB::table('faturamento_nfs')
             ->where('nfs_emp', $empresa)
             ->where('nfs_nfhdr_num', $nfs[0]->nfhdr_num)
+            ->where('nfs_origem', 'OS')
             ->update(['nfs_sts' => 'C']);
         }
         
