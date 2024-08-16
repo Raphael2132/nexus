@@ -27,8 +27,6 @@
             'Exigibilidade do ISS',
             'ISS Retido',
             'Código de Atividade',
-            'Hora Ini. Expediente',
-            'Hora Fin. Expediente',
             ['label' => 'Opções', 'no-export' => true, 'width' => 5],
         ];
 
@@ -60,7 +58,7 @@
                     'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
                 ],
             ],
-            'columns' => [null, null, null, null, null,['orderable' => false]],
+            'columns' => [null, null, null, null, null, null,['orderable' => false]],
         ];
         @endphp
         <x-adminlte-card  title="Empresas Cadastradas" theme="navy" theme-mode="outline">
@@ -85,8 +83,6 @@
                         <td>{{ $empresa->parsrv_exg_iss.' - '.$exISS[0]->exiiss_desc }}</td>
                         <td>{{ $issRet }}</td>
                         <td>{{ $empresa->parsrv_cod_srv }}</td>
-                        <td>{{ Helper::formataHoraMinuto($empresa->parsrv_hr_ini_ex) }}</td>
-                        <td>{{ Helper::formataHoraMinuto($empresa->parsrv_hr_fin_ex) }}</td>
                         <td>
                             <nobr class="d-flex justify-content-center">
                                 <form method="get" action="{{ route('parametrosSrvEmp.editarCadastro', ['empresa' => $empresa->parsrv_emp]) }}" style="float: left;">

@@ -19,8 +19,10 @@ use App\Models\LancamentoSrvTipoServico;
 use App\Models\LancamentoSrvEtapaAtendimento;
 use App\Models\CadastroPrestadores;
 use App\Models\ParametrosSistemaCanMotivos;
+use App\Models\ParametrosSisSusMotivo;
 use App\Models\ParametrosSrvEmpresas;
 use App\Models\ParametrosFatEmpresas;
+use App\Models\ParametrosGerEmpresa;
 use Illuminate\Http\Request;
 use stdClass;
 use Illuminate\Support\Facades\DB;
@@ -50,8 +52,10 @@ class HomeController extends Controller
                                 LancamentoSrvEtapaAtendimento  $lancamentosServicoEtapas,
                                 CadastroPrestadores $prestador,
                                 ParametrosSistemaCanMotivos $motCan,
+                                ParametrosSisSusMotivo $motSus,
                                 ParametrosSrvEmpresas $parSrvEmp,
-                                ParametrosFatEmpresas $parFatEmp)
+                                ParametrosFatEmpresas $parFatEmp,
+                                ParametrosGerEmpresa $parGerEmp)
     {
         $this->middleware('auth');
         $this->cliente = $cliente;
@@ -71,8 +75,10 @@ class HomeController extends Controller
         $this->lancamentosServicoEtapas = $lancamentosServicoEtapas;
         $this->prestador = $prestador;
         $this->motCan = $motCan;
+        $this->motSus = $motSus;
         $this->parSrvEmp = $parSrvEmp;
         $this->parFatEmp = $parFatEmp;
+        $this->parGerEmp = $parGerEmp;
     }
 
     /**
@@ -640,6 +646,14 @@ class HomeController extends Controller
         return view('/parametros/sistema/homeParametrosSistemaMotivosCancelamento', ['motivos' => $motivos]);
     }
 
+    //Redireciona a app para os motivos de cancelamento
+    public function homeParMotSus()
+    {    
+        $motivos = $this->motSus->reorder('susmot_codigo', 'asc')->get();
+
+        return view('/parametros/sistema/homeParametrosSistemaMotivosSuspensao', ['motivos' => $motivos]);
+    }
+
     //Redireciona a app para a parametrização geral de serviços
     public function homeParametroSrvEmp()
     {    
@@ -648,11 +662,40 @@ class HomeController extends Controller
         return view('/parametros/servico/homeParametrosServicoEmpresa', ['dataParSrvEmp' => $parametros]);
     }
 
+    //Redireciona a app para a parametrização gerencial da empresa
+    public function homeParametroGerEmp()
+    {    
+        $parametros = $this->parGerEmp->reorder('parger_emp', 'asc')->get();
+
+        return view('/parametros/gerencial/homeParametrosGerencialEmpresa', ['dataParGerEmp' => $parametros]);
+    }
+
     //Redireciona a app para a parametrização geral de faturamento
     public function homeParametroFatEmp()
     {    
         $parametros = $this->parFatEmp->reorder('parfat_emp', 'asc')->get();
 
         return view('/parametros/faturamento/homeParametrosFatEmpresa', ['dataParFatEmp' => $parametros]);
+    }
+
+    //Redireciona a app para o home do painel de agendamento do prestador
+    public function homeAgendamentoPrt()
+    {    
+        return view('/lancamentos/producao/homeAgendamentoPrestador');
+    }
+
+    //Redireciona a app para o home do painel de produção
+    public function homePainelProducao()
+    {    
+        return view('/lancamentos/producao/homePainelProducao');
+    }
+
+    //Redireciona a app para o home do painel do operador
+    public function homePainelOperador()
+    {    
+        session()->forget('where_consulta_painelOperador');
+        session()->forget('empresaOS_consulta_painelOperador');
+
+        return view('/lancamentos/producao/homePainelOperador');
     }
 }

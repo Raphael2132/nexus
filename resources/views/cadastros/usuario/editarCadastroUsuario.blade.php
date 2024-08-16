@@ -902,6 +902,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 });
@@ -980,6 +988,14 @@ $(function () {
     },
     unhighlight: function (element, errorClass, validClass) {
       $(element).removeClass('is-invalid');
+    },
+    // Ao submeter o formulário, reativar os campos desativados
+    submitHandler: function (form) {
+        // Ativar campos desativados antes de enviar
+        $(':disabled').each(function () {
+            $(this).removeAttr('disabled');
+        });
+        form.submit();
     }
   });
 });

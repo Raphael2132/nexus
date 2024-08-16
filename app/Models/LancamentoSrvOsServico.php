@@ -47,6 +47,7 @@ class LancamentoSrvOsServico extends Model
         'srv_flg_apr',
         'srv_res_apr',
         'srv_dh_apr',
-        'srv_und'
+        'srv_und',
+        'srv_dt_inc'
     ];
 }

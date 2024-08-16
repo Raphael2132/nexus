@@ -85,6 +85,14 @@ Route::delete('/parametros/sistema/servico/{servico}/destroy', [App\Http\Control
 
 /* ********** Rotas ligadas a parte Gerencial ********** */
 
+/* Geral da Empresa */
+Route::get('/parametros/gerencial/homeParametrosGerencialEmpresa', [App\Http\Controllers\HomeController::class, 'homeParametroGerEmp'])->name('home.parametrosGerEmp');
+Route::get('/parametros/gerencial/formularioParametrosGerEmpresa/{empresa}', [App\Http\Controllers\ParametrosGerEmpresaController::class, 'editar'])->name('parametrosGerEmp.editarCadastro');
+
+Route::post('/parametros/gerencial/formularioParametrosGerEmpresa/update/{empresa}', [App\Http\Controllers\ParametrosGerEmpresaController::class, 'update'])->name('parametrosGerEmp.update');
+Route::post('/parametros/gerencial/formularioParametrosGerEmpresa/turno/insert/{empresa}', [App\Http\Controllers\ParametrosGerTurnoController::class, 'inserir'])->name('parametrosGerEmp.insertTurno');
+Route::delete('/parametros/gerencial/formularioParametrosGerEmpresa/turno/{turno}/{empresa}/destroy', [App\Http\Controllers\ParametrosGerTurnoController::class, 'destroy'])->name('parametrosGerEmp.destroy');
+
 /* Setor */
 Route::get('/parametros/servico/homeParametrosServicoSetor', [App\Http\Controllers\HomeController::class, 'homeParSrvSetor'])->name('home.parSrvSetor');
 Route::get('/parametros/servico/homeParametrosServicoSetor/ajax', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'homeAjax'])->name('parametrosSrvSetor.homeAjax');
@@ -97,6 +105,15 @@ Route::get('/parametros/sistema/formularioParametrosSisMotCancelamento/{acao}/{d
 Route::post('/parametros/sistema/formularioParametrosSisMotCancelamento/insert', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'insert'])->name('parametrosSisMotCan.insert');
 Route::post('/parametros/sistema/formularioParametrosSisMotCancelamento/update', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'update'])->name('parametrosSisMotCan.update');
 Route::delete('/parametros/sistema/motivoCancelamento/{motivo}/{origem}/destroy', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'destroy'])->name('parametrosSisMotCan.destroy');
+
+/* Motivo de Suspensão */
+Route::get('/parametros/sistema/homeParametrosSistemaMotivosSuspensao', [App\Http\Controllers\HomeController::class, 'homeParMotSus'])->name('home.parMotSus');
+Route::get('/parametros/servico/formularioParametrosSisMotSuspensao/ajax', [App\Http\Controllers\ParametrosSisSusMotivoController::class, 'homeAjax'])->name('parametrosSisMotSus.homeAjax');
+Route::get('/parametros/sistema/formularioParametrosSisMotSuspensao/{acao}/{dadosMotSus}', [App\Http\Controllers\ParametrosSisSusMotivoController::class, 'cadastroMotSus'])->name('parametrosSisMotSus.cadastroMotSus');
+
+Route::post('/parametros/sistema/formularioParametrosSisMotSuspensao/insert', [App\Http\Controllers\ParametrosSisSusMotivoController::class, 'insert'])->name('parametrosSisMotSus.insert');
+Route::post('/parametros/sistema/formularioParametrosSisMotSuspensao/update', [App\Http\Controllers\ParametrosSisSusMotivoController::class, 'update'])->name('parametrosSisMotSus.update');
+Route::delete('/parametros/sistema/motivoSuspensao/{motivo}/{origem}/destroy', [App\Http\Controllers\ParametrosSisSusMotivoController::class, 'destroy'])->name('parametrosSisMotSus.destroy');
 
 /* ********** Rotas ligadas a parte de faturamento de nfs ********** */
 
@@ -240,6 +257,8 @@ Route::get('/cadastros/prestador/homePrestadores', [App\Http\Controllers\HomeCon
 Route::get('/cadastros/prestador/consultaPrestador/{tipo}', [App\Http\Controllers\CadastroPrestadoresController::class, 'prestadorConsulta'])->name('prestador.consulta');
 Route::get('/cadastros/prestador/formularioPrestador/novo', [App\Http\Controllers\CadastroPrestadoresController::class, 'cadastro'])->name('prestador.cadastro');
 Route::get('/cadastros/prestador/formularioPrestador/ajaxSetor/{area}/{empresa}', [App\Http\Controllers\CadastroPrestadoresController::class, 'carregaSetAjax'])->name('prestador.carregaSetAjax');
+Route::get('/cadastros/prestador/formularioPrestador/ajaxTurno/{empresa}', [App\Http\Controllers\CadastroPrestadoresController::class, 'carregaTurAjax'])->name('prestador.carregaTurAjax');
+Route::get('/cadastros/prestador/formularioPrestador/ajaxTurnoSel/{empresa}', [App\Http\Controllers\CadastroPrestadoresController::class, 'carregaTurSelAjax'])->name('prestador.carregaTurSelAjax');
 Route::get('/cadastros/prestador/formularioPrestador/ajaxUsuario', [App\Http\Controllers\CadastroPrestadoresController::class, 'carregaUsuAjax'])->name('prestador.carregaUsuAjax');
 Route::get('/cadastros/prestador/formularioPrestador/{dadosPrestador}/{empresa}/{tipo}', [App\Http\Controllers\CadastroPrestadoresController::class, 'editar'])->name('prestador.editarCadastro');
 Route::get('/cadastros/prestador/formularioPrestador/enderecoPrincipal/{endereco}/{prestador_cod}/{empresa}/{tipo}', [App\Http\Controllers\CadastroPrestadoresEnderecoController::class, 'principal'])->name('enderecoPrestador.principal');
@@ -310,8 +329,8 @@ Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/aprovar/{em
 Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/aprovar/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'aprovaServicoBtn'])->name('servicoOS.aprovarBtn');
 Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/iniciar/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'iniciarServico'])->name('servicoOS.iniciar');
 Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/finalizar/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'finalizarServico'])->name('servicoOS.finalizar');
-Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/suspender/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'suspenderServico'])->name('servicoOS.suspender');
-Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/cancelar/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'cancelarServico'])->name('servicoOS.cancelar');
+Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/suspender/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'suspenderServico'])->name('servicoOS.suspender');
+Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/cancelar/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'cancelarServico'])->name('servicoOS.cancelar');
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/reabrir/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'reabrirServico'])->name('servicoOS.reabrir');
 
 Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/inserir/{empresa}/{numOS}/{requisicao}/{codTMO}/{estagioAPP}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'inserir'])->name('servicoOS.inserir');
@@ -319,6 +338,48 @@ Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/atualizar/
 Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/desconto/autoriza/{empresa}/{numOS}/{requisicao}/{sequencia}/{tmo}', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'autorizaDescontoTMO'])->name('requisicaoOS.autorizaDescTMO');
 
 Route::delete('/lancamentos/servico/painelAberturaOS/requisicao/servico/{servicoOS}/{empresa}/{numOS}/{requisicao}/destroy', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'destroy'])->name('servicoOS.destroy');
+
+/* ********** Rotas do Painel de Agendamento ********** */
+Route::get('/lancamentos/producao/homeAgendamentoPrestador', [App\Http\Controllers\HomeController::class, 'homeAgendamentoPrt'])->name('home.agendamentoPrt');
+
+Route::post('/lancamentos/producao/calendarioAgendamentoPrestador/ajaxSetAge', [App\Http\Controllers\LancamentoSrvExeTarefaController::class, 'updateAgeAjax'])->name('agenda.updateAgeAjax');
+Route::post('/lancamentos/producao/calendarioAgendamentoPrestador', [App\Http\Controllers\PainelAgendamentoController::class, 'agendaPrestador'])->name('agenda.calendarioPrt');
+
+/* ********** Rotas do Painel do Operador ********** */
+Route::get('/lancamentos/producao/homePainelOperador', [App\Http\Controllers\HomeController::class, 'homePainelOperador'])->name('home.painelOperador');
+Route::get('/lancamentos/producao/modalPainelOperadorAgendaSrvOS/{empresa}/{numOS}', [App\Http\Controllers\PainelOperadorController::class, 'carregarDadosModalAgendaSrvOS'])->name('painelOperacao.carregarDadosModalAgendaSrvOS');
+Route::get('/lancamentos/producao/modalPainelOperadorAddAuxiliarTMO/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\PainelOperadorController::class, 'carregarDadosModalAddAxuTMO'])->name('painelOperacao.carregarDadosModalAddAxuTMO');
+Route::get('/lancamentos/producao/modalPainelOperadorAddChangePrt/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\PainelOperadorController::class, 'carregarDadosModalAddChangePrt'])->name('painelOperacao.carregarDadosModalAddChangePrt');
+Route::get('/lancamentos/producao/modalPainelOperadorStartService/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\PainelOperadorController::class, 'carregarDadosModalStartService'])->name('painelOperacao.carregarDadosModalStartService');
+Route::get('/lancamentos/producao/modalPainelOperadorFinishService/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\PainelOperadorController::class, 'carregarDadosModalFinishService'])->name('painelOperacao.carregarDadosModalFinishService');
+Route::get('/lancamentos/producao/modalPainelOperadorCancelService/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\PainelOperadorController::class, 'carregarDadosModalCancelService'])->name('painelOperacao.carregarDadosModalCancelService');
+Route::get('/lancamentos/producao/modalPainelOperadorSuspendService/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\PainelOperadorController::class, 'carregarDadosModalSuspendService'])->name('painelOperacao.carregarDadosModalSuspendService');
+Route::get('/lancamentos/producao/modalPainelOperadorReopenService/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\PainelOperadorController::class, 'carregarDadosModalReopenService'])->name('painelOperacao.carregarDadosModalReopenService');
+Route::get('/lancamentos/producao/modalPainelOperadorFinishRequisicao/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\PainelOperadorController::class, 'carregarDadosModalFinishRequisicao'])->name('painelOperacao.carregarDadosModalFinishRequisicao');
+Route::get('/lancamentos/producao/modalPainelOperadorReopenRequisicao/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\PainelOperadorController::class, 'carregarDadosModalReopenRequisicao'])->name('painelOperacao.carregarDadosModalReopenRequisicao');
+
+Route::post('/lancamentos/producao/consultaPainelOperacao', [App\Http\Controllers\PainelOperadorController::class, 'consultaPainelOperacao'])->name('painelOperacao.consultaPainel');
+Route::get('/lancamentos/producao/consultaPainelOperacao/{empresa}/{where}', [App\Http\Controllers\PainelOperadorController::class, 'consultaPainelOperacaoGET'])->name('painelOperacao.consultaPainelGET');
+
+Route::post('/lancamentos/producao/modalPainelOperadorStartService/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\LancamentoSrvExeTarefaController::class, 'iniciarTMO'])->name('painelOperacao.iniciarTMO');
+Route::post('/lancamentos/producao/modalPainelOperadorFinishService/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\LancamentoSrvExeTarefaController::class, 'finalizarTMO'])->name('painelOperacao.finalizarTMO');
+Route::post('/lancamentos/producao/modalPainelOperadorCancelService/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\LancamentoSrvExeTarefaController::class, 'cancelarTMO'])->name('painelOperacao.cancelarTMO');
+Route::post('/lancamentos/producao/modalPainelOperadorSuspendService/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\LancamentoSrvExeTarefaController::class, 'suspenderTMO'])->name('painelOperacao.suspenderTMO');
+Route::post('/lancamentos/producao/modalPainelOperadorReopenService/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\LancamentoSrvExeTarefaController::class, 'reabrirTMO'])->name('painelOperacao.reabrirTMO');
+Route::post('/lancamentos/producao/modalPainelOperadorAddChangePrt/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\LancamentoSrvExeTarefaController::class, 'addChangePrtTMO'])->name('painelOperacao.addChangePrtTMO');
+Route::post('/lancamentos/producao/modalPainelOperadorAddAuxiliarTMO/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\LancamentoSrvExeTarefaController::class, 'addPrtAuxTMO'])->name('painelOperacao.addPrtAuxTMO');
+Route::post('/lancamentos/producao/modalPainelOperadorFinishRequisicao/finalizar/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\LancamentoSrvOsRequisicoesController::class, 'finalizarRequisicaoPO'])->name('painelOperacao.finalizarReqPO');
+Route::post('/lancamentos/producao/modalPainelOperadorFinishRequisicao/reabrir/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\LancamentoSrvOsRequisicoesController::class, 'reabrirRequisicaoPO'])->name('painelOperacao.reabrirReqPO');
+
+/* ********** Rotas do Painel de Produção ********** */
+Route::get('/lancamentos/producao/homePainelProducao', [App\Http\Controllers\HomeController::class, 'homePainelProducao'])->name('home.painelProducao');
+Route::get('/lancamentos/producao/homePainelProducao/ajax/set/{empresa}', [App\Http\Controllers\PainelProducaoController::class, 'carregaSetAjax'])->name('painelProducao.carregaSetAjax');
+Route::get('/lancamentos/producao/homePainelProducao/carregaEventosTMO/{empresa}/{setor}/{data}', [App\Http\Controllers\PainelProducaoController::class, 'carregaEventosTMO'])->name('painelProducao.carregaEventosTMO');
+Route::get('/lancamentos/producao/homePainelProducao/carregaOsAndamento/{empresa}/{setor}/{data}', [App\Http\Controllers\PainelProducaoController::class, 'getOsEmAndamento'])->name('painelProducao.carregaOsAndamento');
+Route::get('/lancamentos/producao/homePainelProducao/carregaOsFinalizadas/{empresa}/{setor}/{data}', [App\Http\Controllers\PainelProducaoController::class, 'getOsFinalizadas'])->name('painelProducao.carregaOsFinalizadas');
+Route::get('/lancamentos/producao/homePainelProducao/carregaOsProximas/{empresa}/{setor}/{data}', [App\Http\Controllers\PainelProducaoController::class, 'getProximasOs'])->name('painelProducao.carregaOsProximas');
+
+Route::post('/lancamentos/producao/painelProducao', [App\Http\Controllers\PainelProducaoController::class, 'abrePainel'])->name('painelProducao.painelProducao');
 
 /*
 |--------------------------------------------------------------------------

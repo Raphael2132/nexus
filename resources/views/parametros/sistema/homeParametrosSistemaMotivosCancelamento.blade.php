@@ -57,7 +57,7 @@
         'columns' => [null, null, ['orderable' => false]],
     ];
     @endphp
-    <x-adminlte-card title="Parametrização dos Setores" theme="navy" theme-mode="outline" collapsible maximizable>
+    <x-adminlte-card title="Parametrização dos Motivos de Cancelameto do Sistema" theme="navy" theme-mode="outline" collapsible maximizable>
         <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
             @foreach ($motivos as $motivo)
                 <tr>

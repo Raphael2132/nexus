@@ -80,6 +80,41 @@ class CadastroPrestadoresController extends Controller
         return response()->json(['success' => true, 'usuarios_ajax' => $usuarios_ajax]);
     }
 
+    //Redireciona a home depois da exclusão do registro via ajax
+    public function carregaTurAjax($empresa)
+    {  
+        $dataGerEmp = DB::table('parametros_ger_empresas')->where('parger_emp', $empresa)->get();
+
+        if($dataGerEmp[0]->parger_tur_srv == 'N'){
+            $dataTur = DB::table('parametros_ger_turnos')->where('partur_emp', $empresa)->where('partur_cod', '1')->orderBy('partur_cod', 'asc')->get();
+        }else{
+            $dataTur = DB::table('parametros_ger_turnos')->where('partur_emp', $empresa)->orderBy('partur_cod', 'asc')->get();
+        }
+
+        foreach($dataTur as $turno) {
+            $turnos_ajax[] = array(
+                'codigo'	=> $turno->partur_cod,
+                'descricao' => $turno->partur_cod.' - '.$turno->partur_desc,
+            );
+        }  
+
+        if(empty($turnos_ajax)){
+            $turnos_ajax = '';
+        }
+
+        return response()->json(['success' => true, 'turnos_ajax' => $turnos_ajax]);
+    }
+
+    //Retorna os dados do horariom padrão da empresa
+    public function carregaTurSelAjax($empresa)
+    {  
+        $dataGerEmp = DB::table('parametros_ger_empresas')->where('parger_emp', $empresa)->get();
+
+        $funcionamento = $dataGerEmp[0]->parger_dia_fun;
+
+        return response()->json(['success' => true, 'funcionamento' => $funcionamento]);
+    }
+
     public function inserir(Request $request){
 
         if(!empty($request->cpfPrestador)){
@@ -100,6 +135,51 @@ class CadastroPrestadoresController extends Controller
             return redirect()->back()->with('error', 'CPF informado já foi cadastrado!');
         }
 
+        //Verifica se usa o intervalo de expediente
+        if($request->usaInt == 'S'){
+
+            $horaIniInt = Helper::limpaHoraMinuto($request->horaIniInt);
+            $horaFinInt = Helper::limpaHoraMinuto($request->horaFinInt);
+
+            //Verifica se o horario final é menor que o horario inicial
+            if($horaIniInt > $horaFinInt){
+                return redirect()->back()->with('error', 'Hora Ini. Intervalo não pode ser maior que a Hora Fin. Intervalo!');
+            }
+        }else{
+            $horaIniInt = 0;
+            $horaFinInt = 0;
+        }
+
+        //Verifica se usa o intervalo de expediente
+        if($request->usaIntSab == 'S'){
+
+            $horaIniIntSab = Helper::limpaHoraMinuto($request->horaIniIntSab);
+            $horaFinIntSab = Helper::limpaHoraMinuto($request->horaFinIntSab);
+
+            //Verifica se o horario final é menor que o horario inicial
+            if($horaIniIntSab > $horaFinIntSab){
+                return redirect()->back()->with('error', 'Hora Ini. Intervalo Sábado não pode ser maior que a Hora Fin. Intervalo Sábado!');
+            }
+        }else{
+            $horaIniIntSab = 0;
+            $horaFinIntSab = 0;
+        }
+
+        //Verifica se usa o intervalo de expediente
+        if($request->usaIntDom == 'S'){
+
+            $horaIniIntDom = Helper::limpaHoraMinuto($request->horaIniIntDom);
+            $horaFinIntDom = Helper::limpaHoraMinuto($request->horaFinIntDom);
+
+            //Verifica se o horario final é menor que o horario inicial
+            if($horaIniIntDom > $horaFinIntDom){
+                return redirect()->back()->with('error', 'Hora Ini. Intervalo Domingo não pode ser maior que a Hora Fin. Intervalo Domingo!');
+            }
+        }else{
+            $horaIniIntDom = 0;
+            $horaFinIntDom = 0;
+        }
+
         $nextval=DB::select("SELECT nextval('sq_cad_prestadores')")[0]->nextval;
         $codigo = 'P'.str_pad($nextval,5,'0',STR_PAD_LEFT);
 
@@ -110,7 +190,17 @@ class CadastroPrestadoresController extends Controller
             'prestador_cpf' => $cpfPrestador,
             'prestador_empresa' => $request->empresaPrestador,
             'prestador_set' => $request->setPrestador,
-            'prestador_are' => $request->areaPrestador     
+            'prestador_are' => $request->areaPrestador,
+            'prestador_tur_cod' => $request->turPrestador,
+            'prestador_int_srv' => $request->usaInt,
+            'prestador_hr_ini_int' => $horaIniInt,
+            'prestador_hr_fin_int' => $horaFinInt,
+            'prestador_int_srv_sab' => $request->usaIntSab,
+            'prestador_hr_ini_int_sab' => $horaIniIntSab,
+            'prestador_hr_fin_int_sab' => $horaFinIntSab,
+            'prestador_int_srv_dom' => $request->usaIntDom,
+            'prestador_hr_ini_int_dom' => $horaIniIntDom,
+            'prestador_hr_fin_int_dom' => $horaFinIntDom
         ];
 
         CadastroPrestadores::create($dados);
@@ -147,16 +237,13 @@ class CadastroPrestadoresController extends Controller
                 return redirect()->back()->with('error', 'Informe ao menos um dos Telefones');
             }
 
-            $atualizaPrestador = DB::table('cadastro_prestadores')
-                ->where('prestador_id', $prestador)
-                ->where('prestador_codigo', $prestador_cod)
-                ->update(['prestador_email' => $request->emailPrestador,
-                'prestador_tel_residencial' => $telefoneResidencial,
-                'prestador_tel_celular' => $telefoneCelular,
-                'prestador_tipo_email' => $request->tipoEmail]);
-
-            $empresaPrestador = DB::table('cadastro_prestadores')->select('prestador_empresa')->where('prestador_codigo',$prestador_cod)->where('prestador_id',$prestador)->get();
-            $empresa = $empresaPrestador[0]->prestador_empresa;
+            DB::table('cadastro_prestadores')
+            ->where('prestador_id', $prestador)
+            ->where('prestador_codigo', $prestador_cod)
+            ->update(['prestador_email' => $request->emailPrestador,
+            'prestador_tel_residencial' => $telefoneResidencial,
+            'prestador_tel_celular' => $telefoneCelular,
+            'prestador_tipo_email' => $request->tipoEmail]);
 
         }elseif($atualiza == 'dados'){
 
@@ -231,25 +318,85 @@ class CadastroPrestadoresController extends Controller
                 $codPrest = null;
             }
 
-            $atualizaPrestador = DB::table('cadastro_prestadores')
-                ->where('prestador_id', $prestador)
-                ->where('prestador_codigo', $prestador_cod)
-                ->update(['prestador_nome' => $request->nomePrestador,
-                'prestador_empresa' => $request->empresaPrestador,
-                'prestador_cpf' => $cpfPrestador,
-                'prestador_rg' => $rg,
-                'prestador_data_nascimento' => $data_nas,
-                'prestador_sexo' => $request->sexoPrestador,
-                'prestador_status' => $request->statusPrestador,
-                'prestador_data_admissao' => $data_adm,
-                'prestador_data_demissao' => $data_dem,
-                'prestador_set' => $request->setPrestador,
-                'prestador_are' => $request->areaPrestador,
-                'prestador_acesso_sis' => $request->prestadorUsuSis,
-                'prestador_usuario_cod' => $codPrest]);
+            DB::table('cadastro_prestadores')
+            ->where('prestador_id', $prestador)
+            ->where('prestador_codigo', $prestador_cod)
+            ->update(['prestador_nome' => $request->nomePrestador,
+            'prestador_empresa' => $request->empresaPrestador,
+            'prestador_cpf' => $cpfPrestador,
+            'prestador_rg' => $rg,
+            'prestador_data_nascimento' => $data_nas,
+            'prestador_sexo' => $request->sexoPrestador,
+            'prestador_status' => $request->statusPrestador,
+            'prestador_data_admissao' => $data_adm,
+            'prestador_data_demissao' => $data_dem,
+            'prestador_acesso_sis' => $request->prestadorUsuSis,
+            'prestador_usuario_cod' => $codPrest]);
             
             $empresa = $request->empresaPrestador;
         
+        }elseif($atualiza == 'servico'){
+
+            //Verifica se usa o intervalo de expediente
+            if($request->usaInt == 'S'){
+
+                $horaIniInt = Helper::limpaHoraMinuto($request->horaIniInt);
+                $horaFinInt = Helper::limpaHoraMinuto($request->horaFinInt);
+
+                //Verifica se o horario final é menor que o horario inicial
+                if($horaIniInt > $horaFinInt){
+                    return redirect()->back()->with('error', 'Hora Ini. Intervalo não pode ser maior que a Hora Fin. Intervalo!');
+                }
+            }else{
+                $horaIniInt = 0;
+                $horaFinInt = 0;
+            }
+
+            //Verifica se usa o intervalo de expediente
+            if($request->usaIntSab == 'S'){
+
+                $horaIniIntSab = Helper::limpaHoraMinuto($request->horaIniIntSab);
+                $horaFinIntSab = Helper::limpaHoraMinuto($request->horaFinIntSab);
+
+                //Verifica se o horario final é menor que o horario inicial
+                if($horaIniIntSab > $horaFinIntSab){
+                    return redirect()->back()->with('error', 'Hora Ini. Intervalo Sábado não pode ser maior que a Hora Fin. Intervalo Sábado!');
+                }
+            }else{
+                $horaIniIntSab = 0;
+                $horaFinIntSab = 0;
+            }
+
+            //Verifica se usa o intervalo de expediente
+            if($request->usaIntDom == 'S'){
+
+                $horaIniIntDom = Helper::limpaHoraMinuto($request->horaIniIntDom);
+                $horaFinIntDom = Helper::limpaHoraMinuto($request->horaFinIntDom);
+
+                //Verifica se o horario final é menor que o horario inicial
+                if($horaIniIntDom > $horaFinIntDom){
+                    return redirect()->back()->with('error', 'Hora Ini. Intervalo Domingo não pode ser maior que a Hora Fin. Intervalo Domingo!');
+                }
+            }else{
+                $horaIniIntDom = 0;
+                $horaFinIntDom = 0;
+            }
+
+            DB::table('cadastro_prestadores')
+            ->where('prestador_id', $prestador)
+            ->where('prestador_codigo', $prestador_cod)
+            ->update(['prestador_set' => $request->setPrestador,
+            'prestador_are' => $request->areaPrestador,
+            'prestador_tur_cod' => $request->turPrestador,
+            'prestador_int_srv' => $request->usaInt,
+            'prestador_hr_ini_int' => $horaIniInt,
+            'prestador_hr_fin_int' => $horaFinInt,
+            'prestador_int_srv_sab' => $request->usaIntSab,
+            'prestador_hr_ini_int_sab' => $horaIniIntSab,
+            'prestador_hr_fin_int_sab' => $horaFinIntSab,
+            'prestador_int_srv_dom' => $request->usaIntDom,
+            'prestador_hr_ini_int_dom' => $horaIniIntDom,
+            'prestador_hr_fin_int_dom' => $horaFinIntDom]);
         }        
         
         return redirect(route('prestador.editarCadastro', ['dadosPrestador' => $prestador_cod, 'empresa' => $empresa, 'tipo' => $tipo]))->with('success', 'Prestador atualizado com sucesso!');

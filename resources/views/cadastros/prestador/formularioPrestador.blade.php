@@ -32,12 +32,13 @@
 @if($acao == 'N')
 <div class="d-flex justify-content-center">
     <div class="col-md-8">
-        <form method="post" action="{{route('prestador.inserir')}}" id="formularioNovo" novalidate="novalidate">
+        <form method="post" action="{{route('prestador.inserir')}}" id="formulario-novo" novalidate="novalidate">
             @csrf 
             <x-adminlte-card title="Cadastro de Novo Prestador" theme="navy">
 
                 <div class="row">
                     @php
+                        $diaFunEmp = '';
                         //Variavel usada na edição do prestador nos eventos ini da app
                         $usuarioSis = '';
 
@@ -107,6 +108,130 @@
                     </x-adminlte-select>
                 </div>
 
+                <div class="row">
+                    @php 
+                        $array_opt_tur = null;
+                    @endphp
+                    <!-- turno -->
+                    <x-adminlte-select name="turPrestador" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Turno de Serviço <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-adminlte-options :options="$array_opt_tur" empty-option="Selecione..."/>
+                    </x-adminlte-select>
+                </div>
+
+                <div class="row bloco-semana">
+
+                    @php 
+                        $config = [
+                            "singleDatePicker" => true,
+                            "showDropdowns" => true,
+                            "minYear" => 2000,
+                            "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
+                            "timePicker" => true,
+                            "timePicker24Hour" => true,
+                            "timePickerSeconds" => false,
+                            "cancelButtonClasses" => "btn-danger",
+                            "locale" => ["format" => "HH:mm"],
+                        ];
+                    @endphp
+                    <x-adminlte-select name="usaInt" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Intervalo Expediente <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="N"/>
+                    </x-adminlte-select>
+
+                    <x-adminlte-date-range name="horaIniInt" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Hora Ini. Intervalo <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-slot name="appendSlot">
+                            <div class="input-group-text">
+                                <i class="far fa-lg fa-clock"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-date-range>
+
+                    <x-adminlte-date-range name="horaFinInt" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Hora Fin. Intervalo <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-slot name="appendSlot">
+                            <div class="input-group-text">
+                                <i class="far fa-lg fa-clock"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-date-range>
+                </div>
+
+                <div class="row bloco-sabado">
+                    <!-- Utiliza intervalo de trabalho no sábado -->
+                    <x-adminlte-select name="usaIntSab" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Intervalo de Sábado <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="N"/>
+                    </x-adminlte-select>
+                    
+                    <x-adminlte-date-range name="horaIniIntSab" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Hora Ini. Intervalo Sábado <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-slot name="appendSlot">
+                            <div class="input-group-text">
+                                <i class="far fa-lg fa-clock"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-date-range>
+                    
+                    <x-adminlte-date-range name="horaFinIntSab" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Hora Fin. Intervalo Sábado <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-slot name="appendSlot">
+                            <div class="input-group-text">
+                                <i class="far fa-lg fa-clock"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-date-range>
+                </div>
+
+                <div class="row bloco-domingo">
+
+                    <!-- Utiliza intervalo de trabalho no sábado -->
+                    <x-adminlte-select name="usaIntDom" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Intervalo de Domingo <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="N"/>
+                    </x-adminlte-select>
+                    
+                    <x-adminlte-date-range name="horaIniIntDom" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Hora Ini. Intervalo Domingo <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-slot name="appendSlot">
+                            <div class="input-group-text">
+                                <i class="far fa-lg fa-clock"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-date-range>
+                            
+                    
+                    <x-adminlte-date-range name="horaFinIntDom" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Hora Fin. Intervalo Domingo <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-slot name="appendSlot">
+                            <div class="input-group-text">
+                                <i class="far fa-lg fa-clock"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-date-range>
+                </div>
+
                 <!-- /.card -->
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
@@ -128,6 +253,9 @@
                     <a class="nav-link active" id="custom-tabs-two-dados-pessoais-tab" data-toggle="pill" href="#custom-tabs-two-dados-pessoais" role="tab" aria-controls="custom-tabs-two-dados-pessoais" aria-selected="true">Dados Pessoais</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-servico-tab" data-toggle="pill" href="#custom-tabs-two-servico" role="tab" aria-controls="custom-tabs-two-servico" aria-selected="false">Servico</a>
+                 </li>
+                <li class="nav-item">
                     <a class="nav-link" id="custom-tabs-two-contato-tab" data-toggle="pill" href="#custom-tabs-two-contato" role="tab" aria-controls="custom-tabs-two-contato" aria-selected="false">Contato</a>
                  </li>
                 <li class="nav-item">
@@ -140,7 +268,7 @@
 
                 <!-- Aba Dados Pessoais -->
                 <div class="tab-pane fade show active" id="custom-tabs-two-dados-pessoais" role="tabpanel" aria-labelledby="custom-tabs-two-dados-pessoais-tab">
-                    <form method="post" action="{{route('prestador.atualizar', ['prestador' => $dadosPrestador[0]['prestador_id'], 'prestador_cod' => $dadosPrestador[0]['prestador_codigo'], 'atualiza' => 'dados', 'empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo])}}" id="formularioManuDados" novalidate="novalidate">
+                    <form method="post" action="{{route('prestador.atualizar', ['prestador' => $dadosPrestador[0]['prestador_id'], 'prestador_cod' => $dadosPrestador[0]['prestador_codigo'], 'atualiza' => 'dados', 'empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo])}}" id="formulario-dados" novalidate="novalidate">
                     @csrf 
                     @method('post')
 
@@ -224,7 +352,6 @@
                             </x-adminlte-select>
                         </div>
 
-                        </br>
                         <div class="post">
                             <h5 class="text-secondary font-weight-bold">Detalhes do Contrato de Serviço</h5>
                         </div>
@@ -288,48 +415,7 @@
                             </x-adminlte-date-range>
                             @push('js')<script>$(() => $("#dataDemissao").val('{{ $data_demissao }}'))</script>@endpush
                         </div>
-
-                        <div class="row">
-                            @php 
-                                $data_are = DB::table('parametros_sistema_areas')->select('area_codigo', 'area_desc')->orderBy('area_codigo', 'asc')->get();
-
-                                $new_array1_are =[];
-                                $new_array2_are =[];
-
-                                foreach ($data_are as $area) {
-                                    $new_array1_are[] = $area->area_codigo;
-                                    $new_array2_are[] = $area->area_codigo.' - '.$area->area_desc;
-                                }
-                                $array_opt_are = array_combine($new_array1_are, $new_array2_are);
-
-                                $data_set = DB::table('parametros_srv_setores')->select('setor_codigo', 'setor_desc')->where('setor_area', $dadosPrestador[0]['prestador_are'])->where('setor_empresa', $dadosPrestador[0]['prestador_empresa'])->orderby('setor_codigo', 'asc')->get();
-
-                                $new_array1_set =[];
-                                $new_array2_set =[];
-
-                                foreach ($data_set as $set) {
-                                    $new_array1_set[] = $set->setor_codigo;
-                                    $new_array2_set[] = $set->setor_codigo.' - '.$set->setor_desc;
-                                }
-                                $array_opt_set = array_combine($new_array1_set, $new_array2_set);
-                            @endphp
-                            <!-- area -->
-                            <x-adminlte-select name="areaPrestador" fgroup-class="col-md-6">
-                                <x-slot name="label">
-                                    Área <span style="color:red;">*</span>
-                                </x-slot>
-                                <x-adminlte-options :options="$array_opt_are" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_are']}}"/>
-                            </x-adminlte-select>
-                            <!-- Setor -->
-                            <x-adminlte-select name="setPrestador" fgroup-class="col-md-6">
-                                <x-slot name="label">
-                                    Setor <span style="color:red;">*</span>
-                                </x-slot>
-                                <x-adminlte-options :options="$array_opt_set" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_set']}}" />
-                            </x-adminlte-select>
-                        </div>
-
-                        </br>
+                        
                         <div class="post">
                             <h5 class="text-secondary font-weight-bold">Informações do Sistema</h5>
                         </div>
@@ -374,6 +460,218 @@
                             </x-adminlte-select>
                         </div>
 
+                        <div class="d-flex justify-content-center">
+                            <x-adminlte-button class="btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Aba dos dados do serviço do prestador -->
+                <div class="tab-pane fade" id="custom-tabs-two-servico" role="tabpanel" aria-labelledby="custom-tabs-two-servico-tab">
+                    <form method="post" action="{{route('prestador.atualizar', ['prestador' => $dadosPrestador[0]['prestador_id'], 'prestador_cod' => $dadosPrestador[0]['prestador_codigo'], 'atualiza' => 'servico', 'empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo])}}" id="formulario-servico" novalidate="novalidate">
+                    @csrf 
+                    @method('post')
+
+                        <div class="row">
+                            @php 
+                                $data_are = DB::table('parametros_sistema_areas')->select('area_codigo', 'area_desc')->orderBy('area_codigo', 'asc')->get();
+
+                                $new_array1_are =[];
+                                $new_array2_are =[];
+
+                                foreach ($data_are as $area) {
+                                    $new_array1_are[] = $area->area_codigo;
+                                    $new_array2_are[] = $area->area_codigo.' - '.$area->area_desc;
+                                }
+                                $array_opt_are = array_combine($new_array1_are, $new_array2_are);
+
+                                $data_set = DB::table('parametros_srv_setores')->select('setor_codigo', 'setor_desc')->where('setor_area', $dadosPrestador[0]['prestador_are'])->where('setor_empresa', $dadosPrestador[0]['prestador_empresa'])->orderby('setor_codigo', 'asc')->get();
+
+                                $new_array1_set =[];
+                                $new_array2_set =[];
+
+                                foreach ($data_set as $set) {
+                                    $new_array1_set[] = $set->setor_codigo;
+                                    $new_array2_set[] = $set->setor_codigo.' - '.$set->setor_desc;
+                                }
+                                $array_opt_set = array_combine($new_array1_set, $new_array2_set);
+
+                                $config = [
+                                    "singleDatePicker" => true,
+                                    "showDropdowns" => true,
+                                    "minYear" => 2000,
+                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
+                                    "timePicker" => true,
+                                    "timePicker24Hour" => true,
+                                    "timePickerSeconds" => false,
+                                    "cancelButtonClasses" => "btn-danger",
+                                    "locale" => ["format" => "HH:mm"],
+                                ];
+                            @endphp
+                            <!-- area -->
+                            <x-adminlte-select name="areaPrestador" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Área <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-adminlte-options :options="$array_opt_are" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_are']}}"/>
+                            </x-adminlte-select>
+                            <!-- Setor -->
+                            <x-adminlte-select name="setPrestador" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Setor <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-adminlte-options :options="$array_opt_set" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_set']}}" />
+                            </x-adminlte-select>
+                        </div>
+
+                        <div class="row">
+                            @php 
+
+                                $dataGerEmp = DB::table('parametros_ger_empresas')->where('parger_emp', $dadosPrestador[0]['prestador_empresa'])->get();
+
+                                $diaFunEmp = $dataGerEmp[0]->parger_dia_fun;
+
+                                if($dataGerEmp[0]->parger_tur_srv == 'N'){
+                                    $dataTur = DB::table('parametros_ger_turnos')->where('partur_emp', $dadosPrestador[0]['prestador_empresa'])->where('partur_cod', '1')->orderBy('partur_cod', 'asc')->get();
+                                }else{
+                                    $dataTur = DB::table('parametros_ger_turnos')->where('partur_emp', $dadosPrestador[0]['prestador_empresa'])->orderBy('partur_cod', 'asc')->get();
+                                }
+
+                                $new_array1_tur =[];
+                                $new_array2_tur =[];
+
+                                foreach ($dataTur as $turno) {
+                                    $new_array1_tur[] = $turno->partur_cod;
+                                    $new_array2_tur[] = $turno->partur_cod.' - '.$turno->partur_desc;
+                                }
+                                $array_opt_tur = array_combine($new_array1_tur, $new_array2_tur);
+                            @endphp
+                            <!-- turno -->
+                            <x-adminlte-select name="turPrestador" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Turno de Serviço <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-adminlte-options :options="$array_opt_tur" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_tur_cod']}}"/>
+                            </x-adminlte-select>
+                        </div>
+                        <div class="row bloco-semana">
+                            <!-- Utiliza intervalo de trabalho no sábado -->
+                            <x-adminlte-select name="usaInt" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Intervalo Expediente <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$dadosPrestador[0]['prestador_int_ex']}}"/>
+                            </x-adminlte-select>
+
+                            @php
+                                $horaIniInt = Helper::formataHoraMinuto($dadosPrestador[0]['prestador_hr_ini_int']);
+                            @endphp
+                            <x-adminlte-date-range name="horaIniInt" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Hora Ini. Intervalo <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-slot name="appendSlot">
+                                    <div class="input-group-text">
+                                        <i class="far fa-lg fa-clock"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-date-range>
+                            @push('js')<script>$(() => $("#horaIniInt").val('{{ $horaIniInt }}'))</script>@endpush
+
+                            @php
+                                $horaFinInt = Helper::formataHoraMinuto($dadosPrestador[0]['prestador_hr_fin_int']);
+                            @endphp
+                            <x-adminlte-date-range name="horaFinInt" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Hora Fin. Intervalo <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-slot name="appendSlot">
+                                    <div class="input-group-text">
+                                        <i class="far fa-lg fa-clock"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-date-range>
+                            @push('js')<script>$(() => $("#horaFinInt").val('{{ $horaFinInt }}'))</script>@endpush
+                        </div>
+
+                        <div class="row bloco-sabado">
+                            <!-- Utiliza intervalo de trabalho no sábado -->
+                            <x-adminlte-select name="usaIntSab" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Intervalo de Sábado <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$dadosPrestador[0]['prestador_int_srv_sab']}}"/>
+                            </x-adminlte-select>
+
+                            @php
+                                $horaIniIntSab = Helper::formataHoraMinuto($dadosPrestador[0]['prestador_hr_ini_int_sab']);
+                            @endphp
+                            <x-adminlte-date-range name="horaIniIntSab" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Hora Ini. Intervalo Sábado <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-slot name="appendSlot">
+                                    <div class="input-group-text">
+                                        <i class="far fa-lg fa-clock"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-date-range>
+                            @push('js')<script>$(() => $("#horaIniIntSab").val('{{ $horaIniIntSab }}'))</script>@endpush
+
+                            @php
+                                $horaFinIntSab = Helper::formataHoraMinuto($dadosPrestador[0]['prestador_hr_fin_int_sab']);
+                            @endphp
+                            <x-adminlte-date-range name="horaFinIntSab" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Hora Fin. Intervalo Sábado <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-slot name="appendSlot">
+                                    <div class="input-group-text">
+                                        <i class="far fa-lg fa-clock"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-date-range>
+                            @push('js')<script>$(() => $("#horaFinIntSab").val('{{ $horaFinIntSab }}'))</script>@endpush
+                        </div>
+                        <div class="row bloco-domingo">
+                            <!-- Utiliza intervalo de trabalho no sábado -->
+                            <x-adminlte-select name="usaIntDom" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Intervalo de Domingo <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$dadosPrestador[0]['prestador_int_srv_dom']}}"/>
+                            </x-adminlte-select>
+
+                            @php
+                                $horaIniIntDom = Helper::formataHoraMinuto($dadosPrestador[0]['prestador_hr_ini_int_dom']);
+                            @endphp
+                            <x-adminlte-date-range name="horaIniIntDom" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Hora Ini. Intervalo Domingo <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-slot name="appendSlot">
+                                    <div class="input-group-text">
+                                        <i class="far fa-lg fa-clock"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-date-range>
+                            @push('js')<script>$(() => $("#horaIniIntDom").val('{{ $horaIniIntDom }}'))</script>@endpush
+
+                            @php
+                                $horaFinIntDom = Helper::formataHoraMinuto($dadosPrestador[0]['prestador_hr_fin_int_dom']);
+                            @endphp
+                            <x-adminlte-date-range name="horaFinIntDom" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Hora Fin. Intervalo Domingo <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-slot name="appendSlot">
+                                    <div class="input-group-text">
+                                        <i class="far fa-lg fa-clock"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-date-range>
+                            @push('js')<script>$(() => $("#horaFinIntDom").val('{{ $horaFinIntDom }}'))</script>@endpush
+                        </div>
                         <div class="d-flex justify-content-center">
                             <x-adminlte-button class="btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
                         </div>
@@ -754,6 +1052,97 @@
         }else{
             $("#codUsuPrestador").prop('disabled', true);
         }
+
+        //Esconde calendário de data
+        $(function() { 
+            $('#horaIniInt').on('showCalendar.daterangepicker', function(ev, picker) {
+
+                $('.calendar-table').hide();
+
+            }) 
+        });
+
+        //Esconde calendário de data
+        $(function() { 
+            $('#horaFinInt').on('showCalendar.daterangepicker', function(ev, picker) {
+
+                $('.calendar-table').hide();
+
+            }) 
+        });
+
+        //Esconde calendário de data
+        $(function() { 
+            $('#horaIniIntSab').on('showCalendar.daterangepicker', function(ev, picker) {
+
+                $('.calendar-table').hide();
+
+            }) 
+        });
+
+        //Esconde calendário de data
+        $(function() { 
+            $('#horaFinIntSab').on('showCalendar.daterangepicker', function(ev, picker) {
+
+                $('.calendar-table').hide();
+
+            }) 
+        });
+
+        //Esconde calendário de data
+        $(function() { 
+            $('#horaIniIntDom').on('showCalendar.daterangepicker', function(ev, picker) {
+
+                $('.calendar-table').hide();
+
+            }) 
+        });
+
+        //Esconde calendário de data
+        $(function() { 
+            $('#horaFinIntDom').on('showCalendar.daterangepicker', function(ev, picker) {
+
+                $('.calendar-table').hide();
+
+            }) 
+        });
+
+        //Verifica de onde veio a app, cadastro ou edição
+        var acao = {!! json_encode($acao) !!};
+
+        if(acao == 'N'){
+            $(".bloco-semana").hide();
+            $(".bloco-sabado").hide();
+            $(".bloco-domingo").hide();
+        }else{
+            if( $("#turPrestador").val() == '1' ){
+
+                var diaFunEmp = {!! json_encode($diaFunEmp) !!};
+
+                if (diaFunEmp == 1) {
+                    $(".bloco-semana").show();
+                    $(".bloco-sabado").hide();
+                    $(".bloco-domingo").hide();
+                }else if(diaFunEmp == 2) {
+                    $(".bloco-semana").show();
+                    $(".bloco-sabado").show();
+                    $(".bloco-domingo").hide();
+                }else{
+                    $(".bloco-semana").show();
+                    $(".bloco-sabado").show();
+                    $(".bloco-domingo").show();
+                }
+
+            }else if( $("#turPrestador").val() ){
+                $(".bloco-semana").show();
+                $(".bloco-sabado").hide();
+                $(".bloco-domingo").hide();
+            }else{
+                $(".bloco-semana").hide();
+                $(".bloco-sabado").hide();
+                $(".bloco-domingo").hide();
+            }
+        }
     });
 </script>
 
@@ -849,6 +1238,189 @@
                 $("#codUsuPrestador").attr("disabled", true);
             }
         });
+
+        //Verifica de onde veio a app, cadastro ou edição
+        var acao = {!! json_encode($acao) !!};
+
+        if(acao == 'N'){
+            //Evento de carregamento ajax dos dados dos turnos
+            $('#empresaPrestador').change(function(){
+
+                if( $(this).val()) {
+
+                    var empresa = $(this).val();
+
+                    var url = "{{ route('prestador.carregaTurAjax', [':empresa']) }}";
+                    url = url.replace(':empresa', empresa);
+
+                    $.ajax({
+                        url: url,
+                        dataType: "JSON",
+                        type: 'GET',
+                        data: {
+                            '_token': $('meta[name=csrf-token]').attr("content"),
+                            '_method': 'GET',
+                            "empresa": empresa
+                        },
+                        success: function (data)
+                        {
+                            var options = '<option value="">Selecione...</option>';	
+
+                            for (var i = 0; i < data.turnos_ajax.length; i++) {
+
+                                options += '<option value="' + data.turnos_ajax[i].codigo + '">' + data.turnos_ajax[i].descricao + '</option>';
+                            }	
+                            $('#turPrestador').html(options);
+                        }
+                    });
+                } else {
+                    $('#turPrestador').html('<option value="">Selecione...</option>');
+                    $(".bloco-semana").hide();
+                    $(".bloco-sabado").hide();
+                    $(".bloco-domingo").hide();
+
+                    $("#usaInt").val('N'); 
+                    $("#horaIniInt").val(''); 
+                    $("#horaFinInt").val(''); 
+                    $("#usaIntSab").val('N'); 
+                    $("#horaIniIntSab").val(''); 
+                    $("#horaFinIntSab").val(''); 
+                    $("#usaIntDom").val('N');  
+                    $("#horaIniIntDom").val('');  
+                    $("#horaFinIntDom").val('');  
+                }
+            });
+
+            //Verifica o turno do prestador
+            $('#turPrestador').change(function(){
+
+                if( $(this).val() == 1) {
+
+                    var empresa = $('#empresaPrestador').val();
+
+                    var url = "{{ route('prestador.carregaTurSelAjax', [':empresa']) }}";
+                    url = url.replace(':empresa', empresa);
+
+                    $.ajax({
+                        url: url,
+                        dataType: "JSON",
+                        type: 'GET',
+                        data: {
+                            '_token': $('meta[name=csrf-token]').attr("content"),
+                            '_method': 'GET',
+                            "empresa": empresa
+                        },
+                        success: function (data)
+                        {
+                            if (data.funcionamento == 1) {
+                                $(".bloco-semana").show();
+                                $(".bloco-sabado").hide();
+                                $(".bloco-domingo").hide();
+                                $("#usaIntSab").val('N'); 
+                                $("#horaIniIntSab").val(''); 
+                                $("#horaFinIntSab").val(''); 
+                                $("#usaIntDom").val('N');  
+                                $("#horaIniIntDom").val('');  
+                                $("#horaFinIntDom").val('');  
+                            }else if(data.funcionamento == 2) {
+                                $(".bloco-semana").show();
+                                $(".bloco-sabado").show();
+                                $(".bloco-domingo").hide();
+                                $("#usaIntDom").val('N');  
+                                $("#horaIniIntDom").val('');  
+                                $("#horaFinIntDom").val('');  
+                            }else{
+                                $(".bloco-semana").show();
+                                $(".bloco-sabado").show();
+                                $(".bloco-domingo").show();
+                            }	
+                        }
+                    });
+                } else if( $(this).val() ) {
+                    $(".bloco-semana").show();
+                    $(".bloco-domingo").hide();
+                    $(".bloco-sabado").hide();
+
+                    $("#usaIntSab").val('N'); 
+                    $("#horaIniIntSab").val(''); 
+                    $("#horaFinIntSab").val(''); 
+                    $("#usaIntDom").val('N');  
+                    $("#horaIniIntDom").val('');  
+                    $("#horaFinIntDom").val(''); 
+                }else{
+                    $(".bloco-semana").hide();
+                    $(".bloco-sabado").hide();
+                    $(".bloco-domingo").hide();
+
+                    $("#usaInt").val('N'); 
+                    $("#horaIniInt").val(''); 
+                    $("#horaFinInt").val(''); 
+                    $("#usaIntSab").val('N'); 
+                    $("#horaIniIntSab").val(''); 
+                    $("#horaFinIntSab").val(''); 
+                    $("#usaIntDom").val('N');  
+                    $("#horaIniIntDom").val('');  
+                    $("#horaFinIntDom").val('');  
+                }
+            });
+        }else{
+            //Verifica o turno do prestador
+            $('#turPrestador').change(function(){
+
+                if( $(this).val() == 1) {
+
+                    var diaFunEmp = {!! json_encode($diaFunEmp) !!};
+
+                    if (diaFunEmp == 1) {
+                        $(".bloco-semana").show();
+                        $(".bloco-sabado").hide();
+                        $(".bloco-domingo").hide();
+                        $("#usaIntSab").val('N'); 
+                        $("#horaIniIntSab").val(''); 
+                        $("#horaFinIntSab").val(''); 
+                        $("#usaIntDom").val('N');  
+                        $("#horaIniIntDom").val('');  
+                        $("#horaFinIntDom").val('');  
+                    }else if(diaFunEmp == 2) {
+                        $(".bloco-semana").show();
+                        $(".bloco-sabado").show();
+                        $(".bloco-domingo").hide();
+                        $("#usaIntDom").val('N');  
+                        $("#horaIniIntDom").val('');  
+                        $("#horaFinIntDom").val('');  
+                    }else{
+                        $(".bloco-semana").show();
+                        $(".bloco-sabado").show();
+                        $(".bloco-domingo").show();
+                    }	
+                } else if( $(this).val() ) {
+                    $(".bloco-semana").show();
+                    $(".bloco-domingo").hide();
+                    $(".bloco-sabado").hide();
+
+                    $("#usaIntSab").val('N'); 
+                    $("#horaIniIntSab").val(''); 
+                    $("#horaFinIntSab").val(''); 
+                    $("#usaIntDom").val('N');  
+                    $("#horaIniIntDom").val('');  
+                    $("#horaFinIntDom").val(''); 
+                }else{
+                    $(".bloco-semana").hide();
+                    $(".bloco-sabado").hide();
+                    $(".bloco-domingo").hide();
+
+                    $("#usaInt").val('N'); 
+                    $("#horaIniInt").val(''); 
+                    $("#horaFinInt").val(''); 
+                    $("#usaIntSab").val('N'); 
+                    $("#horaIniIntSab").val(''); 
+                    $("#horaFinIntSab").val(''); 
+                    $("#usaIntDom").val('N');  
+                    $("#horaIniIntDom").val('');  
+                    $("#horaFinIntDom").val('');  
+                }
+            });
+        }
     });
 </script>
 
@@ -860,7 +1432,7 @@
 <script>
 $(function () {
 
-    $('#formularioNovo').validate({
+    $('#formulario-novo').validate({
         rules: {
             empresaPrestador: {
                 required: true
@@ -877,6 +1449,42 @@ $(function () {
             },
             setPrestador: {
                 required: true
+            },
+            horaIniInt: {
+                required: function(element) {
+                    let usaInt = $('#usaInt').val();
+                    return usaInt == 'S';
+                }
+            },
+            horaFinInt: {
+                required: function(element) {
+                    let usaInt = $('#usaInt').val();
+                    return usaInt == 'S';
+                }
+            },
+            horaIniIntSab: {
+                required: function(element) {
+                    let usaIntSab = $('#usaIntSab').val();
+                    return usaIntSab == 'S';
+                }
+            },
+            horaFinIntSab: {
+                required: function(element) {
+                    let usaIntSab = $('#usaIntSab').val();
+                    return usaIntSab == 'S';
+                }
+            },
+            horaIniIntDom: {
+                required: function(element) {
+                    let usaIntDom = $('#usaIntDom').val();
+                    return usaIntDom == 'S';
+                }
+            },
+            horaFinIntDom: {
+                required: function(element) {
+                    let usaIntDom = $('#usaIntDom').val();
+                    return usaIntDom == 'S';
+                }
             },
         },
         messages: {
@@ -895,6 +1503,24 @@ $(function () {
             },
             setPrestador: {
                 required: "Por Favor informe o Setor"
+            },
+            horaIniInt: {
+                required: "Por Favor informe a hora do inicio do intervalo"
+            },
+            horaFinInt: {
+                required: "Por Favor informe a hora do final do intervalo"
+            },
+            horaIniIntSab: {
+                required: "Por Favor informe a hora do inicio de intervalo do sábado"
+            },
+            horaFinIntSab: {
+                required: "Por Favor informe a hora do final de intervalo do sábado"
+            },
+            horaIniIntDom: {
+                required: "Por Favor informe a hora do inicio de intervalo do domingo"
+            },
+            horaFinIntDom: {
+                required: "Por Favor informe a hora do final de intervalo do domingo"
             },
         },
         errorElement: 'span',
@@ -918,7 +1544,7 @@ $(function () {
         }
     });
 
-    $('#formularioManuDados').validate({
+    $('#formulario-dados').validate({
         rules: {
             empresaPrestador: {
                 required: true
@@ -928,12 +1554,6 @@ $(function () {
                 maxlength: 80
             },
             cpfPrestador: {
-                required: true
-            },
-            areaPrestador: {
-                required: true
-            },
-            setPrestador: {
                 required: true
             },
             dataAdmissao: {
@@ -960,12 +1580,6 @@ $(function () {
             cpfPrestador: {
                 required: "Por Favor informe o CPF"
             },
-            areaPrestador: {
-                required: "Por Favor informe a Área"
-            },
-            setPrestador: {
-                required: "Por Favor informe o Setor"
-            },
             dataAdmissao: {
                 required: "Por Favor informe a Data de Admissão"
             },
@@ -986,6 +1600,104 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        }
+    });
+
+    $('#formulario-servico').validate({
+        rules: {
+            areaPrestador: {
+                required: true
+            },
+            setPrestador: {
+                required: true
+            },
+            turPrestador: {
+                required: true
+            },
+            horaIniInt: {
+                required: function(element) {
+                    let usaInt = $('#usaInt').val();
+                    return usaInt == 'S';
+                }
+            },
+            horaFinInt: {
+                required: function(element) {
+                    let usaInt = $('#usaInt').val();
+                    return usaInt == 'S';
+                }
+            },
+            horaIniIntSab: {
+                required: function(element) {
+                    let usaIntSab = $('#usaIntSab').val();
+                    return usaIntSab == 'S';
+                }
+            },
+            horaFinIntSab: {
+                required: function(element) {
+                    let usaIntSab = $('#usaIntSab').val();
+                    return usaIntSab == 'S';
+                }
+            },
+            horaIniIntDom: {
+                required: function(element) {
+                    let usaIntDom = $('#usaIntDom').val();
+                    return usaIntDom == 'S';
+                }
+            },
+            horaFinIntDom: {
+                required: function(element) {
+                    let usaIntDom = $('#usaIntDom').val();
+                    return usaIntDom == 'S';
+                }
+            },
+        },
+        messages: {
+            areaPrestador: {
+                required: "Por Favor informe a Área"
+            },
+            setPrestador: {
+                required: "Por Favor informe o Setor"
+            },
+            turPrestador: {
+                required: "Por Favor informe o Turno"
+            },
+            horaIniInt: {
+                required: "Por Favor informe a hora do inicio do intervalo"
+            },
+            horaFinInt: {
+                required: "Por Favor informe a hora do final do intervalo"
+            },
+            horaIniIntSab: {
+                required: "Por Favor informe a hora do inicio de intervalo do sábado"
+            },
+            horaFinIntSab: {
+                required: "Por Favor informe a hora do final de intervalo do sábado"
+            },
+            horaIniIntDom: {
+                required: "Por Favor informe a hora do inicio de intervalo do domingo"
+            },
+            horaFinIntDom: {
+                required: "Por Favor informe a hora do final de intervalo do domingo"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 

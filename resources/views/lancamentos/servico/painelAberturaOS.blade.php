@@ -965,7 +965,7 @@ $status_servico = '';
                                         $cntSrv += 1;
                                     @endphp
                                     <tr>
-                                        <td><input type="checkbox" class="record-checkbox" value="{{$servico->srv_seq}}">
+                                        <td><input type="checkbox" class="record-checkbox" value="{{$servico->srv_seq}}"></td>
                                         <td>{{$servico->srv_seq}}</td>
                                         <td>{{$servico->srv_tmo}}</td>
                                         <td>{{$servico->srv_dsc}}</td>
@@ -1079,7 +1079,7 @@ $status_servico = '';
                                         $cntSrv += 1;
                                     @endphp
                                     <tr>
-                                        <td><input type="checkbox" class="record-checkbox-fin" value="{{$servico->srv_seq}}">
+                                        <td><input type="checkbox" class="record-checkbox-fin" value="{{$servico->srv_seq}}"></td>
                                         <td>{{$servico->srv_seq}}</td>
                                         <td>{{$servico->srv_tmo}}</td>
                                         <td>{{$servico->srv_dsc}}</td>
@@ -1198,7 +1198,7 @@ $status_servico = '';
                                         $cntSrv += 1;
                                     @endphp
                                     <tr>
-                                        <td><input type="checkbox" class="record-checkbox-apr" value="{{$servico->srv_seq}}">
+                                        <td><input type="checkbox" class="record-checkbox-apr" value="{{$servico->srv_seq}}"></td>
                                         <td>{{$servico->srv_seq}}</td>
                                         <td>{{$servico->srv_tmo}}</td>
                                         <td>{{$servico->srv_dsc}}</td>
@@ -1705,14 +1705,90 @@ $status_servico = '';
                         
                     <!-- Botão hide de manutenção da tmo e Modal de liberação de desconto -->
                     @if($glo_os_estagioAPP == "MANUTENCAO_SERVICO")
-                        <x-adminlte-button class="btn_hide_suspender_tmo" type="button" onclick="window.location='{{ route('servicoOS.suspender', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}'" label="Suspender TMO" theme="info"/>
-                        <x-adminlte-button class="btn_hide_cancelar_tmo" type="button" onclick="window.location='{{ route('servicoOS.cancelar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}'" label="Cancelar TMO" theme="info"/>
+                        <!--<x-adminlte-button class="btn_hide_suspender_tmo" type="button" onclick="window.location='{{ route('servicoOS.suspender', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}'" label="Suspender TMO" theme="info"/>
+                        <x-adminlte-button class="btn_hide_cancelar_tmo" type="button" onclick="window.location='{{ route('servicoOS.cancelar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}'" label="Cancelar TMO" theme="info"/>-->
                         <x-adminlte-button class="btn_hide_reabrir_tmo" type="button" onclick="window.location='{{ route('servicoOS.reabrir', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}'" label="Reabrir TMO" theme="info"/>
 
                         <form method="post" action="{{ route('servicoOS.destroy', ['servicoOS' => $glo_os_dadosServicoSelecionado[0]->srv_id, 'empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}">
                             @csrf 
                             @method('delete')
                             <x-adminlte-button class="btn_hide_excluir_tmo" type="submit" label="Excluir TMO" value="Excluir TMO" theme="info"/>
+                        </form>
+
+                        <!-- Modal do cancelamento da TMO -->
+                        <form method="post" action="{{ route('servicoOS.cancelar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}" id="formulario-cancela-tmo" novalidate="novalidate">
+                            @csrf 
+                            @method('post')
+                            <x-adminlte-modal id="modalCancelamentoTMO" title="Cancelamento da TMO" size="xl" theme="navy" icon="" v-centered scrollable>
+                                
+                                <div class="col-md-12" style="height:auto;">
+                                    <div class="row">
+                                        @php 
+                                            $data = DB::table('parametros_sistema_can_motivos')->orderby('canmot_codigo', 'asc')->get();
+
+                                            $new_array1 =[];
+                                            $new_array2 =[];
+
+                                            foreach ($data as $can) {
+                                                $new_array1[] = $can->canmot_codigo;
+                                                $new_array2[] = $can->canmot_codigo.' - '.$can->canmot_desc;
+                                            }
+                                            $array_opt = array_combine($new_array1, $new_array2);
+                                        @endphp
+                                        <!-- Motivo do Cancelamento -->
+                                        <x-adminlte-select name="canMot" fgroup-class="col-md-12">
+                                            <x-slot name="label">
+                                                Motivo do Cancelamento <span style="color:red;">*</span>
+                                            </x-slot>
+                                            <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
+                                        </x-adminlte-select>
+                                    </div>
+                                </div>
+                                <!-- Criação dos botões do Modal -->  
+                                <x-slot name="footerSlot">
+                                    <x-adminlte-button class="mr-auto" theme="info" label="Cancelar TMO" icon="fa-solid fa-ban" type="submit"/>
+                                    <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                                </x-slot>
+                                
+                            </x-adminlte-modal>
+                        </form>
+
+                        <!-- Modal do suspensão da TMO -->
+                        <form method="post" action="{{ route('servicoOS.suspender', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}" id="formulario-suspende-tmo" novalidate="novalidate">
+                            @csrf 
+                            @method('post')
+                            <x-adminlte-modal id="modalSuspenderTMO" title="Suspensão da TMO" size="xl" theme="navy" icon="" v-centered scrollable>
+                                
+                                <div class="col-md-12" style="height:auto;">
+                                    <div class="row">
+                                        @php 
+                                            $data = DB::table('parametros_sis_sus_motivos')->orderby('susmot_codigo', 'asc')->get();
+
+                                            $new_array1 =[];
+                                            $new_array2 =[];
+
+                                            foreach ($data as $sus) {
+                                                $new_array1[] = $sus->susmot_codigo;
+                                                $new_array2[] = $sus->susmot_codigo.' - '.$sus->susmot_desc;
+                                            }
+                                            $array_opt = array_combine($new_array1, $new_array2);
+                                        @endphp
+                                        <!-- Motivo da Suspensão -->
+                                        <x-adminlte-select name="susMot" fgroup-class="col-md-12">
+                                            <x-slot name="label">
+                                                Motivo da Suspensão <span style="color:red;">*</span>
+                                            </x-slot>
+                                            <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
+                                        </x-adminlte-select>
+                                    </div>
+                                </div>
+                                <!-- Criação dos botões do Modal -->  
+                                <x-slot name="footerSlot">
+                                    <x-adminlte-button class="mr-auto" theme="info" label="Suspender TMO" icon="fa-solid fa-triangle-exclamation" type="submit"/>
+                                    <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                                </x-slot>
+                                
+                            </x-adminlte-modal>
                         </form>
 
                         <!-- Modal de Liberação de Desconto da TMO -->
@@ -2655,10 +2731,12 @@ $status_servico = '';
                 <x-adminlte-button class="btn_finalizar_servicos" type="button" data-toggle="modal" data-target="#modalFinSrvReq" label="Finalizar Serviços" theme="info" icon=""/>
                 <x-adminlte-button class="btn_novo_servico" type="button" onclick="window.location='{{ route('painelOS.abrirServicoRequisicao', ['empresa' => $glo_os_empresa, 'area' => $area_req, 'setor' => $setor_req, 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'SELECAO_TMO', 'requisicao' => $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Novo Serviço" theme="info" icon="fa-solid fa-plus"/>
                 @endif
-                
+
                 <x-adminlte-button class="btn_liberar_desconto_tmo" type="button" data-toggle="modal" data-target="#modalLibDescTMO" label="Liberar Desconto" theme="info" icon="fa-solid fa-unlock"/>
-                <x-adminlte-button class="btn_suspender_tmo" type="button" onclick="document.querySelector('.btn_hide_suspender_tmo').click()" label="Suspender TMO" theme="info" icon="fa-solid fa-triangle-exclamation"/>
-                <x-adminlte-button class="btn_cancelar_tmo" type="button" onclick="document.querySelector('.btn_hide_cancelar_tmo').click()" label="Cancelar TMO" theme="info" icon="fa-solid fa-ban"/>
+                <x-adminlte-button class="btn_suspender_tmo" type="button" data-toggle="modal" data-target="#modalSuspenderTMO" label="Suspender TMO" theme="info" icon="fa-solid fa-triangle-exclamation"/>
+                <x-adminlte-button class="btn_cancelar_tmo" type="button" data-toggle="modal" data-target="#modalCancelamentoTMO" label="Cancelar TMO" theme="info" icon="fa-solid fa-ban"/>
+                <!--<x-adminlte-button class="btn_suspender_tmo" type="button" onclick="document.querySelector('.btn_hide_suspender_tmo').click()" label="Suspender TMO" theme="info" icon="fa-solid fa-triangle-exclamation"/>
+                <x-adminlte-button class="btn_cancelar_tmo" type="button" onclick="document.querySelector('.btn_hide_cancelar_tmo').click()" label="Cancelar TMO" theme="info" icon="fa-solid fa-ban"/>-->
                 <x-adminlte-button class="btn_reabrir_tmo" type="button" onclick="document.querySelector('.btn_hide_reabrir_tmo').click()" label="Reabrir TMO" theme="info" icon="fa-solid fa-folder-open"/>
                 <x-adminlte-button class="btn_excluir_tmo" type="button" onclick="document.querySelector('.btn_hide_excluir_tmo').click()" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
                 <x-adminlte-button class="btn_atualizar_tmo" type="button" onclick="document.querySelector('.btn_hide_atualizar_tmo').click()" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
@@ -2781,8 +2859,8 @@ $status_servico = '';
         //Botão quadro -  INCLUSAO_SERVICO / MANUTENCAO_SERVICO
         $(".btn_hide_incluir_tmo").hide();
         $(".btn_hide_atualizar_tmo").hide();
-        $(".btn_hide_suspender_tmo").hide();
-        $(".btn_hide_cancelar_tmo").hide();
+        //$(".btn_hide_suspender_tmo").hide();
+        //$(".btn_hide_cancelar_tmo").hide();
         $(".btn_hide_reabrir_tmo").hide();
         $(".btn_hide_excluir_tmo").hide();
 

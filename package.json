@@ -19,6 +19,10 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
+        "@fullcalendar/core": "^6.1.15",
+        "@fullcalendar/interaction": "^6.1.15",
+        "@fullcalendar/resource-timeline": "^6.1.15",
+        "@fullcalendar/timeline": "^6.1.15",
         "icheck-bootstrap": "^3.0.1",
         "toastr": "^2.1.4"
     }

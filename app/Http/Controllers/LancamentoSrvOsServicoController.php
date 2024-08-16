@@ -8,7 +8,9 @@ use App\Models\LancamentoSrvOsServico;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
 use App\Http\Helpers\Helper;
+use App\Http\Helpers\HelperControleProducao;
 use App\Http\Controllers\PainelAberturaOSController;
+use App\Http\Controllers\LancamentoSrvExeTarefaController;
 
 class LancamentoSrvOsServicoController extends Controller
 {
@@ -103,8 +105,6 @@ class LancamentoSrvOsServicoController extends Controller
             'srv_qhr' => $qtdHrTMO,
             'srv_vhr' => $valUniHrTMO,
             'srv_vts' => $valTotHrTMO,
-            'srv_dti' => $data_inc,
-            'srv_hri' => $hora_inc,
             'srv_for' => $forTerceiroTMO,
             'srv_nft' => $request->numNfTerceiroTMO,
             'srv_srt' => $request->serNfTerceiroTMO,
@@ -112,7 +112,8 @@ class LancamentoSrvOsServicoController extends Controller
             'srv_tcg' => $request->tipCustoTMO,
             'srv_pcg' => $perCustoTMO,
             'srv_vcg' => $valCustoTMO,
-            'srv_vtl' => $valTotHrTMO
+            'srv_vtl' => $valTotHrTMO,
+            'srv_dt_inc' => $data_inc
         ];
         
         LancamentoSrvOsServico::create($dados);
@@ -275,6 +276,9 @@ class LancamentoSrvOsServicoController extends Controller
             ->update(['srv_flg_apr' => 'S',
                 'srv_res_apr' => $usuario,
                 'srv_dh_apr' => $data]);   
+
+        //Gera a tabela da execução da tarefa
+        LancamentoSrvExeTarefaController::insert($empresa,$numOS,$requisicao,$sequencia);
         
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'TMO aprovada com sucesso!');
     }
@@ -303,7 +307,10 @@ class LancamentoSrvOsServicoController extends Controller
                 ->where('srv_seq', $srv)
                 ->update(['srv_flg_apr' => 'S',
                     'srv_res_apr' => $usuario,
-                    'srv_dh_apr' => $data]);   
+                    'srv_dh_apr' => $data]);  
+                    
+            //Gera a tabela da execução da tarefa
+            LancamentoSrvExeTarefaController::insert($empresa,$numOS,$requisicao,$srv);
         }
         
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'TMO aprovada com sucesso!');
@@ -334,17 +341,59 @@ class LancamentoSrvOsServicoController extends Controller
 
         foreach ($srvSel as $srv) {
             
+            $dadosTMO = $this->servicoOS->where('srv_nos', $numOS)->where('srv_emp', $empresa)->where('srv_req', $requisicao)->where('srv_seq', $srv)->first();
+
+            //Verifica se existe ou não prestador para a tarefa e como vai buscar os dados do horario de expediente e intervalo
+            if(!empty(($dadosTMO->srv_prt))){
+
+                //Monta os arrays de horario de expediente e almoço do prestador
+                $businessHours = HelperControleProducao::geraBusinessHoursPHP($empresa, $dadosTMO->srv_prt);
+                $lunchBreaks = HelperControleProducao::geraLunchHoursPHP($empresa, $dadosTMO->srv_prt);
+
+            }else{
+
+                //Monta os arrays de horario de expediente e almoço da empresa
+                $businessHours = HelperControleProducao::geraBusinessHoursEmpPHP($empresa);
+                $lunchBreaks = HelperControleProducao::geraLunchHoursEmpPHP($empresa);
+            }
+
+            /*echo '<pre>';
+            print_r($businessHours);
+            echo '</pre>';
+
+            echo '<pre>';
+            print_r($lunchBreaks);
+            echo '</pre>';*/
+
             $data = date('Y-m-d');
             $hora = date('Hi');
+            $horaFormatada = date('H:i');
+            $tempoTMO = Helper::convertHrCentToHrSexa($dadosTMO->srv_qhr);
+            
+            $dataTermino = HelperControleProducao::calculaPrevTerminoSrv($data, $horaFormatada, $tempoTMO, $businessHours, $lunchBreaks);
 
-            $atualiaServico = DB::table('lancamento_srv_os_servicos')
-                ->where('srv_emp', $empresa)
-                ->where('srv_nos', $numOS)
-                ->where('srv_req', $requisicao)
-                ->where('srv_seq', $srv)
-                ->update(['srv_sts' => 'A',
-                    'srv_dti' => $data,
-                    'srv_hri' => $hora]);   
+            $dtPrvTer = date('Y-m-d', strtotime($dataTermino));
+            $hrPrvTer = date('Hi', strtotime($dataTermino));
+
+            DB::table('lancamento_srv_os_servicos')
+            ->where('srv_emp', $empresa)
+            ->where('srv_nos', $numOS)
+            ->where('srv_req', $requisicao)
+            ->where('srv_seq', $srv)
+            ->update(['srv_sts' => 'A',
+                'srv_dti' => $data,
+                'srv_hri' => $hora]);  
+                    
+            DB::table('lancamento_srv_exe_tarefas')
+            ->where('exetrf_emp', $empresa)
+            ->where('exetrf_nos', $numOS)
+            ->where('exetrf_req', $requisicao)
+            ->where('exetrf_seq', $srv)
+            ->update(['exetrf_sts' => 'A',
+                'exetrf_dt_ini_srv' => $data,
+                'exetrf_hr_ini_srv' => $hora,
+                'exetrf_dt_prv_fin_srv' => $dtPrvTer,
+                'exetrf_hr_prv_fin_srv' => $hrPrvTer]);  
         }
         
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'Serviço(s) em espera iniciado(s)!');
@@ -387,7 +436,7 @@ class LancamentoSrvOsServicoController extends Controller
     }
 
     //Metodo de suspender tmo
-    public function suspenderServico($empresa, $numOS, $requisicao, $sequencia, $codTMO)
+    public function suspenderServico(Request $request, $empresa, $numOS, $requisicao, $sequencia, $codTMO)
     {        
         $servico = $this->servicoOS->where('srv_nos', $numOS)->where('srv_emp', $empresa)->where('srv_req', $requisicao)->where('srv_seq', $sequencia)->where('srv_tmo', $codTMO)->get();
        
@@ -395,13 +444,35 @@ class LancamentoSrvOsServicoController extends Controller
             return redirect()->back()->with('info', 'TMO selecionada já foi finalizada!');
         }
 
-        $atualiaServico = DB::table('lancamento_srv_os_servicos')
-            ->where('srv_emp', $empresa)
-            ->where('srv_nos', $numOS)
-            ->where('srv_req', $requisicao)
-            ->where('srv_seq', $sequencia)
-            ->where('srv_tmo', $codTMO)
-            ->update(['srv_sts' => 'S']);   
+        $dataHora = date('Y-m-d H:i:s');
+        $data = date('Y-m-d');
+        $hora = date('Hi');
+
+        DB::table('lancamento_srv_os_servicos')
+        ->where('srv_emp', $empresa)
+        ->where('srv_nos', $numOS)
+        ->where('srv_req', $requisicao)
+        ->where('srv_seq', $sequencia)
+        ->where('srv_tmo', $codTMO)
+        ->update([
+            'srv_sts' => 'S',
+            'srv_dhs' => $dataHora,
+            'srv_res_sus' => Auth::user()->usuario_codigo,
+            'srv_mot_sus' => $request->susMot
+        ]);   
+        
+        DB::table('lancamento_srv_exe_tarefas')
+        ->where('exetrf_emp', $empresa)
+        ->where('exetrf_nos', $numOS)
+        ->where('exetrf_req', $requisicao)
+        ->where('exetrf_seq', $sequencia)
+        ->update([
+            'exetrf_sts' => 'S',
+            'exetrf_dt_sus_srv' => $data,
+            'exetrf_hr_sus_srv' => $hora,
+            'exetrf_res_sus' => Auth::user()->usuario_codigo,
+            'exetrf_mot_sus_srv' => $request->susMot
+        ]);
 
         $sum_servicos = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$numOS)->where('srv_req',$requisicao)->wherein('srv_sts',['A','E','F'])->sum('srv_vtl');
 
@@ -415,16 +486,38 @@ class LancamentoSrvOsServicoController extends Controller
     }
 
     //Metodo de cancelar tmo
-    public function cancelarServico($empresa, $numOS, $requisicao, $sequencia, $codTMO)
+    public function cancelarServico(Request $request, $empresa, $numOS, $requisicao, $sequencia, $codTMO)
     {       
-        $atualiaServico = DB::table('lancamento_srv_os_servicos')
-            ->where('srv_emp', $empresa)
-            ->where('srv_nos', $numOS)
-            ->where('srv_req', $requisicao)
-            ->where('srv_seq', $sequencia)
-            ->where('srv_tmo', $codTMO)
-            ->update(['srv_sts' => 'C']);  
+        $dataHora = date('Y-m-d H:i:s');
+        $data = date('Y-m-d');
+        $hora = date('Hi');
         
+        DB::table('lancamento_srv_os_servicos')
+        ->where('srv_emp', $empresa)
+        ->where('srv_nos', $numOS)
+        ->where('srv_req', $requisicao)
+        ->where('srv_seq', $sequencia)
+        ->where('srv_tmo', $codTMO)
+        ->update([
+            'srv_sts' => 'C',
+            'srv_dhc' => $dataHora,
+            'srv_res_can' => Auth::user()->usuario_codigo,
+            'srv_mot_can' => $request->canMot
+        ]);  
+
+        DB::table('lancamento_srv_exe_tarefas')
+        ->where('exetrf_emp', $empresa)
+        ->where('exetrf_nos', $numOS)
+        ->where('exetrf_req', $requisicao)
+        ->where('exetrf_seq', $sequencia)
+        ->update([
+            'exetrf_sts' => 'C',
+            'exetrf_dt_can_srv' => $data,
+            'exetrf_hr_can_srv' => $hora,
+            'exetrf_res_can' => Auth::user()->usuario_codigo,
+            'exetrf_mot_can_srv' => $request->canMot
+        ]);
+    
         $sum_servicos = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$numOS)->where('srv_req',$requisicao)->wherein('srv_sts',['A','E','F'])->sum('srv_vtl');
 
         PainelAberturaOSController::atualizaValorRequisicao($empresa, $numOS, $requisicao);
@@ -439,13 +532,59 @@ class LancamentoSrvOsServicoController extends Controller
     //Metodo de reabrir tmo
     public function reabrirServico($empresa, $numOS, $requisicao, $sequencia, $codTMO)
     {       
-        $atualiaServico = DB::table('lancamento_srv_os_servicos')
-            ->where('srv_emp', $empresa)
+        $dadosSrv = DB::table('lancamento_srv_os_servicos')->where('srv_emp', $empresa)
             ->where('srv_nos', $numOS)
             ->where('srv_req', $requisicao)
             ->where('srv_seq', $sequencia)
             ->where('srv_tmo', $codTMO)
-            ->update(['srv_sts' => 'E']);  
+            ->first();
+
+        if(!empty($dadosSrv->srv_dti)){
+            $status = 'A';
+        }else{
+            $status = 'E';
+        }
+
+        DB::table('lancamento_srv_os_servicos')
+        ->where('srv_emp', $empresa)
+        ->where('srv_nos', $numOS)
+        ->where('srv_req', $requisicao)
+        ->where('srv_seq', $sequencia)
+        ->where('srv_tmo', $codTMO)
+        ->update([
+            'srv_sts' => $status,
+            'srv_dtf' => null,
+            'srv_hrf' => 0,
+            'srv_dhc' => null,
+            'srv_res_can' => null,
+            'srv_dhs' => null,
+            'srv_res_sus' => null,
+            'srv_mot_sus' => null,
+            'srv_mot_can' => null
+        ]);  
+
+        DB::table('lancamento_srv_exe_tarefas')
+        ->where('exetrf_emp', $empresa)
+        ->where('exetrf_nos', $numOS)
+        ->where('exetrf_req', $requisicao)
+        ->where('exetrf_seq', $sequencia)
+        ->update([
+            'exetrf_sts' => $status,
+            'exetrf_dt_fin_srv' => null,
+            'exetrf_hr_fin_srv' => 0,
+            'exetrf_qhr_real' => 0,
+            'exetrf_qhr_saldo' => 0,
+            'exetrf_dt_can_srv' => null,
+            'exetrf_hr_can_srv' => 0,
+            'exetrf_mot_can_srv' => null,
+            'exetrf_dt_sus_srv' => null,
+            'exetrf_hr_sus_srv' => 0,
+            'exetrf_mot_sus_srv' => null,
+            'exetrf_res_sus' => null,
+            'exetrf_res_can' => null,
+            'exetrf_dt_prv_fin_srv' => null,
+            'exetrf_hr_prv_fin_srv' => 0
+        ]);
 
         PainelAberturaOSController::atualizaValorRequisicao($empresa, $numOS, $requisicao);
 

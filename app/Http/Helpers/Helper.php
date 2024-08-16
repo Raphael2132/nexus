@@ -3,7 +3,8 @@
 namespace App\Http\Helpers;
 use Illuminate\Support\Facades\DB;
 use stdClass;
-
+use DateTime;
+use DateTimeZone;
 
 class Helper
 {
@@ -198,5 +199,29 @@ class Helper
             $valorFormatado = 'Não';
         }
         return $valorFormatado;
+    }
+
+    public static function convertHrCentToHrSexa(string $horaCentesimal)
+    {
+        // Separar a parte inteira (horas) e a parte fracionária (minutos centesimais)
+        $horas = floor($horaCentesimal);
+        $minutosCentesimais = $horaCentesimal - $horas;
+
+        // Converter a parte fracionária de horas centesimais para minutos sexagesimais
+        $minutosSexagesimais = $minutosCentesimais * 60;
+
+        // Separar a parte inteira (minutos) e a parte fracionária (segundos)
+        $minutos = floor($minutosSexagesimais);
+        $segundos = ($minutosSexagesimais - $minutos) * 60;
+
+        // Formatar a saída para hh:mm:ss
+        return sprintf("%02d:%02d:%02d", $horas, $minutos, round($segundos));
+    }
+
+    public static function convertHrCentToMinutes($horaCentesimal)
+    {
+        $hours = floor($horaCentesimal);
+        $minutes = ($horaCentesimal - $hours) * 60;
+        return ($hours * 60) + $minutes;
     }
 }

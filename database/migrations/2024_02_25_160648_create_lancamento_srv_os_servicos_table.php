@@ -33,7 +33,7 @@ return new class extends Migration
             $table->decimal('srv_vtl', 15,2)->default(0);//valor total da líquido
             $table->enum('srv_aut_desc', ['S', 'N'])->default('N');/* Desconto autorizado  */
             $table->string('srv_usu_aut_desc',6)->nullable();/* Usuario da autorização do desconto */
-            $table->date('srv_dti');/* Data Inicio de Execucao da Tarefa */
+            $table->date('srv_dti')->nullable();/* Data Inicio de Execucao da Tarefa */
             $table->decimal('srv_hri', 4,0)->default(0);/* Hora Inicio de Execucao da Tarefa */
             $table->date('srv_dtf')->nullable();/* Data Termino de Execucao da Tarefa */
             $table->decimal('srv_hrf', 4,0)->default(0);/* Hora Termino de Execucao da Tarefa */

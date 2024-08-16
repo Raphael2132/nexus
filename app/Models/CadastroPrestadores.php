@@ -29,6 +29,16 @@ class CadastroPrestadores extends Model
         'prestador_set',
         'prestador_are',
         'prestador_acesso_sis',
-        'prestador_usuario_cod'
+        'prestador_usuario_cod',
+        'prestador_tur_cod',
+        'prestador_int_srv',
+        'prestador_hr_ini_int',
+        'prestador_hr_fin_int',
+        'prestador_int_srv_sab',
+        'prestador_hr_ini_int_sab',
+        'prestador_hr_fin_int_sab',
+        'prestador_int_srv_dom',
+        'prestador_hr_ini_int_dom',
+        'prestador_hr_fin_int_dom'
     ];
 }

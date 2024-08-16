@@ -198,6 +198,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         'Helper' => App\Http\Helpers\Helper::class,
+        'HelperControleProducao' => App\Http\Helpers\HelperControleProducao::class,
         //'PDF' => Barryvdh\DomPDF\Facade::class,
         //'PDF' => Mpdf\MpdfFacade::class,
         'Empresa' => App\Facades\Empresa::class,

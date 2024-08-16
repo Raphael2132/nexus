@@ -275,7 +275,7 @@ class LancamentoSrvOsController extends Controller
             $calAut = 'N';
         }
 
-        $atualiaServico = DB::table('lancamento_srv_os')
+        DB::table('lancamento_srv_os')
         ->where('os_emp', $empresa)
         ->where('os_nos', $numOS)
         ->update(['os_qtd_hr_pre_ent' => $request->qtdHoraOS,
@@ -284,6 +284,12 @@ class LancamentoSrvOsController extends Controller
         'os_cli_agr' => $request->clienteAguardaTermino,
         'os_cli_avs' => $request->avisaClienteTermino,
         'os_cal_aut_pre_ent' => $calAut]);  
+
+        DB::table('lancamento_srv_exe_tarefas')
+        ->where('exetrf_emp', $empresa)
+        ->where('exetrf_nos', $numOS)
+        ->update(['exetrf_dt_prev_ent' => $data,
+            'exetrf_hr_prev_ent' => $hora]);  
         
         return redirect(route('situacaoOS.carregaOS', ['empresa' => $empresa, 'cliente' => $cliente, 'nos' => $numOS, 'estagioAPP' => 'PRINCIPAL']))->with('success', 'Previsão de Entrega Atualizada com Sucesso!');
     }

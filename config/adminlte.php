@@ -369,13 +369,23 @@ return [
                     'icon' => 'fa-solid fa-list',
                     'submenu' => [
                         [
+                            'text' => 'Geral da Empresa',
+                            'url'  => '/parametros/gerencial/homeParametrosGerencialEmpresa',
+                            'icon' => '',
+                        ],
+                        [
                             'text' => 'Setores',
                             'url'  => '/parametros/servico/homeParametrosServicoSetor',
                             'icon' => '',
                         ],
                         [
-                            'text' => 'Motivos de Cancelamentos',
+                            'text' => 'Motivos de Cancelamento',
                             'url'  => '/parametros/sistema/homeParametrosSistemaMotivosCancelamento',
+                            'icon' => '',
+                        ],
+                        [
+                            'text' => 'Motivos de Suspensão',
+                            'url'  => '/parametros/sistema/homeParametrosSistemaMotivosSuspensao',
                             'icon' => '',
                         ],
                     ],
@@ -490,12 +500,12 @@ return [
         ],
 
         [
-            'text' => 'Lançamentos',
+            'text' => 'Serviços',
             'icon' => 'fa-solid fa-file-pen',
             'can' => 'is_emite_os',
             'submenu' => [
                 [
-                    'text' => 'Serviços',
+                    'text' => 'Lançamento de OS',
                     'icon' => 'fa-solid fa-list',
                     'submenu' => [
                         [
@@ -506,6 +516,33 @@ return [
                         [
                             'text' => 'Situação de OS',
                             'url'  => '/lancamentos/servico/homeSituacaoOS',
+                            'icon' => '',
+                        ],
+                        [
+                            'text' => 'Orçamentos',//Consulta de OS geradas
+                            'url'  => '',
+                            'icon' => '',
+                        ],
+                    ],
+                ],
+                [
+                    
+                    'text' => 'Controle de Produção',
+                    'icon' => 'fa-solid fa-list',
+                    'submenu' => [
+                        [
+                            'text' => 'Painel de Operação',//Painel de operação de serviços alocados ao prestador para inicio/finalizaçao da tmo
+                            'url'  => '/lancamentos/producao/homePainelOperador',
+                            'icon' => '',
+                        ],
+                        [
+                            'text' => 'Painel de Produção',//Painel de monitor de acompanhamento de produção da oficina diario
+                            'url'  => '/lancamentos/producao/homePainelProducao',
+                            'icon' => '',
+                        ],
+                        [
+                            'text' => 'Painel de Agendamento',//Painel de agendamento de TMO
+                            'url'  => '/lancamentos/producao/homeAgendamentoPrestador',
                             'icon' => '',
                         ],
                     ],
@@ -918,6 +955,51 @@ return [
                     'type' => 'css',
                     'asset' => true,
                     'location' => 'vendor/icheck-bootstrap/icheck-bootstrap.min.css',
+                ],
+            ],
+        ],
+        'Fullcalendar' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/fullcalendar/main.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/fullcalendar/main.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/fullcalendar/locales/pt-br.js',
+                ],
+            ],
+        ],
+        'Moment' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/moment/moment.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/moment/locale/pt-br.js',
+                ],
+            ],
+        ],
+        'Jquery-ui' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/jquery-ui/jquery-ui.min.js',
                 ],
             ],
         ],

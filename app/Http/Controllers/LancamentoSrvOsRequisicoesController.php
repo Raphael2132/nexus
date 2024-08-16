@@ -79,6 +79,41 @@ class LancamentoSrvOsRequisicoesController extends Controller
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'Requisição finalizada com sucesso!');
     }
 
+    //Metodo de finalização da requisição do Painel de Operação
+    public function finalizarRequisicaoPO(Request $request, $empresa, $numOS, $requisicao)
+    {        
+        //Vamos passar como variavel no redirect por que depois de 2 redirect elas são destruidas
+        $where = session('where_consulta_painelOperador'); 
+        $empresa = session('empresaOS_consulta_painelOperador'); 
+
+        $cnt_srv_aberto = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$numOS)->where('srv_req',$requisicao)->wherein('srv_sts',['A','E'])->count();
+        if($cnt_srv_aberto > 0){
+            // Redireciona de volta para a página principal
+            return redirect()->route('painelOperacao.consultaPainelGET',['empresa' => $empresa, 'where' => $where])
+            ->with('error', 'A requisição contém serviço(s) em aberto e ela não pode ser finalizada!');
+        }
+
+        $cnt_srv_susp = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$numOS)->where('srv_req',$requisicao)->where('srv_sts','S')->count();
+        if($cnt_srv_susp > 0){
+            // Redireciona de volta para a página principal
+            return redirect()->route('painelOperacao.consultaPainelGET',['empresa' => $empresa, 'where' => $where])
+            ->with('error', 'A requisição contém serviço(s) suspenso(s), primeiro finalize ou cancele o serviço para continuar!');
+        }
+
+        $dataHora = date('Y-m-d H:i:s');
+
+        $atualiaServico = DB::table('lancamento_srv_os_requisicoes')
+            ->where('req_emp', $empresa)
+            ->where('req_nos', $numOS)
+            ->where('req_seq', $requisicao)
+            ->update(['req_sts' => 'F',
+                'req_dhf' => $dataHora]);   
+        
+        // Redireciona de volta para a página principal
+        return redirect()->route('painelOperacao.consultaPainelGET',['empresa' => $empresa, 'where' => $where])
+        ->with('success', 'Requisição finalizada com sucesso!');
+    }
+
     //Metodo de reabertura da requisição
     public function reabrirRequisicao($empresa, $numOS, $requisicao)
     {
@@ -92,6 +127,27 @@ class LancamentoSrvOsRequisicoesController extends Controller
                 'req_dhf' => null]);   
         
         return redirect(route('painelOS.consultaRequisicao', ['empresa' => $empresa, 'nos' => $numOS, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicao]))->with('success', 'Requisição reaberta com sucesso!');
+    }
+
+    //Metodo de reabertura da requisição do Painel de Operação
+    public function reabrirRequisicaoPO(Request $request, $empresa, $numOS, $requisicao)
+    {
+        //Vamos passar como variavel no redirect por que depois de 2 redirect elas são destruidas
+        $where = session('where_consulta_painelOperador'); 
+        $empresa = session('empresaOS_consulta_painelOperador');
+
+        $dataHora = date('Y-m-d H:i:s');
+
+        $atualiaServico = DB::table('lancamento_srv_os_requisicoes')
+            ->where('req_emp', $empresa)
+            ->where('req_nos', $numOS)
+            ->where('req_seq', $requisicao)
+            ->update(['req_sts' => 'A',
+                'req_dhf' => null]);    
+        
+        // Redireciona de volta para a página principal
+        return redirect()->route('painelOperacao.consultaPainelGET',['empresa' => $empresa, 'where' => $where])
+        ->with('success', 'Requisição reaberta com sucesso!');
     }
 
     //Metodo de excluir requisição

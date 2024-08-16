@@ -20,7 +20,7 @@
 
 @section('content')
 <div class="d-flex justify-content-center">
-    <div class="col-md-8">
+    <div class="col-md-10">
         <!-- Define se o formulario é edição ou novo -->
         <form method="post" action="{{route('parametrosSrvEmp.update')}}" id="quickForm" novalidate="novalidate">
             @csrf 
@@ -148,62 +148,6 @@
                     </x-adminlte-select>
                 </div>
 
-                <div class="row">  
-                    @php
-                        $horaIniEx = Helper::formataHoraMinuto($parametrosEmp[0]->parsrv_hr_ini_ex);
-
-                        $config = [
-                            "singleDatePicker" => true,
-                            "showDropdowns" => true,
-                            "minYear" => 2000,
-                            "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                            "timePicker" => true,
-                            "timePicker24Hour" => true,
-                            "timePickerSeconds" => false,
-                            "cancelButtonClasses" => "btn-danger",
-                            "locale" => ["format" => "HH:mm"],
-                        ];
-                    @endphp
-                    <x-adminlte-date-range name="horaIniEx" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-6">
-                        <x-slot name="label">
-                            Hora Ini. Expediente <span style="color:red;">*</span>
-                        </x-slot>
-                        <x-slot name="appendSlot">
-                            <div class="input-group-text">
-                                <i class="far fa-lg fa-clock"></i>
-                            </div>
-                        </x-slot>
-                    </x-adminlte-date-range>
-                    @push('js')<script>$(() => $("#horaIniEx").val('{{ $horaIniEx }}'))</script>@endpush
-
-                    @php
-                        $horaFinEx = Helper::formataHoraMinuto($parametrosEmp[0]->parsrv_hr_fin_ex);
-
-                        $config = [
-                            "singleDatePicker" => true,
-                            "showDropdowns" => true,
-                            "minYear" => 2000,
-                            "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                            "timePicker" => true,
-                            "timePicker24Hour" => true,
-                            "timePickerSeconds" => false,
-                            "cancelButtonClasses" => "btn-danger",
-                            "locale" => ["format" => "HH:mm"],
-                        ];
-                    @endphp
-                    <x-adminlte-date-range name="horaFinEx" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-6">
-                        <x-slot name="label">
-                            Hora Fin. Expediente <span style="color:red;">*</span>
-                        </x-slot>
-                        <x-slot name="appendSlot">
-                            <div class="input-group-text">
-                                <i class="far fa-lg fa-clock"></i>
-                            </div>
-                        </x-slot>
-                    </x-adminlte-date-range>
-                    @push('js')<script>$(() => $("#horaFinEx").val('{{ $horaFinEx }}'))</script>@endpush
-                </div>
-
                 <!-- /.card -->
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
@@ -242,23 +186,6 @@
 
         $('#aliqISS').mask('#.##0,00', {reverse: true});
 
-        //Esconde calendário de data
-        $(function() { 
-            $('#horaIniEx').on('showCalendar.daterangepicker', function(ev, picker) {
-
-                $('.calendar-table').hide();
-
-            }) 
-        });
-
-        //Esconde calendário de data
-        $(function() { 
-            $('#horaFinEx').on('showCalendar.daterangepicker', function(ev, picker) {
-
-                $('.calendar-table').hide();
-
-            }) 
-        });
     });
 </script>
 
@@ -332,12 +259,6 @@ $(function () {
                 maxlength: 4,
                 minlength: 4,
             },
-            horaIniEx: {
-                required: true
-            },
-            horaFinEx: {
-                required: true
-            },
             grupoSrv: {
                 required: true
             },
@@ -362,12 +283,6 @@ $(function () {
                 required: "Por Favor informe um CFOP",
                 maxlength: "CFOP deve ter 4 digitos",
                 minlength: "CFOP deve ter 4 digitos"
-            },
-            horaIniEx: {
-                required: "Por Favor informe a hora de inicio do expediente"
-            },
-            horaFinEx: {
-                required: "Por Favor informe a hora do final do expediente"
             },
             grupoSrv: {
                 required: "Por Favor informe o Grupo do Serviço"

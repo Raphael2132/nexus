@@ -28,15 +28,11 @@ class ParametrosSrvEmpresasController extends Controller
     public function update(Request $request){
 
         $aliqISS = Helper::limpaPorcentagem($request->aliqISS);
-        $hrIni = Helper::limpaHoraMinuto($request->horaIniEx);
-        $hrFin = Helper::limpaHoraMinuto($request->horaFinEx);
 
         $atualizausuario = DB::table('parametros_srv_empresas')
         ->where('parsrv_emp', $request->empresa)
         ->update(['parsrv_alq_iss' => $aliqISS,
             'parsrv_cfop' => $request->srvCFOP,
-            'parsrv_hr_ini_ex' => $hrIni,
-            'parsrv_hr_fin_ex' => $hrFin,
             'parsrv_grp_srv' => $request->grupoSrv,
             'parsrv_cod_srv' => $request->codigoSrv,
             'parsrv_exg_iss' => $request->exiISS,

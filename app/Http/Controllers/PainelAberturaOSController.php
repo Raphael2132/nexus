@@ -352,6 +352,12 @@ class PainelAberturaOSController extends Controller
         ->where('os_nos', $numOS)
         ->update(['os_dpe' => $novaDtPrevEnt,
             'os_hpe' => $novaHrPrevEnt]);  
+
+        DB::table('lancamento_srv_exe_tarefas')
+        ->where('exetrf_emp', $empresa)
+        ->where('exetrf_nos', $numOS)
+        ->update(['exetrf_dt_prev_ent' => $novaDtPrevEnt,
+            'exetrf_hr_prev_ent' => $novaHrPrevEnt]);  
     }
 
     //Função que atualiza a previsão de entrega do serviço da OS via Ajax
