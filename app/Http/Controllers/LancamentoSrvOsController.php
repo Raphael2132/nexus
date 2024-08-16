@@ -9,6 +9,7 @@ use App\Models\LancamentoSrvOsRequisicoes;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
 use App\Http\Helpers\Helper;
+use App\Http\Helpers\HelperControleProducao;
 use App\Http\Controllers\PainelAberturaOSController;
 
 class LancamentoSrvOsController extends Controller
@@ -124,23 +125,43 @@ class LancamentoSrvOsController extends Controller
         }
 
         $data_abertura = date('Y-m-d H:i:s');
-        $hora = date('Hi');
+        $horaPrev = date('Hi');
+        $dataHj = date('Y-m-d');
 
-        //Busca horas de inicio e termino de expediente
-        $hrIni = DB::table('parametros_srv_empresas')->select('parsrv_hr_ini_ex')->where('parsrv_emp',$empresa)->get();
-        $hrFin = DB::table('parametros_srv_empresas')->select('parsrv_hr_fin_ex')->where('parsrv_emp',$empresa)->get();
+        //Busca os horários de expediente e intervalo/almoço da empresa
+        $businessHours = HelperControleProducao::geraBusinessHoursEmpPHP($empresa);
+        $lunchBreaks = HelperControleProducao::geraLunchHoursEmpPHP($empresa);
 
-        if($hora >= $hrIni[0]->parsrv_hr_ini_ex && $hora <= $hrFin[0]->parsrv_hr_fin_ex){
-            $data = date('Y-m-d');
-        }else{
-            if($hora < $hrIni[0]->parsrv_hr_ini_ex){
-                $data = date('Y-m-d');
-                $hora = $hrIni[0]->parsrv_hr_ini_ex;
+        //Busca horas de inicio e termino de expediente da empresa no dia
+        $hrIni = Helper::buscaHoraIniEx($dataHj,$businessHours);
+        $hrFin = Helper::buscaHoraFinEx($dataHj,$businessHours);
+
+        if(!empty($hrIni) && !empty($hrFin)){
+
+            $hrIni = Helper::limpaHoraMinuto($hrIni);
+            $hrFin = Helper::limpaHoraMinuto($hrFin);
+
+            if($horaPrev >= $hrIni && $horaPrev <= $hrFin){
+                $dataPrev = date('Y-m-d');
             }else{
-                $data = date('Y-m-d');
-                $data = date('Y-m-d', strtotime($data.' +1 day'));
-                $hora = $hrIni[0]->parsrv_hr_ini_ex;
+                if($horaPrev < $hrIni){
+                    $dataPrev = date('Y-m-d');
+                    $horaPrev = $hrIni;
+                }else{
+
+                    $dataHoraPrev = HelperControleProducao::calculaPrevTerminoSrv($dataHj, Helper::formataHoraMinuto($horaPrev), '00:00:00', $businessHours, $lunchBreaks);
+
+                    $dataPrev = date('Y-m-d', strtotime($dataHoraPrev));
+                    $horaPrev = date('Hi', strtotime($dataHoraPrev));
+                }
             }
+
+        }else{
+
+            $dataHoraPrev = HelperControleProducao::calculaPrevTerminoSrv($dataHj, Helper::formataHoraMinuto($horaPrev), '00:00:00', $businessHours, $lunchBreaks);
+
+            $dataPrev = date('Y-m-d', strtotime($dataHoraPrev));
+            $horaPrev = date('Hi', strtotime($dataHoraPrev));
         }
 
         $usuario = Auth::user()->usuario_codigo;
@@ -158,8 +179,8 @@ class LancamentoSrvOsController extends Controller
             'os_res_abr' => $usuario,
             'os_sts' => 'A',
             'os_cli_fatura' => $cliente,
-            'os_dpe' => $data,
-            'os_hpe' => $hora,
+            'os_dpe' => $dataPrev,
+            'os_hpe' => $horaPrev,
             'os_loc_srv' => $enderecoLocSrv,
             'os_loc_srv_cep' => $loc_srv_cep,
             'os_loc_srv_logradouro' => $loc_srv_logradouro,

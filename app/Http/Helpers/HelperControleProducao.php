@@ -90,12 +90,6 @@ class HelperControleProducao
             }
         }
 
-        // Gera o Horario do Intervalo/Almoço do prestador
-        //$inicioInt = strtotime($prestador->intervalo_inicio);
-        //$finInt = strtotime($prestador->intervalo_fim);
-        //$inicioInt = strtotime('12:00');
-        //$finInt = strtotime('13:10');
-
         // Horário da coluna
         $horaColunaIni = strtotime($horario);
         $horaColunaFin = strtotime('+29 minutes', $horaColunaIni);
@@ -154,7 +148,7 @@ class HelperControleProducao
         return $span;
     }
 
-    //calcula a duração real do serviço com base nas datas e horas de inicio e termino da tmo
+    //Calcula a duração real do serviço com base nas datas e horas de inicio e termino da TMO - Retorna a qtd. de horas no formato centesimal
     public static function calculaDuracaoServico($startDateTime, $endDateTime, $businessHours, $lunchBreaks)
     {
         $totalDuration = 0;
@@ -242,7 +236,7 @@ class HelperControleProducao
         return number_format($totalDurationHours, 2, '.', '');
     }
 
-    //Gera os arrays com os horarios de expediente da empresa
+    //Gera os arrays com os horarios de expediente do Prestador
     public static function geraBusinessHoursPHP($empresa, $prestador)
     {
         $dadosPrestador = DB::table('cadastro_prestadores')->where('prestador_codigo', $prestador)->where('prestador_empresa', $empresa)->get();
@@ -366,59 +360,7 @@ class HelperControleProducao
         return $businessHours;
     }
 
-    //Gera os arrays com os horarios de intervalo/almoço do prestador
-    public static function geraLunchHoursPHP($empresa, $prestador)
-    {
-        $dadosPrestador = DB::table('cadastro_prestadores')->where('prestador_codigo', $prestador)->where('prestador_empresa', $empresa)->get();
-
-        //Gera as horas de almoço do funcionario
-        if($dadosPrestador[0]->prestador_int_srv == 'S'){
-            $usaIntSemana = true;
-            $diaSemIntStart = Helper::formataHoraMinuto($dadosPrestador[0]->prestador_hr_ini_int);
-            $diaSemIntEnd = Helper::formataHoraMinuto($dadosPrestador[0]->prestador_hr_fin_int);
-        }else{
-            $usaIntSemana = false;
-            $diaSemIntStart = '00:00';
-            $diaSemIntEnd = '00:00';
-        }
-
-        if($dadosPrestador[0]->prestador_int_srv_sab == 'S'){
-            $usaIntSabado = true;
-            $sabadoIntStart = Helper::formataHoraMinuto($dadosPrestador[0]->prestador_hr_ini_int_sab);
-            $sabadoIntEnd = Helper::formataHoraMinuto($dadosPrestador[0]->prestador_hr_fin_int_sab);
-        }else{
-            $usaIntSabado = false;
-            $sabadoIntStart = '00:00';
-            $sabadoIntEnd = '00:00';
-        }
-
-        if($dadosPrestador[0]->prestador_int_srv_dom == 'S'){
-            $usaIntDomingo = true;
-            $domingoIntStart = Helper::formataHoraMinuto($dadosPrestador[0]->prestador_hr_ini_int_dom);
-            $domingoIntEnd = Helper::formataHoraMinuto($dadosPrestador[0]->prestador_hr_fin_int_dom);
-        }else{
-            $usaIntDomingo = false;
-            $domingoIntStart = '00:00';
-            $domingoIntEnd = '00:00';
-        }
-
-        $lunchBreaks = [
-            0 => ['start' => $domingoIntStart, 'end' => $domingoIntEnd], // Domingo
-            1 => ['start' => $diaSemIntStart, 'end' => $diaSemIntEnd], // Segunda-feira
-            2 => ['start' => $diaSemIntStart, 'end' => $diaSemIntEnd], // Terça-feira
-            3 => ['start' => $diaSemIntStart, 'end' => $diaSemIntEnd], // Quarta-feira
-            4 => ['start' => $diaSemIntStart, 'end' => $diaSemIntEnd], // Quinta-feira
-            5 => ['start' => $diaSemIntStart, 'end' => $diaSemIntEnd], // Sexta-feira
-            6 => ['start' => $sabadoIntStart, 'end' => $sabadoIntEnd], // Sabado
-            'usa_semana' => $usaIntSemana,
-            'usa_sabado' => $usaIntSabado,
-            'usa_domingo' => $usaIntDomingo,
-        ];
-
-        return $lunchBreaks;
-    }
-
-    //Gera os arrays com os horarios de expediente da empresa
+    //Gera os arrays com os horarios de expediente da Empresa
     public static function geraBusinessHoursEmpPHP($empresa)
     {
         $dadosParGerEmpresa = DB::table('parametros_ger_empresas')->where('parger_emp', $empresa)->get();
@@ -497,7 +439,59 @@ class HelperControleProducao
         return $businessHours;
     }
 
-    //Gera os arrays com os horarios de intervalo/almoço da empresa
+    //Gera os arrays com os horarios de intervalo/almoço do Prestador
+    public static function geraLunchHoursPHP($empresa, $prestador)
+    {
+        $dadosPrestador = DB::table('cadastro_prestadores')->where('prestador_codigo', $prestador)->where('prestador_empresa', $empresa)->get();
+
+        //Gera as horas de almoço do funcionario
+        if($dadosPrestador[0]->prestador_int_srv == 'S'){
+            $usaIntSemana = true;
+            $diaSemIntStart = Helper::formataHoraMinuto($dadosPrestador[0]->prestador_hr_ini_int);
+            $diaSemIntEnd = Helper::formataHoraMinuto($dadosPrestador[0]->prestador_hr_fin_int);
+        }else{
+            $usaIntSemana = false;
+            $diaSemIntStart = '00:00';
+            $diaSemIntEnd = '00:00';
+        }
+
+        if($dadosPrestador[0]->prestador_int_srv_sab == 'S'){
+            $usaIntSabado = true;
+            $sabadoIntStart = Helper::formataHoraMinuto($dadosPrestador[0]->prestador_hr_ini_int_sab);
+            $sabadoIntEnd = Helper::formataHoraMinuto($dadosPrestador[0]->prestador_hr_fin_int_sab);
+        }else{
+            $usaIntSabado = false;
+            $sabadoIntStart = '00:00';
+            $sabadoIntEnd = '00:00';
+        }
+
+        if($dadosPrestador[0]->prestador_int_srv_dom == 'S'){
+            $usaIntDomingo = true;
+            $domingoIntStart = Helper::formataHoraMinuto($dadosPrestador[0]->prestador_hr_ini_int_dom);
+            $domingoIntEnd = Helper::formataHoraMinuto($dadosPrestador[0]->prestador_hr_fin_int_dom);
+        }else{
+            $usaIntDomingo = false;
+            $domingoIntStart = '00:00';
+            $domingoIntEnd = '00:00';
+        }
+
+        $lunchBreaks = [
+            0 => ['start' => $domingoIntStart, 'end' => $domingoIntEnd], // Domingo
+            1 => ['start' => $diaSemIntStart, 'end' => $diaSemIntEnd], // Segunda-feira
+            2 => ['start' => $diaSemIntStart, 'end' => $diaSemIntEnd], // Terça-feira
+            3 => ['start' => $diaSemIntStart, 'end' => $diaSemIntEnd], // Quarta-feira
+            4 => ['start' => $diaSemIntStart, 'end' => $diaSemIntEnd], // Quinta-feira
+            5 => ['start' => $diaSemIntStart, 'end' => $diaSemIntEnd], // Sexta-feira
+            6 => ['start' => $sabadoIntStart, 'end' => $sabadoIntEnd], // Sabado
+            'usa_semana' => $usaIntSemana,
+            'usa_sabado' => $usaIntSabado,
+            'usa_domingo' => $usaIntDomingo,
+        ];
+
+        return $lunchBreaks;
+    }
+
+    //Gera os arrays com os horarios de intervalo/almoço da Empresa
     public static function geraLunchHoursEmpPHP($empresa)
     {
         $dadosParGerEmpresa = DB::table('parametros_ger_empresas')->where('parger_emp', $empresa)->get();
@@ -549,7 +543,7 @@ class HelperControleProducao
         return $lunchBreaks;
     }
 
-    //Calcula a data e hora da previsão de termino do serviço com base na data e hora de inicio
+    //Calcula a Data/Hora da previsão de término da TMO/OS pela Data/Hora e Duração da TMO/OS
     public static function calculaPrevTerminoSrv($startDate, $startHour, $duration, $businessHours, $lunchBreaks) {
         // Converte a data de início e hora de início em um objeto DateTime
         $startDateTime = new DateTime($startDate . ' ' . $startHour);

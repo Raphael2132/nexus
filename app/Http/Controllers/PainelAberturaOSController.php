@@ -13,6 +13,7 @@ use Dompdf\Options;
 //use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Helpers\Helper;
+use App\Http\Helpers\HelperControleProducao;
 
 class PainelAberturaOSController extends Controller
 {
@@ -275,7 +276,7 @@ class PainelAberturaOSController extends Controller
         }
 
         //Busca horas de inicio e termino de expediente
-        $hrIni = DB::table('parametros_srv_empresas')->select('parsrv_hr_ini_ex')->where('parsrv_emp',$empresa)->get();
+        /*$hrIni = DB::table('parametros_srv_empresas')->select('parsrv_hr_ini_ex')->where('parsrv_emp',$empresa)->get();
         $hrFin = DB::table('parametros_srv_empresas')->select('parsrv_hr_fin_ex')->where('parsrv_emp',$empresa)->get();
 
         //Monta a data e hora de inicio e final de expediente com a data e hora da abertura da os
@@ -346,6 +347,22 @@ class PainelAberturaOSController extends Controller
                 }
             }
         }
+        */
+
+        //Pega Data/Hora Abertura OS
+        $hrAbe = date('H:i:s', strtotime($resulOS[0]->os_dha));
+        $dtAbe = date('Y-m-d', strtotime($resulOS[0]->os_dha));
+
+        //Busca os horários de expediente e intervalo/almoço da empresa
+        $businessHours = HelperControleProducao::geraBusinessHoursEmpPHP($empresa);
+        $lunchBreaks = HelperControleProducao::geraLunchHoursEmpPHP($empresa);
+
+        $tempoSrv = Helper::convertHrCentToHrSexa($resulOS[0]->os_qtd_hr);
+
+        $dataHoraPrev = HelperControleProducao::calculaPrevTerminoSrv($dtAbe, $hrAbe, $tempoSrv, $businessHours, $lunchBreaks);
+        
+        $novaDtPrevEnt = date('Y-m-d', strtotime($dataHoraPrev));
+        $novaHrPrevEnt = date('Hi', strtotime($dataHoraPrev));
 
         DB::table('lancamento_srv_os')
         ->where('os_emp', $empresa)
@@ -366,6 +383,7 @@ class PainelAberturaOSController extends Controller
         //Busca os dados da OS
         $resulOS = DB::table('lancamento_srv_os')->select('os_dha')->where('os_emp',$empresa)->where('os_nos',$numOS)->get();
 
+        /*
         //Busca horas de inicio e termino de expediente
         $hrIni = DB::table('parametros_srv_empresas')->select('parsrv_hr_ini_ex')->where('parsrv_emp',$empresa)->get();
         $hrFin = DB::table('parametros_srv_empresas')->select('parsrv_hr_fin_ex')->where('parsrv_emp',$empresa)->get();
@@ -438,9 +456,25 @@ class PainelAberturaOSController extends Controller
                 }
             }
         }
+        */
 
-        $novaDtPrevEnt = Helper::formataData($novaDtPrevEnt);
-        $novaHrPrevEnt = Helper::formataHoraMinuto($novaHrPrevEnt);
+        //Pega Data/Hora Abertura OS
+        $hrAbe = date('H:i:s', strtotime($resulOS[0]->os_dha));
+        $dtAbe = date('Y-m-d', strtotime($resulOS[0]->os_dha));
+
+        //Busca os horários de expediente e intervalo/almoço da empresa
+        $businessHours = HelperControleProducao::geraBusinessHoursEmpPHP($empresa);
+        $lunchBreaks = HelperControleProducao::geraLunchHoursEmpPHP($empresa);
+
+        $tempoSrv = Helper::convertHrCentToHrSexa($qtdHoras);
+
+        $dataHoraPrev = HelperControleProducao::calculaPrevTerminoSrv($dtAbe, $hrAbe, $tempoSrv, $businessHours, $lunchBreaks);
+        
+        $novaDtPrevEnt = date('d/m/Y', strtotime($dataHoraPrev));
+        $novaHrPrevEnt = date('H:i', strtotime($dataHoraPrev));
+
+        /*$novaDtPrevEnt = Helper::formataData($novaDtPrevEnt);
+        $novaHrPrevEnt = Helper::formataHoraMinuto($novaHrPrevEnt);*/
 
         $prevEnt_ajax[] = array(
             'hora'	=> $novaHrPrevEnt,

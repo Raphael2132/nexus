@@ -224,4 +224,42 @@ class Helper
         $minutes = ($horaCentesimal - $hours) * 60;
         return ($hours * 60) + $minutes;
     }
+
+    //Pega a hora de inicio de expediente do dia informado
+    public static function buscaHoraIniEx($data,$businessHours)
+    {
+        // Crie um objeto DateTime a partir da data fornecida
+        $date = new DateTime($data);
+
+        // Obtenha o dia da semana (0 para domingo até 6 para sábado)
+        $currentDayOfWeek = $date->format('w'); 
+
+        // Obtenha o horário comercial para o dia da semana atual
+        $currentBusinessHours = $businessHours[$currentDayOfWeek] ?? null;
+
+        if(!empty($currentBusinessHours)){
+            $currentBusinessHours = $currentBusinessHours['start'];
+        }
+
+        return $currentBusinessHours;
+    }
+
+    //Pega a hora do final de expediente do dia informado
+    public static function buscaHoraFinEx($data,$businessHours)
+    {
+        // Crie um objeto DateTime a partir da data fornecida
+        $date = new DateTime($data);
+
+        // Obtenha o dia da semana (0 para domingo até 6 para sábado)
+        $currentDayOfWeek = $date->format('w'); 
+
+        // Obtenha o horário comercial para o dia da semana atual
+        $currentBusinessHours = $businessHours[$currentDayOfWeek] ?? null;
+
+        if(!empty($currentBusinessHours)){
+            $currentBusinessHours = $currentBusinessHours['end'];
+        }
+
+        return $currentBusinessHours;
+    }
 }
