@@ -30,15 +30,15 @@
     </head>
 <body style="overflow:hidden;">
 <div style="overflow:hidden;">
-<header class="header" id="header"><!--header-start-->
-	<div class="container">
-    	<figure class="logo animated fadeInDown delay-07s">
-        	<a href="#"><img src="img/sistema/logo_nexus_c.png" alt=""></a>	
-        </figure>	
-        <h1 class="animated fadeInDown delay-07s">Bem Vindo ao Novo</h1>
-        <ul class="we-create animated fadeInUp delay-1s">
-        	<li>Seu novo conceito de gerenciamento de empresas</li>
-        </ul>
+    <header class="header" id="header"><!--header-start-->
+        <div class="container">
+            <figure class="logo animated fadeInDown delay-07s">
+                <a href="#"><img src="img/sistema/logo_nexus_c.png" alt=""></a>	
+            </figure>	
+            <h1 class="animated fadeInDown delay-07s">Bem Vindo ao Novo</h1>
+            <ul class="we-create animated fadeInUp delay-1s">
+                <li>Seu novo conceito de gerenciamento de empresas</li>
+            </ul>
             @auth
             <a class="link animated fadeInUp delay-1s" href="{{ url('/home') }}">Voltar a Home</a>
             @else
@@ -48,14 +48,11 @@
                 @endif
             @endauth
             <a class="link animated fadeInUp delay-1s" href="#">Saiba Mais</a>
-    </div>
+        </div>
+    </header><!--header-end-->
 </div>
-</header><!--header-end-->
 
-
-
-
-    <script type="text/javascript">
+<script type="text/javascript">
     $(document).ready(function(e) {
         $('#test').scrollToFixed();
         $('.res-nav_click').click(function(){
@@ -63,27 +60,25 @@
             return false    
             
         });
-        
     });
 </script>
 
-    <!-- Trecho não utilizado que gera erro no console da pagina por causa do getElementById
-    <script>
-        wow = new WOW(
-            {
-            animateClass: 'animated',
-            offset:       100
-            }
-        );
-        wow.init();
-        document.getElementById('').onclick = function() {
-            var section = document.createElement('section');
-            section.className = 'wow fadeInDown';
-            this.parentNode.insertBefore(section, this);
-        };
-    </script>
-    -->
-
+<!-- Trecho não utilizado que gera erro no console da pagina por causa do getElementById
+<script>
+    wow = new WOW(
+        {
+        animateClass: 'animated',
+        offset:       100
+        }
+    );
+    wow.init();
+    document.getElementById('').onclick = function() {
+        var section = document.createElement('section');
+        section.className = 'wow fadeInDown';
+        this.parentNode.insertBefore(section, this);
+    };
+</script>
+-->
 
 <script type="text/javascript">
 	$(window).load(function(){
@@ -106,7 +101,6 @@
 </script>
 
 <script type="text/javascript">
-
 $(window).load(function(){
   
   
@@ -149,7 +143,7 @@ $(window).load(function(){
     });
   
 });
-
 </script>
+
 </body>
 </html>
