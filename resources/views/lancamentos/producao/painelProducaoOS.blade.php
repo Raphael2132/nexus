@@ -168,8 +168,6 @@ $config = [
                                 // Define o ícone e o tema baseado na porcentagem de progresso
                                 let iconClass;
                                 let theme;
-                                
-                                progress = 70;
 
                                 if (progress < 25) {
                                     iconClass = 'fa-hourglass-start';
@@ -386,7 +384,7 @@ $(document).ready(function() {
 <script>
     function atualizarSituacao() {
         // Obtendo a hora atual
-        const horaAtu = '10:00';//new Date().toTimeString().substr(0, 5);
+        const horaAtu = new Date().toTimeString().substr(0, 5);
         
         // Defina os horários de início e fim de expediente (no formato HH:mm)
         const horaIniEx = {!! json_encode($horaIniEx) !!}; 
