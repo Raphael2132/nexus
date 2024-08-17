@@ -82,13 +82,13 @@ $config = [
 ];
 @endphp
 
-<x-adminlte-card title="Painel de Operações da Produção" theme="gray" body-class="bg-dark" class="card-principal" maximizable>
+<x-adminlte-card title="Painel de Ordens de Serviço em Andamento" theme="gray" body-class="bg-dark" class="card-principal" maximizable>
 
     <!-- Linha Principal dos Quadros do Painel -->
     <div class="row">
         <!-- Quadro dos dados da Empresa -->
         <div class="col-md-2">
-            <x-adminlte-card theme="dark" class="bg-light" style="height: 180px; overflow: hidden;">
+            <x-adminlte-card class="bg-logo-card" style="height: 180px; overflow: hidden;">
                 <div class="d-flex justify-content-between align-items-center h-100">
                     <div class="d-flex justify-content-center align-items-center col-md-12" style="height: 100%;">
                         @php 
@@ -104,7 +104,7 @@ $config = [
         <div class="col-md-3">
             <div class="row">
                 <div class="col-md-12">
-                    <x-adminlte-info-box title="Setor" text="{{ $dadosSet->setor_codigo.' - '.$dadosSet->setor_desc }}" icon="fas fa-solid fa-screwdriver-wrench text-dark" theme="gradient-teal"/>
+                    <x-adminlte-info-box title="Horario de Funcionamento" text="{{ $horaIniEx.' às '.$horaFinEx }}" icon="fas fa-solid fa-screwdriver-wrench text-light" class="bg-box-funcionamento"/>
                 </div>
             </div>
             <div class="row">
@@ -113,9 +113,9 @@ $config = [
                         $horaAtu = date('H:i');
                     @endphp
                     @if($horaIniEx < $horaAtu && $horaAtu <= $horaFinEx)
-                    <x-adminlte-info-box title="Situação do Setor" text="Em Funcionamento" icon="fas fa-business-time" theme="gradient-teal" class="custom-info-box2"/>
+                    <x-adminlte-info-box title="Situação da Empresa" text="Em Funcionamento" icon="fas fa-business-time text-light" id="box-funcionamento" class="custom-info-box2 bg-box-funcionamento"/>
                     @else 
-                    <x-adminlte-info-box title="Situação do Setor" text="Fora do Horário de Expediente" icon="fas fa-building-lock text-dark" theme="gradient-teal" class="custom-info-box2"/>
+                    <x-adminlte-info-box title="Situação da Empresa" text="Fora do Horário de Expediente" icon="fas fa-building-lock text-light" id="box-funcionamento" class="custom-info-box2 bg-box-danger"/>
                     @endif
                 </div>
             </div>
@@ -169,12 +169,14 @@ $config = [
                                 let iconClass;
                                 let theme;
                                 
+                                progress = 70;
+
                                 if (progress < 25) {
                                     iconClass = 'fa-hourglass-start';
                                     theme = 'info';
-                                } else if (progress <= 75) {
+                                } else if (progress <= 80) {
                                     iconClass = 'fa-hourglass-half';
-                                    theme = 'success';
+                                    theme = 'custom';
                                 } else if (progress <= 99) {
                                     iconClass = 'fa-hourglass-end';
                                     theme = 'warning';
@@ -201,7 +203,7 @@ $config = [
         </div>
         <!-- Quadro das Informações de Data e Hora -->
         <div class="col-md-4">
-            <x-adminlte-card theme="success" body-class="bg-light" icon="" title="" style="height: 180px; overflow: hidden;">
+            <x-adminlte-card class="bg-clock-card" icon="" title="" style="height: 180px; overflow: hidden;">
                 <div class="d-flex justify-content-center align-items-center flex-column h-100">
                     <div id="clock" style="font-size: 72px; font-weight: bold;"></div>
                     <div id="date" style="font-size: 36px;"></div>
@@ -255,7 +257,7 @@ $config = [
                     @elseif($os->tipo_situacao == 'F')
                     <td class="bg-success font-weight-bold">Finalizada</td>
                     @else
-                    <td class="bg-primary font-weight-bold">Aberta</td>
+                    <td class="bg-secondary font-weight-bold">Aberta</td>
                     @endif
                     <td>{{$os->num_os}}</td>
                     <td class="text-left">{!! $prestadores !!}</td>
@@ -298,6 +300,26 @@ $config = [
 }
 .badge {
     font-size: 20px; /* Ajuste o valor conforme necessário */
+}
+
+.bg-clock-card {
+    background: #212529;
+}
+
+.bg-logo-card {
+    background: #212529;
+}
+
+.bg-custom {
+    background: #008282;
+}
+
+.bg-box-funcionamento {
+    background: #008282;
+}
+
+.bg-box-danger {
+    background: #dc3545;
 }
 </style>
 @stop
@@ -354,5 +376,38 @@ $(document).ready(function() {
     // Inicia o intervalo de mudança de página
     setInterval(changePage, interval);
 });
+</script>
+
+<!--
+|--------------------------------------------------------------------------
+| Eventos JS de troca do card da Situação de Funcionamento
+|--------------------------------------------------------------------------
+-->
+<script>
+    function atualizarSituacao() {
+        // Obtendo a hora atual
+        const horaAtu = '10:00';//new Date().toTimeString().substr(0, 5);
+        
+        // Defina os horários de início e fim de expediente (no formato HH:mm)
+        const horaIniEx = {!! json_encode($horaIniEx) !!}; 
+        const horaFinEx = {!! json_encode($horaFinEx) !!};
+        
+        // Verificando a situação com base nos horários
+        if (horaIniEx < horaAtu && horaAtu <= horaFinEx) {
+            // Atualiza diretamente os elementos do InfoBox
+            $('#box-funcionamento .info-box-number').text('Em Funcionamento');
+            $('#box-funcionamento .info-box-icon i').attr('class', 'fas fa-business-time text-light');
+            $('#box-funcionamento').attr('class', 'info-box custom-info-box2 bg-box-funcionamento');
+        } else {
+            // Atualiza diretamente os elementos do InfoBox
+            $('#box-funcionamento .info-box-number').text('Fora do Horário de Expediente');
+            $('#box-funcionamento .info-box-icon i').attr('class', 'fas fa-building-lock text-light');
+            $('#box-funcionamento').attr('class', 'info-box custom-info-box2 bg-box-danger');
+        }
+    }
+    
+    // Atualizar a situação a cada minuto
+    atualizarSituacao();
+    setInterval(atualizarSituacao, 60000); // 60000 ms = 1 minuto
 </script>
 @stop
