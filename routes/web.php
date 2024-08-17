@@ -339,6 +339,15 @@ Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/desconto/a
 
 Route::delete('/lancamentos/servico/painelAberturaOS/requisicao/servico/{servicoOS}/{empresa}/{numOS}/{requisicao}/destroy', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'destroy'])->name('servicoOS.destroy');
 
+/*
+|--------------------------------------------------------------------------
+| Área de Serviços - Controle de Produção
+|--------------------------------------------------------------------------
+|
+| Área destina as rotas envolvidas no Controle de Produção.
+|
+*/
+
 /* ********** Rotas do Painel de Agendamento ********** */
 Route::get('/lancamentos/producao/homeAgendamentoPrestador', [App\Http\Controllers\HomeController::class, 'homeAgendamentoPrt'])->name('home.agendamentoPrt');
 
@@ -373,6 +382,8 @@ Route::post('/lancamentos/producao/modalPainelOperadorFinishRequisicao/reabrir/{
 
 /* ********** Rotas do Painel de Produção ********** */
 Route::get('/lancamentos/producao/homePainelProducao', [App\Http\Controllers\HomeController::class, 'homePainelProducao'])->name('home.painelProducao');
+
+/* Rotas do Painel de Produção por Prestador */
 Route::get('/lancamentos/producao/homePainelProducao/ajax/set/{empresa}', [App\Http\Controllers\PainelProducaoController::class, 'carregaSetAjax'])->name('painelProducao.carregaSetAjax');
 Route::get('/lancamentos/producao/homePainelProducao/carregaEventosTMO/{empresa}/{setor}/{data}', [App\Http\Controllers\PainelProducaoController::class, 'carregaEventosTMO'])->name('painelProducao.carregaEventosTMO');
 Route::get('/lancamentos/producao/homePainelProducao/carregaOsAndamento/{empresa}/{setor}/{data}', [App\Http\Controllers\PainelProducaoController::class, 'getOsEmAndamento'])->name('painelProducao.carregaOsAndamento');
@@ -380,6 +391,9 @@ Route::get('/lancamentos/producao/homePainelProducao/carregaOsFinalizadas/{empre
 Route::get('/lancamentos/producao/homePainelProducao/carregaOsProximas/{empresa}/{setor}/{data}', [App\Http\Controllers\PainelProducaoController::class, 'getProximasOs'])->name('painelProducao.carregaOsProximas');
 
 Route::post('/lancamentos/producao/painelProducao', [App\Http\Controllers\PainelProducaoController::class, 'abrePainel'])->name('painelProducao.painelProducao');
+
+/* Rotas do Painel de Produção por OS */
+Route::get('/lancamentos/producao/painelProducaoOS/carregaOs/{empresa}/{data}', [App\Http\Controllers\PainelProducaoController::class, 'carregaOs'])->name('painelProducao.carregaOs');
 
 /*
 |--------------------------------------------------------------------------

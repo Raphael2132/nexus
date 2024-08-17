@@ -338,4 +338,141 @@ class PainelProducaoController extends Controller
 
         return response()->json($proximasOs);
     }
+
+    // Carrega as OS atualizadas para o painel por OS
+    public function carregaOs($empresa, $data)
+    {
+        $dadosOS = DB::table('vi_lancamento_os_painel_os')
+        ->where('empresa', $empresa)
+        ->where(function ($query) use ($data) {
+            $query->whereDate('dt_hr_fechamento', $data)
+                    ->orWhereNull('dt_hr_fechamento');
+        })
+        ->get();
+
+        $html = '';
+
+        foreach($dadosOS as $os){
+                    
+            $dataHrAtu = date('Y-m-d H:i:s');
+
+            if(!empty($os->data_prev_ent)){
+                $dataHrPrev = $os->data_prev_ent.' '.Helper::formataHoraMinuto($os->hora_prev_ent);
+            }else{
+                $dataHrPrev = '';
+            }
+
+            $dadosPrt = DB::table('lancamento_srv_exe_tarefas')
+            ->where('exetrf_emp', $os->empresa)
+            ->where('exetrf_nos', $os->num_os)
+            ->whereNotNull('exetrf_prt')
+            ->distinct()
+            ->pluck('exetrf_prt');
+
+            // Verifica se a coleção está vazia
+            if ($dadosPrt->isEmpty()) {
+
+                $html .= '<tr>
+                            <td>'.$os->tipo_situacao.'</td>
+                            <td>'.$os->dt_hr_abertura.'</td>';
+
+                if($os->tipo_situacao == 'A'){
+                    $html .= '<td class="bg-info font-weight-bold">Em Andamento</td>';
+                }elseif($os->tipo_situacao == 'F'){
+                    $html .= '<td class="bg-success font-weight-bold">Finalizada</td>';
+                }else{
+                    $html .= '<td class="bg-secondary font-weight-bold">Aberta</td>';
+                }
+
+                if(!empty($os->dt_hr_fechamento)){
+                    $dtFec = Helper::formataDataHora($os->dt_hr_fechamento);
+                }else{
+                    $dtFec = '';
+                }
+
+                $html .= '<td>'.$os->num_os.'</td>
+                    <td class="text-left">Não Alocado</td>
+                    <td class="text-left">'.$os->cliente.' - '.$os->cliente_nome.'</td>
+                    <td>'.Helper::formataDataHora($os->dt_hr_abertura).'</td>
+                    <td>'.$dtFec.'</td>';
+
+                if(!empty($dataHrPrev) && $dataHrPrev > $dataHrAtu){
+                    $html .= '<td><span class="badge badge-pill badge-success badge-custom">'.Helper::formataData($os->data_prev_ent).' '.Helper::formataHoraMinuto($os->hora_prev_ent).'</span></td>';
+                }elseif(!empty($dataHrPrev) && $dataHrPrev <= $dataHrAtu){
+                    $html .= '<td><span class="badge badge-pill badge-danger badge-custom">'.Helper::formataData($os->data_prev_ent).' '.Helper::formataHoraMinuto($os->hora_prev_ent).'</span></td>';
+                }else{ 
+                    $html .= '<td>Não Informada</td>';
+                }
+
+                $html .= '</tr>';
+                
+            }else{
+
+                foreach($dadosPrt as $prestador){
+                    
+                    $nomePrt = DB::table('cadastro_prestadores')->where('prestador_empresa',$os->empresa)->where('prestador_codigo',$prestador)->first();
+                    
+                    $html .= '<tr>
+                                <td>'.$os->tipo_situacao.'</td>
+                                <td>'.$os->dt_hr_abertura.'</td>';
+
+                    if($os->tipo_situacao == 'A'){
+                        $html .= '<td class="bg-info font-weight-bold">Em Andamento</td>';
+                    }elseif($os->tipo_situacao == 'F'){
+                        $html .= '<td class="bg-success font-weight-bold">Finalizada</td>';
+                    }else{
+                        $html .= '<td class="bg-secondary font-weight-bold">Aberta</td>';
+                    }
+
+                    if(!empty($os->dt_hr_fechamento)){
+                        $dtFec = Helper::formataDataHora($os->dt_hr_fechamento);
+                    }else{
+                        $dtFec = '';
+                    }
+
+                    $html .= '<td>'.$os->num_os.'</td>
+                        <td class="text-left">'.$prestador.' - '.$nomePrt->prestador_nome.'</td>
+                        <td class="text-left">'.$os->cliente.' - '.$os->cliente_nome.'</td>
+                        <td>'.Helper::formataDataHora($os->dt_hr_abertura).'</td>
+                        <td>'.$dtFec.'</td>';
+
+                    if(!empty($dataHrPrev) && $dataHrPrev > $dataHrAtu){
+                        $html .= '<td><span class="badge badge-pill badge-success badge-custom">'.Helper::formataData($os->data_prev_ent).' '.Helper::formataHoraMinuto($os->hora_prev_ent).'</span></td>';
+                    }elseif(!empty($dataHrPrev) && $dataHrPrev <= $dataHrAtu){
+                        $html .= '<td><span class="badge badge-pill badge-danger badge-custom">'.Helper::formataData($os->data_prev_ent).' '.Helper::formataHoraMinuto($os->hora_prev_ent).'</span></td>';
+                    }else{ 
+                        $html .= '<td>Não Informada</td>';
+                    }
+
+                    $html .= '</tr>';
+                }
+            }
+            /*<tr>
+                <td>{{$os->tipo_situacao}}</td>
+                <td>{{$os->dt_hr_abertura}}</td>
+                @if($os->tipo_situacao == 'A')
+                <td class="bg-info font-weight-bold">Em Andamento</td>
+                @elseif($os->tipo_situacao == 'F')
+                <td class="bg-success font-weight-bold">Finalizada</td>
+                @else
+                <td class="bg-secondary font-weight-bold">Aberta</td>
+                @endif
+                <td>{{$os->num_os}}</td>
+                <td class="text-left">{!! $prestadores !!}</td>
+                <td class="text-left">{{$os->cliente.' - '.$os->cliente_nome}}</td>
+                <td>{{Helper::formataDataHora($os->dt_hr_abertura)}}</td>
+                <td>{{$os->dt_hr_fechamento == '' ? '' : Helper::formataDataHora($os->dt_hr_fechamento)}}</td>
+                @if(!empty($dataHrPrev) && $dataHrPrev > $dataHrAtu)
+                <td><span class="badge badge-pill badge-success badge-custom">{{Helper::formataData($os->data_prev_ent).' '.Helper::formataHoraMinuto($os->hora_prev_ent)}}</span></td>
+                @elseif(!empty($dataHrPrev) && $dataHrPrev <= $dataHrAtu)
+                <td><span class="badge badge-pill badge-danger badge-custom">{{Helper::formataData($os->data_prev_ent).' '.Helper::formataHoraMinuto($os->hora_prev_ent)}}</span></td>
+                @else 
+                <td>Não Informada</td>
+                @endif
+            </tr>*/
+
+        }
+
+        return response()->json(['html' => $html]);
+    }
 }

@@ -215,7 +215,7 @@ $config = [
         <div class="col-md-12">
             <!-- Tabela Principal da OS -->
             <x-adminlte-datatable class="table-scroll" id="table-os" :heads="$heads" :config="$config" head-theme="dark" theme="dark" striped hoverable compressed beautify>
-                @foreach ($dadosOS as $os)
+            <!-- @foreach ($dadosOS as $os)
                 @php 
                     $dataHrAtu = date('Y-m-d H:i');
 
@@ -270,7 +270,7 @@ $config = [
                     <td>Não Informada</td>
                     @endif
                 </tr>
-                @endforeach
+                @endforeach -->
             </x-adminlte-datatable>
         </div>
     </div>
@@ -294,10 +294,10 @@ $config = [
     display: none !important;
 }
 #table-os {
-    font-size: 22px; /* Ajuste o valor conforme necessário */
+    font-size: 26px; /* Ajuste o valor conforme necessário */
 }
 .badge {
-    font-size: 20px; /* Ajuste o valor conforme necessário */
+    font-size: 24px; /* Ajuste o valor conforme necessário */
 }
 
 .bg-clock-card {
@@ -372,7 +372,7 @@ $(document).ready(function() {
     }
 
     // Inicia o intervalo de mudança de página
-    setInterval(changePage, interval);
+    //setInterval(changePage, interval);
 });
 </script>
 
@@ -408,4 +408,169 @@ $(document).ready(function() {
     atualizarSituacao();
     setInterval(atualizarSituacao, 60000); // 60000 ms = 1 minuto
 </script>
+
+<!--
+|--------------------------------------------------------------------------
+| Eventos JS de atualização da tabela de OS
+|--------------------------------------------------------------------------
+-->
+<script>
+    $(document).ready(function() {
+        function loadTableData() {
+            var empresa = {!! json_encode($glo_painel_empresa) !!};
+            var data = {!! json_encode($glo_painel_data) !!};
+
+            var url = "{{ route('painelProducao.carregaOs', [':emp', ':data']) }}";
+            url = url.replace(':emp', empresa);
+            url = url.replace(':data', data);
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                success: function(response) {
+                    // Destruir a tabela existente se já inicializada
+                    if ($.fn.DataTable.isDataTable('#table-os')) {
+                        var table = $('#table-os').DataTable();
+                        var currentPage = table.page.info().page; // Armazenar a página atual
+                        table.clear().destroy();
+
+                        // Substituir o corpo da tabela com os novos dados
+                        $('#table-os tbody').html(response.html);
+
+                        // Inicializar a DataTable novamente com todas as configurações
+                        var newTable = $('#table-os').DataTable({
+                            "paging": true,
+                            "pageLength": {{ intval($linhaPagina) }},
+                            "searching": false,
+                            "autoWidth": true,
+                            "info": false,
+                            "lengthChange": false,
+                            "language": {
+                                "decimal": '',
+                                "emptyTable": 'Sem dados disponíveis na tabela',
+                                "info": 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                                "infoEmpty": 'Mostrando 0 a 0 de 0 registros',
+                                "infoFiltered": '(Filtrado do total de _MAX_ registros)',
+                                "infoPostFix": '',
+                                "thousands": ',',
+                                "lengthMenu": 'Mostrar _MENU_ registros',
+                                "loadingRecords": 'Carregando...',
+                                "processing": '',
+                                "search": 'Pesquisar:',
+                                "zeroRecords": 'Nenhum registro correspondente encontrado',
+                                "paginate": {
+                                    "first": 'Primeiro',
+                                    "last": 'Último',
+                                    "next": 'Próximo',
+                                    "previous": 'Anterior'
+                                },
+                                "aria": {
+                                    "sortAscending": ': ativar para classificar a coluna em ordem crescente',
+                                    "sortDescending": ': ativar para classificar a coluna em ordem decrescente'
+                                }
+                            },
+                            "order": [[0, 'asc'], [1, 'asc']],
+                            "columns": [
+                                {'orderable': false, 'visible': false}, // Esconder primeira coluna
+                                {'orderable': false, 'visible': false}, // Esconder segunda coluna
+                                {'orderable': false},
+                                {'orderable': false},
+                                {'orderable': false},
+                                {'orderable': false},
+                                {'orderable': false},
+                                {'orderable': false},
+                                {'orderable': false}
+                            ],
+                        });
+
+                        // Restaurar a página anterior
+                        newTable.page(currentPage).draw('page');
+                    } else {
+                        // Inicializar a DataTable pela primeira vez
+                        var table = $('#table-os').DataTable({
+                            "paging": true,
+                            "pageLength": {{ intval($linhaPagina) }},
+                            "searching": false,
+                            "autoWidth": true,
+                            "info": false,
+                            "lengthChange": false,
+                            "language": {
+                                "decimal": '',
+                                "emptyTable": 'Sem dados disponíveis na tabela',
+                                "info": 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                                "infoEmpty": 'Mostrando 0 a 0 de 0 registros',
+                                "infoFiltered": '(Filtrado do total de _MAX_ registros)',
+                                "infoPostFix": '',
+                                "thousands": ',',
+                                "lengthMenu": 'Mostrar _MENU_ registros',
+                                "loadingRecords": 'Carregando...',
+                                "processing": '',
+                                "search": 'Pesquisar:',
+                                "zeroRecords": 'Nenhum registro correspondente encontrado',
+                                "paginate": {
+                                    "first": 'Primeiro',
+                                    "last": 'Último',
+                                    "next": 'Próximo',
+                                    "previous": 'Anterior'
+                                },
+                                "aria": {
+                                    "sortAscending": ': ativar para classificar a coluna em ordem crescente',
+                                    "sortDescending": ': ativar para classificar a coluna em ordem decrescente'
+                                }
+                            },
+                            "order": [[0, 'asc'], [1, 'asc']],
+                            "columns": [
+                                {'orderable': false, 'visible': false}, // Esconder primeira coluna
+                                {'orderable': false, 'visible': false}, // Esconder segunda coluna
+                                {'orderable': false},
+                                {'orderable': false},
+                                {'orderable': false},
+                                {'orderable': false},
+                                {'orderable': false},
+                                {'orderable': false},
+                                {'orderable': false}
+                            ],
+                        });
+
+                        // Restaurar a página anterior se já estiver armazenada
+                        var storedPage = localStorage.getItem('dataTablePage');
+                        if (storedPage) {
+                            table.page(parseInt(storedPage)).draw('page');
+                        }
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Erro ao carregar dados da tabela:', textStatus, errorThrown);
+                }
+            });
+        }
+
+        function autoChangePage() {
+            if ($.fn.DataTable.isDataTable('#table-os')) {
+                var table = $('#table-os').DataTable();
+                var pageInfo = table.page.info();
+                var currentPage = pageInfo.page;
+                var nextPage = (currentPage + 1) % pageInfo.pages;
+                table.page(nextPage).draw('page');
+
+                // Armazenar a página atual no localStorage
+                localStorage.setItem('dataTablePage', nextPage);
+            }
+        }
+
+        // Carregar os dados iniciais
+        loadTableData();
+
+        // Recarregar os dados da tabela a cada 60 segundos
+        setInterval(loadTableData, 60000);
+
+        // Tempo de troca de página (em milissegundos)
+        var interval = {{ intval($milissegundosPagina) }};
+
+        // Trocar de página
+        setInterval(autoChangePage, interval);
+    });
+</script>
+
+
 @stop
