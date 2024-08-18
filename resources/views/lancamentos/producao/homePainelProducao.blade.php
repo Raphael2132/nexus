@@ -43,17 +43,11 @@
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
                     </x-adminlte-select>
                 </div>
+
                 <div class="row"> 
                     @php
                         $array_opt_set = null;
                     @endphp
-                    <!-- Setor -->
-                    <x-adminlte-select name="setor" fgroup-class="col-md-6">
-                        <x-slot name="label">
-                            Setor <span style="color:red;">*</span>
-                        </x-slot>
-                        <x-adminlte-options :options="$array_opt_set" empty-option="Selecione..."/>
-                    </x-adminlte-select>
                     <!-- Tipo do Painel -->
                     <x-adminlte-select name="tipoPainel" fgroup-class="col-md-6">
                         <x-slot name="label">
@@ -61,8 +55,7 @@
                         </x-slot>
                         <x-adminlte-options :options="['PR' => 'Prestador', 'OS' => 'OS']" empty-option="Selecione..."/>
                     </x-adminlte-select>
-                </div>
-                <div class="row"> 
+
                     @php 
                         $config = [
                             "singleDatePicker" => true,
@@ -90,7 +83,7 @@
                         ];
                     @endphp
                     <!-- Data do Painel -->
-                    <x-adminlte-date-range name="dataPainel" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
+                    <x-adminlte-date-range name="dataPainel" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-6">
                         <x-slot name="label">
                             Data <span style="color:red;">*</span>
                         </x-slot>
@@ -130,6 +123,28 @@
                     </x-adminlte-input>
                 </div>
 
+                <div class="row bloco-prestador"> 
+                    @php
+                        $array_opt_set = null;
+                        $array_opt_tur = null;
+                    @endphp
+                    <!-- Setor -->
+                    <x-adminlte-select name="setor" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Setor <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-adminlte-options :options="$array_opt_set" empty-option="Selecione..."/>
+                    </x-adminlte-select>
+
+                    <!-- Turno -->
+                    <x-adminlte-select name="turno" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Turno <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-adminlte-options :options="$array_opt_tur" empty-option="Selecione..."/>
+                    </x-adminlte-select>
+                </div>
+
                 <x-slot name="footerSlot">
                     <x-adminlte-button class="btn-flat" type="submit" label="Abrir Painel" theme="info" icon="fa-solid fa-table-list"/>
                 </x-slot>
@@ -149,6 +164,17 @@
 @stop
 
 @section('js')
+
+<!--
+|--------------------------------------------------------------------------
+| Eventos Iniciais da app
+|--------------------------------------------------------------------------
+-->
+<script>
+    $(document).ready(function() { 
+        $(".bloco-prestador").hide();
+    });
+</script>
 
 <!--
 |--------------------------------------------------------------------------
@@ -198,6 +224,60 @@
                 $('#setor').html('<option value="">Selecione...</option>');
             }
         });
+
+        //Evento de carregamento ajax dos dados dos turnos
+        $('#empresa').change(function(){
+
+            if( $(this).val() ) {
+                var emp = $(this).val();
+
+                var url = "{{ route('painelProducao.carregaTurAjax', [':emp']) }}";
+                url = url.replace(':emp', emp);
+
+                $.ajax({
+                    url: url,
+                    dataType: "JSON",
+                    type: 'GET',
+                    data: {
+                        '_token': $('meta[name=csrf-token]').attr("content"),
+                        '_method': 'GET',
+                        "emp": emp
+                    },
+                    success: function (data)
+                    {
+                        if(data.turnos_ajax_existe == 'S'){
+
+                            var options = '<option value="">Selecione...</option>';	
+
+                            for (var i = 0; i < data.turnos_ajax.length; i++) {
+
+                                options += '<option value="' + data.turnos_ajax[i].id + '">' + data.turnos_ajax[i].cod_turno + '</option>';
+                            }	
+
+                            $('#turno').html(options);
+
+                        }else{
+                            $('#turno').html('<option value="">Selecione...</option>');
+                        }
+                    }
+                });
+            } else {
+                $('#turno').html('<option value="">Selecione...</option>');
+            }
+        });
+
+        //Evento de exibição do bloco dos dados do painel do prestador
+        $('#tipoPainel').change(function(){
+            if ($(this).val() == 'PR') {
+                $(".bloco-prestador").slideDown(); // Exibe com animação
+                $("#setor").val(''); 
+                $("#turno").val(''); 
+            } else {
+                $(".bloco-prestador").slideUp(); // Oculta com animação
+                $("#setor").val(''); 
+                $("#turno").val(''); 
+            }
+        });
     });
 </script>
 
@@ -209,7 +289,16 @@ $(function () {
                 required: true
             },
             setor: {
-                required: true
+                required: function(element) {
+                    let tipo = $('#tipoPainel').val();
+                    return tipo === 'PR';
+                },
+            },
+            turno: {
+                required: function(element) {
+                    let tipo = $('#tipoPainel').val();
+                    return tipo === 'PR';
+                },
             },
             tipoPainel: {
                 required: true
@@ -230,6 +319,9 @@ $(function () {
             },
             setor: {
                 required: "Por Favor informe o Setor"
+            },
+            turno: {
+                required: "Por Favor informe o Turno"
             },
             tipoPainel: {
                 required: "Por Favor informe o Tipo do Painel"
@@ -254,6 +346,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 });

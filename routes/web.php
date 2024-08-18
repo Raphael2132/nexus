@@ -385,6 +385,8 @@ Route::get('/lancamentos/producao/homePainelProducao', [App\Http\Controllers\Hom
 
 /* Rotas do Painel de Produção por Prestador */
 Route::get('/lancamentos/producao/homePainelProducao/ajax/set/{empresa}', [App\Http\Controllers\PainelProducaoController::class, 'carregaSetAjax'])->name('painelProducao.carregaSetAjax');
+Route::get('/lancamentos/producao/homePainelProducao/ajax/tur/{empresa}', [App\Http\Controllers\PainelProducaoController::class, 'carregaTurAjax'])->name('painelProducao.carregaTurAjax');
+
 Route::get('/lancamentos/producao/homePainelProducao/carregaEventosTMO/{empresa}/{setor}/{data}', [App\Http\Controllers\PainelProducaoController::class, 'carregaEventosTMO'])->name('painelProducao.carregaEventosTMO');
 Route::get('/lancamentos/producao/homePainelProducao/carregaOsAndamento/{empresa}/{setor}/{data}', [App\Http\Controllers\PainelProducaoController::class, 'getOsEmAndamento'])->name('painelProducao.carregaOsAndamento');
 Route::get('/lancamentos/producao/homePainelProducao/carregaOsFinalizadas/{empresa}/{setor}/{data}', [App\Http\Controllers\PainelProducaoController::class, 'getOsFinalizadas'])->name('painelProducao.carregaOsFinalizadas');

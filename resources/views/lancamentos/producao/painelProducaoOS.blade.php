@@ -215,62 +215,7 @@ $config = [
         <div class="col-md-12">
             <!-- Tabela Principal da OS -->
             <x-adminlte-datatable class="table-scroll" id="table-os" :heads="$heads" :config="$config" head-theme="dark" theme="dark" striped hoverable compressed beautify>
-            <!-- @foreach ($dadosOS as $os)
-                @php 
-                    $dataHrAtu = date('Y-m-d H:i');
-
-                    if(!empty($os->data_prev_ent)){
-                        $dataHrPrev = $os->data_prev_ent.' '.$os->hora_prev_ent;
-                    }else{
-                        $dataHrPrev = '';
-                    }
-
-                    $dadosPrt = DB::table('lancamento_srv_exe_tarefas')
-                    ->where('exetrf_emp', $os->empresa)
-                    ->where('exetrf_nos', $os->num_os)
-                    ->whereNotNull('exetrf_prt')
-                    ->distinct()
-                    ->pluck('exetrf_prt');
-
-                    $prestadores = '';
-
-                    foreach($dadosPrt as $prestador){
-                        $nomePrt = DB::table('cadastro_prestadores')->where('prestador_empresa',$os->empresa)->where('prestador_codigo',$prestador)->first();
-                        if(empty($prestadores)){
-                            $prestadores = $prestador.' - '.$nomePrt->prestador_nome;
-                        } else {
-                            $prestadores .= '</br>' . $prestador.' - '.$nomePrt->prestador_nome;
-                        }
-                    }
-
-                    if(empty($prestadores)){
-                        $prestadores = "Não Alocado";
-                    }
-                @endphp
-                <tr>
-                    <td>{{$os->tipo_situacao}}</td>
-                    <td>{{$os->dt_hr_abertura}}</td>
-                    @if($os->tipo_situacao == 'A')
-                    <td class="bg-info font-weight-bold">Em Andamento</td>
-                    @elseif($os->tipo_situacao == 'F')
-                    <td class="bg-success font-weight-bold">Finalizada</td>
-                    @else
-                    <td class="bg-secondary font-weight-bold">Aberta</td>
-                    @endif
-                    <td>{{$os->num_os}}</td>
-                    <td class="text-left">{!! $prestadores !!}</td>
-                    <td class="text-left">{{$os->cliente.' - '.$os->cliente_nome}}</td>
-                    <td>{{Helper::formataDataHora($os->dt_hr_abertura)}}</td>
-                    <td>{{$os->dt_hr_fechamento == '' ? '' : Helper::formataDataHora($os->dt_hr_fechamento)}}</td>
-                    @if(!empty($dataHrPrev) && $dataHrPrev > $dataHrAtu)
-                    <td><span class="badge badge-pill badge-success badge-custom">{{Helper::formataData($os->data_prev_ent).' '.Helper::formataHoraMinuto($os->hora_prev_ent)}}</span></td>
-                    @elseif(!empty($dataHrPrev) && $dataHrPrev <= $dataHrAtu)
-                    <td><span class="badge badge-pill badge-danger badge-custom">{{Helper::formataData($os->data_prev_ent).' '.Helper::formataHoraMinuto($os->hora_prev_ent)}}</span></td>
-                    @else 
-                    <td>Não Informada</td>
-                    @endif
-                </tr>
-                @endforeach -->
+            <!-- Tabela vai aqui por JS -->
             </x-adminlte-datatable>
         </div>
     </div>
