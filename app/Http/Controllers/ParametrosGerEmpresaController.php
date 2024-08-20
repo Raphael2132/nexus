@@ -124,6 +124,11 @@ class ParametrosGerEmpresaController extends Controller
             $horaFinIntDom = 0;
         }
 
+        $atualizausuario = DB::table('parametros_ger_turnos')
+        ->where('partur_emp', $empresa)
+        ->where('partur_cod', '1')
+        ->update(['partur_dia' => $request->diaFuncionamento]);
+
         $atualizausuario = DB::table('parametros_ger_empresas')
         ->where('parger_emp', $empresa)
         ->update(['parger_dia_fun' => $request->diaFuncionamento,

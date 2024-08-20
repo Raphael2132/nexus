@@ -352,7 +352,7 @@ return [
                     'icon' => '',
                 ],
                 [
-                    'text' => 'Serviços e Grupos da NFS-e',
+                    'text' => 'Grupos e Serviços da NFS-e',
                     'url'  => '/parametros/sistema/homeParametrosSistemaServicos',
                     'icon' => '',
                 ],

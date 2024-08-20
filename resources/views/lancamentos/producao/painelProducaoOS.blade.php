@@ -82,7 +82,7 @@ $config = [
 ];
 @endphp
 
-<x-adminlte-card title="Painel de Ordens de Serviço em Andamento" theme="gray" body-class="bg-dark" class="card-principal" maximizable>
+<x-adminlte-card title="Painel de Ordens de Serviço em Andamento" theme="gray" body-class="bg-dark" class="card-principal" header-class="text-uppercase" maximizable>
 
     <!-- Linha Principal dos Quadros do Painel -->
     <div class="row">
@@ -227,6 +227,15 @@ $config = [
 
 @section('css')
 <style>
+/* ********** Estilo para card principal ********** */
+.card-body {
+    overflow: hidden !important;
+}
+
+.card-header {
+    background-color: #212529 !important;
+}
+
 /* ********** Estilo para a altura das box da primeira linha ********** */
 .custom-info-box {
     height: 180px; /* Ajuste a altura conforme necessário */
@@ -234,10 +243,13 @@ $config = [
 .custom-info-box2 {
     height: 84px; /* Ajuste a altura conforme necessário */
 }
+
 /* Oculta a barra de paginação */
 .dataTables_wrapper .dataTables_paginate {
     display: none !important;
 }
+
+/* ********** Altera o tamanho dos textos das linhas da tabela ********** */
 #table-os {
     font-size: 26px; /* Ajuste o valor conforme necessário */
 }
@@ -245,6 +257,7 @@ $config = [
     font-size: 24px; /* Ajuste o valor conforme necessário */
 }
 
+/* ********** Estilo para fundo dos cards da primeira linha ********** */
 .bg-clock-card {
     background: #212529;
 }

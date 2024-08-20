@@ -19,13 +19,13 @@
 @stop
 
 @section('content')
-<x-adminlte-card title="Painel de Operações da Produção" theme="gray" body-class="bg-dark" maximizable>
+<x-adminlte-card title="Painel de Operações da Produção" theme="dark" body-class="bg-dark" header-class="text-uppercase" maximizable>
 
     <!-- Linha Principal dos Quadros do Painel -->
     <div class="row">
         <!-- Quadro dos dados da Empresa -->
         <div class="col-md-4">
-            <x-adminlte-card theme="dark" class="bg-light" style="height: 200px; overflow: hidden;">
+            <x-adminlte-card class="bg-logo-card" style="height: 200px; overflow: hidden;">
                 <div class="d-flex justify-content-between align-items-center h-100">
                     <div class="d-flex justify-content-center align-items-center col-md-6" style="height: 100%;">
                         @php 
@@ -35,9 +35,9 @@
                     </div>
                     <div class="d-flex flex-column justify-content-center align-items-center col-md-6" style="height: 100%;">
                         <!-- Título principal -->
-                        <h2 class="w-100 text-center" style="font-weight: bold; color: #000">{{ $dadosEmp->empresa_nome }}</h2>
+                        <h2 class="w-100 text-center" style="font-weight: bold;">{{ $dadosEmp->empresa_nome }}</h2>
                         <!-- Conteúdo secundário abaixo do título -->
-                        <div class="text-muted w-100">
+                        <div class="w-100">
                             <div class="row">
                                 <p class="text-sm col-md-12" style="text-align: center;">Endereço
                                     <b class="d-block">
@@ -56,10 +56,10 @@
         <div class="col-md-5">
             <div class="row">
                 <div class="col-md-6">
-                    <x-adminlte-info-box title="Área" text="{{ $dadosSet->setor_area.' - '.$dadosAre->area_desc }}" icon="fas fa-folder-tree text-dark" theme="gradient-teal"/>
+                    <x-adminlte-info-box title="Horario de Funcionamento" text="{{ $horaIniEx.' às '.$horaFinEx }}" icon="fas fa-solid fa-screwdriver-wrench text-light" class="bg-box-funcionamento"/>
                 </div>
                 <div class="col-md-6">
-                    <x-adminlte-info-box title="Setor" text="{{ $dadosSet->setor_codigo.' - '.$dadosSet->setor_desc }}" icon="fas fa-solid fa-screwdriver-wrench text-dark" theme="gradient-teal"/>
+                    <x-adminlte-info-box title="Setor" text="{{ $dadosSet->setor_codigo.' - '.$dadosSet->setor_desc }}" icon="fas fa-solid fa-screwdriver-wrench text-light" class="bg-box-setor"/>
                 </div>
             </div>
             <div class="row">
@@ -69,9 +69,9 @@
                         //$horaAtu = '17:25';
                     @endphp
                     @if($horaIniEx < $horaAtu && $horaAtu <= $horaFinEx)
-                    <x-adminlte-info-box title="Situação do Setor" text="Em Funcionamento" icon="fas fa-business-time" theme="gradient-teal" class="custom-info-box"/>
+                    <x-adminlte-info-box title="Situação do Setor" text="Em Funcionamento" icon="fas fa-business-time text-light" id="box-funcionamento" class="custom-info-box bg-box-funcionamento"/>
                     @else 
-                    <x-adminlte-info-box title="Situação do Setor" text="Fora do Horário de Expediente" icon="fas fa-building-lock text-dark" theme="gradient-teal" class="custom-info-box"/>
+                    <x-adminlte-info-box title="Situação do Setor" text="Fora do Horário de Expediente" icon="fas fa-building-lock text-light" id="box-funcionamento" class="custom-info-box bg-box-funcionamento-danger"/>
                     @endif
                 </div>
                 <div class="col-md-6">
@@ -153,7 +153,7 @@
         </div>
         <!-- Quadro das Informações de Data e Hora -->
         <div class="col-md-3">
-            <x-adminlte-card theme="success" body-class="bg-light" icon="" title="" style="height: 200px; overflow: hidden;">
+            <x-adminlte-card class="bg-clock-card" icon="" title="" style="height: 200px; overflow: hidden;">
                 <div class="d-flex justify-content-center align-items-center flex-column h-100">
                     <div id="clock" style="font-size: 72px; font-weight: bold;"></div>
                     <div id="date" style="font-size: 36px;"></div>
@@ -165,7 +165,7 @@
     <!-- Linha da tabela dos prestadores -->
     <div class="row">
         <div class="col-md-12">
-            <x-adminlte-card theme="dark" body-class="bg-dark" class="elevation-5">    
+            <x-adminlte-card theme="dark" head-theme="dark" body-class="bg-dark" class="elevation-3">    
                 <div class="table-wrapper">
                     <div class="table-relative">
                         <table id="prestadores-table" class="table table-bordered table-striped table-custom datatable">
@@ -208,21 +208,21 @@
     <!-- Linha dos blocos dos resumos do painel -->
     <div class="row" style="color: #000;">
         <div class="col-md-4">
-            <x-adminlte-callout theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-clock-rotate-left" title="OS em Andamento">
+            <x-adminlte-callout class="bg-callout-card" theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-clock-rotate-left" title="OS em Andamento">
                 <div id="os-andamento">
                     <!-- Conteúdo será atualizado via AJAX -->
                 </div>
             </x-adminlte-callout>
         </div>
         <div class="col-md-4">
-            <x-adminlte-callout theme="success" title-class="text-success text-uppercase" icon="fa-solid fa-clipboard-check" title="OS Finalizadas">
+            <x-adminlte-callout class="bg-callout-card" theme="success" title-class="text-success text-uppercase" icon="fa-solid fa-clipboard-check" title="OS Finalizadas">
                 <div id="os-finalizadas">
                     <!-- Conteúdo será atualizado via AJAX -->
                 </div>
             </x-adminlte-callout>
         </div>
         <div class="col-md-4">
-            <x-adminlte-callout theme="info" title-class="text-primary text-uppercase" icon="fa-solid fa-hourglass-start" title="Próximas OS">
+            <x-adminlte-callout class="bg-callout-card" theme="danger" title-class="text-primary text-uppercase" icon="fa-solid fa-hourglass-start" title="Próximas OS">
                 <div id="os-proximas">
                     <!-- Conteúdo será atualizado via AJAX -->
                 </div>
@@ -233,7 +233,7 @@
     <!-- Linha da legenda do painel -->
     <div class="row" style="color: #000;">
         <div class="col-md-12">
-            <x-adminlte-callout theme="danger">
+            <x-adminlte-card class="bg-legend-card">
                 <div class="d-flex justify-content-center flex-wrap" style="width: 100%;">
                     <div style="display: inline-flex; align-items: center; margin: 5px 20px;">
                         <div style="width: 20px; height: 20px; background-color: #007bff; margin-right: 10px;"></div>
@@ -256,7 +256,7 @@
                         <span style="font-size: 12px;">TMO Cancelada</span>
                     </div>
                 </div>
-            </x-adminlte-callout>
+            </x-adminlte-card>
         </div>
     </div>
 </x-adminlte-card>
@@ -272,9 +272,18 @@
 <style>
     
 /* ********** Estilo para a tabela e colunas ********** */
+.card-body {
+    overflow: hidden !important;
+}
+
+.card-header {
+    background-color: #212529 !important;
+}
+
 .table {
     table-layout: fixed; /* Garante que as larguras das colunas sejam fixas */
     width: 100%; /* Define a largura da tabela para preencher o container */
+    font-size: 22px; /* Ajuste o valor conforme necessário */
 }
 
 .table th, .table td {
@@ -285,12 +294,12 @@
 
 /* Define largura fixa para a primeira coluna */
 .table th:first-child, .table td:first-child {
-    width: 15%; /* Largura da coluna para o nome do prestador */
+    width: 20%; /* Largura da coluna para o nome do prestador */
 }
 
 /* Define largura fixa para as colunas das horas */
 .table th:nth-child(n+2), .table td:nth-child(n+2) {
-    width: calc((100% - 15%) / 20); /* Ajusta o tamanho das colunas das horas */
+    width: calc((100% - 20%) / 20); /* Ajusta o tamanho das colunas das horas */
 }
 
 /* Estilos para o cabeçalho da tabela */
@@ -488,6 +497,41 @@
 
 .table-wrapper {
     position: relative;
+}
+
+/* ********** Estilo para fundo dos cards e callout ********** */
+.bg-clock-card {
+    background: #212529;
+}
+
+.bg-logo-card {
+    background: #212529;
+    color: #fff;
+}
+
+.bg-legend-card {
+    background: #212529;
+    color: #fff;
+}
+
+.bg-callout-card {
+    background: #212529;
+}
+
+.bg-callout-card.callout-danger {
+    border-left-color: #007bff !important;
+}
+
+.bg-box-funcionamento {
+    background: #008282;
+}
+
+.bg-box-setor {
+    background: #008282;
+}
+
+.bg-box-funcionamento-danger {
+    background: #dc3545;
 }
 </style>
 @stop
@@ -918,5 +962,38 @@ $(document).ready(function() {
     setInterval(changePage, interval);
 });
 
+</script>
+
+<!--
+|--------------------------------------------------------------------------
+| Eventos JS de troca do card da Situação de Funcionamento
+|--------------------------------------------------------------------------
+-->
+<script>
+    function atualizarSituacao() {
+        // Obtendo a hora atual
+        const horaAtu = new Date().toTimeString().substr(0, 5);
+        
+        // Defina os horários de início e fim de expediente (no formato HH:mm)
+        const horaIniEx = {!! json_encode($horaIniEx) !!}; 
+        const horaFinEx = {!! json_encode($horaFinEx) !!};
+        
+        // Verificando a situação com base nos horários
+        if (horaIniEx < horaAtu && horaAtu <= horaFinEx) {
+            // Atualiza diretamente os elementos do InfoBox
+            $('#box-funcionamento .info-box-number').text('Em Funcionamento');
+            $('#box-funcionamento .info-box-icon i').attr('class', 'fas fa-business-time text-light');
+            $('#box-funcionamento').attr('class', 'info-box custom-info-box2 bg-box-funcionamento');
+        } else {
+            // Atualiza diretamente os elementos do InfoBox
+            $('#box-funcionamento .info-box-number').text('Fora do Horário de Expediente');
+            $('#box-funcionamento .info-box-icon i').attr('class', 'fas fa-building-lock text-light');
+            $('#box-funcionamento').attr('class', 'info-box custom-info-box bg-box-funcionamento-danger');
+        }
+    }
+    
+    // Atualizar a situação a cada minuto
+    atualizarSituacao();
+    setInterval(atualizarSituacao, 60000); // 60000 ms = 1 minuto
 </script>
 @stop
