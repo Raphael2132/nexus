@@ -294,12 +294,12 @@
 
 /* Define largura fixa para a primeira coluna */
 .table th:first-child, .table td:first-child {
-    width: 20%; /* Largura da coluna para o nome do prestador */
+    width: 15%; /* Largura da coluna para o nome do prestador */
 }
 
 /* Define largura fixa para as colunas das horas */
 .table th:nth-child(n+2), .table td:nth-child(n+2) {
-    width: calc((100% - 20%) / 20); /* Ajusta o tamanho das colunas das horas */
+    width: calc((100% - 15%) / 20); /* Ajusta o tamanho das colunas das horas */
 }
 
 /* Estilos para o cabeçalho da tabela */

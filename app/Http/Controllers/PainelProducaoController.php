@@ -226,6 +226,35 @@ class PainelProducaoController extends Controller
                 ];
             }
 
+            //Busca as TMO em que prestador é auxiliar
+            $tmo = DB::table('vi_lancamento_os_agenda_prt_aux')
+            ->where('empresa', $empresa)
+            ->where('prestador', $prestador->prestador_codigo)
+            ->where(function ($query) use ($data) {
+                $query->where('data_ini_servico', $data)
+                    ->orWhere('data_fin_servico', $data);
+            })
+            ->orderBy('num_os')
+            ->orderBy('requisicao')
+            ->orderBy('sequencia')
+            ->get();
+
+            // Adiciona cada evento ao array de eventos
+            foreach ($tmo as $item) {
+
+                $eventos[] = [
+                    'prestadorId' => $prestador->prestador_codigo,
+                    'dtInicio' => $item->data_ini_servico,
+                    'inicio' => Helper::formataHoraMinuto($item->hora_ini_servico),
+                    'dtFim' => $item->data_fin_servico,
+                    'fim' => Helper::formataHoraMinuto($item->hora_fin_servico),
+                    'osNumero' => $item->num_os,
+                    'tempo' => Helper::convertHrCentToHrSexa($item->qtd_hora_servico),
+                    'codTmo' => $item->cod_servico,
+                    'situacao' => $item->situacao
+                ];
+            }
+
             /*echo '<pre>';
             print_r($eventos);
             echo '</pre>';*/

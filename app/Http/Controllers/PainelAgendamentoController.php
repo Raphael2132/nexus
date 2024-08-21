@@ -313,6 +313,70 @@ class PainelAgendamentoController extends Controller
             ];
         }
 
+        //Busca as TMO em que prestador é auxiliar
+        $dadosTMO = DB::table('vi_lancamento_os_agenda_prt_aux')
+        ->where('empresa', $request->empresa)
+        ->where('prestador', $prestador)
+        ->where(function ($query) use ($dataIni, $dataFin) {
+            $query->whereBetween('data_ini_servico', [$dataIni, $dataFin])
+                  ->orWhereBetween('data_fin_servico', [$dataIni, $dataFin]);
+        })
+        ->orderBy('num_os')
+        ->orderBy('requisicao')
+        ->orderBy('sequencia')
+        ->get();
+
+        foreach ($dadosTMO as $tmo) {
+
+            if($tmo->situacao == 'S'){
+                $color = '#ffc107';
+                $sts = 'Suspenso';
+            }elseif($tmo->situacao == 'C'){
+                $color = '#dc3545';
+                $sts = 'Cancelado';
+            }elseif($tmo->situacao == 'F'){
+                $color = '#28a745';
+                $sts = 'Finalizado';
+            }elseif($tmo->situacao == 'A'){
+                $color = '#17a2b8';
+                $sts = 'Em Andamento';
+            }else{
+                $color = '#007bff';
+                $sts = 'Em Espera';
+            }
+            
+            $start = \Carbon\Carbon::createFromFormat('d/m/Y H:i:s', Helper::formataDataHora($tmo->data_ini_servico.' '.Helper::formataHoraMinuto($tmo->hora_ini_servico).':00', 'America/Sao_Paulo'))->toIso8601String();
+            $end = \Carbon\Carbon::createFromFormat('d/m/Y H:i:s', Helper::formataDataHora($tmo->data_fin_servico.' '.Helper::formataHoraMinuto($tmo->hora_fin_servico).':00', 'America/Sao_Paulo'))->toIso8601String();
+
+            if(empty($tmo->cmp_servico)){
+                $complemento = ' ';
+            }else{
+                $complemento = $tmo->cmp_servico;
+            }
+
+            $eventosPrt[] = [
+                'title' => $tmo->cod_servico.' - '.$tmo->desc_servico."\n".'OS: '.$tmo->num_os.' Tempo: '.Helper::convertHrCentToHrSexa($tmo->qtd_hora_servico),
+                'start' => $start,
+                'end' => $end,
+                'empresa' => $tmo->empresa,
+                'os' => $tmo->num_os,
+                'req' => $tmo->requisicao,
+                'seq' => $tmo->sequencia,
+                'prestador' => $tmo->prestador,
+                'empresaNome' => $dadosEmpresa[0]->empresa_nome,
+                'prestadorNome'=> $dadosPrestador[0]->prestador_nome,
+                'tmo' => $tmo->cod_servico.' - '.$tmo->desc_servico,
+                'complemento' => $complemento,
+                'duracao' => Helper::convertHrCentToHrSexa($tmo->qtd_hora_servico),
+                'status' => $sts,
+                'area' => $tmo->area,
+                'setor' => $tmo->setor,
+                'allDay' => false,
+                'backgroundColor' => $color,
+                'borderColor' => $color
+            ];
+        }
+
         return view('/lancamentos/producao/calendarioAgendamentoPrestador',[
             'empresa' => $request->empresa, 
             'prestador' => $prestador, 

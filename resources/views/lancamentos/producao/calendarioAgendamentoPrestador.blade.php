@@ -126,6 +126,8 @@
                                         ->wherenull('exetrf_prt')
                                         ->where('exetrf_sts', 'E')
                                         ->where('exetrf_age', 'N')
+                                        ->where('exetrf_are', $dadosPrestador[0]->prestador_are)
+                                        ->where('exetrf_set', $dadosPrestador[0]->prestador_set)
                                         ->where('exetrf_ths', '<>', 'T')
                                         ->wherenull('exetrf_dt_ini_srv')
                                         ->wherenull('exetrf_dt_age_tmo')

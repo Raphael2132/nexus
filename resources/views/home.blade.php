@@ -101,7 +101,7 @@
     
     <div class="row">
         <div class="col-md-6">
-            <x-adminlte-card title="Relatório de NFS-e Geradas na Última Semana" theme="navy" theme-mode="outline">
+            <x-adminlte-card title="Relatório de NFS-e Geradas na Última Semana" theme="" theme-mode="outline" header-class="card-outline-nexus rounded-bottom">
                 
                         <div class="d-flex">
                             <p class="d-flex flex-column">
@@ -133,7 +133,7 @@
             </x-adminlte-card>
         </div>
         <div class="col-md-6">
-            <x-adminlte-card title="Resumo Geral da Empresa no Mês" theme="navy" theme-mode="outline">
+            <x-adminlte-card title="Resumo Geral da Empresa no Mês" theme="" theme-mode="outline" header-class="card-outline-nexus rounded-bottom">
                 <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
                     <p class="text-teal text-xl">
                     <i class="fa-solid fa-money-bill-1"></i>
@@ -182,8 +182,8 @@
 
     <div class="row">
         <div class="col-md-6">
-            <x-adminlte-card title="Últimas OS Abertas" theme="navy" theme-mode="outline">
-                <x-adminlte-datatable id="table-os" :heads="$headsOS" :config="$configOS" theme="light" striped hoverable>
+            <x-adminlte-card title="Últimas OS Abertas" theme="" theme-mode="" header-class="card-nexus">
+                <x-adminlte-datatable id="table-os" :heads="$headsOS" :config="$configOS" theme="light" striped hoverable compressed>
                     @foreach($dadosOS as $os)
                         @php 
                             $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $os->os_emp)->get();
@@ -207,17 +207,17 @@
 
                 <x-slot name="footerSlot">
                     <form method="get" action="{{ route('home.emissaoOS') }}" style="float: left;">
-                        <x-adminlte-button label="Nova OS" theme="info" icon="fa-solid fa-plus" type="submit"/>
+                        <x-adminlte-button class="btn-nexus" label="Nova OS" theme="" icon="fa-solid fa-plus" type="submit"/>
                     </form>
                     <form method="get" action="{{ route('situacaoOS.consulta', ['statusOS' => 'T']) }}" style="float: right;">
-                        <x-adminlte-button label="Consultar OS" theme="info" icon="fa-regular fa-eye" type="submit"/>
+                        <x-adminlte-button class="btn-nexus" label="Consultar OS" theme="" icon="fa-regular fa-eye" type="submit"/>
                     </form>
                 </x-slot>
             </x-adminlte-card>
         </div>
         <div class="col-md-6">
-            <x-adminlte-card title="Últimas NFS-e Geradas" theme="navy" theme-mode="outline">
-                <x-adminlte-datatable id="table-nfs" :heads="$headsNFS" :config="$configNFS" theme="light" striped hoverable>
+            <x-adminlte-card title="Últimas NFS-e Geradas" theme="" theme-mode="" header-class="card-nexus">
+                <x-adminlte-datatable id="table-nfs" :heads="$headsNFS" :config="$configNFS" theme="light" striped hoverable compressed>
                     @foreach($dadosNFS as $nfs)
                         @php 
                             $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $nfs->nfs_emp)->get();
@@ -242,7 +242,7 @@
                 </x-adminlte-datatable>
                 <x-slot name="footerSlot">
                     <form method="get" action="{{route('reemissaoNF.consultaReemissaoNF')}}" style="float: right;">
-                        <x-adminlte-button label="Consultar NFS-e" theme="info" icon="fa-regular fa-eye" type="submit"/>
+                        <x-adminlte-button class="btn-nexus" label="Consultar NFS-e" theme="" icon="fa-regular fa-eye" type="submit"/>
                     </form>
                 </x-slot>
             </x-adminlte-card>

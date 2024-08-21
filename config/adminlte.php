@@ -68,7 +68,7 @@ return [
     'logo_img_class' => 'brand-image img-circle elevation-3 bg-white',
     'logo_img_class' => 'brand-image',
     'logo_img_xl' => null,
-    'logo_img_xl_class' => 'brand-image-xs',
+    'logo_img_xl_class' => 'brand-image-xl',
     'logo_img_alt' => 'Empresa Logo',
 
     /*
@@ -132,7 +132,7 @@ return [
 
     'usermenu_enabled' => true,
     'usermenu_header' => true,
-    'usermenu_header_class' => 'bg-navy bg-gradient',
+    'usermenu_header_class' => 'user-bg-nexus bg-gradient',
     'usermenu_image' => false,
     'usermenu_desc' => false,
     'usermenu_profile_url' => false,
@@ -193,7 +193,7 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-olive elevation-4',
+    'classes_sidebar' => 'sidebar-dark-olive sidebar-nexus elevation-4',
     'classes_sidebar_nav' => '',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand',
@@ -323,14 +323,14 @@ return [
         ],
         */
         // Sidebar items:
-        [
+        /*[
             'type' => 'sidebar-menu-search',
             'text' => 'Pesquisar',
-        ],
+        ],*/
         [
             'text' => 'Página Inicial',
             'url'  => 'home',
-            'icon' => 'fas fa-home',
+            'icon' => 'nav-icon fas fa-home',
         ],
         [
             'header' => 'Área de Parâmetros',
@@ -338,112 +338,112 @@ return [
         ],
         [
             'text' => 'Parâmetros do Sistema',
-            'icon' => 'fa-solid fa-gears',
+            'icon' => 'nav-icon fa-solid fa-gears',
             'can'  => 'is_master',
             'submenu' => [
                 [
                     'text' => 'Módulos do Sistema',
                     'url'  => '/parametros/sistema/homeParametrosSistemaModulos',
-                    'icon' => '',
+                    'icon' => 'nav-icon fa-regular fa-circle',
                 ],
                 [
                     'text' => 'Áreas',
                     'url'  => '/parametros/sistema/homeParametrosSistemaAreas',
-                    'icon' => '',
+                    'icon' => 'nav-icon fa-regular fa-circle',
                 ],
                 [
                     'text' => 'Grupos e Serviços da NFS-e',
                     'url'  => '/parametros/sistema/homeParametrosSistemaServicos',
-                    'icon' => '',
+                    'icon' => 'nav-icon fa-regular fa-circle',
                 ],
             ],
         ],
 
         [
             'text' => 'Parâmetros Gerais',
-            'icon' => 'fa-solid fa-gear',
+            'icon' => 'nav-icon fa-solid fa-gear',
             'can'  => 'is_parameter',
             'submenu' => [
                 [
                     'text' => 'Gerencial',
-                    'icon' => 'fa-solid fa-list',
+                    'icon' => 'nav-icon fa-solid fa-list',
                     'submenu' => [
                         [
                             'text' => 'Geral da Empresa',
                             'url'  => '/parametros/gerencial/homeParametrosGerencialEmpresa',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                         [
                             'text' => 'Setores',
                             'url'  => '/parametros/servico/homeParametrosServicoSetor',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                         [
                             'text' => 'Motivos de Cancelamento',
                             'url'  => '/parametros/sistema/homeParametrosSistemaMotivosCancelamento',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                         [
                             'text' => 'Motivos de Suspensão',
                             'url'  => '/parametros/sistema/homeParametrosSistemaMotivosSuspensao',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                     ],
                 ],
                 [
                     'text' => 'Faturamento',
-                    'icon' => 'fa-solid fa-list',
+                    'icon' => 'nav-icon fa-solid fa-list',
                     'can'  => 'is_par_faturamento',
                     'submenu' => [
                         /*[
                             'text' => 'Emissão de NF-e',
                             'url'  => '',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],*/
                         [
                             'text' => 'Emissão de NFS-e',
                             'url'  => '/parametros/faturamento/nfs/homeParametroFatNfs',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                         [
                             'text' => 'Geral da Empresa',
                             'url'  => '/parametros/faturamento/homeParametrosFatEmpresa',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                     ],
                 ],
                 [
                     'text' => 'Serviços',
-                    'icon' => 'fa-solid fa-list',
+                    'icon' => 'nav-icon fa-solid fa-list',
                     'can' => 'is_par_servico',
                     'submenu' => [
                         [
                             'text' => 'Geral da Empresa',
                             'url'  => '/parametros/servico/homeParametrosServicoEmpresa',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                         [
                             'text' => 'Categorias de Atendimento',
                             'url'  => '/parametros/servico/homeLancamentosServicoCategoria',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                             'can' => 'is_mod_servico',
                         ],
                         [
                             'text' => 'Etapas de Atendimento',
                             'url'  => '/parametros/servico/homeLancamentosServicoEtapas',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                             'can' => 'is_mod_servico',
                         ],
                         [
                             'text' => 'Tarefas Mão de Obra',
                             'url'  => '/parametros/servico/homeParametrosServicoTMO',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                             'can' => 'is_mod_servico',
                         ],
                         [
                             'text' => 'Tipos de Serviço',
                             'url'  => '/parametros/servico/homeLancamentosServicoTipo',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                             'can' => 'is_mod_servico',
                         ],
                     ],
@@ -458,38 +458,38 @@ return [
 
         [
             'text' => 'Cadastros',
-            'icon' => 'fa-solid fa-file-circle-plus',
+            'icon' => 'nav-icon fa-solid fa-file-circle-plus',
             'can'  => 'is_register',
             'submenu' => [
                 [
                     'text' => 'Empresa',
                     'url'  => '/cadastros/empresa/homeEmpresa',
-                    'icon' => '',
+                    'icon' => 'nav-icon fa-regular fa-circle',
                 ],
                 [
                     'text' => 'Usuario',
                     'url'  => '/cadastros/usuario/homeUsuarios',
-                    'icon' => '',
+                    'icon' => 'nav-icon fa-regular fa-circle',
                 ],
                 [
                     'text' => 'Prestadores',
                     'url'  => '/cadastros/prestador/homePrestadores',
-                    'icon' => '',
+                    'icon' => 'nav-icon fa-regular fa-circle',
                 ],
                 [
                     'text' => 'Cliente',
                     'url'  => 'cadastros/cliente/homeClientes',
-                    'icon' => '',
+                    'icon' => 'nav-icon fa-regular fa-circle',
                 ],
                 /*[
                     'text' => 'Banco',
                     'url'  => 'bancos',
-                    'icon' => 'fa-solid fa-building-columns',
+                    'icon' => 'nav-icon fa-solid fa-building-columns',
                 ],
                 [
                     'text' => 'Produto',
                     'url'  => 'products',
-                    'icon' => 'fa-solid fa-cart-plus',
+                    'icon' => 'nav-icon fa-solid fa-cart-plus',
                 ],*/
             ],
         ],
@@ -501,49 +501,49 @@ return [
 
         [
             'text' => 'Serviços',
-            'icon' => 'fa-solid fa-file-pen',
+            'icon' => 'nav-icon fa-solid fa-file-pen',
             'can' => 'is_emite_os',
             'submenu' => [
                 [
                     'text' => 'Lançamento de OS',
-                    'icon' => 'fa-solid fa-list',
+                    'icon' => 'nav-icon fa-solid fa-list',
                     'submenu' => [
                         [
                             'text' => 'Emissão de OS',
                             'url'  => 'lancamentos/servico/homeEmissaoOS',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                         [
                             'text' => 'Situação de OS',
                             'url'  => '/lancamentos/servico/homeSituacaoOS',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                         [
                             'text' => 'Orçamentos',//Consulta de OS geradas
                             'url'  => '',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                     ],
                 ],
                 [
                     
                     'text' => 'Controle de Produção',
-                    'icon' => 'fa-solid fa-list',
+                    'icon' => 'nav-icon fa-solid fa-list',
                     'submenu' => [
                         [
                             'text' => 'Painel de Operação',//Painel de operação de serviços alocados ao prestador para inicio/finalizaçao da tmo
                             'url'  => '/lancamentos/producao/homePainelOperador',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                         [
                             'text' => 'Painel de Produção',//Painel de monitor de acompanhamento de produção da oficina diario
                             'url'  => '/lancamentos/producao/homePainelProducao',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                         [
                             'text' => 'Painel de Agendamento',//Painel de agendamento de TMO
                             'url'  => '/lancamentos/producao/homeAgendamentoPrestador',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                     ],
                 ],
@@ -557,62 +557,62 @@ return [
 
         [
             'text' => 'Faturamento de Notas',
-            'icon' => 'fa-solid fa-file-invoice-dollar',
+            'icon' => 'nav-icon fa-solid fa-file-invoice-dollar',
             'can'  => 'is_emite_nf',
             'submenu' => [
                 [
                     'text' => 'Emissão Simplificada',
-                    'icon' => 'fa-solid fa-list',
+                    'icon' => 'nav-icon fa-solid fa-list',
                     'can'  => 'is_mod_nfs_simp',
                     'submenu' => [
                         [
                             'text' => 'Emissão de NFS-e',
                             'url'  => '/faturamento/notas/simplificada/homeEmissaoSimplificadaNFS',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                         [
                             'text' => 'Reemissão de NFS-e',
                             'url'  => 'faturamento/notas/simplificada/controleReemissaoSimpNF',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                     ],
                 ],
                 [
                     'text' => 'Lançamento de Notas',
-                    'icon' => 'fa-solid fa-list',
+                    'icon' => 'nav-icon fa-solid fa-list',
                     'can'  => 'is_mod_nfs',
                     'submenu' => [
                         [
                             'text' => 'Emissão de NFS-e',
                             'url'  => 'faturamento/notas/controleEmissaoNF',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                         [
                             'text' => 'Reemissão de NFS-e',
                             'url'  => 'faturamento/notas/controleReemissaoNF',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                     ],
                 ],
                 /*
                 [
                     'text' => 'Eventos de NF-e/NFS-e',
-                    'icon' => 'fa-solid fa-list',
+                    'icon' => 'nav-icon fa-solid fa-list',
                     'submenu' => [
                         [
                             'text' => 'Cancelamento de NF-e/NFS-e',
                             'url'  => '',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                         [
                             'text' => 'Inutilização de NF-e/NFS-e',
                             'url'  => '',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                         [
                             'text' => 'Carta de Correção',
                             'url'  => '',
-                            'icon' => '',
+                            'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                     ],
                 ],
@@ -624,12 +624,12 @@ return [
         [
             'text' => 'profile',
             'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'nav-icon fas fa-fw fa-user',
         ],
         [
             'text' => 'change_password',
             'url'  => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
+            'icon' => 'nav-icon fas fa-fw fa-lock',
         ],
         [
             'text'    => 'multilevel',

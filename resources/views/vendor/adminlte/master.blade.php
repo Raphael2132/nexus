@@ -36,6 +36,9 @@
         <link rel="stylesheet" href="{{ mix(config('adminlte.laravel_mix_css_path', 'css/app.css')) }}">
     @endif
 
+    {{-- CSS Customizado projeto Nexus --}}
+    <link rel="stylesheet" href="{{ asset('vendor/nexus/styles.css') }}">
+
     {{-- Extra Configured Plugins Stylesheets --}}
     @include('adminlte::plugins', ['type' => 'css'])
 
