@@ -22,8 +22,8 @@
 <div class="col-12 col-sm-12">
     
     <!-- Criação do Card com Abas -->
-    <div class="card card-navy card-tabs">
-        <div class="card-header p-0 pt-1">
+    <div class="card card-tabs">
+        <div class="card-header card-nexus p-0 pt-1">
             <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
                 <li class="pt-2 px-3"><h3 class="card-title">Manutenção da Empresa</h3></li>
                 <li class="nav-item">
@@ -35,6 +35,14 @@
                 <li class="nav-item">
                     <a class="nav-link" id="custom-tabs-two-endereco-tab" data-toggle="pill" href="#custom-tabs-two-endereco" role="tab" aria-controls="custom-tabs-two-endereco" aria-selected="false">Endereço</a>
                 </li>
+                <div class="card-tools ml-auto">          
+                    <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                        <i class="fas fa-lg fa-expand"></i>     
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-lg fa-minus"></i>    
+                    </button>
+                </div>
             </ul>
         </div>
         <div class="card-body">
@@ -84,7 +92,7 @@
                             <x-adminlte-input name="insMunicipal" type="number" label="Inscrição Municipal" fgroup-class="col-md-6" value="{{$dadosEmpresa[0]['empresa_insc_municipal'] }}"></x-adminlte-input>
                         </div>
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -126,7 +134,7 @@
                             </x-adminlte-input>
                         </div>
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -143,7 +151,7 @@
                         @endphp
                         <!-- Se ainda não foi cadastrado endereço para o cliente cria card vazio -->
                         <div class="col-md-4">
-                            <x-adminlte-card theme="navy" title="Endereço">
+                            <x-adminlte-card title="Endereço" theme="" theme-mode="outline" header-class="card-outline-nexus">
                                 <i>Registros não encontrados</i>
                             </x-adminlte-card>
                         </div>
@@ -170,7 +178,7 @@
                                 @endphp
                                 <div class="col-md-4" style="float: left;">
                                     <!-- Card do Endereço da empresa -->
-                                    <x-adminlte-card theme="navy" :title="$titulo" :icon="$icone" theme-mode="outline">
+                                    <x-adminlte-card :title="$titulo" :icon="$icone" theme="" theme-mode="outline" header-class="card-outline-nexus">
                                         <i>{{ $endereco->endereco_logradouro }}, {{ $endereco->endereco_numero }}</br>
                                             @php
                                                 if(!empty($endereco->endereco_complemento)){
@@ -198,7 +206,7 @@
                                             <form method="get" action="{{ route('enderecoEmpresa.principal', ['endereco' => $endereco->endereco_id, 'empresa_cod' => $endereco->endereco_empresa_codigo]) }}" style="float: left;">
                                             @csrf 
                                             @method('get')
-                                                <x-adminlte-button class="btn-sm" label="Tornar Principal" title="Tornar Endereço o Principal" theme="success" icon="fa-solid fa-location-dot" type="submit"/>
+                                                <x-adminlte-button class="btn-sm" label="Tornar Principal" title="Tornar Principal" theme="success" icon="fa-solid fa-location-dot" type="submit"/>
                                             </form>
                                             @php 
                                                 }
@@ -219,7 +227,7 @@
                             @csrf 
                             @method('post')    
                                 <!-- Criação do Modal -->                           
-                                <x-adminlte-modal id="modalCustom" title="Novo Endereço" size="lg" theme="navy" icon="" v-centered static-backdrop scrollable>
+                                <x-adminlte-modal id="modalCustom" title="Novo Endereço" size="lg" theme="modal-nexus" icon="fa-solid fa-address-book" v-centered static-backdrop scrollable>
                                     <div style="height:400px;">
                                         <!-- Campos escondidos com o codigo da empresa para o request -->  
                                         <input id="empresa_codigo" type="hidden" value="{{ $dadosEmpresa[0]['empresa_codigo'] }}" name="empresa_codigo">
@@ -318,15 +326,15 @@
                                         </div>
                                         <!-- Criação dos botões do Modal -->  
                                         <x-slot name="footerSlot">
-                                            <x-adminlte-button class="btn_salvar_end mr-auto" theme="success" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
-                                            <x-adminlte-button theme="danger" label="Voltar" data-dismiss="modal"/>
+                                            <x-adminlte-button class="btn-nexus btn_salvar_end mr-auto" theme="" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
+                                            <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                                         </x-slot>
                                     </div>
                                 </x-adminlte-modal>
                             </form>
                             <!-- Botão de chamada do Modal -->  
                             <div class="d-flex justify-content-center">
-                                <x-adminlte-button label="Novo Endereço" data-toggle="modal" data-target="#modalCustom" theme="info" icon="fa-solid fa-address-book"/>
+                                <x-adminlte-button class="btn-nexus" label="Novo Endereço" data-toggle="modal" data-target="#modalCustom" theme="" icon="fa-solid fa-address-book"/>
                             </div>
                         </div>
                     </div>
@@ -338,16 +346,16 @@
                 <div class="d-flex">
                     <form method="get" action="{{ route('empresa.cadastro') }}" style="float: left; margin-right: 2px;">
                     @csrf 
-                        <x-adminlte-button label="Nova Empresa" theme="info" icon="fa-solid fa-plus" type="submit"/>
+                        <x-adminlte-button label="Nova Empresa" theme="" class="btn-nexus" icon="fa-solid fa-plus" type="submit"/>
                     </form>
                     <form method="post" action="{{ route('empresa.destroy', ['empresa' => $dadosEmpresa[0]]) }}" style="float: left;margin-left: 2px;">
                     @csrf 
                     @method('delete')
-                        <x-adminlte-button label="Excluir Empresa" theme="info" icon="fa-solid fa-trash" type="submit"/>
+                        <x-adminlte-button label="Excluir Empresa" theme="" class="btn-nexus" icon="fa-solid fa-trash" type="submit"/>
                     </form>
                 </div>
                 <div class="d-flex">
-                    <x-adminlte-button type="button" onclick="window.location='{{ route('home.empresa') }}'" label="Voltar" theme="info" icon=""/>
+                    <x-adminlte-button type="button" onclick="window.location='{{ route('home.empresa') }}'" label="Voltar" theme="" class="btn-nexus" icon=""/>
                 </div>
             </div>
         </div>

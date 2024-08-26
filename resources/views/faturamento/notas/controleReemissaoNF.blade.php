@@ -21,7 +21,7 @@
         <form method="get" action="{{route('reemissaoNF.consultaReemissaoNF')}}" id="quickForm" novalidate="novalidate">
         @csrf 
         @method('get')
-            <x-adminlte-card title="Filtro de Reemissão de NF-e / NFS-e" theme="navy" collapsible maximizable>
+            <x-adminlte-card title="Filtro de Reemissão de NF-e / NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 @php
                     $data = DB::table('cadastro_empresas')->select('empresa_codigo', 'empresa_nome')->orderBy('empresa_codigo', 'asc')->get();
 
@@ -61,30 +61,19 @@
                 </div>
                 <div class="row">
                     @php
-                        $config = [
-                            "singleDatePicker" => true,
-                            "showDropdowns" => true,
-                            "startDate" => "js:moment()",
-                            "minYear" => 1900,
-                            "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                            "timePicker" => false,
-                            "timePicker24Hour" => false,
-                            "timePickerSeconds" => false,
-                            "cancelButtonClasses" => "btn-danger",
-                            "locale" => ["format" => "DD/MM/YYYY"],
-                        ];
+                        $config = Helper::dtRangeDataPtBR();
                     @endphp
                     <!-- Data de Pedido / OS -->
                     <x-adminlte-date-range name="dtIniOS" label="Data Inicial do Pedido / OS" :config="$config" placeholder="de dia/mês/ano" fgroup-class="col-md-6">
                         <x-slot name="prependSlot">
-                        <div class="input-group-text">
+                        <div class="input-group-text x-slot-nexus">
                                 <i class="far fa-lg fa-calendar-alt"></i>
                             </div>
                         </x-slot>
                     </x-adminlte-date-range>
                     <x-adminlte-date-range name="dtFinOS" label="Data Final do Pedido / OS" :config="$config" placeholder="até dia/mês/ano" fgroup-class="col-md-6">
                         <x-slot name="prependSlot">
-                        <div class="input-group-text">
+                        <div class="input-group-text x-slot-nexus">
                                 <i class="far fa-lg fa-calendar-alt"></i>
                             </div>
                         </x-slot>
@@ -96,7 +85,7 @@
                     <x-adminlte-input name="vlrFinOS" label="Valor Final do Pedido / OS" type="text" value="" placeholder="até 0,00" fgroup-class="col-md-6"/>
                 </div>
                 <x-slot name="footerSlot">
-                    <x-adminlte-button class="btn-flat" type="submit" label="Pesquisar" theme="info" icon="fa-solid fa-magnifying-glass"/>
+                    <x-adminlte-button class="btn-nexus" type="submit" label="Pesquisar" theme="info" icon="fa-solid fa-magnifying-glass"/>
                 </x-slot>
             </x-adminlte-card>
         </form>

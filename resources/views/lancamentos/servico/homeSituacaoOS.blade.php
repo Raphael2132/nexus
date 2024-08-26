@@ -4,15 +4,15 @@
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Lançamento de Serviços</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Situação de OS</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Lançamento de Serviços</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">Situação de OS</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -28,10 +28,10 @@ $perQtdCanFormat = number_format($perQtdCan,2,",",".").'%';
 @endphp
 <div class="row">
     <div class="col-md-3"> 
-        <x-adminlte-small-box :title="$osTot" text="Total de OS" icon="fas fa-file-invoice-dollar" theme="info" url="{{ route('situacaoOS.consulta', ['statusOS' => 'T']) }}" url-text="Detalhes Gerais de OS"/>
+        <x-adminlte-small-box :title="$osTot" text="Total de OS" icon="fas fa-file-invoice-dollar" theme="primary" url="{{ route('situacaoOS.consulta', ['statusOS' => 'T']) }}" url-text="Detalhes Gerais de OS"/>
     </div>
     <div class="col-md-3"> 
-        <x-adminlte-small-box :title="$osAberta" text="OS em Aberto" icon="fas fa-file-pen" theme="primary" url="{{ route('situacaoOS.consulta', ['statusOS' => 'A']) }}" url-text="Detalhes de OS em Aberto"/>
+        <x-adminlte-small-box :title="$osAberta" text="OS em Aberto" icon="fas fa-file-pen" theme="info" url="{{ route('situacaoOS.consulta', ['statusOS' => 'A']) }}" url-text="Detalhes de OS em Aberto"/>
     </div>
     <div class="col-md-3"> 
         <x-adminlte-small-box :title="$osFinalizada" text="OS Finalizadas" icon="fas fa-solid fa-file-circle-check" theme="success" url="{{ route('situacaoOS.consulta', ['statusOS' => 'F']) }}" url-text="Detalhes de OS Finalizadas"/>
@@ -42,7 +42,7 @@ $perQtdCanFormat = number_format($perQtdCan,2,",",".").'%';
 </div>
 <div class="row">
     <div class="col-md-12">
-        <x-adminlte-card title="Relatório de recapitulação mensal" theme="navy" icon="fa-solid fa-chart-line" header-class="text-uppercase rounded-bottom border-info" collapsible maximizable>
+        <x-adminlte-card title="Relatório de recapitulação mensal" icon="fa-solid fa-chart-line" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
             
             <div class="row">
                 <div class="col-md-6">

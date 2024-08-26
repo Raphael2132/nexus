@@ -1,21 +1,21 @@
 @extends('adminlte::page')
 
-@section('title', 'Consulta Reemissão Simplificada de NFS-e')
+@section('title', 'Reemissão Simplificada de NFS-e')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Faturamento</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.reemissaoSimpNF')}}">Filtro Reemissão Simplificada</a>
-                </li>
-                <li class="breadcrumb-item active">Consulta Reemissão Simplificada</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Faturamento</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.reemissaoSimpNF')}}">Filtro Reemissão Simplificada</a>
+            </li>
+            <li class="breadcrumb-item active">Consulta Reemissão Simplificada</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 
@@ -34,36 +34,15 @@ $heads = [
     ['label' => 'Impressão', 'no-export' => true, 'width' => 10],
 ];
 $config = [
-    'lengthMenu' => [ 10, 25, 50, 100],
-    'language' => [
-        'decimal' =>        '',
-        'emptyTable' =>     'Sem dados disponíveis na tabela',
-        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-        'infoPostFix' =>    '',
-        'thousands' =>      ',',
-        'lengthMenu' =>     'Mostrar _MENU_ registros',
-        'loadingRecords' => 'Carregando...',
-        'processing' =>     '',
-        'search' =>         'Pesquisar:',
-        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-        'paginate' => [
-            'first' =>      'Primeiro',
-            'last' =>       'Último',
-            'next' =>       'Próximo',
-            'previous' =>   'Anterior'
-        ],
-        'aria' => [
-            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-        ],
-    ],
+    'lengthMenu' => [5, 10, 25, 50, 100],
+    'pageLength' => 10,
+    'language' => Helper::dataTableLangPtBR(),
+    'order' => [[0, 'asc'],[3, 'desc']],
     'columns' => [null, null, null, null, null, null, null, null, ['orderable' => false]],
 ];
 @endphp
 
-<x-adminlte-card title="Reemissão Simplificada de NFS-e" theme="navy" collapsible maximizable>
+<x-adminlte-card title="Reemissão Simplificada de NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
     <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
         @foreach($dadosHeader as $header)
             @php 
@@ -96,16 +75,16 @@ $config = [
                 <td>{{Helper::formataValorMonetario($header->nfhdr_vlr_tot_nf)}}</td>
                 <td>NFS-e</td>
                 @if($stsNF == 1)
-                <td class="max-width-sts"><span class="badge badge-danger">NFS-e Não Enviada: {{$dadosXmlNfsEnv[0]->nfsenv_obs}}</span> <a class="btn btn-outline-info btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
+                <td class="max-width-sts"><span class="badge badge-danger">NFS-e Não Enviada: {{$dadosXmlNfsEnv[0]->nfsenv_obs}}</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
                 @elseif($stsNF == 2)
-                <td class="max-width-sts"><span class="badge badge-danger">NFS-e Rejeitada: Erro {{$dadosXmlNfsEnv[0]->nfsenv_sts_emi.' - '.$dadosXmlNfsEnv[0]->nfsenv_obs}}</span> <a class="btn btn-outline-info btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
+                <td class="max-width-sts"><span class="badge badge-danger">NFS-e Rejeitada: Erro {{$dadosXmlNfsEnv[0]->nfsenv_sts_emi.' - '.$dadosXmlNfsEnv[0]->nfsenv_obs}}</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
                 @elseif($stsNF == 3)
                 <td class="max-width-sts"><span class="badge badge-success">{{$dadosXmlNfsEnv[0]->nfsenv_obs}}</span></td>
                 @else
-                <td class="max-width-sts"><span class="badge badge-info">Geração Iniciada</span> <a class="btn btn-outline-info btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
+                <td class="max-width-sts"><span class="badge badge-info">Geração Iniciada</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
                 @endif
                 @if($stsNF != 4)
-                <td><a class="btn btn-outline-info btn-sm" href="{{route('impresaoNF.nfsePDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num])}}" target="_blank">Abrir NFS-e</a></td>
+                <td class="d-flex justify-content-center"><a class="btn btn-outline-nexus btn-sm" href="{{route('impresaoNF.nfsePDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num])}}" target="_blank">Abrir NFS-e</a></td>
                 @else
                 <td></td>
                 @endif
@@ -114,12 +93,15 @@ $config = [
     </x-adminlte-datatable>
     <x-slot name="footerSlot">
         <div class="d-flex justify-content-between w-100">
-            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.emissaoSimpNFS') }}'" label="Nova NFS-e" theme="info" icon="fa-solid fa-plus"/>
-            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.reemissaoSimpNF') }}'" label="Voltar" theme="info" icon=""/>
+            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.emissaoSimpNFS') }}'" label="Nova NFS-e" theme="info" icon="fa-solid fa-plus"/>
+            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.reemissaoSimpNF') }}'" label="Voltar" theme="info" icon=""/>
         </div>
     </x-slot>
 </x-adminlte-card>
 @stop
+
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 <style>

@@ -4,18 +4,18 @@
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Parâmetros do Sistema</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.parSisServico')}}">Áreas</a>
-                </li>
-                <li class="breadcrumb-item active">Cadastro de Áreas</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros do Sistema</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.parSisArea')}}">Áreas</a>
+            </li>
+            <li class="breadcrumb-item active">Cadastro de Áreas</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -23,20 +23,29 @@
     <div class="col-md-8">
         <form method="post" action="{{route('parametrosSistemaAreas.inserir')}}" id="quickForm" novalidate="novalidate">
             @csrf 
-            <x-adminlte-card title="Cadastro de Nova Área" theme="navy">
+            <x-adminlte-card title="Cadastro de Nova Área" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
+
                 <div class="row">
                     <!-- Código -->
-                    <x-adminlte-input name="codigo" label="Código" type="text" class="text-uppercase" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="codigo" type="text" class="text-uppercase" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Código <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 <div class="row">
                     <!-- Descrição -->
-                    <x-adminlte-input name="descricao" label="Descrição" type="text" fgroup-class="col-md-12"/>
+                    <x-adminlte-input name="descricao" type="text" fgroup-class="col-md-12">
+                        <x-slot name="label">
+                            Descrição <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 <!-- /.card -->
                 <x-slot name="footerSlot">
-                    <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                    <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
                 </x-slot>
             </x-adminlte-card>
         </form>
@@ -47,7 +56,6 @@
 <!-- Chamada dos Plugins usados na app -->
 @section('plugins.jqueryValidation', true)
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
 
 @section('css')
 @stop
@@ -88,6 +96,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 });

@@ -1,19 +1,19 @@
 @extends('adminlte::page')
 
-@section('title', 'Emissão de Simplificada de NFS-e')
+@section('title', 'Emissão Simplificada de NFS-e')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Faturamento de Notas</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active"><a href="{{route('home.emissaoSimpNFS')}}">Emissão Simplificada</a></li>
-                <li class="breadcrumb-item active">Formulario Emissão Simplificada</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Faturamento de Notas</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active"><a href="{{route('home.emissaoSimpNFS')}}">Emissão Simplificada</a></li>
+            <li class="breadcrumb-item active">Formulario Emissão Simplificada</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -22,7 +22,7 @@
         <form method="post" action="{{ route('emissaoSimpNFS.etapa2', ['empresa' => $empresa, 'cliente' => $cliente]) }}" id="quickForm" novalidate="novalidate">
             @csrf 
             @method('post')
-            <x-adminlte-card title="Emissão Simplificada de NFS-e" theme="navy" collapsible maximizable>
+            <x-adminlte-card title="Emissão Simplificada de NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 @php
 
                     //Dados da Empresa
@@ -131,7 +131,7 @@
                     }
                 @endphp
                 <!-- Dados da Empresa -->
-                <x-adminlte-callout theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-building" title="Dados da Empresa">
+                <x-adminlte-callout title="Dados da Empresa" title-class="text-uppercase" icon="fa-solid fa-building" theme="" class="callout-nexus">
                     <div class="text-muted">
                         <div class="row quebra-linha">
                             <p class="text-sm col-md-3">Empresa
@@ -153,7 +153,7 @@
                     </div>
                 </x-adminlte-callout>
                 <!-- Dados Do Cliente -->
-                <x-adminlte-callout theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-user-tie" title="Dados do Cliente">
+                <x-adminlte-callout title="Dados do Cliente" title-class="text-uppercase" icon="fa-solid fa-user-tie" theme="" class="callout-nexus">
                     <div class="text-muted">
                         <div class="row quebra-linha">
                             <p class="text-sm col-md-2">Cliente
@@ -220,7 +220,7 @@
                         @if(empty($end_cli[0]))
                         <!-- Se ainda não foi cadastrado endereço para o cliente cria card vazio -->
                         <div class="col-md-4">
-                            <x-adminlte-card theme="info" title="Endereço" theme-mode="outline">
+                            <x-adminlte-card title="Endereço" theme="" theme-mode="outline" header-class="card-outline-nexus">
                                 <i>Registros não encontrados</i>
                             </x-adminlte-card>
                         </div>
@@ -243,7 +243,7 @@
                                 @endphp
                                 <div class="col-md-4" style="float: left;">
                                     <!-- Card do Endereço da empresa -->
-                                    <x-adminlte-card theme="info" :title="$titulo" :icon="$icone" theme-mode="outline">
+                                    <x-adminlte-card :title="$titulo" :icon="$icone" theme="" theme-mode="outline" header-class="card-outline-nexus">
                                         <i>{{ $endereco->endereco_logradouro }}, {{ $endereco->endereco_numero }}</br>
                                             @php
                                                 if(!empty($endereco->endereco_complemento)){
@@ -280,13 +280,13 @@
 
                                         @endphp
                                         @if($endereco->endereco_principal == "S")
-                                        <div class="icheck-primary d-inline" style="margin-right: 25px;">
+                                        <div class="icheck-nexus d-inline" style="margin-right: 25px;">
                                             <input type="radio" id="radioPrimary_{{$endereco->endereco_seq}}" name="enderecoCli" checked value="{{$endereco->endereco_seq}}">
                                             <label for="radioPrimary_{{$endereco->endereco_seq}}">Endereço {{$cnt_end.$principal}}</label>
                                         </div>
                                         @else
                                         
-                                        <div class="icheck-primary d-inline" style="margin-right: 25px;">
+                                        <div class="icheck-nexus d-inline" style="margin-right: 25px;">
                                             <input type="radio" id="radioPrimary_{{$endereco->endereco_seq}}" name="enderecoCli" value="{{$endereco->endereco_seq}}">
                                             <label for="radioPrimary_{{$endereco->endereco_seq}}">Endereço {{$cnt_end.$principal}}</label>
                                         </div>
@@ -300,8 +300,8 @@
                 </x-adminlte-callout>
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
-                        <x-adminlte-button class="btn-flat" type="submit" label="Prosseguir" theme="info" icon="fa-solid fa-circle-arrow-right"/>
-                        <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.emissaoSimpNFS') }}'" label="Voltar" theme="info" icon=""/>
+                        <x-adminlte-button class="btn-nexus" type="submit" label="Prosseguir" theme="info" icon="fa-solid fa-circle-arrow-right"/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.emissaoSimpNFS') }}'" label="Voltar" theme="info" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>

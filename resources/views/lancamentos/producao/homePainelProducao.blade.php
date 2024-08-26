@@ -57,30 +57,7 @@
                     </x-adminlte-select>
 
                     @php 
-                        $config = [
-                            "singleDatePicker" => true,
-                            "showDropdowns" => true,
-                            "startDate" => "js:moment()",
-                            "minYear" => 1900,
-                            "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                            "timePicker" => false,
-                            "timePicker24Hour" => false,
-                            "timePickerSeconds" => false,
-                            "cancelButtonClasses" => "btn-danger",
-                            "locale" => [
-                                "format" => "DD/MM/YYYY",
-                                "separator" => " - ",
-                                "applyLabel" => "Aplicar",
-                                "cancelLabel" => "Cancelar",
-                                "fromLabel" => "De",
-                                "toLabel" => "Até",
-                                "customRangeLabel" => "Personalizado",
-                                "weekLabel" => "Sm",
-                                "daysOfWeek" => ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
-                                "monthNames" => ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
-                                "firstDay" => 0
-                            ],
-                        ];
+                        $config = Helper::dtRangeDataPtBR();
                     @endphp
                     <!-- Data do Painel -->
                     <x-adminlte-date-range name="dataPainel" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-6">

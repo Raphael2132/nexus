@@ -24,8 +24,7 @@
 @php
 $heads = [
     ['label' => '', 'no-export' => true, 'width' => 5],
-    'Código',
-    'Nome',
+    'Cliente',
     'Tipo de Pessoa',
     'CPF/CNPJ',
     'Email',
@@ -35,31 +34,9 @@ $config = [
     'lengthMenu' => [ 5, 10, 25, 50],
     'pageLength' => 10,
     'processing' => true,
-    'language' => [
-        'decimal' =>        '',
-        'emptyTable' =>     'Sem dados disponíveis na tabela',
-        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-        'infoPostFix' =>    '',
-        'thousands' =>      ',',
-        'lengthMenu' =>     'Mostrar _MENU_ registros',
-        'loadingRecords' => 'Carregando...',
-        'processing' =>     '',
-        'search' =>         'Pesquisar:',
-        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-        'paginate' => [
-            'first' =>      'Primeiro',
-            'last' =>       'Último',
-            'next' =>       'Próximo',
-            'previous' =>   'Anterior'
-        ],
-        'aria' => [
-            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-        ],
-    ],
-    'columns' => [['orderable' => false], null, null, null, null, null, ['orderable' => false]],
+    'language' => Helper::dataTableLangPtBR(),
+    'order' => [[1, 'asc']],
+    'columns' => [['orderable' => false], null, null, null, null, ['orderable' => false]],
 ];
 
 if($tipo == 'J'){
@@ -71,7 +48,7 @@ if($tipo == 'J'){
 }
 @endphp
 
-<x-adminlte-card :title="$titulo" theme="navy" collapsible maximizable>
+<x-adminlte-card :title="$titulo" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
     <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
         @foreach ($clientes as $cliente)
             @php
@@ -87,7 +64,7 @@ if($tipo == 'J'){
                 <td>
                     <nobr class="d-flex justify-content-center">
                         <!-- Cria o modal dos detalhes do usuario -->
-                        <x-adminlte-modal id="modalCustom_{{$cliente->cliente_codigo}}" title="Detalhes do Usuario" size="xl" theme="navy" icon="fa-solid fa-building" v-centered scrollable>
+                        <x-adminlte-modal id="modalCustom_{{$cliente->cliente_codigo}}" title="Detalhes do Usuario" size="xl" theme="modal-nexus" icon="fa-solid fa-address-card" v-centered scrollable>
                             <div class="row" style="height:auto;">
                                 <!-- Conteudo da esquerda do modal -->
                                 <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
@@ -265,7 +242,7 @@ if($tipo == 'J'){
                                 </div>
                             </div>
                             <x-slot name="footerSlot">
-                                <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                                <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                             </x-slot>
                         </x-adminlte-modal>
                         <!-- Gera o icone da lupa que abre o modal -->
@@ -274,8 +251,7 @@ if($tipo == 'J'){
                         </a>
                     </nobr>
                 </td>
-                <td>{{ $cliente->cliente_codigo }}</td>
-                <td>{{ $cliente->cliente_nome }}</td>
+                <td>{{ $cliente->cliente_codigo.' - '.$cliente->cliente_nome }}</td>
                 <td>{{ $tip_pess }}</td>
                 <td>{{ $cpfcnpj }}</td>
                 <td>{{ $cliente->cliente_email }}</td>
@@ -283,14 +259,14 @@ if($tipo == 'J'){
                     <nobr class="d-flex justify-content-center">
                         <form method="get" action="{{ route('cliente.editarCadastro', ['dadosCliente' => $cliente->cliente_codigo, 'tipo' => $tipo]) }}" style="float: left;">
                             @csrf
-                            <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Editar Registros" value="Edit" type="submit">
+                            <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Editar Registro" value="Edit" type="submit">
                                 <i class="fa fa-lg fa-fw fa-pen"></i>
                             </button>
                         </form>
                         <form method="post" action="{{route('cliente.destroy', ['cliente' => $cliente])}}" style="float: left;">
                             @csrf 
                             @method('delete')
-                            <button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Excluir Registros" value="Delete" type="submit" >
+                            <button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Excluir Registro" value="Delete" type="submit" >
                                 <i class="fa fa-lg fa-fw fa-trash"></i>
                             </button>
                         </form>
@@ -302,13 +278,16 @@ if($tipo == 'J'){
     <x-slot name="footerSlot">
         <div class="d-flex justify-content-between w-100">
             <form method="get" action="{{ route('cliente.cadastro') }}">
-                <x-adminlte-button label="Novo Cliente" theme="info" icon="fas fa-user-plus" type="submit"/>
+                <x-adminlte-button class="btn-nexus" label="Novo Cliente" theme="" icon="fas fa-user-plus" type="submit"/>
             </form>
-            <x-adminlte-button type="button" onclick="window.location='{{ route('home.clientes') }}'" label="Voltar" theme="info" icon=""/>
+            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.clientes') }}'" label="Voltar" theme="" icon=""/>
         </div>
     </x-slot>
 </x-adminlte-card>
 @stop
+
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 @stop

@@ -1,25 +1,25 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Setores')
+@section('title', 'Setores')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.parSrvSetor')}}">Setor</a>
-                </li>
-                @if($acao == 'N')
-                    <li class="breadcrumb-item active">Cadastro de Setor</li>
-                @else
-                    <li class="breadcrumb-item active">Manutenção do Setor</li>
-                @endif
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.parSrvSetor')}}">Setores</a>
+            </li>
+            @if($acao == 'N')
+                <li class="breadcrumb-item active">Cadastro de Setor</li>
+            @else
+                <li class="breadcrumb-item active">Manutenção do Setor</li>
+            @endif
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -32,7 +32,7 @@
         <form method="post" action="{{route('parametrosSrvSetor.update')}}" id="quickForm" novalidate="novalidate">
         @endif
             @csrf 
-            <x-adminlte-card title="Cadastro de Novo Setor" theme="navy">
+            <x-adminlte-card title="Cadastro de Novo Setor" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 <div class="row"> 
                     @php
                         $data = DB::table('cadastro_empresas')->selectRaw('empresa_codigo, empresa_nome')->orderBy('empresa_codigo', 'asc')->get();
@@ -53,7 +53,10 @@
                         }
                     @endphp
                     <!-- Empresa do Setor -->
-                    <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-12">
+                    <x-adminlte-select name="empresa" fgroup-class="col-md-12">
+                        <x-slot name="label">
+                            Empresa <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$emp_sel}}"/>
                     </x-adminlte-select>
                 </div>
@@ -78,7 +81,10 @@
                         }
                     @endphp
                     <!-- Descrição -->
-                    <x-adminlte-select name="area" label="Área" fgroup-class="col-md-12">
+                    <x-adminlte-select name="area" fgroup-class="col-md-12">
+                        <x-slot name="label">
+                            Área <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt2" empty-option="Selecione..." selected="{{$area_sel}}"/>
                     </x-adminlte-select>
                 </div>
@@ -92,7 +98,11 @@
                         }
                     @endphp
                     <!-- Código -->
-                    <x-adminlte-input name="codigo" label="Código" type="text" value="{{$codigo_sel}}" fgroup-class="col-md-12" readonly/>
+                    <x-adminlte-input name="codigo" type="text" value="{{$codigo_sel}}" fgroup-class="col-md-12" readonly>
+                        <x-slot name="label">
+                            Código <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 <div class="row">
@@ -103,8 +113,12 @@
                             $desc_sel = '';
                         }
                     @endphp
-                    <!-- Descrição -->
-                    <x-adminlte-input name="descricao" label="Setor" type="text" placeholder="Informe a descrição do setor" value="{{$desc_sel}}" fgroup-class="col-md-12"/>
+                    <!-- Setor -->
+                    <x-adminlte-input name="descricao" type="text" placeholder="Informe a descrição do setor" value="{{$desc_sel}}" fgroup-class="col-md-12">
+                        <x-slot name="label">
+                            Setor <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 <!-- /.card -->
@@ -118,12 +132,12 @@
                     @endphp
                     <div class="d-flex justify-content-between w-100">
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-flat btn_novo mr-2" type="button" onclick="window.location='{{ route('parametrosSrvSetor.cadastro') }}'" label="Novo Setor" theme="info" icon="fa-solid fa-plus"/>
-                            <x-adminlte-button class="btn-flat btn_salvar mr-2" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                            <x-adminlte-button class="btn-flat btn_excluir" type="button" data-id="{{$setor}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                            <x-adminlte-button class="btn-nexus btn_novo mr-2" type="button" onclick="window.location='{{ route('parametrosSrvSetor.cadastro') }}'" label="Novo Setor" theme="" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-nexus btn_salvar mr-2" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus btn_excluir" type="button" data-id="{{$setor}}" data-token="{{ csrf_token() }}" label="Excluir" theme="" icon="fa-solid fa-trash"/>
                         </div>
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parSrvSetor') }}'" label="Voltar" theme="info" icon=""/>
+                            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.parSrvSetor') }}'" label="Voltar" theme="" icon=""/>
                         </div>
                     </div>
                 </x-slot>

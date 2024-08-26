@@ -1,0 +1,132 @@
+/* ***** Tema do Card ***** */
+.card-nexus {
+    background-color: #06023e !important;
+    color:#fff !important;
+}
+
+.card-outline-nexus {
+    border-top: 3px solid #06023e !important;
+    color: #06023e !important;
+}
+
+/* ***** Tema do Card com Tabs ***** */
+.card-nexus .nav-tabs .nav-item .nav-link:not(.active) {
+    color: #fff;
+}
+
+/* ***** Tema do Callout ***** */
+.callout-nexus {
+    border-left-color: #06023e;
+}
+
+.callout-nexus h5,
+.callout-nexus h5 i {
+    color: #06023e;
+}
+
+
+/* ***** Tema do Modal ***** */
+.bg-modal-nexus {
+    background-color: #06023e;
+    color: #fff;
+}
+
+.bg-modal-nexus button {
+    color: #fff; /* Cor do texto do botão collapsible e maximizable*/
+    border-color: #fff; /* Cor da borda do botão collapsible e maximizable*/
+}
+
+.bg-modal-nexus button:hover {
+    color: #fff; /* Cor do texto do botão collapsible e maximizable no hover */
+    border-color: #fff; /* Cor da borda do botão collapsible e maximizable no hover */
+}
+
+/* ***** Tema dos Botões ***** */
+.btn-nexus {
+    color: #fff !important;
+    background-color: #00abab !important;
+    border-color: #00abab !important;
+    box-shadow: none !important;
+}
+
+.btn-nexus:hover {
+    background-color: #008f8f !important; /* Cor levemente mais escura */
+    border-color: #008f8f !important; /* Cor levemente mais escura */
+    color: #fff !important;
+}
+
+.btn-outline-nexus {
+    color: #00abab;
+    border-color: #00abab;
+}
+
+.btn-outline-nexus:hover {
+    background-color: #00abab !important;
+    border-color: #00abab !important;
+    color: #fff !important;
+}
+
+/* ***** Tema do Sidebar (Barra Menu Vertical Esquerdo) ***** */
+.sidebar-nexus{
+    background: #020017 linear-gradient(180deg, #06023e, #020017) repeat-x !important;
+    color: #fff !important;
+}
+
+.sidebar-nexus .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: #008f8f !important;
+    color: #fff !important;
+}
+
+.layout-navbar-fixed .wrapper .sidebar-nexus .brand-link:not([class*="navbar"]) {
+    background: transparent ;
+}
+
+[class*="sidebar-dark"] .btn-sidebar, [class*="sidebar-dark"] .form-control-sidebar {
+    background: #020017 linear-gradient(180deg, #06023e, #020017) repeat-x !important;
+    border: 1px solid #56606a !important;
+    color: #fff !important;
+}
+
+/* ***** Tema do User Menu (Botão de Sair do Sistema) ***** */
+.user-bg-nexus {
+    background: #020017 linear-gradient(180deg, #06023e, #020017) repeat-x !important;
+    color: #fff !important;
+}
+
+/* iCheck Customizando a cor do rádio e do rótulo */
+.icheck-nexus input[type="radio"]:checked + label::before {
+    background-color: #00abab; /* Cor de fundo quando selecionado */
+    border-color: #00abab; /* Cor da borda quando selecionado */
+}
+
+.icheck-nexus input[type="radio"] + label::before {
+    border-color: #00abab; /* Cor da borda padrão */
+}
+
+/* ***** Tabelas customizadas ***** */
+.tabela-custom-nexus th {
+    background-color: #06023e;
+    color: #fff;
+}
+
+/* ***** Background customizado ***** */
+.bg-nexus {
+    background-color: #06023e;
+    color: #fff;
+}
+
+/* ***** Tema dos Botões ***** */
+.btn-nexus {
+    color: #fff !important;
+    background-color: #00abab !important;
+    border-color: #00abab !important;
+    box-shadow: none !important;
+}
+
+/* ***** Tema dos x-slot (prependSlot, appendSlot etc...) dos campos input ***** */
+.x-slot-nexus {
+    color: #fff !important;
+    background-color: #00abab !important;
+    border-color: #00abab !important;
+    box-shadow: none !important;
+}

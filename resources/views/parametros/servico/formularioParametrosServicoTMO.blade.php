@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-6">
-        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais de Serviços</h4>
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -32,7 +32,7 @@
         <form method="post" action="{{route('parametrosSrvTMO.update')}}" id="quickForm" novalidate="novalidate">
         @endif
             @csrf 
-            <x-adminlte-card title="Cadastro de Nova Tarefa de Mão de Obra" theme="navy">
+            <x-adminlte-card title="Cadastro de Nova Tarefa de Mão de Obra" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 
                 </br>
                 <div class="post">
@@ -391,12 +391,12 @@
                     @endphp
                     <div class="d-flex justify-content-between w-100">
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-flat mr-2 btn_novo" type="button" onclick="window.location='{{ route('parametrosSrvTMO.cadastro') }}'" label="Nova Tarefa" theme="info" icon="fa-solid fa-plus"/>
-                            <x-adminlte-button class="btn-flat mr-2 btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                            <x-adminlte-button class="btn-flat mr-2 btn_excluir" type="button" data-id="{{$tarefa}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_novo" type="button" onclick="window.location='{{ route('parametrosSrvTMO.cadastro') }}'" label="Nova Tarefa" theme="" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_salvar" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_excluir" type="button" data-id="{{$tarefa}}" data-token="{{ csrf_token() }}" label="Excluir" theme="" icon="fa-solid fa-trash"/>
                         </div>
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parSrvTMO') }}'" label="Voltar" theme="info" icon=""/>
+                            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.parSrvTMO') }}'" label="Voltar" theme="" icon=""/>
                         </div>
                     </div>
                 </x-slot>
@@ -409,7 +409,6 @@
 <!-- Chamada dos Plugins usados na app -->
 @section('plugins.jqueryValidation', true)
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
 @section('plugins.Select2', true)
 
 @section('css')

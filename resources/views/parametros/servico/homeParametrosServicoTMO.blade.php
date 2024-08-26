@@ -4,15 +4,15 @@
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais de Serviços</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Tarefas Mão de Obra</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">Tarefas Mão de Obra</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -36,34 +36,12 @@
 
     $config = [
         'lengthMenu' => [ 5, 10, 25, 50],
-        'language' => [
-            'decimal' =>        '',
-            'emptyTable' =>     'Sem dados disponíveis na tabela',
-            'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-            'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-            'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-            'infoPostFix' =>    '',
-            'thousands' =>      ',',
-            'lengthMenu' =>     'Mostrar _MENU_ registros',
-            'loadingRecords' => 'Carregando...',
-            'processing' =>     '',
-            'search' =>         'Pesquisar:',
-            'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-            'paginate' => [
-                'first' =>      'Primeiro',
-                'last' =>       'Último',
-                'next' =>       'Próximo',
-                'previous' =>   'Anterior'
-            ],
-            'aria' => [
-                'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-            ],
-        ],
+        'language' => Helper::dataTableLangPtBR(),
+        'order' => [[1, 'asc'],[2, 'asc'],[3, 'asc']],
         'columns' => [['orderable' => false], null, null, null, null, null, null, null, ['orderable' => false]],
     ];
     @endphp
-    <x-adminlte-card title="Parametrização das Tarefas de Mão de Obra" theme="navy" theme-mode="outline" collapsible maximizable>
+    <x-adminlte-card title="Parametrização das Tarefas de Mão de Obra" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
         <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
             @foreach ($tarefas as $tarefa)
                 @php
@@ -140,7 +118,7 @@
                     <td>
                         <nobr class="d-flex justify-content-center">
                             <!-- Cria o modal dos Detalhes da Tarefa de Mão de Obra -->
-                            <x-adminlte-modal id="modalCustom_{{$tarefa->tmo_id}}" title="Detalhes da Tarefa de Mão de Obra" size="xl" theme="navy" v-centered scrollable>
+                            <x-adminlte-modal id="modalCustom_{{$tarefa->tmo_id}}" title="Detalhes da Tarefa de Mão de Obra" size="xl" theme="modal-nexus" v-centered scrollable>
                                 <div class="row" style="height:auto;">
                                     <!-- Conteudo da esquerda do modal -->
                                     <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
@@ -231,7 +209,7 @@
                                     </div>
                                 </div>
                                 <x-slot name="footerSlot">
-                                    <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                                    <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                                 </x-slot>
                             </x-adminlte-modal>
                             <!-- Gera o icone da lupa que abre o modal -->
@@ -251,14 +229,14 @@
                         <nobr class="d-flex justify-content-center">
                             <form method="get" action="{{ route('parametrosSrvTMO.editarCadastro',['empresa' => $tarefa->tmo_emp, 'setor' => $tarefa->tmo_set, 'codigo' => $tarefa->tmo_cod]) }}" style="float: left;">
                                 @csrf
-                                <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Edit" value="Edit" type="submit">
+                                <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Editar Registro" value="Edit" type="submit">
                                     <i class="fa fa-lg fa-fw fa-pen"></i>
                                 </button>
                             </form>
                             <form method="post" action="{{ route('parametrosSrvTMO.destroy', ['tarefa'=>$tarefa, 'origem'=>'home']) }}" style="float: left;">
                                 @csrf 
                                 @method('delete')
-                                <button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" value="Delete" type="submit" >
+                                <button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Excluir Registro" value="Delete" type="submit" >
                                     <i class="fa fa-lg fa-fw fa-trash"></i>
                                 </button>
                             </form>
@@ -273,7 +251,8 @@
 
 <!-- Chamada dos Plugins usados na app -->
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 <style>

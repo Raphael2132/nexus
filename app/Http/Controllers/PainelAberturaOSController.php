@@ -59,6 +59,9 @@ class PainelAberturaOSController extends Controller
         $dadosRequisicao = $this->requisicaoOS->where('req_emp', $empresa)->where('req_seq', $requisicao)->where('req_nos', $nos)->get();
 
         $dadosServico = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$nos)->where('srv_req',$requisicao)->orderby('srv_seq','asc')->get();
+        $dadosSrvIni = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$nos)->where('srv_req',$requisicao)->where('srv_sts','E')->where('srv_flg_apr','S')->orderby('srv_seq','asc')->get();
+        $dadosSrvFin = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$nos)->where('srv_req',$requisicao)->where('srv_sts','A')->orderby('srv_seq','asc')->get();
+        $dadosSrvApr = DB::table('lancamento_srv_os_servicos')->where('srv_emp',$empresa)->where('srv_nos',$nos)->where('srv_req',$requisicao)->where('srv_flg_apr','N')->orderby('srv_seq','asc')->get();
 
         session(['glo_os_dadosRequisicoes' => $dadosRequisicao]);
         session(['glo_os_dadosServico' => $dadosServico]);
@@ -68,6 +71,9 @@ class PainelAberturaOSController extends Controller
         session(['glo_os_dadosTMO' => '']);
         session(['glo_os_dadosTmoSelecionada' => '']);
         session(['glo_os_subEstagioRequisicao' => '']);
+        session(['glo_os_dadosSrvIni' => $dadosSrvIni]);
+        session(['glo_os_dadosSrvFin' => $dadosSrvFin]);
+        session(['glo_os_dadosSrvApr' => $dadosSrvApr]);
 
         return view('/lancamentos/servico/painelAberturaOS');
     }

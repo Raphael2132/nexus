@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Emissão de Simplificada de NFS-e')
+@section('title', 'Emissão Simplificada de NFS-e')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Faturamento de Notas</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Emissão Simplificada de NFS-e</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Faturamento de Notas</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">Emissão Simplificada de NFS-e</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -21,7 +21,7 @@
         <form method="post" action="{{route('emissaoSimpNFS.inicio')}}" id="quickForm" novalidate="novalidate">
             @csrf 
             @method('post')
-            <x-adminlte-card title="Emissão Simplificada de NFS-e" theme="navy" collapsible maximizable>
+            <x-adminlte-card title="Emissão Simplificada de NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 @php
                     $data = DB::table('cadastro_empresas')->select('empresa_codigo', 'empresa_nome')->orderBy('empresa_codigo', 'asc')->get();
 
@@ -63,7 +63,7 @@
                     </x-adminlte-input>
                 </div>
                 <x-slot name="footerSlot">
-                    <x-adminlte-button class="btn-flat" type="submit" label="Prosseguir" theme="info" icon="fa-solid fa-circle-arrow-right"/>
+                    <x-adminlte-button class="btn-nexus" type="submit" label="Prosseguir" theme="info" icon="fa-solid fa-circle-arrow-right"/>
                 </x-slot>
             </x-adminlte-card>
         </form>

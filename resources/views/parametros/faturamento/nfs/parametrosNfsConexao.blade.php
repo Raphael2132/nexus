@@ -1,21 +1,21 @@
 @extends('adminlte::page')
 
-@section('title', 'Parametrização de Conexão da NFS-e')
+@section('title', 'Parâmetros da NFS-e')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.parFatNfs')}}">Parâmetros da NFS-e</a>
-                </li>
-                <li class="breadcrumb-item active">Conexão da NFS-e</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.parFatNfs')}}">Parâmetros da NFS-e</a>
+            </li>
+            <li class="breadcrumb-item active">Conexão da NFS-e</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -32,34 +32,13 @@ $heads = [
 ];
 $config = [
     'lengthMenu' => [ 5, 10, 25, 50],
-    'language' => [
-        'decimal' =>        '',
-        'emptyTable' =>     'Sem dados disponíveis na tabela',
-        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-        'infoPostFix' =>    '',
-        'thousands' =>      ',',
-        'lengthMenu' =>     'Mostrar _MENU_ registros',
-        'loadingRecords' => 'Carregando...',
-        'processing' =>     '',
-        'search' =>         'Pesquisar:',
-        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-        'paginate' => [
-            'first' =>      'Primeiro',
-            'last' =>       'Último',
-            'next' =>       'Próximo',
-            'previous' =>   'Anterior'
-        ],
-        'aria' => [
-            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-        ],
-    ],
+    'pageLength' => 10,
+    'language' => Helper::dataTableLangPtBR(),
+    'order' => [[0, 'asc']],
     'columns' => [null, null, null, null, null, null, null, ['orderable' => false]],
 ];
 @endphp
-<x-adminlte-card title="Parametrização das Conexões da NFS-e" theme="navy" collapsible maximizable>
+<x-adminlte-card title="Parâmetros de Conexões da NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
     <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
         @foreach ($conexoes as $conexao)
             @php
@@ -91,7 +70,7 @@ $config = [
                     <nobr>
                         <form method="get" action="{{ route('parmetrosNfsCon.editarCadastro', ['dadosConexao' => $conexao->conexao_empresa, 'appOrigem' => 'parametrosNfsConexao']) }}" style="float: left;">
                             @csrf
-                            <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Edit" value="Edit" type="submit">
+                            <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Editar Registro" value="Edit" type="submit">
                                 <i class="fa fa-lg fa-fw fa-pen"></i>
                             </button>
                         </form>
@@ -105,7 +84,7 @@ $config = [
             <div class="d-flex">
             </div>
             <div class="d-flex">
-                <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parFatNfs') }}'" label="Voltar" theme="info" icon=""/>
+                <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.parFatNfs') }}'" label="Voltar" theme="info" icon=""/>
             </div>
         </div>
     </x-slot>
@@ -114,7 +93,8 @@ $config = [
 
 <!-- Chamada dos Plugins usados na app -->
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 @stop

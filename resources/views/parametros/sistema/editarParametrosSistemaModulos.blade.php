@@ -1,21 +1,21 @@
 @extends('adminlte::page')
 
-@section('title', 'Manutenção Cadastro de Modulos do sistema')
+@section('title', 'Módulos do sistema')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Parâmetros do Sistema</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.parSisModulo')}}">Módulos do Sistema</a>
-                </li>
-                <li class="breadcrumb-item active">Manutenção dos Módulos do Sistema</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros do Sistema</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.parSisModulo')}}">Módulos do Sistema</a>
+            </li>
+            <li class="breadcrumb-item active">Manutenção dos Módulos do Sistema</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -24,7 +24,7 @@
         <form method="post" action="{{route('parametrosSistemaModulos.atualizar', [ 'empresa' => $dadosModulo[0]['modulo_empresa_codigo'] ] )}}" id="quickForm" novalidate="novalidate">
             @csrf 
             @method('post')
-            <x-adminlte-card title="Parametrização dos Módulos do Sistema" theme="navy">
+            <x-adminlte-card title="Parametrização dos Módulos do Sistema" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
                     @php
@@ -32,27 +32,43 @@
                         $nomeEmpresa = $dadosModulo[0]->modulo_empresa_codigo.' - '.$nomeEmp[0]->empresa_nome;
                     @endphp
                     <!-- Nome -->
-                    <x-adminlte-input name="empresa" label="Empresa" type="text" value="{{$nomeEmpresa}}" fgroup-class="col-md-12"/>
+                    <x-adminlte-input name="empresa" type="text" value="{{$nomeEmpresa}}" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Empresa <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 <div class="row">
                     <!-- Utiliza Módulo Serviços -->
-                    <x-adminlte-select name="modSrv" label="Módulo de Serviços" fgroup-class="col-md-3">
+                    <x-adminlte-select name="modSrv" fgroup-class="col-md-3">
+                        <x-slot name="label">
+                            Módulo de Serviços <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosModulo[0]['modulo_servico']}}"/>
                     </x-adminlte-select>
 
                     <!-- Utiliza Módulo Emissão RPS -->
-                    <x-adminlte-select name="emiRps" label="Módulo de Emissão RPS" fgroup-class="col-md-3">
+                    <x-adminlte-select name="emiRps" fgroup-class="col-md-3">
+                        <x-slot name="label">
+                            Módulo de Emissão RPS <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosModulo[0]['modulo_emissao_rps']}}"/>
                     </x-adminlte-select>
 
                     <!-- Utiliza Módulo Emissão NF-e -->
-                    <x-adminlte-select name="emiNfs" label="Módulo de Emissão NFS-e" fgroup-class="col-md-3">
+                    <x-adminlte-select name="emiNfs" fgroup-class="col-md-3">
+                        <x-slot name="label">
+                            Módulo de Emissão NFS-e <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosModulo[0]['modulo_emissao_nfs']}}"/>
                     </x-adminlte-select>
 
                     <!-- Utiliza Módulo Emissão Simplificada NFS-e -->
-                    <x-adminlte-select name="emiNfsSimp" label="Módulo de Emissão Simplificada NFS-e" fgroup-class="col-md-3">
+                    <x-adminlte-select name="emiNfsSimp" fgroup-class="col-md-3">
+                        <x-slot name="label">
+                            Módulo de Emissão Simplificada NFS-e <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosModulo[0]['modulo_emissao_nfs_simp']}}"/>
                     </x-adminlte-select>
                 </div>
@@ -60,8 +76,8 @@
                 <!-- /.card -->
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
-                        <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                        <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parSisModulo') }}'" label="Voltar" theme="info" icon=""/>
+                        <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.parSisModulo') }}'" label="Voltar" theme="info" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>

@@ -31,7 +31,7 @@ class ParametrosSistemaAreaController extends Controller
             ->where('area_codigo', $area)
             ->update(['area_desc' => $request->descricao]);
         
-        return redirect(route('parametrosSistemaAreas.editarCadastro', ['area' => $area]))->with('success', 'Área atualizado com sucesso!');
+        return redirect(route('parametrosSistemaAreas.editarCadastro', ['area' => $area]))->with('success', 'Área atualizada com sucesso!');
     }
 
     //Redireciona a app para o cadastro dos serviços

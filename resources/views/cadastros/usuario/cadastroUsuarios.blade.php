@@ -30,7 +30,7 @@
         <form method="post" action="{{route('usuario.inserir',['tipo' => $tipo])}}" id="quickForm" novalidate="novalidate">
             @csrf 
             @method('post')
-            <x-adminlte-card title="Cadastro de Usuário" theme="navy">
+            <x-adminlte-card title="Cadastro de Usuário" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
             
                 @php 
                     $data = DB::table('cadastro_empresas')->select('empresa_codigo', 'empresa_nome')->orderBy('empresa_codigo', 'asc')->get();
@@ -80,7 +80,7 @@
                 <!-- Senha -->
                 <x-adminlte-input name="senha" type="password" placeholder="Nova Senha" igroup-size="md" fgroup-class="col-md-12" autocomplete="new-password">
                     <x-slot name="prependSlot">
-                        <div class="input-group-text bg-info">
+                        <div class="input-group-text x-slot-nexus">
                             <i class="fa-solid fa-key"></i>
                         </div>
                     </x-slot>
@@ -88,12 +88,12 @@
                         Senha <span style="color:red;">*</span>
                     </x-slot>
                     <x-slot name="appendSlot">
-                        <x-adminlte-button class="toggle-password" theme="outline-info" data-target="senha" icon="fa fa-eye"/>
+                        <x-adminlte-button class="toggle-password btn-outline-nexus" theme="" data-target="senha" icon="fa fa-eye"/>
                     </x-slot>
                 </x-adminlte-input>
                 <x-adminlte-input name="senha2" type="password" placeholder="Confirmar Nova Senha" igroup-size="md" fgroup-class="col-md-12" autocomplete="new-password">
                     <x-slot name="prependSlot">
-                        <div class="input-group-text bg-info">
+                        <div class="input-group-text x-slot-nexus">
                             <i class="fa-solid fa-key"></i>
                         </div>
                     </x-slot>
@@ -101,7 +101,7 @@
                         Confirmar Senha <span style="color:red;">*</span>
                     </x-slot>
                     <x-slot name="appendSlot">
-                        <x-adminlte-button class="toggle-password" theme="outline-info" data-target="senha2" icon="fa fa-eye"/>
+                        <x-adminlte-button class="toggle-password btn-outline-nexus" theme="" data-target="senha2" icon="fa fa-eye"/>
                     </x-slot>
                 </x-adminlte-input>
 
@@ -129,8 +129,8 @@
 
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
-                        <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                        <x-adminlte-button type="button" onclick="window.location='{{ route('home.usuarios') }}'" label="Voltar" theme="info" icon=""/>
+                        <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.usuarios') }}'" label="Voltar" theme="" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>

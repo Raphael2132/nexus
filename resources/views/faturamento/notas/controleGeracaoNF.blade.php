@@ -4,48 +4,48 @@
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Faturamento</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                @if($origem == 'REEMISSAO')
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.reemissaoNF')}}">Filtro de Reemissão</a>
-                </li>
-                <li class="breadcrumb-item active">
-                    <a href="{{ route('reemissaoNF.consultaReemissaoNF') }}">Consulta de Reemissão</a>
-                </li>
-                @elseif($origem == 'EMISSAO')
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.emissaoNF')}}">Filtro Emissão</a>
-                </li>
-                <li class="breadcrumb-item active">
-                    <a href="{{ route('emissaoNF.consultaNF') }}">Consulta de Emissão</a>
-                </li>
-                @elseif($origem == 'REEMISSAO_SIMP')
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.reemissaoSimpNF')}}">Filtro Reemissão Simplificada</a>
-                </li>
-                <li class="breadcrumb-item active">
-                    <a href="{{ route('reemissaoSimpNF.consultaReemissaoSimpNF') }}">Consulta Reemissão Simplificada</a>
-                </li>
-                @else
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.emissaoSimpNFS')}}">Emissão Simplificada</a>
-                </li>
-                @endif
-                <li class="breadcrumb-item active">Status Emissão da NF</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Faturamento</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            @if($origem == 'REEMISSAO')
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.reemissaoNF')}}">Filtro de Reemissão</a>
+            </li>
+            <li class="breadcrumb-item active">
+                <a href="{{ route('reemissaoNF.consultaReemissaoNF') }}">Consulta de Reemissão</a>
+            </li>
+            @elseif($origem == 'EMISSAO')
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.emissaoNF')}}">Filtro Emissão</a>
+            </li>
+            <li class="breadcrumb-item active">
+                <a href="{{ route('emissaoNF.consultaNF') }}">Consulta de Emissão</a>
+            </li>
+            @elseif($origem == 'REEMISSAO_SIMP')
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.reemissaoSimpNF')}}">Filtro Reemissão Simplificada</a>
+            </li>
+            <li class="breadcrumb-item active">
+                <a href="{{ route('reemissaoSimpNF.consultaReemissaoSimpNF') }}">Consulta Reemissão Simplificada</a>
+            </li>
+            @else
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.emissaoSimpNFS')}}">Emissão Simplificada</a>
+            </li>
+            @endif
+            <li class="breadcrumb-item active">Status Emissão da NF</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 
 @section('content')
 <div class="d-flex justify-content-center">
     <div class="col-md-8">
-        <x-adminlte-card title="Status de Emissão da Nota Fiscal" theme="navy" collapsible maximizable>
+        <x-adminlte-card title="Status de Emissão da Nota Fiscal" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
             <div class="row">
                 <table class="table tabela-dados-os">
                     <tbody>
@@ -103,15 +103,17 @@
                 </table> 
             </div>
             <x-slot name="footerSlot">
-                @if($origem == 'REEMISSAO')
-                <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('reemissaoNF.consultaReemissaoNF') }}'" label="Voltar" theme="info"/>
-                @elseif($origem == 'EMISSAO')
-                <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('emissaoNF.consultaNF') }}'" label="Voltar" theme="info"/>
-                @elseif($origem == 'REEMISSAO_SIMP')
-                <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('reemissaoSimpNF.consultaReemissaoSimpNF') }}'" label="Voltar" theme="info"/>
-                @else
-                <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.emissaoSimpNFS') }}'" label="Voltar" theme="info"/>
-                @endif
+                <div class="d-flex flex-row-reverse">
+                    @if($origem == 'REEMISSAO')
+                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('reemissaoNF.consultaReemissaoNF') }}'" label="Voltar" theme=""/>
+                    @elseif($origem == 'EMISSAO')
+                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('emissaoNF.consultaNF') }}'" label="Voltar" theme=""/>
+                    @elseif($origem == 'REEMISSAO_SIMP')
+                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('reemissaoSimpNF.consultaReemissaoSimpNF') }}'" label="Voltar" theme=""/>
+                    @else
+                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.emissaoSimpNFS') }}'" label="Voltar" theme=""/>
+                    @endif
+                </div>
             </x-slot>
         </x-adminlte-card>
     </div>

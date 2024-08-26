@@ -1,25 +1,25 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Motivos de Cancelamento')
+@section('title', 'Motivos de Cancelamento')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.parMotCan')}}">Motivos de Cancelamento</a>
-                </li>
-                @if($acao == 'N')
-                    <li class="breadcrumb-item active">Cadastro de Motivos de Cancelamento</li>
-                @else
-                    <li class="breadcrumb-item active">Manutenção de Motivos de Cancelamento</li>
-                @endif
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.parMotCan')}}">Motivos de Cancelamento</a>
+            </li>
+            @if($acao == 'N')
+                <li class="breadcrumb-item active">Cadastro de Motivos de Cancelamento</li>
+            @else
+                <li class="breadcrumb-item active">Manutenção de Motivos de Cancelamento</li>
+            @endif
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -32,7 +32,7 @@
         <form method="post" action="{{route('parametrosSisMotCan.update')}}" id="quickForm" novalidate="novalidate">
         @endif
             @csrf 
-            <x-adminlte-card title="{{ $acao == 'N' ? 'Cadastro de Novo' : 'Manutenção do' }} Motivo de Cancelamento" theme="navy">
+            <x-adminlte-card title="{{ $acao == 'N' ? 'Cadastro de Novo' : 'Manutenção do' }} Motivo de Cancelamento" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 @php 
                     if($acao == 'N'){
                         $codigo = '';
@@ -45,10 +45,18 @@
 
                 <div class="row"> 
                     <!-- Código -->
-                    <x-adminlte-input name="codigo" label="Código" type="number" value="{{$codigo}}" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="codigo" type="number" value="{{$codigo}}" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Código <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
 
                     <!-- Descrição -->
-                    <x-adminlte-input name="descricao" label="Descrição" type="text" value="{{$desc}}" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="descricao" type="text" value="{{$desc}}" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Descrição <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>                          
 
                 <!-- /.card -->
@@ -62,13 +70,13 @@
                     @endphp
                     <div class="d-flex justify-content-between w-100">
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-flat mr-2 btn_novo" type="button" onclick="window.location='{{route('parametrosSisMotCan.cadastroMotCan',['acao' => 'N', 'dadosMotCan' => ' '])}}'" label="Novo" theme="info" icon="fa-solid fa-plus"/>
-                            <x-adminlte-button class="btn-flat mr-2 btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                            <x-adminlte-button class="btn-flat mr-2 btn_incluir" type="submit" label="Incluir" theme="info" icon="fa-solid fa-plus"/>
-                            <x-adminlte-button class="btn-flat mr-2 btn_excluir" type="button" data-id="{{$motCan}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_novo" type="button" onclick="window.location='{{route('parametrosSisMotCan.cadastroMotCan',['acao' => 'N', 'dadosMotCan' => ' '])}}'" label="Novo" theme="" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_incluir" type="submit" label="Incluir" theme="info" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_excluir" type="button" data-id="{{$motCan}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
                         </div>
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parMotCan') }}'" label="Voltar" theme="info" icon=""/>
+                            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.parMotCan') }}'" label="Voltar" theme="info" icon=""/>
                         </div>
                     </div>
                 </x-slot>
@@ -166,7 +174,7 @@ $(function () {
             codigo: {
                 required: true
             },
-            desc: {
+            descricao: {
                 required: true,
                 maxlength: 80
             },
@@ -175,7 +183,7 @@ $(function () {
             codigo: {
                 required: "Por Favor informe um Código"
             },
-            desc: {
+            descricao: {
                 required: "Por Favor informe a Descrição",
                 maxlength: "Infome no máximo 80 caracteres"
             },

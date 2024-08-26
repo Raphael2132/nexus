@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Módulos do Sistema')
+@section('title', 'Áreas')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Parâmetros do Sistema</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Áreas</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros do Sistema</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">Áreas</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')    
@@ -27,35 +27,13 @@
     
     $config = [
         'lengthMenu' => [ 5, 10, 25, 50],
-        'language' => [
-            'decimal' =>        '',
-            'emptyTable' =>     'Sem dados disponíveis na tabela',
-            'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-            'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-            'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-            'infoPostFix' =>    '',
-            'thousands' =>      ',',
-            'lengthMenu' =>     'Mostrar _MENU_ registros',
-            'loadingRecords' => 'Carregando...',
-            'processing' =>     '',
-            'search' =>         'Pesquisar:',
-            'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-            'paginate' => [
-                'first' =>      'Primeiro',
-                'last' =>       'Último',
-                'next' =>       'Próximo',
-                'previous' =>   'Anterior'
-            ],
-            'aria' => [
-                'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-            ],
-        ],
+        'language' => Helper::dataTableLangPtBR(),
+        'order' => [[0, 'asc']],
         'columns' => [null, null, ['orderable' => false]],
     ];
     @endphp
 
-    <x-adminlte-card title="Áreas do Sistema Parametrizadas" theme="navy" theme-mode="outline">
+    <x-adminlte-card title="Áreas do Sistema" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
         <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
             @foreach ($areas as $area)
                 <tr>   
@@ -72,7 +50,7 @@
                             <form method="post" action="{{route('parametrosSistemaAreas.destroy', ['area' => $area])}}" style="float: left;">
                                 @csrf 
                                 @method('delete')
-                                <button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete" value="Delete" type="submit" >
+                                <button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Excluir Registro" value="Delete" type="submit" >
                                     <i class="fa fa-lg fa-fw fa-trash"></i>
                                 </button>
                             </form>
@@ -90,7 +68,8 @@
 
 <!-- Chamada dos Plugins usados na app -->  
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 <style>

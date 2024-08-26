@@ -39,6 +39,7 @@
         @php
         $heads = [
             ['label' => '', 'no-export' => true, 'width' => 5],
+            'Empresa',
             'Prestador',
             'CPF',
             'Setor',
@@ -48,43 +49,21 @@
         ];
         
         $config = [
-            'searching' => false,
-            'lengthChange' => false,
+            'lengthMenu' => [ 5, 10, 25, 50],
             'pageLength' => 5,
-            'language' => [
-                'decimal' =>        '',
-                'emptyTable' =>     'Sem dados disponíveis na tabela',
-                'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-                'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-                'infoPostFix' =>    '',
-                'thousands' =>      ',',
-                'lengthMenu' =>     'Mostrar _MENU_ registros',
-                'loadingRecords' => 'Carregando...',
-                'processing' =>     '',
-                'search' =>         'Pesquisar:',
-                'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-                'paginate' => [
-                    'first' =>      'Primeiro',
-                    'last' =>       'Último',
-                    'next' =>       'Próximo',
-                    'previous' =>   'Anterior'
-                ],
-                'aria' => [
-                    'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                    'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-                ],
-            ],
-            'columns' => [['orderable' => false], null, null, null, null, null, ['orderable' => false]],
+            'language' => Helper::dataTableLangPtBR(),
+            'order' => [[1, 'asc'],[2, 'asc']],
+            'columns' => [['orderable' => false], null, null, null, null, null, null, ['orderable' => false]],
         ];
         @endphp
 
-        <x-adminlte-card title="Lista de Prestadores Ativos" theme="navy" theme-mode="outline">
-            <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable>
+        <x-adminlte-card title="Lista de Prestadores Ativos" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
+            <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
                 @foreach ($prestadores as $prestador)
                     @php 
                         $dadosSet = DB::table('parametros_srv_setores')->where('setor_codigo', $prestador->prestador_set)->where('setor_empresa', $prestador->prestador_empresa)->get();
                         $dadosArea = DB::table('parametros_sistema_areas')->where('area_codigo', $dadosSet[0]->setor_area)->get();
+                        $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $prestador->prestador_empresa)->first();
 
                         if($prestador->prestador_acesso_sis == 'N'){
                             $acessoSis = 'Não';
@@ -309,6 +288,7 @@
                                 </a>
                             </nobr>
                         </td>   
+                        <td>{{ $prestador->prestador_empresa.' - '.$dataEmp->empresa_nome }}</td>
                         <td>{{ $prestador->prestador_codigo.' - '.$prestador->prestador_nome }}</td>
                         <td>{{ Helper::mascaraCPF($prestador->prestador_cpf) }}</td>
                         <td>{{ $prestador->prestador_set.' - '.$dadosSet[0]->setor_desc }}</td>
@@ -334,7 +314,8 @@
 
 <!-- Chamada dos Plugins usados na app -->  
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 @stop

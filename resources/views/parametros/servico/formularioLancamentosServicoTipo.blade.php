@@ -5,7 +5,7 @@
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-6">
-        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais de Serviços</h4>
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
@@ -38,7 +38,7 @@
         <form method="post" action="{{route('lancamentosSrvTipo.update')}}" id="quickForm" novalidate="novalidate">
         @endif
             @csrf 
-            <x-adminlte-card :title="$titulo" theme="navy">
+            <x-adminlte-card :title="$titulo" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
                     @php
@@ -88,7 +88,7 @@
                     </x-adminlte-select>
                     
                     <!-- Descrição -->
-                    <x-adminlte-input name="descricao" type="text" value="{{$descricao_sel}}" fgroup-class="col-md-5">
+                    <x-adminlte-input name="descricao" type="text" value="{{$descricao_sel}}" placeholder="Informe a Descrição" fgroup-class="col-md-5">
                         <x-slot name="label">
                             Descrição <span style="color:red;">*</span>
                         </x-slot>
@@ -138,7 +138,7 @@
                         }
                     @endphp
                     <!-- Código -->
-                    <x-adminlte-input class="text-uppercase" name="codigo" type="text" value="{{$codigo_sel}}" fgroup-class="col-md-4">
+                    <x-adminlte-input class="text-uppercase" name="codigo" type="text" value="{{$codigo_sel}}" placeholder="Informe o Código de dois dígitos" fgroup-class="col-md-4">
                         <x-slot name="label">
                             Código <span style="color:red;">*</span>
                         </x-slot>
@@ -243,12 +243,12 @@
                     @endphp
                     <div class="d-flex justify-content-between w-100">
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-flat mr-2 btn_novo" type="button" onclick="window.location='{{ route('lancamentosSrvTipo.cadastro') }}'" label="Novo Tipo de Serviço" theme="info" icon="fa-solid fa-plus"/>
-                            <x-adminlte-button class="btn-flat mr-2 btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                            <x-adminlte-button class="btn-flat mr-2 btn_excluir" type="button" data-id="{{$tipoSRV}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_novo" type="button" onclick="window.location='{{ route('lancamentosSrvTipo.cadastro') }}'" label="Novo Tipo de Serviço" theme="" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_salvar" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_excluir" type="button" data-id="{{$tipoSRV}}" data-token="{{ csrf_token() }}" label="Excluir" theme="" icon="fa-solid fa-trash"/>
                         </div>
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.lancSrvTipo') }}'" label="Voltar" theme="info" icon=""/>
+                            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.lancSrvTipo') }}'" label="Voltar" theme="" icon=""/>
                         </div>
                     </div>
                 </x-slot>

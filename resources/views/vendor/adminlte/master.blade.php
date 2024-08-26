@@ -37,7 +37,7 @@
     @endif
 
     {{-- CSS Customizado projeto Nexus --}}
-    <link rel="stylesheet" href="{{ asset('vendor/nexus/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/nexus/css/styles.css') }}">
 
     {{-- Extra Configured Plugins Stylesheets --}}
     @include('adminlte::plugins', ['type' => 'css'])

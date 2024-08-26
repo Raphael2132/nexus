@@ -23,7 +23,7 @@
 <form method="post" action="{{route('cliente.inserir')}}" id="quickForm" novalidate="novalidate">
     @csrf 
     @method('post')
-    <x-adminlte-card title="Cadastro de Novo Cliente" theme="navy">
+    <x-adminlte-card title="Cadastro de Novo Cliente" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
         <div class="row"> 
             <!-- Tipo de Cadastro -->
             <x-adminlte-select name="tipoCadastro" fgroup-class="col-md-6">
@@ -64,18 +64,7 @@
                 <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-4"></x-adminlte-input>
 
                 @php
-                $config = [
-                    "singleDatePicker" => true,
-                    "showDropdowns" => true,
-                    "startDate" => "js:moment()",
-                    "minYear" => 1900,
-                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                    "timePicker" => false,
-                    "timePicker24Hour" => false,
-                    "timePickerSeconds" => false,
-                    "cancelButtonClasses" => "btn-danger",
-                    "locale" => ["format" => "DD/MM/YYYY"],
-                ];
+                    $config = Helper::dtRangeDataPtBR();
                 @endphp
                 <!-- Data de Nascimento -->
                 <x-adminlte-date-range name="dataNascimento" label="Data de Nascimento" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
@@ -106,8 +95,8 @@
         <!-- /.card -->
         <x-slot name="footerSlot">
             <div class="d-flex justify-content-between w-100">
-                <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                <x-adminlte-button type="button" onclick="window.location='{{ route('home.clientes') }}'" label="Voltar" theme="info" icon=""/>
+                <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
+                <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.clientes') }}'" label="Voltar" theme="" icon=""/>
             </div>
         </x-slot>
     </x-adminlte-card>
@@ -123,7 +112,6 @@
 @section('plugins.Inputmask', true)
 @section('plugins.jqueryValidation', true)
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
 
 @section('js')
 <script>

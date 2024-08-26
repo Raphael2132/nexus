@@ -4,15 +4,15 @@
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Parâmetros do Sistema</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Módulos do Sistema</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros do Sistema</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">Módulos do Sistema</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')    
@@ -20,48 +20,25 @@
     <div class="col-md-12"> 
         {{-- Setup data for datatables --}}
         @php
-        $heads = [
-            'Empresa',
-            'Módulo de Serviços',
-            'Módulo Emissão de RPS',
-            'Módulo Emissão de NFS-e',
-            'Módulo Emissão Simplificada de NFS-e',
-            ['label' => 'Opção', 'no-export' => true, 'width' => 5],
-        ];
-        
-        $config = [
-            'searching' => false,
-            'lengthChange' => false,
-            'pageLength' => 5,
-            'language' => [
-                'decimal' =>        '',
-                'emptyTable' =>     'Sem dados disponíveis na tabela',
-                'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-                'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-                'infoPostFix' =>    '',
-                'thousands' =>      ',',
-                'lengthMenu' =>     'Mostrar _MENU_ registros',
-                'loadingRecords' => 'Carregando...',
-                'processing' =>     '',
-                'search' =>         'Pesquisar:',
-                'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-                'paginate' => [
-                    'first' =>      'Primeiro',
-                    'last' =>       'Último',
-                    'next' =>       'Próximo',
-                    'previous' =>   'Anterior'
-                ],
-                'aria' => [
-                    'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                    'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-                ],
-            ],
-            'columns' => [null, null, null, null, null, ['orderable' => false]],
-        ];
+            $heads = [
+                'Empresa',
+                'Módulo de Serviços',
+                'Módulo Emissão de RPS',
+                'Módulo Emissão de NFS-e',
+                'Módulo Emissão Simplificada de NFS-e',
+                ['label' => 'Opção', 'no-export' => true, 'width' => 5],
+            ];
+            
+            $config = [
+                'lengthMenu' => [ 5, 10, 25, 50],
+                'pageLength' => 5,
+                'language' => Helper::dataTableLangPtBR(),
+                'order' => [[0, 'asc']],
+                'columns' => [null, null, null, null, null, ['orderable' => false]],
+            ];
         @endphp
 
-        <x-adminlte-card title="Módulos do Sistema Parametrizados" theme="navy" theme-mode="outline">
+        <x-adminlte-card title="Módulos do Sistema" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
             <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
                 @foreach ($modulos as $modulo)
                     @php
@@ -99,7 +76,8 @@
 
 <!-- Chamada dos Plugins usados na app -->  
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 @stop

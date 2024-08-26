@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Abertura de OS')
+@section('title', 'Emissão de OS')
 
 @section('content_header')
 <div class="row mb-2">
@@ -24,7 +24,7 @@
         <form method="post" action="{{route('emissaoOS.abreOS', ['empresa' => $empresa, 'cliente' => $cliente])}}" id="quickForm" novalidate="novalidate">
         @csrf 
         @method('post')
-            <x-adminlte-card title="Abertura de Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
+            <x-adminlte-card title="Abertura de Ordem de Serviço" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 @php
                     $data_emp = DB::table('cadastro_empresas')->where('empresa_codigo', $empresa)->get();
 
@@ -124,7 +124,7 @@
                     }
                 @endphp
 
-                <x-adminlte-callout theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-building" title="Dados da Empresa">
+                <x-adminlte-callout theme="" class="callout-nexus" title-class="text-uppercase" icon="fa-solid fa-building" title="Dados da Empresa">
                     <div class="text-muted">
                         <div class="row quebra-linha">
                             <p class="text-sm col-md-2">Empresa
@@ -146,7 +146,7 @@
                     </div>
                 </x-adminlte-callout>
 
-                <x-adminlte-callout theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-user-tie" title="Dados do Cliente">
+                <x-adminlte-callout theme="" class="callout-nexus" title-class="text-uppercase" icon="fa-solid fa-user-tie" title="Dados do Cliente">
                     <div class="text-muted">
                         <div class="row quebra-linha">
                             <p class="text-sm col-md-2">Cliente
@@ -210,7 +210,7 @@
                         @if(empty($end_cli[0]))
                         <!-- Se ainda não foi cadastrado endereço para o cliente cria card vazio -->
                         <div class="col-md-4">
-                            <x-adminlte-card theme="info" title="Endereço" theme-mode="outline">
+                            <x-adminlte-card title="Endereço" theme="" theme-mode="outline" header-class="card-outline-nexus">
                                 <i>Registros não encontrados</i>
                             </x-adminlte-card>
                         </div>
@@ -233,7 +233,7 @@
                                 @endphp
                                 <div class="col-md-4" style="float: left;">
                                     <!-- Card do Endereço da empresa -->
-                                    <x-adminlte-card theme="info" :title="$titulo" :icon="$icone" theme-mode="outline">
+                                    <x-adminlte-card :title="$titulo" :icon="$icone" theme="" theme-mode="outline" header-class="card-outline-nexus">
                                         <i>{{ $endereco->endereco_logradouro }}, {{ $endereco->endereco_numero }}</br>
                                             @php
                                                 if(!empty($endereco->endereco_complemento)){
@@ -270,13 +270,13 @@
 
                                         @endphp
                                         @if($endereco->endereco_principal == "S")
-                                        <div class="icheck-primary d-inline" style="margin-right: 25px;">
+                                        <div class="icheck-nexus d-inline" style="margin-right: 25px;">
                                             <input type="radio" id="radioPrimary_{{$endereco->endereco_seq}}" name="enderecoCliOS" checked value="{{$endereco->endereco_seq}}">
                                             <label for="radioPrimary_{{$endereco->endereco_seq}}">Endereço {{$cnt_end.$principal}}</label>
                                         </div>
                                         @else
                                         
-                                        <div class="icheck-primary d-inline" style="margin-right: 25px;">
+                                        <div class="icheck-nexus d-inline" style="margin-right: 25px;">
                                             <input type="radio" id="radioPrimary_{{$endereco->endereco_seq}}" name="enderecoCliOS" value="{{$endereco->endereco_seq}}">
                                             <label for="radioPrimary_{{$endereco->endereco_seq}}">Endereço {{$cnt_end.$principal}}</label>
                                         </div>
@@ -289,28 +289,28 @@
                     </div>
                 </x-adminlte-callout>
                 <!-- Dados do Local do Serviço -->
-                <x-adminlte-callout theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-location-dot" title="Dados do Local do Serviço">
+                <x-adminlte-callout theme="" class="callout-nexus" title-class="text-uppercase" icon="fa-solid fa-location-dot" title="Dados do Local do Serviço">
                     <div class="row">
                         <label for="form-group">Local da Prestação do Serviço</label>
                     </div>
                     <div class="row">
                         <div class="form-group clearfix">
-                            <div class="icheck-primary d-inline" style="margin-right: 25px;">
+                            <div class="icheck-nexus d-inline" style="margin-right: 25px;">
                                 <input type="radio" id="radio_empresa" name="enderecoLocSrv" checked value="1">
                                 <label for="radio_empresa">Endereço da Empresa</label>
                             </div>
-                            <div class="icheck-primary d-inline" style="margin-right: 25px;">
+                            <div class="icheck-nexus d-inline" style="margin-right: 25px;">
                                 <input type="radio" id="radio_cliente" name="enderecoLocSrv" value="2">
                                 <label for="radio_cliente">Endereço do Cliente</label>
                             </div>
-                            <div class="icheck-primary d-inline" style="margin-right: 25px;">
+                            <div class="icheck-nexus d-inline" style="margin-right: 25px;">
                                 <input type="radio" id="radio_outro" name="enderecoLocSrv" value="3">
                                 <label for="radio_outro">Outro Endereço</label>
                             </div>
                         </div>
                     </div>
                     <!-- Dados do serviço -->
-                    <x-adminlte-callout class="bloco-endereco" theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-file-invoice-dollar" title="Local da prestação do serviço">
+                    <x-adminlte-callout class="callout-nexus bloco-endereco" theme="" title-class="text-uppercase" icon="fa-solid fa-file-invoice-dollar" title="Local da prestação do serviço">
                         <div class="row">
                             <!-- Campo escondido para tratamento interno -->
                             <input id="ibgeCodMun" type="hidden" name="ibgeCodMun">
@@ -384,8 +384,8 @@
                 </x-adminlte-callout>
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
-                        <x-adminlte-button class="btn-flat" type="submit" label="Abrir OS" theme="info" icon="fa-solid fa-file-circle-plus"/>
-                        <x-adminlte-button type="button" onclick="window.location='{{ route('home.emissaoOS') }}'" label="Voltar" theme="info" icon=""/>
+                        <x-adminlte-button class="btn-nexus" type="submit" label="Abrir OS" theme="info" icon="fa-solid fa-file-circle-plus"/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.emissaoOS') }}'" label="Voltar" theme="info" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>

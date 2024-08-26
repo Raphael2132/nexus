@@ -42,6 +42,9 @@ $glo_os_dadosTMO = session('glo_os_dadosTMO');
 $glo_os_dadosTmoSelecionada = session('glo_os_dadosTmoSelecionada');
 $glo_os_subEstagioRequisicao = session('glo_os_subEstagioRequisicao');
 $glo_os_dadosServicoSelecionado = session('glo_os_dadosServicoSelecionado');
+$glo_os_dadosSrvIni = session('glo_os_dadosSrvIni');
+$glo_os_dadosSrvFin = session('glo_os_dadosSrvFin');
+$glo_os_dadosSrvApr = session('glo_os_dadosSrvApr');
 
 
 $altValorTOS = '';
@@ -53,7 +56,7 @@ $status_servico = '';
 <div class="col-md-12">
 
     <!-- ********** Painel Principal da Abertura de OS ********** -->
-    <x-adminlte-card title="Painel de Abertura de Ordem de Serviço" theme="navy" collapsible maximizable>
+    <x-adminlte-card title="Painel de Abertura de Ordem de Serviço" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
         <!-- Posiciona os blocos do lado esquerdo e direito na mesma linha -->
         <div class="row">
@@ -62,7 +65,7 @@ $status_servico = '';
             <div class="col-md-4">
 
                 <!-- ********** Bloco dos dados principais da abertura de OS ********** -->
-                <x-adminlte-card title="Dados da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
+                <x-adminlte-card title="Dados da Ordem de Serviço" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     @php 
                         if($glo_os_dadosOS[0]->os_sts == 'A'){
                             $situacao = "Aberta";
@@ -81,7 +84,7 @@ $status_servico = '';
                         }
                     @endphp
                     <div class="row">
-                        <table class="table tabela-dados-os">
+                        <table class="table tabela-dados-os tabela-custom-nexus">
                             <tbody>
                                 <tr>
                                     <td style="border: 0px;">
@@ -249,7 +252,7 @@ $status_servico = '';
 
                 @if($glo_os_dadosOS[0]->os_sts == 'F' || $glo_os_dadosOS[0]->os_sts == 'C')
                 <!-- ********** Bloco do resumo da os ********** -->
-                <x-adminlte-card title="Resumo da OS" theme="navy" theme-mode="outline" collapsible maximizable>
+                <x-adminlte-card title="Resumo da OS" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     @php 
                         $usu_abr = DB::table('users')->where('usuario_codigo', $glo_os_dadosOS[0]->os_res_abr)->get();
                     @endphp
@@ -323,7 +326,7 @@ $status_servico = '';
                 </x-adminlte-card><!-- Fechamento do bloco do resumo da os ********** -->
                 @else
                 <!-- ********** Bloco dos dados das etapas de atendimento da abertura de OS ********** -->
-                <x-adminlte-card title="Etapas de Atendimento" theme="navy" theme-mode="outline" collapsible maximizable>
+                <x-adminlte-card title="Etapas de Atendimento" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     @php 
                         $etapas = DB::table('lancamento_srv_etapa_atendimentos')->where('eat_emp', $glo_os_empresa)->orderBy('eat_ord', 'asc')->orderBy('eat_ord', 'asc')->get();
                         $cnt_etapa = 0;
@@ -354,7 +357,7 @@ $status_servico = '';
                 
                 <!-- ********** Bloco GERAL do painel principal da Abertura de OS - Etapa = PRINCIPAL ********** -->
                 @if($glo_os_estagioAPP == "PRINCIPAL")
-                <x-adminlte-card title="Lista de Tarefas da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
+                <x-adminlte-card title="Lista de Requisições da Ordem de Serviço" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     @php
                     // Monta os dados da tabela do bloco
                     $heads = [
@@ -371,30 +374,8 @@ $status_servico = '';
                         'searching' => false,
                         'lengthChange' => false,
                         'pageLength' => 5,
-                        'language' => [
-                            'decimal' =>        '',
-                            'emptyTable' =>     'Sem dados disponíveis na tabela',
-                            'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                            'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-                            'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-                            'infoPostFix' =>    '',
-                            'thousands' =>      ',',
-                            'lengthMenu' =>     'Mostrar _MENU_ registros',
-                            'loadingRecords' => 'Carregando...',
-                            'processing' =>     '',
-                            'search' =>         'Pesquisar:',
-                            'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-                            'paginate' => [
-                                'first' =>      'Primeiro',
-                                'last' =>       'Último',
-                                'next' =>       'Próximo',
-                                'previous' =>   'Anterior'
-                            ],
-                            'aria' => [
-                                'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                                'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-                            ],
-                        ],
+                        'language' => Helper::dataTableLangPtBR(),
+                        'order' => [[1, 'asc']],
                         'columns' => [['orderable' => false], null, null, null, null, null, ['orderable' => false]],
                     ];
                     @endphp
@@ -447,7 +428,7 @@ $status_servico = '';
                     <form method="post" action="{{ route('requisicaoOS.cancelarOS', ['empresa'=> $glo_os_empresa, 'numOS'=> $glo_os_nos]) }}" id="formulario-cancela-os" novalidate="novalidate">
                         @csrf 
                         @method('post')
-                        <x-adminlte-modal id="modalCancelamentoOS" title="Cancelamento da OS" size="xl" theme="navy" icon="" v-centered scrollable>
+                        <x-adminlte-modal id="modalCancelamentoOS" title="Cancelamento da OS" size="xl" theme="modal-nexus" icon="fa-solid fa-ban" v-centered scrollable>
                             
                             <div class="col-md-12" style="height:auto;">
                                 <div class="row">
@@ -475,7 +456,7 @@ $status_servico = '';
                                 <div class="row">    
                                     <x-adminlte-textarea name="obsMot" label="Observações" rows=5 igroup-size="sm" label-class="text-dark" placeholder="Escreva sua menssagem..." fgroup-class="col-md-12" >
                                         <x-slot name="prependSlot">
-                                            <div class="input-group-text bg-navy">
+                                            <div class="input-group-text x-slot-nexus">
                                                 <i class="fas fa-lg fa-file-alt text-white"></i>
                                             </div>
                                         </x-slot>
@@ -484,8 +465,8 @@ $status_servico = '';
                             </div>
                             <!-- Criação dos botões do Modal -->  
                             <x-slot name="footerSlot">
-                                <x-adminlte-button class="mr-auto" theme="info" label="Cancelar OS" icon="fa-solid fa-ban" type="submit"/>
-                                <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                                <x-adminlte-button class="btn-nexus mr-auto" theme="" label="Cancelar OS" icon="fa-solid fa-ban" type="submit"/>
+                                <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                             </x-slot>
                             
                         </x-adminlte-modal>
@@ -496,7 +477,7 @@ $status_servico = '';
 
                 <!-- ********** Bloco de inclusão da requisição da Abertura de OS - Etapa = INCLUSAO_REQUISICAO ********** -->
                 @if($glo_os_estagioAPP == "INCLUSAO_REQUISICAO")
-                <x-adminlte-card title="Inclusão de Requisição na Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
+                <x-adminlte-card title="Inclusão de Requisição na Ordem de Serviço" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     <form method="post" action="{{route('requisicaoOS.inserir', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos, 'glo_eat_cod' => $glo_os_req_eat_cod])}}" id="quickForm-insert-requisicao" novalidate="novalidate">
                         @csrf
                         <!-- Linha 1 dos dados principais da tarefa -->
@@ -508,7 +489,7 @@ $status_servico = '';
                                     Descriçao <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text bg-navy">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="fas fa-lg fa-file-alt text-white"></i>
                                     </div>
                                 </x-slot>
@@ -596,9 +577,9 @@ $status_servico = '';
 
                 <!-- ********** Bloco de consulta da requisição da Abertura de OS - Etapa = CONSULTA_REQUISICAO ********** -->
                 @if($glo_os_estagioAPP == "CONSULTA_REQUISICAO")
-                <x-adminlte-card title="Consulta de Requisição da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
+                <x-adminlte-card title="Consulta de Requisição da Ordem de Serviço" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     <div class="row">
-                        <table class="table tabela-dados-req">
+                        <table class="table tabela-dados-req tabela-custom-nexus">
                             <tbody>
                                 <tr>
                                     <th colspan="4">Dados da Requisição</th>
@@ -693,30 +674,8 @@ $status_servico = '';
                         'searching' => false,
                         'lengthChange' => false,
                         'pageLength' => 5,
-                        'language' => [
-                            'decimal' =>        '',
-                            'emptyTable' =>     'Sem dados disponíveis na tabela',
-                            'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                            'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-                            'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-                            'infoPostFix' =>    '',
-                            'thousands' =>      ',',
-                            'lengthMenu' =>     'Mostrar _MENU_ registros',
-                            'loadingRecords' => 'Carregando...',
-                            'processing' =>     '',
-                            'search' =>         'Pesquisar:',
-                            'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-                            'paginate' => [
-                                'first' =>      'Primeiro',
-                                'last' =>       'Último',
-                                'next' =>       'Próximo',
-                                'previous' =>   'Anterior'
-                            ],
-                            'aria' => [
-                                'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                                'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-                            ],
-                        ],
+                        'language' => Helper::dataTableLangPtBR(),
+                        'order' => [[1, 'asc']],
                         'columns' => [['orderable' => false], null, null, null, null, null, null, null, null, null, null, null, null, null],
                     ];
                     @endphp
@@ -801,7 +760,7 @@ $status_servico = '';
                                     <a data-toggle="modal" data-target="#aprovaServico_{{$servico->srv_seq}}">
                                         <i title="Não Aprovado" class="{{$icone_apr_servico}}"></i>
                                     </a>
-                                    <x-adminlte-modal id="aprovaServico_{{$servico->srv_seq}}" title="Aprovar Serviço" size="xl" theme="navy" v-centered static-backdrop scrollable>
+                                    <x-adminlte-modal id="aprovaServico_{{$servico->srv_seq}}" title="Aprovar Serviço" size="xl" theme="modal-nexus" icon="fa-solid fa-clipboard-check" v-centered static-backdrop scrollable>
                                         <div class="row" style="height:auto;">
                                             <p class="text-sm col-md-1">Seq.
                                                 <b class="d-block">{{$servico->srv_seq}}</b>
@@ -845,11 +804,11 @@ $status_servico = '';
                                             </p>
                                         </div>
                                         <x-slot name="footerSlot">
-                                            <form method="get" action="{{route('servicoOS.aprovar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $servico->srv_req,'sequencia'=> $servico->srv_seq,'codTMO'=> $servico->srv_tmo])}}">
+                                            <form class="mr-auto" method="get" action="{{route('servicoOS.aprovar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $servico->srv_req,'sequencia'=> $servico->srv_seq,'codTMO'=> $servico->srv_tmo])}}">
                                                 @csrf 
-                                                <x-adminlte-button class="mr-auto" theme="info" label="Aprovar" value="Aprovar" type="submit" icon="fa-solid fa-thumbs-up"/>
+                                                <x-adminlte-button class="btn-nexus mr-auto" theme="info" label="Aprovar" value="Aprovar" type="submit" icon="fa-solid fa-thumbs-up"/>
                                             </form>
-                                            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                                            <x-adminlte-button class="btn-nexus" theme="info" label="Voltar" data-dismiss="modal"/>
                                         </x-slot>
                                     </x-adminlte-modal>
                                     @endif
@@ -883,60 +842,38 @@ $status_servico = '';
                     </form>
 
                     <!-- ********** Modal do Botão de Iniciar Serviços ********** -->
-                    <x-adminlte-modal id="modalIniSrvReq" title="Serviços em Espera" size="xl" theme="navy" icon="fa-solid fa-hourglass-start" v-centered scrollable>
+                    <x-adminlte-modal id="modalIniSrvReq" title="Serviços em Espera" size="xl" theme="modal-nexus" icon="fa-solid fa-hourglass-start" v-centered scrollable>
                         <div class="row" style="height:auto;">  
                             @php
-                            $headsIniSrv = [
-                                ['label' => '', 'no-export' => true, 'width' => '5%'],
-                                'Seq.',
-                                'Código',
-                                'Descrição',
-                                'Prestador',
-                                'Tipo Hr.',
-                                'Qtd. Hr.'
-                            ];
+                                $headsIniSrv = [
+                                    ['label' => '', 'no-export' => true, 'width' => '5%'],
+                                    'Seq.',
+                                    'Código',
+                                    'Descrição',
+                                    'Prestador',
+                                    'Tipo Hr.',
+                                    'Qtd. Hr.'
+                                ];
 
                                 $configIniSrv = [
                                     'paging' => false,
                                     'searching' => false,
-                                    'language' => [
-                                        'decimal' =>        '',
-                                        'emptyTable' =>     'Sem dados disponíveis na tabela',
-                                        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                                        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-                                        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-                                        'infoPostFix' =>    '',
-                                        'thousands' =>      ',',
-                                        'lengthMenu' =>     'Mostrar _MENU_ registros',
-                                        'loadingRecords' => 'Carregando...',
-                                        'processing' =>     '',
-                                        'search' =>         'Pesquisar:',
-                                        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-                                        'paginate' => [
-                                            'first' =>      'Primeiro',
-                                            'last' =>       'Último',
-                                            'next' =>       'Próximo',
-                                            'previous' =>   'Anterior'
-                                        ],
-                                        'aria' => [
-                                            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                                            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-                                        ],
-                                    ],
-                                    'order' => [[1, 'asc']],// Ordena pela primeira coluna (Seq.) em ordem ascendente
+                                    'language' => Helper::dataTableLangPtBR(),
+                                    'order' => [[1, 'asc']],
                                     'columns' => [
-                                        ['orderable' => false],  // Seq.
-                                        ['orderable' => false],  // Código
-                                        ['orderable' => false],  // Descrição
-                                        ['orderable' => false],  // Prestador
-                                        ['orderable' => false],  // Tipo Hr.
-                                        ['orderable' => false],  // Qtd. Hr.
+                                        ['orderable' => false],
+                                        ['orderable' => false],  
+                                        ['orderable' => false],  
+                                        ['orderable' => false], 
+                                        ['orderable' => false], 
+                                        ['orderable' => false], 
+                                        ['orderable' => false],
                                     ],
                                 ];   
                                 $cntSrv = 0;
                             @endphp
                             <x-adminlte-datatable id="table-inisrv" :heads="$headsIniSrv" :config="$configIniSrv" theme="light" striped hoverable>
-                                @foreach($glo_os_dadosServico as $servico)
+                                @foreach($glo_os_dadosSrvIni as $servico)
 
                                     @php
                                         if(!empty($servico->srv_prt)){
@@ -959,11 +896,7 @@ $status_servico = '';
                                             $tipo_hora = "Terceiros";
                                         }
                                     @endphp
-
-                                    @if($servico->srv_sts == 'E' && $servico->srv_flg_apr == 'S')
-                                    @php
-                                        $cntSrv += 1;
-                                    @endphp
+                                    
                                     <tr>
                                         <td><input type="checkbox" class="record-checkbox" value="{{$servico->srv_seq}}"></td>
                                         <td>{{$servico->srv_seq}}</td>
@@ -973,27 +906,22 @@ $status_servico = '';
                                         <td>{{$tipo_hora}}</td>
                                         <td>{{$servico->srv_qhr}}</td>
                                     </tr>
-                                    @endif
                                 @endforeach
-
-                                @if($cntSrv == 0)
-                                <tr class="odd"><td valign="top" colspan="7" class="dataTables_empty">Não existe serviços para serem iniciados na requisição.</td></tr>
-                                @endif
                             </x-adminlte-datatable>
                         </div>
                         <!-- Criação dos botões do Modal -->  
                         <x-slot name="footerSlot">
-                            <form id="update-form" action="{{ route('servicoOS.iniciar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}" method="POST">
+                            <form class="mr-auto" id="update-form" action="{{ route('servicoOS.iniciar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="selected_srvIni" id="selected-srvIni">
-                                <x-adminlte-button class="mr-auto" theme="info" label="Iniciar Serviços" icon="fa-solid fa-circle-play" type="submit"/>
+                                <x-adminlte-button class="btn-nexus mr-auto" theme="" label="Iniciar Serviços" icon="fa-solid fa-circle-play" type="submit"/>
                             </form>
-                            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                            <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                         </x-slot>   
                     </x-adminlte-modal>
 
-                    <!-- ********** Modal do Botão de Iniciar Serviços ********** -->
-                    <x-adminlte-modal id="modalFinSrvReq" title="Serviços em Andamento" size="xl" theme="navy" icon="fa-solid fa-clock-rotate-left" v-centered scrollable>
+                    <!-- ********** Modal do Botão de Finalizar Serviços ********** -->
+                    <x-adminlte-modal id="modalFinSrvReq" title="Serviços em Andamento" size="xl" theme="modal-nexus" icon="fa-solid fa-clock-rotate-left" v-centered scrollable>
                         <div class="row" style="height:auto;">  
                             @php
                             $headsFinSrv = [
@@ -1011,32 +939,10 @@ $status_servico = '';
                                 $configFinSrv = [
                                     'paging' => false,
                                     'searching' => false,
-                                    'language' => [
-                                        'decimal' =>        '',
-                                        'emptyTable' =>     'Sem dados disponíveis na tabela',
-                                        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                                        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-                                        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-                                        'infoPostFix' =>    '',
-                                        'thousands' =>      ',',
-                                        'lengthMenu' =>     'Mostrar _MENU_ registros',
-                                        'loadingRecords' => 'Carregando...',
-                                        'processing' =>     '',
-                                        'search' =>         'Pesquisar:',
-                                        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-                                        'paginate' => [
-                                            'first' =>      'Primeiro',
-                                            'last' =>       'Último',
-                                            'next' =>       'Próximo',
-                                            'previous' =>   'Anterior'
-                                        ],
-                                        'aria' => [
-                                            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                                            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-                                        ],
-                                    ],
-                                    'order' => [[1, 'asc']],// Ordena pela primeira coluna (Seq.) em ordem ascendente
+                                    'language' => Helper::dataTableLangPtBR(),
+                                    'order' => [[1, 'asc']],
                                     'columns' => [
+                                        ['orderable' => false],
                                         ['orderable' => false],
                                         ['orderable' => false],
                                         ['orderable' => false],
@@ -1050,7 +956,7 @@ $status_servico = '';
                                 $cntSrv = 0;
                             @endphp
                             <x-adminlte-datatable id="table-finsrv" :heads="$headsFinSrv" :config="$configFinSrv" theme="light" striped hoverable>
-                                @foreach($glo_os_dadosServico as $servico)
+                                @foreach($glo_os_dadosSrvFin as $servico)
 
                                     @php
                                         if(!empty($servico->srv_prt)){
@@ -1073,11 +979,6 @@ $status_servico = '';
                                             $tipo_hora = "Terceiros";
                                         }
                                     @endphp
-
-                                    @if($servico->srv_sts == 'A')
-                                    @php
-                                        $cntSrv += 1;
-                                    @endphp
                                     <tr>
                                         <td><input type="checkbox" class="record-checkbox-fin" value="{{$servico->srv_seq}}"></td>
                                         <td>{{$servico->srv_seq}}</td>
@@ -1089,27 +990,22 @@ $status_servico = '';
                                         <td>{{Helper::formataData($servico->srv_dti)}}</td>
                                         <td>{{Helper::formataHoraMinuto($servico->srv_hri)}}</td>
                                     </tr>
-                                    @endif
                                 @endforeach
-
-                                @if($cntSrv == 0)
-                                <tr class="odd"><td valign="top" colspan="9" class="dataTables_empty">Não existe serviços para serem finalizados na requisição.</td></tr>
-                                @endif
                             </x-adminlte-datatable>
                         </div>
                         <!-- Criação dos botões do Modal -->  
                         <x-slot name="footerSlot">
-                            <form id="update-form-fin" action="{{ route('servicoOS.finalizar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}" method="POST">
+                            <form class="mr-auto" id="update-form-fin" action="{{ route('servicoOS.finalizar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="selected_srvFin" id="selected-srvFin">
-                                <x-adminlte-button class="mr-auto" theme="info" label="Finalizar Serviços" icon="fa-solid fa-stopwatch" type="submit"/>
+                                <x-adminlte-button class="btn-nexus mr-auto" theme="info" label="Finalizar Serviços" icon="fa-solid fa-stopwatch" type="submit"/>
                             </form>
-                            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                            <x-adminlte-button class="btn-nexus" theme="info" label="Voltar" data-dismiss="modal"/>
                         </x-slot>   
                     </x-adminlte-modal>
 
-                    <!-- ********** Modal do Botão de Iniciar Serviços ********** -->
-                    <x-adminlte-modal id="modalAprSrvReq" title="Serviços para Aprovação" size="xl" theme="navy" icon="fa-solid fa-clipboard-check" v-centered scrollable>
+                    <!-- ********** Modal do Botão de Aprovar Serviços ********** -->
+                    <x-adminlte-modal id="modalAprSrvReq" title="Serviços para Aprovação" size="xl" theme="modal-nexus" icon="fa-solid fa-clipboard-check" v-centered scrollable>
                         <div class="row" style="height:auto;">  
                             @php
                             $headsAprSrv = [
@@ -1128,31 +1024,8 @@ $status_servico = '';
                                 $configAprSrv = [
                                     'paging' => false,
                                     'searching' => false,
-                                    'language' => [
-                                        'decimal' =>        '',
-                                        'emptyTable' =>     'Sem dados disponíveis na tabela',
-                                        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                                        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-                                        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-                                        'infoPostFix' =>    '',
-                                        'thousands' =>      ',',
-                                        'lengthMenu' =>     'Mostrar _MENU_ registros',
-                                        'loadingRecords' => 'Carregando...',
-                                        'processing' =>     '',
-                                        'search' =>         'Pesquisar:',
-                                        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-                                        'paginate' => [
-                                            'first' =>      'Primeiro',
-                                            'last' =>       'Último',
-                                            'next' =>       'Próximo',
-                                            'previous' =>   'Anterior'
-                                        ],
-                                        'aria' => [
-                                            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                                            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-                                        ],
-                                    ],
-                                    'order' => [[1, 'asc']],// Ordena pela primeira coluna (Seq.) em ordem ascendente
+                                    'language' => Helper::dataTableLangPtBR(),
+                                    'order' => [[1, 'asc']],
                                     'columns' => [
                                         ['orderable' => false],
                                         ['orderable' => false],
@@ -1169,7 +1042,7 @@ $status_servico = '';
                                 $cntSrv = 0;
                             @endphp
                             <x-adminlte-datatable id="table-aprsrv" :heads="$headsAprSrv" :config="$configAprSrv" theme="light" striped hoverable>
-                                @foreach($glo_os_dadosServico as $servico)
+                                @foreach($glo_os_dadosSrvApr as $servico)
 
                                     @php
                                         if(!empty($servico->srv_prt)){
@@ -1192,11 +1065,6 @@ $status_servico = '';
                                             $tipo_hora = "Terceiros";
                                         }
                                     @endphp
-
-                                    @if($servico->srv_flg_apr == 'N')
-                                    @php
-                                        $cntSrv += 1;
-                                    @endphp
                                     <tr>
                                         <td><input type="checkbox" class="record-checkbox-apr" value="{{$servico->srv_seq}}"></td>
                                         <td>{{$servico->srv_seq}}</td>
@@ -1209,22 +1077,17 @@ $status_servico = '';
                                         <td>{{Helper::formataValorMonetario($servico->srv_val_des)}}</td>
                                         <td>{{Helper::formataValorMonetario($servico->srv_vtl)}}</td>
                                     </tr>
-                                    @endif
                                 @endforeach
-
-                                @if($cntSrv == 0)
-                                <tr class="odd"><td valign="top" colspan="10" class="dataTables_empty">Não existe serviços para serem aprovados na requisição.</td></tr>
-                                @endif
                             </x-adminlte-datatable>
                         </div>
                         <!-- Criação dos botões do Modal -->  
                         <x-slot name="footerSlot">
-                            <form id="update-form-apr" action="{{ route('servicoOS.aprovarBtn', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}" method="POST">
+                            <form class="mr-auto" id="update-form-apr" action="{{ route('servicoOS.aprovarBtn', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq']]) }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="selected_srvApr" id="selected-srvApr">
-                                <x-adminlte-button class="mr-auto" theme="info" label="Aprovar Serviços" icon="fa-solid fa-thumbs-up" type="submit"/>
+                                <x-adminlte-button class="btn-nexus mr-auto" theme="" label="Aprovar Serviços" icon="fa-solid fa-thumbs-up" type="submit"/>
                             </form>
-                            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                            <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                         </x-slot>   
                     </x-adminlte-modal>
 
@@ -1233,9 +1096,9 @@ $status_servico = '';
 
                 <!-- ********** Bloco Inclusão/Manutenção de serviços na requisição da OS ********** -->
                 @if($glo_os_estagioAPP == "INCLUSAO_SERVICO" || $glo_os_estagioAPP == "MANUTENCAO_SERVICO")
-                <x-adminlte-card title="Inclusão Inclusão / Manutenção de Serviços na Requisição da OS" theme="navy" theme-mode="outline" collapsible maximizable>
+                <x-adminlte-card title="Inclusão / Manutenção de Serviços na Requisição da OS" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     <div class="row">
-                        <table class="table tabela-dados-req">
+                        <table class="table tabela-dados-req tabela-custom-nexus">
                             <tbody>
                                 <tr>
                                     <th colspan="4">Dados da Requisição</th>
@@ -1395,7 +1258,7 @@ $status_servico = '';
                                     <tr>
                                         <td class="align-middle" style="padding-top: 15px;">
                                             <!-- Cria o modal dos detalhes da empresa -->
-                                            <x-adminlte-modal id="modalServico_{{$glo_os_dadosRequisicoes[0]['req_seq']}}" title="Tarefas de Mão de Obra" size="xl" theme="navy" v-centered scrollable>
+                                            <x-adminlte-modal id="modalServico_{{$glo_os_dadosRequisicoes[0]['req_seq']}}" title="Tarefas de Mão de Obra" size="xl" theme="modal-nexus" v-centered scrollable>
                                                 <div class="row" style="height:auto;">
                                                     @php
                                                         //Monta dados da tabela do bloco
@@ -1412,30 +1275,9 @@ $status_servico = '';
                     
                                                         $config = [
                                                             'lengthMenu' => [ 5, 10, 25, 50],
-                                                            'language' => [
-                                                                'decimal' =>        '',
-                                                                'emptyTable' =>     'Sem dados disponíveis na tabela',
-                                                                'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                                                                'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-                                                                'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-                                                                'infoPostFix' =>    '',
-                                                                'thousands' =>      ',',
-                                                                'lengthMenu' =>     'Mostrar _MENU_ registros',
-                                                                'loadingRecords' => 'Carregando...',
-                                                                'processing' =>     '',
-                                                                'search' =>         'Pesquisar:',
-                                                                'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-                                                                'paginate' => [
-                                                                    'first' =>      'Primeiro',
-                                                                    'last' =>       'Último',
-                                                                    'next' =>       'Próximo',
-                                                                    'previous' =>   'Anterior'
-                                                                ],
-                                                                'aria' => [
-                                                                    'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                                                                    'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-                                                                ],
-                                                            ],
+                                                            'pageLength' => 5,
+                                                            'language' => Helper::dataTableLangPtBR(),
+                                                            'order' => [[1, 'asc']],
                                                             'columns' => [['orderable' => false], null, null, null, null,  null, null, null],
                                                         ];
                                                     @endphp
@@ -1446,7 +1288,7 @@ $status_servico = '';
                                                                     <nobr class="d-flex justify-content-center">
                                                                         <form method="get" action="{{route('painelOS.selecionarTMO', ['empresa' => $glo_os_empresa, 'area' => $glo_os_dadosRequisicoes[0]['req_are'], 'setor' => $glo_os_dadosRequisicoes[0]['req_set'], 'codigo' => $TMO->tmo_cod, 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'TMO_SELECIONADA', 'requisicao' => $glo_os_dadosRequisicoes[0]['req_seq']])}}">
                                                                             @csrf
-                                                                            <x-adminlte-button class="btn-sm" type="submit" label="Selecionar" theme="info" icon="fa-solid fa-check"/>
+                                                                            <x-adminlte-button class="btn-nexus btn-sm" type="submit" label="Selecionar" theme="" icon="fa-solid fa-check"/>
                                                                         </form>
                                                                     </nobr>
                                                                 </td>
@@ -1462,10 +1304,10 @@ $status_servico = '';
                                                     </x-adminlte-datatable>
                                                 </div>
                                                 <x-slot name="footerSlot">
-                                                    <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                                                    <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                                                 </x-slot>
                                             </x-adminlte-modal>
-                                            <x-adminlte-button label="Pesquisar" theme="info" icon="fa-solid fa-magnifying-glass" type="button" data-toggle="modal" data-target="#modalServico_{{$glo_os_dadosRequisicoes[0]['req_seq']}}"/>
+                                            <x-adminlte-button class="btn-nexus" label="Pesquisar" theme="" icon="fa-solid fa-magnifying-glass" type="button" data-toggle="modal" data-target="#modalServico_{{$glo_os_dadosRequisicoes[0]['req_seq']}}"/>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -1633,18 +1475,7 @@ $status_servico = '';
                                         }
                                     }
 
-                                    $config_dt_nf = [
-                                        "singleDatePicker" => true,
-                                        "showDropdowns" => true,
-                                        "startDate" => "js:moment()",
-                                        "minYear" => 1900,
-                                        "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                        "timePicker" => false,
-                                        "timePicker24Hour" => false,
-                                        "timePickerSeconds" => false,
-                                        "cancelButtonClasses" => "btn-danger",
-                                        "locale" => ["format" => "DD/MM/YYYY"],
-                                    ];
+                                    $config_dt_nf = Helper::dtRangeDataPtBR();
 
                                     if($glo_os_estagioAPP == "INCLUSAO_SERVICO"){
                                         $numNFTMO_sel = '';
@@ -1719,7 +1550,7 @@ $status_servico = '';
                         <form method="post" action="{{ route('servicoOS.cancelar', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}" id="formulario-cancela-tmo" novalidate="novalidate">
                             @csrf 
                             @method('post')
-                            <x-adminlte-modal id="modalCancelamentoTMO" title="Cancelamento da TMO" size="xl" theme="navy" icon="" v-centered scrollable>
+                            <x-adminlte-modal id="modalCancelamentoTMO" title="Cancelamento da TMO" size="xl" theme="modal-nexus" icon="fa-solid fa-ban" v-centered scrollable>
                                 
                                 <div class="col-md-12" style="height:auto;">
                                     <div class="row">
@@ -1746,8 +1577,8 @@ $status_servico = '';
                                 </div>
                                 <!-- Criação dos botões do Modal -->  
                                 <x-slot name="footerSlot">
-                                    <x-adminlte-button class="mr-auto" theme="info" label="Cancelar TMO" icon="fa-solid fa-ban" type="submit"/>
-                                    <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                                    <x-adminlte-button class="btn-nexus mr-auto" theme="" label="Cancelar TMO" icon="fa-solid fa-ban" type="submit"/>
+                                    <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                                 </x-slot>
                                 
                             </x-adminlte-modal>
@@ -1757,7 +1588,7 @@ $status_servico = '';
                         <form method="post" action="{{ route('servicoOS.suspender', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao'=> $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'codTMO' => $cod_tmo_sel]) }}" id="formulario-suspende-tmo" novalidate="novalidate">
                             @csrf 
                             @method('post')
-                            <x-adminlte-modal id="modalSuspenderTMO" title="Suspensão da TMO" size="xl" theme="navy" icon="" v-centered scrollable>
+                            <x-adminlte-modal id="modalSuspenderTMO" title="Suspensão da TMO" size="xl" theme="modal-nexus" icon="fa-solid fa-triangle-exclamation" v-centered scrollable>
                                 
                                 <div class="col-md-12" style="height:auto;">
                                     <div class="row">
@@ -1784,8 +1615,8 @@ $status_servico = '';
                                 </div>
                                 <!-- Criação dos botões do Modal -->  
                                 <x-slot name="footerSlot">
-                                    <x-adminlte-button class="mr-auto" theme="info" label="Suspender TMO" icon="fa-solid fa-triangle-exclamation" type="submit"/>
-                                    <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                                    <x-adminlte-button class="btn-nexus mr-auto" theme="" label="Suspender TMO" icon="fa-solid fa-triangle-exclamation" type="submit"/>
+                                    <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                                 </x-slot>
                                 
                             </x-adminlte-modal>
@@ -1795,7 +1626,7 @@ $status_servico = '';
                         <form method="post" action="{{ route('requisicaoOS.autorizaDescTMO', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'requisicao' => $glo_os_dadosRequisicoes[0]['req_seq'], 'sequencia' => $glo_os_dadosServicoSelecionado[0]->srv_seq, 'tmo' => $glo_os_dadosServicoSelecionado[0]->srv_tmo]) }}" id="formulario-aut-desconto" novalidate="novalidate">
                             @csrf 
                             @method('post')
-                            <x-adminlte-modal id="modalLibDescTMO" title="Liberação de Desconto na TMO" size="xl" theme="navy" icon="fa-solid fa-lock-open" v-centered scrollable>
+                            <x-adminlte-modal id="modalLibDescTMO" title="Liberação de Desconto na TMO" size="xl" theme="modal-nexus" icon="fa-solid fa-lock-open" v-centered scrollable>
                                 @php
                                     $nom_tos = DB::table('lancamento_srv_tipo_servicos')->select('tipsrv_nom','tipsrv_pmt_des','tipsrv_pmd','tipsrv_vmd')->where('tipsrv_emp', $glo_os_empresa)->where('tipsrv_cod', $glo_os_dadosRequisicoes[0]['req_tos'])->get();
                                 @endphp
@@ -1834,18 +1665,18 @@ $status_servico = '';
                                             <!-- Usuário com permissão de dar o desconto -->
                                             <x-adminlte-input class="text-uppercase" name="usuarioDesconto" type="text" placeholder="Usuário" fgroup-class="col-md-5" igroup-size="sm" autocomplete="off">
                                                 <x-slot name="prependSlot">
-                                                    <div class="input-group-text bg-info">
+                                                    <div class="input-group-text x-slot-nexus">
                                                         <i class="fa-solid fa-user"></i>
                                                     </div>
                                                 </x-slot>    
-                                            <x-slot name="label">
+                                                <x-slot name="label">
                                                     Código do Usuário <span style="color:red;">*</span>
                                                 </x-slot>
                                             </x-adminlte-input>
                                             <!-- Senha -->
                                             <x-adminlte-input name="senhaDesconto" placeholder="Senha" type="password" fgroup-class="col-md-5" igroup-size="sm" autocomplete="new-password">
                                                 <x-slot name="prependSlot">
-                                                    <div class="input-group-text bg-info">
+                                                    <div class="input-group-text x-slot-nexus">
                                                         <i class="fa-solid fa-key"></i>
                                                     </div>
                                                 </x-slot>
@@ -1853,7 +1684,7 @@ $status_servico = '';
                                                     Senha <span style="color:red;">*</span>
                                                 </x-slot>
                                                 <x-slot name="appendSlot">
-                                                    <x-adminlte-button class="toggle-password" theme="outline-info" data-target="senhaDesconto" icon="fa fa-eye"/>
+                                                    <x-adminlte-button class="toggle-password btn-outline-nexus" theme="" data-target="senhaDesconto" icon="fa fa-eye"/>
                                                 </x-slot>
                                             </x-adminlte-input>
                                         </div>
@@ -1861,8 +1692,8 @@ $status_servico = '';
                                 </div>
                                 <!-- Criação dos botões do Modal -->  
                                 <x-slot name="footerSlot">
-                                    <x-adminlte-button class="mr-auto" theme="info" label="Autorizar" icon="fa-solid fa-handshake" type="submit"/>
-                                    <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                                    <x-adminlte-button class="btn-nexus mr-auto" theme="info" label="Autorizar" icon="fa-solid fa-handshake" type="submit"/>
+                                    <x-adminlte-button class="btn-nexus" theme="info" label="Voltar" data-dismiss="modal"/>
                                 </x-slot>
                                 
                             </x-adminlte-modal>   
@@ -1874,9 +1705,9 @@ $status_servico = '';
 
                 <!-- ********** Bloco PREVISAO_ENTREGA da OS ********** -->
                 @if($glo_os_estagioAPP == "PREVISAO_ENTREGA")
-                <x-adminlte-card title="Previsão de Entrega da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
+                <x-adminlte-card title="Previsão de Entrega da Ordem de Serviço" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
 
-                    <x-adminlte-card title="Informações da Previsão de Entrega" theme="navy">
+                    <x-adminlte-card title="Informações da Previsão de Entrega" theme="" theme-mode="" header-class="card-nexus">
                         <form method="post" action="{{ route('lancamentoOS.atualizaPrevEntrega', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'cliente' => $glo_os_cliente]) }}" id="quickForm-upd-prev-entrega" novalidate="novalidate">
                             @csrf 
                             @method('post')
@@ -1899,18 +1730,8 @@ $status_servico = '';
                                 </x-adminlte-input>
 
                                 @php
-                                    $config = [
-                                        "singleDatePicker" => true,
-                                        "showDropdowns" => true,
-                                        "startDate" => "js:moment()",
-                                        "minYear" => 1900,
-                                        "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                        "timePicker" => false,
-                                        "timePicker24Hour" => false,
-                                        "timePickerSeconds" => false,
-                                        "cancelButtonClasses" => "btn-danger",
-                                        "locale" => ["format" => "DD/MM/YYYY"],
-                                    ];
+                                    $config = Helper::dtRangeDataPtBR();
+
                                     if(!empty($glo_os_dadosOS[0]->os_dpe)){
                                         $dataPrevEnt = date('d/m/Y', strtotime($glo_os_dadosOS[0]->os_dpe));
                                     }else{
@@ -1923,7 +1744,7 @@ $status_servico = '';
                                         Data da Previsão de Entrega <span style="color:red;">*</span>
                                     </x-slot>
                                     <x-slot name="appendSlot">
-                                        <div class="input-group-text">
+                                        <div class="input-group-text x-slot-nexus">
                                             <i class="far fa-lg fa-calendar-alt"></i>
                                         </div>
                                     </x-slot>
@@ -1931,23 +1752,8 @@ $status_servico = '';
                                 @push('js')<script>$(() => $("#dataPrevEnt").val('{{ $dataPrevEnt }}'))</script>@endpush
                                 
                                 @php
-                                    if(!empty($glo_os_dadosOS[0]->os_dpe)){
-                                        $startDate = substr($glo_os_dadosOS[0]->os_hpe,0,2).':'.substr($glo_os_dadosOS[0]->os_hpe,2,2);
-                                    }else{
-                                        $startDate = 'js:moment()';
-                                    }
-                                    $config = [
-                                        "singleDatePicker" => true,
-                                        "showDropdowns" => true,
-                                        "startDate" => $startDate,
-                                        "minYear" => 2000,
-                                        "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                        "timePicker" => true,
-                                        "timePicker24Hour" => true,
-                                        "timePickerSeconds" => false,
-                                        "cancelButtonClasses" => "btn-danger",
-                                        "locale" => ["format" => "HH:mm"],
-                                    ];
+                                    $config = Helper::dtRangeHoraPtBR();
+
                                     if(!empty($glo_os_dadosOS[0]->os_dpe)){
                                         $horaPrevEnt = Helper::formataHoraMinuto($glo_os_dadosOS[0]->os_hpe,0,2);
                                     }else{
@@ -1959,7 +1765,7 @@ $status_servico = '';
                                         Hora da Previsão de Entrega <span style="color:red;">*</span>
                                     </x-slot>
                                     <x-slot name="appendSlot">
-                                        <div class="input-group-text">
+                                        <div class="input-group-text x-slot-nexus">
                                             <i class="far fa-lg fa-clock"></i>
                                         </div>
                                     </x-slot>
@@ -1988,7 +1794,7 @@ $status_servico = '';
 
                 <!-- ********** Bloco ORCAMENTO_OS da OS ********** -->
                 @if($glo_os_estagioAPP == "ORCAMENTO_OS")
-                <x-adminlte-card title="Orçamento da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
+                <x-adminlte-card title="Orçamento da Ordem de Serviço" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     @php 
                         if($glo_os_dadosOS[0]->os_num_orc != 0){
                             $orcamento = str_pad($glo_os_dadosOS[0]->os_num_orc, 8, "0", STR_PAD_LEFT);
@@ -2000,7 +1806,7 @@ $status_servico = '';
                             $stsOrc = 'N';
                         }
                     @endphp
-                    <x-adminlte-card title="Informações do Orçamento" theme="navy">
+                    <x-adminlte-card title="Informações do Orçamento" theme="" theme-mode="" header-class="card-nexus">
                         <form method="post" action="{{ route('painelOS.abrirOrcamento', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos, 'stsOS' => $glo_os_dadosOS[0]->os_sts, 'stsOrc' => $stsOrc, 'cliente' => $glo_os_dadosOS[0]->os_cli, 'dtOS' => $glo_os_dadosOS[0]->os_dha]) }}">
                             @csrf 
                             @method('post')
@@ -2022,9 +1828,9 @@ $status_servico = '';
 
                 <!-- ********** Bloco ORCAMENTO_OS_IMPRESSAO da OS ********** -->
                 @if($glo_os_estagioAPP == "ORCAMENTO_OS_IMPRESSAO")
-                <x-adminlte-card title="Impressão do Orçamento da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
+                <x-adminlte-card title="Impressão do Orçamento da Ordem de Serviço" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     
-                    <x-adminlte-card title="Orçamento da Ordem de Serviço" theme="navy">
+                    <x-adminlte-card title="Orçamento da Ordem de Serviço" theme="" theme-mode="" header-class="card-nexus">
                         <div class="col-md-12 tabela-orcamento">
                             <table class="table table-sm table-borderless">
                                 <tbody>
@@ -2399,10 +2205,10 @@ $status_servico = '';
 
                 <!-- ********** Bloco TOTAIS_OS da tarefa da Abertura de OS ********** -->
                 @if($glo_os_estagioAPP == "TOTAIS_OS")
-                <x-adminlte-card title="Total da Ordem de Serviço" theme="navy" theme-mode="outline" collapsible maximizable>
+                <x-adminlte-card title="Total da Ordem de Serviço" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     
                     <div class="row">
-                        <table class="table tabela-dados-req">
+                        <table class="table tabela-dados-req tabela-custom-nexus">
                             <tbody>
                                 <tr>
                                     <th colspan="4">Requisições da Ordem de Serviço</th>
@@ -2428,30 +2234,8 @@ $status_servico = '';
                                 'lengthChange' => false,
                                 'paging' => false, 
                                 'info' => false,
-                                'language' => [
-                                    'decimal' =>        '',
-                                    'emptyTable' =>     'Sem dados disponíveis na tabela',
-                                    'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                                    'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-                                    'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-                                    'infoPostFix' =>    '',
-                                    'thousands' =>      ',',
-                                    'lengthMenu' =>     'Mostrar _MENU_ registros',
-                                    'loadingRecords' => 'Carregando...',
-                                    'processing' =>     '',
-                                    'search' =>         'Pesquisar:',
-                                    'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-                                    'paginate' => [
-                                        'first' =>      'Primeiro',
-                                        'last' =>       'Último',
-                                        'next' =>       'Próximo',
-                                        'previous' =>   'Anterior'
-                                    ],
-                                    'aria' => [
-                                        'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                                        'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-                                    ],
-                                ],
+                                'language' => Helper::dataTableLangPtBR(),
+                                'order' => [[0, 'asc']],
                                 'columns' => [null, null, null, null, null, null],
                             ];
                         @endphp
@@ -2479,7 +2263,7 @@ $status_servico = '';
                     </div>
                     <div class="row">  
                     <div class="col-md-6">       
-                        <table class="table tabela-dados-req">
+                        <table class="table tabela-dados-req tabela-custom-nexus">
                             <tbody>
                                 <tr>
                                     <th colspan=2>Valores Totais da Ordem de Serviço</th>
@@ -2512,7 +2296,7 @@ $status_servico = '';
                         </table> 
                         </div>
                         <div class="col-md-6"> 
-                        <table class="table tabela-dados-req">
+                        <table class="table tabela-dados-req tabela-custom-nexus">
                             <tbody>
                                 <tr>
                                     <th colspan=2>Contato / Observações da Ordem de Serviço</th>
@@ -2558,7 +2342,7 @@ $status_servico = '';
                 <form method="post" action="{{ route('lancamentoOS.atualizaObservacao', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos]) }}" id="formulario-observacao-os" novalidate="novalidate">
                     @csrf 
                     @method('post')
-                    <x-adminlte-modal id="modalObservacaoOS" title="Observações da OS" size="xl" theme="navy" icon="" v-centered scrollable>
+                    <x-adminlte-modal id="modalObservacaoOS" title="Observações da OS" size="xl" theme="modal-nexus" icon="fa-solid fa-comment-dots" v-centered scrollable>
                         
                         <div class="row" style="height:auto;">
                             <div class="post col-md-12">
@@ -2569,7 +2353,7 @@ $status_servico = '';
                                             Observação <span style="color:red;">*</span>
                                         </x-slot>
                                         <x-slot name="prependSlot">
-                                            <div class="input-group-text bg-navy">
+                                            <div class="input-group-text x-slot-nexus">
                                                 <i class="fas fa-lg fa-file-alt text-white"></i>
                                             </div>
                                         </x-slot>
@@ -2579,8 +2363,8 @@ $status_servico = '';
                         </div>
                         <!-- Criação dos botões do Modal -->  
                         <x-slot name="footerSlot">
-                            <x-adminlte-button class="mr-auto" theme="info" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
-                            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                            <x-adminlte-button class="btn-nexus mr-auto" theme="" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
+                            <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                         </x-slot>
                         
                     </x-adminlte-modal>   
@@ -2590,7 +2374,7 @@ $status_servico = '';
                 <form method="post" action="{{ route('lancamentoOS.atualizaCliFatura', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos]) }}" id="formulario-troca-cli-fat" novalidate="novalidate">
                     @csrf 
                     @method('post')
-                    <x-adminlte-modal id="modalTrocaCliFatOS" title="Trocar Cliente do Faturamento da OS" size="xl" theme="navy" icon="" v-centered scrollable>
+                    <x-adminlte-modal id="modalTrocaCliFatOS" title="Trocar Cliente do Faturamento da OS" size="xl" theme="modal-nexus" icon="fa-solid fa-right-left" v-centered scrollable>
                         
                         <div class="row" style="height:auto;">
                             <div class="post col-md-12">
@@ -2617,10 +2401,9 @@ $status_servico = '';
                         </div>
                         <!-- Criação dos botões do Modal -->  
                         <x-slot name="footerSlot">
-                            <x-adminlte-button class="mr-auto" theme="info" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
-                            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                            <x-adminlte-button class="btn-nexus mr-auto" theme="" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
+                            <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                         </x-slot>
-                        
                     </x-adminlte-modal>   
                 </form>
 
@@ -2628,7 +2411,7 @@ $status_servico = '';
                 <form method="post" action="{{ route('lancamentoOS.atualizaDescontoOS', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos]) }}" id="formulario-desconto-os" novalidate="novalidate">
                     @csrf 
                     @method('post')
-                    <x-adminlte-modal id="modalDescontoOS" title="Desconto da OS" size="xl" theme="navy" icon="" v-centered scrollable>
+                    <x-adminlte-modal id="modalDescontoOS" title="Desconto da OS" size="xl" theme="modal-nexus" icon="fa-solid fa-tag" v-centered scrollable>
                         
                         <div class="row" style="height:auto;">
                             <div class="post col-md-12">
@@ -2666,8 +2449,8 @@ $status_servico = '';
                         </div>
                         <!-- Criação dos botões do Modal -->  
                         <x-slot name="footerSlot">
-                            <x-adminlte-button class="mr-auto" theme="info" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
-                            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                            <x-adminlte-button class="btn-nexus mr-auto" theme="" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
+                            <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                         </x-slot>
                         
                     </x-adminlte-modal>   
@@ -2701,58 +2484,58 @@ $status_servico = '';
                 }
             @endphp
             <div style="float: left;">
-                <x-adminlte-button class="btn_geral" type="button" onclick="window.location='{{ route('situacaoOS.carregaOS', ['empresa' => $glo_os_empresa, 'cliente' => $glo_os_cliente, 'nos' => $glo_os_nos, 'estagioAPP' => 'PRINCIPAL']) }}'" label="Geral" theme="info" icon=""/>
-                <x-adminlte-button class="btn_cancelar_os" type="button" data-toggle="modal" data-target="#modalCancelamentoOS" label="Cancelar OS" theme="info" icon="fa-solid fa-ban"/>
-                <x-adminlte-button class="btn_previsao_entrega" type="button" onclick="window.location='{{ route('painelOS.previsaoEntregaOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Previsão de Entrega" theme="info" icon="fa-solid fa-truck"/>
-                <x-adminlte-button class="btn_total_os" type="button" onclick="window.location='{{ route('painelOS.totalOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Total OS" theme="info" icon=""/>
+                <x-adminlte-button class="btn-nexus btn_geral" type="button" onclick="window.location='{{ route('situacaoOS.carregaOS', ['empresa' => $glo_os_empresa, 'cliente' => $glo_os_cliente, 'nos' => $glo_os_nos, 'estagioAPP' => 'PRINCIPAL']) }}'" label="Geral" theme="" icon=""/>
+                <x-adminlte-button class="btn-nexus btn_cancelar_os" type="button" data-toggle="modal" data-target="#modalCancelamentoOS" label="Cancelar OS" theme="" icon="fa-solid fa-ban"/>
+                <x-adminlte-button class="btn-nexus btn_previsao_entrega" type="button" onclick="window.location='{{ route('painelOS.previsaoEntregaOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Previsão de Entrega" theme="" icon="fa-solid fa-truck"/>
+                <x-adminlte-button class="btn-nexus btn_total_os" type="button" onclick="window.location='{{ route('painelOS.totalOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Total OS" theme="" icon=""/>
 
-                <x-adminlte-button class="btn_atualizar_previsao_entrega" type="button" onclick="document.querySelector('.btn_hide_atualizar_previsao_entrega').click()" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                <x-adminlte-button class="btn-nexus btn_atualizar_previsao_entrega" type="button" onclick="document.querySelector('.btn_hide_atualizar_previsao_entrega').click()" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
                 
-                <x-adminlte-button class="btn_gerar_orcamento" type="button" onclick="document.querySelector('.btn_hide_gerar_orcamento').click()" label="Gerar Orçamento" theme="info" icon=""/>
+                <x-adminlte-button class="btn-nexus btn_gerar_orcamento" type="button" onclick="document.querySelector('.btn_hide_gerar_orcamento').click()" label="Gerar Orçamento" theme="" icon=""/>
 
-                <x-adminlte-button class="btn_observacao" type="button" data-toggle="modal" data-target="#modalObservacaoOS" label="Observações" theme="info" icon="fa-regular fa-eye"/>
-                <x-adminlte-button class="btn_troca_cliente" type="button" data-toggle="modal" data-target="#modalTrocaCliFatOS" label="Troca Cliente Fatura" theme="info" icon="fa-solid fa-right-left"/>
-                <x-adminlte-button class="btn_desconto_os" type="button" data-toggle="modal" data-target="#modalDescontoOS" label="Desconto" theme="info" icon="fa-solid fa-tag"/>
-                <x-adminlte-button class="btn_orcamento" type="button" onclick="window.location='{{ route('painelOS.orcamentoOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Orçamento" theme="info" icon="fa-solid fa-file-invoice-dollar"/>
-                <x-adminlte-button class="btn_encerra_os" type="button" onclick="window.location='{{ route('painelOS.encerraOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Encerrar OS" theme="info" icon="fa-solid fa-handshake"/>
+                <x-adminlte-button class="btn-nexus btn_observacao" type="button" data-toggle="modal" data-target="#modalObservacaoOS" label="Observações" theme="" icon="fa-regular fa-eye"/>
+                <x-adminlte-button class="btn-nexus btn_troca_cliente" type="button" data-toggle="modal" data-target="#modalTrocaCliFatOS" label="Troca Cliente Fatura" theme="" icon="fa-solid fa-right-left"/>
+                <x-adminlte-button class="btn-nexus btn_desconto_os" type="button" data-toggle="modal" data-target="#modalDescontoOS" label="Desconto" theme="" icon="fa-solid fa-tag"/>
+                <x-adminlte-button class="btn-nexus btn_orcamento" type="button" onclick="window.location='{{ route('painelOS.orcamentoOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Orçamento" theme="" icon="fa-solid fa-file-invoice-dollar"/>
+                <x-adminlte-button class="btn-nexus btn_encerra_os" type="button" onclick="window.location='{{ route('painelOS.encerraOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Encerrar OS" theme="" icon="fa-solid fa-handshake"/>
 
-                <x-adminlte-button class="btn_orcamentoPDF" type="button" onclick="window.open('{{ route('painelOS.orcamentoPDF', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}');" label="Gerar PDF" theme="info" icon="fa-solid fa-file-pdf"/>
+                <x-adminlte-button class="btn-nexus btn_orcamentoPDF" type="button" onclick="window.open('{{ route('painelOS.orcamentoPDF', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}');" label="Gerar PDF" theme="" icon="fa-solid fa-file-pdf"/>
 
-                <x-adminlte-button class="btn_incluir_requisicao" type="button" onclick="document.querySelector('.btn_hide_incluir_requisicao').click()" label="Incluir Requisição" theme="info" icon="fa-solid fa-plus"/>
+                <x-adminlte-button class="btn-nexus btn_incluir_requisicao" type="button" onclick="document.querySelector('.btn_hide_incluir_requisicao').click()" label="Incluir Requisição" theme="" icon="fa-solid fa-plus"/>
 
                 @if($glo_os_estagioAPP == "CONSULTA_REQUISICAO")
-                <x-adminlte-button class="btn_finalizar_requisicao" type="button" onclick="document.querySelector('.btn_hide_finalizar_requisicao').click()" label="Finalizar Requisição" theme="info" icon="fa-solid fa-lock"/>
-                <x-adminlte-button class="btn_excluir_requisicao" type="button" onclick="document.querySelector('.btn_hide_excluir_requisicao').click()" label="Excluir Requisição" theme="info" icon="fa-solid fa-trash"/>
-                <x-adminlte-button class="btn_reabrir_requisicao" type="button" onclick="document.querySelector('.btn_hide_reabrir_requisicao').click()" label="Reabrir Requisição" theme="info" icon=""/>
-                <x-adminlte-button class="btn_aprovar_servicos" type="button" data-toggle="modal" data-target="#modalAprSrvReq" label="Aprovar Serviços" theme="info" icon=""/>
-                <!--<x-adminlte-button class="btn_iniciar_servicos" type="button" onclick="document.querySelector('.btn_hide_iniciar_servicos').click()" label="Iniciar Serviços" theme="info" icon=""/>-->
-                <x-adminlte-button class="btn_iniciar_servicos" type="button" data-toggle="modal" data-target="#modalIniSrvReq" label="Iniciar Serviços" theme="info" icon=""/>
-                <!--<x-adminlte-button class="btn_finalizar_servicos" type="button" onclick="document.querySelector('.btn_hide_finalizar_servicos').click()" label="Finalizar Serviços" theme="info" icon=""/>-->
-                <x-adminlte-button class="btn_finalizar_servicos" type="button" data-toggle="modal" data-target="#modalFinSrvReq" label="Finalizar Serviços" theme="info" icon=""/>
-                <x-adminlte-button class="btn_novo_servico" type="button" onclick="window.location='{{ route('painelOS.abrirServicoRequisicao', ['empresa' => $glo_os_empresa, 'area' => $area_req, 'setor' => $setor_req, 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'SELECAO_TMO', 'requisicao' => $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Novo Serviço" theme="info" icon="fa-solid fa-plus"/>
+                <x-adminlte-button class="btn-nexus btn_finalizar_requisicao" type="button" onclick="document.querySelector('.btn_hide_finalizar_requisicao').click()" label="Finalizar Requisição" theme="" icon="fa-solid fa-lock"/>
+                <x-adminlte-button class="btn-nexus btn_excluir_requisicao" type="button" onclick="document.querySelector('.btn_hide_excluir_requisicao').click()" label="Excluir Requisição" theme="" icon="fa-solid fa-trash"/>
+                <x-adminlte-button class="btn-nexus btn_reabrir_requisicao" type="button" onclick="document.querySelector('.btn_hide_reabrir_requisicao').click()" label="Reabrir Requisição" theme="" icon=""/>
+                <x-adminlte-button class="btn-nexus btn_aprovar_servicos" type="button" data-toggle="modal" data-target="#modalAprSrvReq" label="Aprovar Serviços" theme="" icon=""/>
+                <!--<x-adminlte-button class="btn-nexus btn_iniciar_servicos" type="button" onclick="document.querySelector('.btn_hide_iniciar_servicos').click()" label="Iniciar Serviços" theme="" icon=""/>-->
+                <x-adminlte-button class="btn-nexus btn_iniciar_servicos" type="button" data-toggle="modal" data-target="#modalIniSrvReq" label="Iniciar Serviços" theme="" icon=""/>
+                <!--<x-adminlte-button class="btn-nexus btn_finalizar_servicos" type="button" onclick="document.querySelector('.btn_hide_finalizar_servicos').click()" label="Finalizar Serviços" theme="" icon=""/>-->
+                <x-adminlte-button class="btn-nexus btn_finalizar_servicos" type="button" data-toggle="modal" data-target="#modalFinSrvReq" label="Finalizar Serviços" theme="" icon=""/>
+                <x-adminlte-button class="btn-nexus btn_novo_servico" type="button" onclick="window.location='{{ route('painelOS.abrirServicoRequisicao', ['empresa' => $glo_os_empresa, 'area' => $area_req, 'setor' => $setor_req, 'estagioAPP' => 'INCLUSAO_SERVICO', 'subEstagioRequisicao' => 'SELECAO_TMO', 'requisicao' => $glo_os_dadosRequisicoes[0]['req_seq']]) }}'" label="Novo Serviço" theme="" icon="fa-solid fa-plus"/>
                 @endif
 
-                <x-adminlte-button class="btn_liberar_desconto_tmo" type="button" data-toggle="modal" data-target="#modalLibDescTMO" label="Liberar Desconto" theme="info" icon="fa-solid fa-unlock"/>
-                <x-adminlte-button class="btn_suspender_tmo" type="button" data-toggle="modal" data-target="#modalSuspenderTMO" label="Suspender TMO" theme="info" icon="fa-solid fa-triangle-exclamation"/>
-                <x-adminlte-button class="btn_cancelar_tmo" type="button" data-toggle="modal" data-target="#modalCancelamentoTMO" label="Cancelar TMO" theme="info" icon="fa-solid fa-ban"/>
-                <!--<x-adminlte-button class="btn_suspender_tmo" type="button" onclick="document.querySelector('.btn_hide_suspender_tmo').click()" label="Suspender TMO" theme="info" icon="fa-solid fa-triangle-exclamation"/>
-                <x-adminlte-button class="btn_cancelar_tmo" type="button" onclick="document.querySelector('.btn_hide_cancelar_tmo').click()" label="Cancelar TMO" theme="info" icon="fa-solid fa-ban"/>-->
-                <x-adminlte-button class="btn_reabrir_tmo" type="button" onclick="document.querySelector('.btn_hide_reabrir_tmo').click()" label="Reabrir TMO" theme="info" icon="fa-solid fa-folder-open"/>
-                <x-adminlte-button class="btn_excluir_tmo" type="button" onclick="document.querySelector('.btn_hide_excluir_tmo').click()" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
-                <x-adminlte-button class="btn_atualizar_tmo" type="button" onclick="document.querySelector('.btn_hide_atualizar_tmo').click()" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                <x-adminlte-button class="btn_incluir_tmo" type="button" onclick="document.querySelector('.btn_hide_incluir_tmo').click()" label="Incluir" theme="info" icon="fa-solid fa-plus"/>
+                <x-adminlte-button class="btn-nexus btn_liberar_desconto_tmo" type="button" data-toggle="modal" data-target="#modalLibDescTMO" label="Liberar Desconto" theme="" icon="fa-solid fa-unlock"/>
+                <x-adminlte-button class="btn-nexus btn_suspender_tmo" type="button" data-toggle="modal" data-target="#modalSuspenderTMO" label="Suspender TMO" theme="" icon="fa-solid fa-triangle-exclamation"/>
+                <x-adminlte-button class="btn-nexus btn_cancelar_tmo" type="button" data-toggle="modal" data-target="#modalCancelamentoTMO" label="Cancelar TMO" theme="" icon="fa-solid fa-ban"/>
+                <!--<x-adminlte-button class="btn-nexus btn_suspender_tmo" type="button" onclick="document.querySelector('.btn_hide_suspender_tmo').click()" label="Suspender TMO" theme="" icon="fa-solid fa-triangle-exclamation"/>
+                <x-adminlte-button class="btn-nexus btn_cancelar_tmo" type="button" onclick="document.querySelector('.btn_hide_cancelar_tmo').click()" label="Cancelar TMO" theme="" icon="fa-solid fa-ban"/>-->
+                <x-adminlte-button class="btn-nexus btn_reabrir_tmo" type="button" onclick="document.querySelector('.btn_hide_reabrir_tmo').click()" label="Reabrir TMO" theme="" icon="fa-solid fa-folder-open"/>
+                <x-adminlte-button class="btn-nexus btn_excluir_tmo" type="button" onclick="document.querySelector('.btn_hide_excluir_tmo').click()" label="Excluir" theme="" icon="fa-solid fa-trash"/>
+                <x-adminlte-button class="btn-nexus btn_atualizar_tmo" type="button" onclick="document.querySelector('.btn_hide_atualizar_tmo').click()" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
+                <x-adminlte-button class="btn-nexus btn_incluir_tmo" type="button" onclick="document.querySelector('.btn_hide_incluir_tmo').click()" label="Incluir" theme="" icon="fa-solid fa-plus"/>
             </div>
             <div style="float: right;">
                 @if($glo_os_estagioAPP == "CONSULTA_REQUISICAO" || $glo_os_estagioAPP == "PREVISAO_ENTREGA" || $glo_os_estagioAPP == "TOTAIS_OS" || $glo_os_estagioAPP == "INCLUSAO_REQUISICAO")
-                <x-adminlte-button type="button" onclick="window.location='{{ route('situacaoOS.carregaOS', ['empresa' => $glo_os_empresa, 'cliente' => $glo_os_cliente, 'nos' => $glo_os_nos, 'estagioAPP' => 'PRINCIPAL']) }}'" label="Voltar" theme="info" icon=""/>
+                <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('situacaoOS.carregaOS', ['empresa' => $glo_os_empresa, 'cliente' => $glo_os_cliente, 'nos' => $glo_os_nos, 'estagioAPP' => 'PRINCIPAL']) }}'" label="Voltar" theme="" icon=""/>
                 @elseif($glo_os_estagioAPP == "ORCAMENTO_OS") 
-                <x-adminlte-button type="button" onclick="window.location='{{ route('painelOS.totalOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Voltar" theme="info" icon=""/>
+                <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('painelOS.totalOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Voltar" theme="" icon=""/>
                 @elseif($glo_os_estagioAPP == "ORCAMENTO_OS_IMPRESSAO")
-                <x-adminlte-button type="button" onclick="window.location='{{ route('painelOS.orcamentoOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Voltar" theme="info" icon=""/>
+                <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('painelOS.orcamentoOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Voltar" theme="" icon=""/>
                 @elseif($glo_os_estagioAPP == "MANUTENCAO_SERVICO")
-                <x-adminlte-button type="button" onclick="window.location='{{ route('painelOS.consultaRequisicao', ['empresa' => $glo_os_empresa, 'nos' => $glo_os_nos, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicaoBTN]) }}'" label="Voltar" theme="info" icon=""/>
+                <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('painelOS.consultaRequisicao', ['empresa' => $glo_os_empresa, 'nos' => $glo_os_nos, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicaoBTN]) }}'" label="Voltar" theme="" icon=""/>
                 @elseif($glo_os_estagioAPP == "INCLUSAO_SERVICO")
-                <x-adminlte-button type="button" onclick="window.location='{{ route('painelOS.consultaRequisicao', ['empresa' => $glo_os_empresa, 'nos' => $glo_os_nos, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicaoBTN]) }}'" label="Voltar" theme="info" icon=""/>
+                <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('painelOS.consultaRequisicao', ['empresa' => $glo_os_empresa, 'nos' => $glo_os_nos, 'estagioAPP' => 'CONSULTA_REQUISICAO', 'requisicao' => $requisicaoBTN]) }}'" label="Voltar" theme="" icon=""/>
                 @endif 
             </div>
         </x-slot>
@@ -2767,16 +2550,20 @@ $status_servico = '';
 @section('plugins.DateRangePicker', true)
 @section('plugins.Select2', true)
 @section('plugins.BootstrapSwitch', true)
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 <style>
     #drSizeSm .calendar-table {
-  display: none;
-}
+        display: none;
+    }
+
     .text-sm{
         margin-bottom: 0px;
         font-size: 10pt !important;
     }
+
     .endereco-cliente{
         font-size: 10pt !important;
     }
@@ -2784,10 +2571,7 @@ $status_servico = '';
     .tabela-dados-os td, .tabela-dados-os th{
         padding: 5px 5px 5px 15px !important;
     }
-    .tabela-dados-os th {
-        background-color: #001f3f;
-        color: #fff;
-    }
+
     .tabela-dados-os {
         border-left: 0px solid #001f3f;
         margin-bottom: 0px;
@@ -2796,13 +2580,11 @@ $status_servico = '';
     .tabela-dados-req td, .tabela-dados-req th{
         padding: 5px 5px 5px 15px !important;
     }
-    .tabela-dados-req th {
-        background-color: #001f3f;
-        color: #fff;
-    }
+
     .tabela-dados-req {
         border-left: 0px solid #001f3f;
     }
+
     .tabela-dados-req .text-sm{
         font-size: 11pt !important;
     }
@@ -2810,14 +2592,17 @@ $status_servico = '';
     .tabela-orcamento th{
         text-align: center;
     }
+
     .assinatura-cliente{
         text-align: center;
         margin-top: 75px;
     }
+
     .assinatura-consultor{
         text-align: center;
         border-top: 1px solid black;
     }
+
     .assinatura-meio{
         border-top: 1px solid black;
     }
@@ -3302,8 +3087,116 @@ $status_servico = '';
                 return typeof i === 'string' ? i.replace(/[\$,]/g, '')*1 : typeof i === 'number' ? i : 0;
             };
 
-            //Função que altera o rodapé quando a pagina da tabela é alterada
-            $('#detalhesServicos').on( 'draw.dt', function () {
+            // Verifica se a tabela possui registros (linhas de dados)
+            if (tableDetServ.rows().count() > 0) {
+                //Função que altera o rodapé quando a pagina da tabela é alterada
+                $('#detalhesServicos').on( 'draw.dt', function () {
+
+                    //Total dos registros exibidos na página atual da tabela 
+                    pagQtdTot = tableDetServ.column(7, { page: 'current'} ).data().reduce( function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+                    var cnt =0;
+                    pagValUniTot = tableDetServ.column(8, { page: 'current'} ).data().reduce( function (a, b) {
+                        if(cnt == 0){
+                            a = String(a).replaceAll('.','');
+                            a = String(a).replaceAll(',','.');
+                        }
+                        cnt +=1;
+                        b = String(b).replaceAll('.','');
+                        b = String(b).replaceAll(',','.');
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+                    var cnt =0;
+                    pagValTot = tableDetServ.column(9, { page: 'current'} ).data().reduce( function (a, b) {
+                        if(cnt == 0){
+                            a = String(a).replaceAll('.','');
+                            a = String(a).replaceAll(',','.');
+                        }
+                        cnt +=1;
+                        b = String(b).replaceAll('.','');
+                        b = String(b).replaceAll(',','.');
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+                    var cnt =0;
+                    pagValDes = tableDetServ.column(10, { page: 'current'} ).data().reduce( function (a, b) {
+                        if(cnt == 0){
+                            a = String(a).replaceAll('.','');
+                            a = String(a).replaceAll(',','.');
+                        }
+                        cnt +=1;
+                        b = String(b).replaceAll('.','');
+                        b = String(b).replaceAll(',','.');
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+                    var cnt =0;
+                    pagValLiqTot = tableDetServ.column(11, { page: 'current'} ).data().reduce( function (a, b) {
+                        if(cnt == 0){
+                            a = String(a).replaceAll('.','');
+                            a = String(a).replaceAll(',','.');
+                        }
+                        cnt +=1;
+                        b = String(b).replaceAll('.','');
+                        b = String(b).replaceAll(',','.');
+                        return intVal(a) + intVal(b);
+                    }, 0 );
+
+                    //Total de todos os registros da tabela 
+                    qtdTot = tableDetServ.column( 7 ).data().reduce( function (a, b) {
+                        return intVal(a) + intVal(b);
+                    });
+                    var cnt =0;
+                    valUniTot = tableDetServ.column( 8 ).data().reduce( function (a, b) {
+                        if(cnt == 0){
+                            a = String(a).replaceAll('.','');
+                            a = String(a).replaceAll(',','.');
+                        }
+                        cnt +=1;
+                        b = String(b).replaceAll('.','');
+                        b = String(b).replaceAll(',','.');
+                        return intVal(a) + intVal(b);
+                    });
+                    var cnt =0;
+                    valTot = tableDetServ.column( 9 ).data().reduce( function (a, b) {
+                        if(cnt == 0){
+                            a = String(a).replaceAll('.','');
+                            a = String(a).replaceAll(',','.');
+                        }
+                        cnt +=1;
+                        b = String(b).replaceAll('.','');
+                        b = String(b).replaceAll(',','.');
+                        return intVal(a) + intVal(b);
+                    });
+                    var cnt =0;
+                    valDes = tableDetServ.column( 10 ).data().reduce( function (a, b) {
+                        if(cnt == 0){
+                            a = String(a).replaceAll('.','');
+                            a = String(a).replaceAll(',','.');
+                        }
+                        cnt +=1;
+                        b = String(b).replaceAll('.','');
+                        b = String(b).replaceAll(',','.');
+                        return intVal(a) + intVal(b);
+                    });
+                    var cnt =0;
+                    valLiqTot = tableDetServ.column( 11 ).data().reduce( function (a, b) {
+                        if(cnt == 0){
+                            a = String(a).replaceAll('.','');
+                            a = String(a).replaceAll(',','.');
+                        }
+                        cnt +=1;
+                        b = String(b).replaceAll('.','');
+                        b = String(b).replaceAll(',','.');
+                        return intVal(a) + intVal(b);
+                    });
+
+                    //Atualiza o rodapé
+                    $( tableDetServ.column( 7 ).footer() ).html(new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagQtdTot) +' </br> '+ new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(qtdTot) );
+                    //$( tableDetServ.column( 8 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValUniTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valUniTot) );
+                    $( tableDetServ.column( 9 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot) );
+                    $( tableDetServ.column( 10 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValDes) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valDes) );
+                    $( tableDetServ.column( 11 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValLiqTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valLiqTot) );
+                });
 
                 //Total dos registros exibidos na página atual da tabela 
                 pagQtdTot = tableDetServ.column(7, { page: 'current'} ).data().reduce( function (a, b) {
@@ -3402,6 +3295,22 @@ $status_servico = '';
                     b = String(b).replaceAll(',','.');
                     return intVal(a) + intVal(b);
                 });
+                
+                
+                //valUniTot = String(valUniTot).replaceAll('.','');
+                //valUniTot = String(valUniTot).replaceAll(',','.');
+
+                //apenas quando tem um registro no serviço faz o replace se tiver mais de um serviço não precisa fazer
+                if(cnt == 0){
+                    valTot = String(valTot).replaceAll('.','');
+                    valTot = String(valTot).replaceAll(',','.');
+                    valDes = String(valDes).replaceAll('.','');
+                    valDes = String(valDes).replaceAll(',','.');
+                    valLiqTot = String(valLiqTot).replaceAll('.','');
+                    valLiqTot = String(valLiqTot).replaceAll(',','.');
+                }            
+
+                //console.log(cnt);console.log(pagValLiqTot);console.log(valLiqTot);
 
                 //Atualiza o rodapé
                 $( tableDetServ.column( 7 ).footer() ).html(new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagQtdTot) +' </br> '+ new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(qtdTot) );
@@ -3409,132 +3318,16 @@ $status_servico = '';
                 $( tableDetServ.column( 9 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot) );
                 $( tableDetServ.column( 10 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValDes) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valDes) );
                 $( tableDetServ.column( 11 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValLiqTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valLiqTot) );
-            });
-
-            //Total dos registros exibidos na página atual da tabela 
-            pagQtdTot = tableDetServ.column(7, { page: 'current'} ).data().reduce( function (a, b) {
-                return intVal(a) + intVal(b);
-            }, 0 );
-            var cnt =0;
-            pagValUniTot = tableDetServ.column(8, { page: 'current'} ).data().reduce( function (a, b) {
-                if(cnt == 0){
-                    a = String(a).replaceAll('.','');
-                    a = String(a).replaceAll(',','.');
-                }
-                cnt +=1;
-                b = String(b).replaceAll('.','');
-                b = String(b).replaceAll(',','.');
-                return intVal(a) + intVal(b);
-            }, 0 );
-            var cnt =0;
-            pagValTot = tableDetServ.column(9, { page: 'current'} ).data().reduce( function (a, b) {
-                if(cnt == 0){
-                    a = String(a).replaceAll('.','');
-                    a = String(a).replaceAll(',','.');
-                }
-                cnt +=1;
-                b = String(b).replaceAll('.','');
-                b = String(b).replaceAll(',','.');
-                return intVal(a) + intVal(b);
-            }, 0 );
-            var cnt =0;
-            pagValDes = tableDetServ.column(10, { page: 'current'} ).data().reduce( function (a, b) {
-                if(cnt == 0){
-                    a = String(a).replaceAll('.','');
-                    a = String(a).replaceAll(',','.');
-                }
-                cnt +=1;
-                b = String(b).replaceAll('.','');
-                b = String(b).replaceAll(',','.');
-                return intVal(a) + intVal(b);
-            }, 0 );
-            var cnt =0;
-            pagValLiqTot = tableDetServ.column(11, { page: 'current'} ).data().reduce( function (a, b) {
-                if(cnt == 0){
-                    a = String(a).replaceAll('.','');
-                    a = String(a).replaceAll(',','.');
-                }
-                cnt +=1;
-                b = String(b).replaceAll('.','');
-                b = String(b).replaceAll(',','.');
-                return intVal(a) + intVal(b);
-            }, 0 );
-
-            //Total de todos os registros da tabela 
-            qtdTot = tableDetServ.column( 7 ).data().reduce( function (a, b) {
-                return intVal(a) + intVal(b);
-            });
-            var cnt =0;
-            valUniTot = tableDetServ.column( 8 ).data().reduce( function (a, b) {
-                if(cnt == 0){
-                    a = String(a).replaceAll('.','');
-                    a = String(a).replaceAll(',','.');
-                }
-                cnt +=1;
-                b = String(b).replaceAll('.','');
-                b = String(b).replaceAll(',','.');
-                return intVal(a) + intVal(b);
-            });
-            var cnt =0;
-            valTot = tableDetServ.column( 9 ).data().reduce( function (a, b) {
-                if(cnt == 0){
-                    a = String(a).replaceAll('.','');
-                    a = String(a).replaceAll(',','.');
-                }
-                cnt +=1;
-                b = String(b).replaceAll('.','');
-                b = String(b).replaceAll(',','.');
-                return intVal(a) + intVal(b);
-            });
-            var cnt =0;
-            valDes = tableDetServ.column( 10 ).data().reduce( function (a, b) {
-                if(cnt == 0){
-                    a = String(a).replaceAll('.','');
-                    a = String(a).replaceAll(',','.');
-                }
-                cnt +=1;
-                b = String(b).replaceAll('.','');
-                b = String(b).replaceAll(',','.');
-                return intVal(a) + intVal(b);
-            });
-            var cnt =0;
-            valLiqTot = tableDetServ.column( 11 ).data().reduce( function (a, b) {
-                if(cnt == 0){
-                    a = String(a).replaceAll('.','');
-                    a = String(a).replaceAll(',','.');
-                }
-                cnt +=1;
-                b = String(b).replaceAll('.','');
-                b = String(b).replaceAll(',','.');
-                return intVal(a) + intVal(b);
-            });
-            
-            
-            //valUniTot = String(valUniTot).replaceAll('.','');
-            //valUniTot = String(valUniTot).replaceAll(',','.');
-
-            //apenas quando tem um registro no serviço faz o replace se tiver mais de um serviço não precisa fazer
-            if(cnt == 0){
-                valTot = String(valTot).replaceAll('.','');
-                valTot = String(valTot).replaceAll(',','.');
-                valDes = String(valDes).replaceAll('.','');
-                valDes = String(valDes).replaceAll(',','.');
-                valLiqTot = String(valLiqTot).replaceAll('.','');
-                valLiqTot = String(valLiqTot).replaceAll(',','.');
-            }            
-
-            //console.log(cnt);console.log(pagValLiqTot);console.log(valLiqTot);
-
-            //Atualiza o rodapé
-            $( tableDetServ.column( 7 ).footer() ).html(new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagQtdTot) +' </br> '+ new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(qtdTot) );
-            //$( tableDetServ.column( 8 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValUniTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valUniTot) );
-            $( tableDetServ.column( 9 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valTot) );
-            $( tableDetServ.column( 10 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValDes) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valDes) );
-            $( tableDetServ.column( 11 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValLiqTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valLiqTot) );
-            /* Final da montagem da Tabela de detalhes da requisição com os dados dos serviços relacionados */
+                /* Final da montagem da Tabela de detalhes da requisição com os dados dos serviços relacionados */
+            }else{
+                $( tableDetServ.column( 7 ).footer() ).html(new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(0) +' </br> '+ new Intl.NumberFormat('en-EN', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(0) );
+                //$( tableDetServ.column( 8 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(pagValUniTot) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(valUniTot) );
+                $( tableDetServ.column( 9 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(0) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(0) );
+                $( tableDetServ.column( 10 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(0) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(0) );
+                $( tableDetServ.column( 11 ).footer() ).html('R$' + new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(0) +' </br> R$'+ new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2,  maximumFractionDigits: 2}).format(0) );
+                /* Final da montagem da Tabela de detalhes da requisição com os dados dos serviços relacionados */
+            }
         }
-
-        
 
         /* **************************************** Eventos Iniciais dos blocos  - INCLUSAO_SERVICO e MANUTENCAO_SERVICO **************************************** */
 

@@ -32,7 +32,7 @@
     
     <!-- Criação do Card com Abas -->
     <div class="card card-navy card-tabs">
-        <div class="card-header p-0 pt-1">
+        <div class="card-header card-nexus p-0 pt-1">
             <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
                 <li class="pt-2 px-3"><h3 class="card-title">Manutenção do Usuário</h3></li>
                 <li class="nav-item">
@@ -50,6 +50,14 @@
                 <li class="nav-item">
                     <a class="nav-link" id="custom-tabs-two-permissoes-tab" data-toggle="pill" href="#custom-tabs-two-permissoes" role="tab" aria-controls="custom-tabs-two-permissoes" aria-selected="false">Permissões</a>
                 </li>
+                <div class="card-tools ml-auto">          
+                    <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                        <i class="fas fa-lg fa-expand"></i>     
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-lg fa-minus"></i>    
+                    </button>
+                </div>
             </ul>
         </div>
         <div class="card-body">
@@ -127,18 +135,8 @@
                             <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosUsuario[0]['usuario_rg'] }}"></x-adminlte-input>
 
                             @php
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "startDate" => "js:moment()",
-                                    "minYear" => 1900,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => false,
-                                    "timePicker24Hour" => false,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "DD/MM/YYYY"],
-                                ];
+                                $config = Helper::dtRangeDataPtBR();
+                                
                                 if(!empty($dadosUsuario[0]['usuario_data_nascimento'])){
                                     $data_nascimento = date('d/m/Y', strtotime($dadosUsuario[0]['usuario_data_nascimento']));
                                 }else{
@@ -162,7 +160,7 @@
                         </div>
 
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -175,7 +173,7 @@
                         <div class="row">
                             <div class="d-flex justify-content-center col-md-12">
                                 <div class="col-md-4">
-                                    <x-adminlte-callout theme="info" title="Redefinir Senha do Usuário">
+                                    <x-adminlte-callout title="Redefinir Senha do Usuário" theme="" class="callout-nexus">
                                         <div class="text-muted">
                                             <div class="row">
                                                 <p class="text-sm col-md-6">Usuário
@@ -190,7 +188,7 @@
                                         <!-- Senha -->
                                         <x-adminlte-input name="novaSenha" type="password" placeholder="Nova Senha" igroup-size="md" fgroup-class="col-md-12" autocomplete="new-password">
                                             <x-slot name="prependSlot">
-                                                <div class="input-group-text bg-info">
+                                                <div class="input-group-text x-slot-nexus">
                                                     <i class="fa-solid fa-key"></i>
                                                 </div>
                                             </x-slot>
@@ -198,12 +196,12 @@
                                                 Nova Senha <span style="color:red;">*</span>
                                             </x-slot>
                                             <x-slot name="appendSlot">
-                                                <x-adminlte-button class="toggle-password" theme="outline-info" data-target="novaSenha" icon="fa fa-eye"/>
+                                                <x-adminlte-button class="toggle-password btn-outline-nexus" theme="" data-target="novaSenha" icon="fa fa-eye"/>
                                             </x-slot>
                                         </x-adminlte-input>
                                         <x-adminlte-input name="novaSenha2" type="password" placeholder="Confirmar Nova Senha" igroup-size="md" fgroup-class="col-md-12" autocomplete="new-password">
                                             <x-slot name="prependSlot">
-                                                <div class="input-group-text bg-info">
+                                                <div class="input-group-text x-slot-nexus">
                                                     <i class="fa-solid fa-key"></i>
                                                 </div>
                                             </x-slot>
@@ -211,7 +209,7 @@
                                                 Confirmar Nova Senha <span style="color:red;">*</span>
                                             </x-slot>
                                             <x-slot name="appendSlot">
-                                                <x-adminlte-button class="toggle-password" theme="outline-info" data-target="novaSenha2" icon="fa fa-eye"/>
+                                                <x-adminlte-button class="toggle-password btn-outline-nexus" theme="" data-target="novaSenha2" icon="fa fa-eye"/>
                                             </x-slot>
                                         </x-adminlte-input>
                                     </x-adminlte-callout>
@@ -220,7 +218,7 @@
                         </div>
 
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -273,7 +271,7 @@
                         </div>
 
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -290,7 +288,7 @@
                         @endphp
                         <!-- Se ainda não foi cadastrado endereço para o usuario cria card vazio -->
                         <div class="col-md-4">
-                            <x-adminlte-card theme="navy" theme-mode="outline" title="Endereço">
+                            <x-adminlte-card title="Endereço" theme="" theme-mode="outline" header-class="card-outline-nexus">
                                 <i>Registros não encontrados</i>
                             </x-adminlte-card>
                         </div>
@@ -323,7 +321,7 @@
                                 @endphp
                                 <div class="col-md-4" style="float: left;">
                                     <!-- Card do Endereço do usuario -->
-                                    <x-adminlte-card theme="navy" theme-mode="outline" :title="$titulo" :icon="$icone">
+                                    <x-adminlte-card :title="$titulo" :icon="$icone" theme="" theme-mode="outline" header-class="card-outline-nexus">
                                         <i>{{ $endereco->endereco_logradouro }}, {{ $numero }}</br>
                                             @php
                                                 if(!empty($endereco->endereco_complemento)){
@@ -342,7 +340,7 @@
                                             <form method="post" action="{{ route('enderecoUsuario.destroy', ['endereco' => $endereco->endereco_id, 'tipo' => $tipo]) }}" style="float: left;" >
                                             @csrf 
                                             @method('delete')
-                                                <x-adminlte-button class="btn-sm" theme="danger" icon="fa fa-lg fa-fw fa-trash" type="submit" style="margin-right: 5px;"/>
+                                                <x-adminlte-button class="btn-sm" theme="danger" icon="fa fa-lg fa-fw fa-trash" type="submit" title="Excluir Endereço" style="margin-right: 5px;"/>
                                             </form>
                                             @php
                                                 if($endereco->endereco_principal == "N"){
@@ -351,7 +349,7 @@
                                             <form method="get" action="{{ route('enderecoUsuario.principal', ['endereco' => $endereco->endereco_id, 'usuario_cod' => $endereco->endereco_usuario_codigo, 'tipo' => $tipo]) }}" style="float: left;">
                                             @csrf 
                                             @method('get')
-                                                <x-adminlte-button class="btn-sm" label="Tornar Principal" theme="success" icon="fa-solid fa-location-dot" type="submit"/>
+                                                <x-adminlte-button class="btn-sm" label="Tornar Principal" theme="success" icon="fa-solid fa-location-dot" type="submit" title="Tornar Principal"/>
                                             </form>
                                             @php 
                                                 }
@@ -372,7 +370,7 @@
                             @csrf 
                             @method('post')    
                                 <!-- Criação do Modal -->                           
-                                <x-adminlte-modal id="modalCustom" title="Novo Endereço" size="lg" theme="navy" icon="" v-centered static-backdrop scrollable>
+                                <x-adminlte-modal id="modalCustom" title="Novo Endereço" size="lg" theme="modal-nexus" icon="fa-solid fa-address-book" v-centered static-backdrop scrollable>
                                     <div style="height:400px;">
                                         <!-- Campos escondidoscom o id e codigo do usuario para o request -->  
                                         <input id="usuario_codigo" type="hidden" value="{{ $dadosUsuario[0]['usuario_codigo'] }}" name="usuario_codigo">
@@ -471,15 +469,15 @@
                                         </div>
                                         <!-- Criação dos botões do Modal -->  
                                         <x-slot name="footerSlot">
-                                            <x-adminlte-button class="mr-auto" theme="success" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
-                                            <x-adminlte-button theme="danger" label="Voltar" data-dismiss="modal"/>
+                                            <x-adminlte-button class="btn-nexus mr-auto" theme="" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
+                                            <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                                         </x-slot>
                                     </div>
                                 </x-adminlte-modal>
                             </form>
                             <!-- Botão de chamada do Modal -->  
                             <div class="d-flex justify-content-center">
-                                <x-adminlte-button label="Novo Endereço" data-toggle="modal" data-target="#modalCustom" class="bg-info" icon="fa-solid fa-address-book"/>
+                                <x-adminlte-button label="Novo Endereço" data-toggle="modal" data-target="#modalCustom" class="btn-nexus" icon="fa-solid fa-address-book"/>
                             </div>
                         </div>
                     </div>
@@ -554,7 +552,7 @@
                         </div>
 
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button id="btn-submit-permissao" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus" id="btn-submit-permissao" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -565,16 +563,16 @@
                 <div class="d-flex">
                     <form method="get" action="{{ route('usuario.cadastro', ['tipo' => $tipo]) }}" style="float: left; margin-right: 2px;">
                     @csrf 
-                        <x-adminlte-button label="Novo Usuário" theme="info" icon="fas fa-user-plus" type="submit"/>
+                        <x-adminlte-button class="btn-nexus" label="Novo Usuário" theme="" icon="fas fa-user-plus" type="submit"/>
                     </form>
                     <form method="post" action="{{ route('usuario.destroy', ['usuario' => $dadosUsuario[0]]) }}" style="float: left;margin-left: 2px;">
                     @csrf 
                     @method('delete')
-                        <x-adminlte-button label="Excluir Usuário" theme="info" icon="fa-solid fa-user-xmark" type="submit"/>
+                        <x-adminlte-button class="btn-nexus" label="Excluir Usuário" theme="" icon="fa-solid fa-user-xmark" type="submit"/>
                     </form>
                 </div>
                 <div class="d-flex">
-                    <x-adminlte-button type="button" onclick="window.location='{{ route('home.usuarios') }}'" label="Voltar" theme="info" icon=""/>
+                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.usuarios') }}'" label="Voltar" theme="" icon=""/>
                 </div>
             </div>
         </div>

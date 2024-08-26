@@ -1,21 +1,21 @@
 @extends('adminlte::page')
 
-@section('title', 'Parâmetros Gerais de Serviço')
+@section('title', 'Geral da Empresa')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais de Serviços</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.parametrosSrvEmp')}}">Geral da Empresa</a>
-                </li>
-                <li class="breadcrumb-item active">Manutenção Geral da Empresa</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.parametrosSrvEmp')}}">Geral da Empresa</a>
+            </li>
+            <li class="breadcrumb-item active">Manutenção Geral da Empresa</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -24,7 +24,7 @@
         <!-- Define se o formulario é edição ou novo -->
         <form method="post" action="{{route('parametrosSrvEmp.update')}}" id="quickForm" novalidate="novalidate">
             @csrf 
-            <x-adminlte-card title="Manutenção dos Parâmetros Gerais de Serviço" theme="navy">
+            <x-adminlte-card title="Manutenção dos Parâmetros Gerais de Serviço" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
                     @php
@@ -151,8 +151,8 @@
                 <!-- /.card -->
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
-                        <x-adminlte-button class="btn-flat btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                        <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parametrosSrvEmp') }}'" label="Voltar" theme="info" icon=""/>
+                        <x-adminlte-button class="btn-nexus btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.parametrosSrvEmp') }}'" label="Voltar" theme="info" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>
@@ -164,7 +164,6 @@
 <!-- Chamada dos Plugins usados na app -->
 @section('plugins.jqueryValidation', true)
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
 @section('plugins.Select2', true)
 @section('plugins.DateRangePicker', true)
 

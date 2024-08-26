@@ -1,19 +1,19 @@
 @extends('adminlte::page')
 
-@section('title', 'Emissão de Simplificada de NFS-e')
+@section('title', 'Emissão Simplificada de NFS-e')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Faturamento de Notas</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active"><a href="{{route('home.emissaoSimpNFS')}}">Emissão Simplificada</a></li>
-                <li class="breadcrumb-item active">Formulario Emissão Simplificada</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Faturamento de Notas</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active"><a href="{{route('home.emissaoSimpNFS')}}">Emissão Simplificada</a></li>
+            <li class="breadcrumb-item active">Formulario Emissão Simplificada</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -22,7 +22,7 @@
         <form method="post" action="{{ route('emissaoSimpNFS.emitirNFS', ['empresa' => $empresa, 'cliente' => $cliente, 'enderecoCli' => $enderecoCli]) }}" id="quickForm" novalidate="novalidate">
             @csrf 
             @method('post')
-            <x-adminlte-card title="Emissão Simplificada de NFS-e" theme="navy" collapsible maximizable>
+            <x-adminlte-card title="Emissão Simplificada de NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 @php
 
                     //Dados da Empresa
@@ -131,7 +131,7 @@
                     }
                 @endphp
                 <!-- Dados da Empresa -->
-                <x-adminlte-callout theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-building" title="Dados da Empresa">
+                <x-adminlte-callout title="Dados da Empresa" title-class="text-uppercase" icon="fa-solid fa-building" theme="" class="callout-nexus">
                     <div class="text-muted">
                         <div class="row quebra-linha">
                             <p class="text-sm col-md-3">Empresa
@@ -153,7 +153,7 @@
                     </div>
                 </x-adminlte-callout>
                 <!-- Dados Do Cliente -->
-                <x-adminlte-callout theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-user-tie" title="Dados do Cliente">
+                <x-adminlte-callout title="Dados do Cliente" title-class="text-uppercase" icon="fa-solid fa-user-tie" theme="" class="callout-nexus">
                     <div class="text-muted">
                         <div class="row quebra-linha">
                             <p class="text-sm col-md-2">Cliente
@@ -234,7 +234,7 @@
                     </div>
                 </x-adminlte-callout>
                 <!-- Dados do Serviço -->
-                <x-adminlte-card title="Dados do Serviço" theme="info" theme-mode="outline" icon="fa-solid fa-file-invoice-dollar" collapsible maximizable>
+                <x-adminlte-card title="Dados do Serviço" icon="fa-solid fa-file-invoice-dollar" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     @php
                         $dataParSrvEmp = DB::table('parametros_srv_empresas')->where('parsrv_emp', $empresa)->get();
                         $dadosGrupoSrv = DB::table('parametros_sistema_servico_grupos')->orderBy('grupo_codigo', 'asc')->get();
@@ -294,7 +294,7 @@
                                 Descrição dos Serviços Prestados <span style="color:red;">*</span>
                             </x-slot>
                             <x-slot name="prependSlot">
-                                <div class="input-group-text bg-navy">
+                                <div class="input-group-text x-slot-nexus">
                                     <i class="fas fa-lg fa-file-alt text-white"></i>
                                 </div>
                             </x-slot>
@@ -303,7 +303,7 @@
                         <!-- Informações Complementares -->
                         <x-adminlte-textarea name="infoCmp" label="Informações Complementares" rows=4 igroup-size="sm" label-class="text-dark" placeholder="Escreva as informações complementares..." fgroup-class="col-md-4" >
                             <x-slot name="prependSlot">
-                                <div class="input-group-text bg-navy">
+                                <div class="input-group-text x-slot-nexus">
                                     <i class="fas fa-lg fa-file-alt text-white"></i>
                                 </div>
                             </x-slot>
@@ -312,7 +312,7 @@
                         <!-- Informações Complementares -->
                         <x-adminlte-textarea name="obsNFS" label="Observações da NFS-e" rows=4 igroup-size="sm" label-class="text-dark" placeholder="Escreva as observações..." fgroup-class="col-md-4" >
                             <x-slot name="prependSlot">
-                                <div class="input-group-text bg-navy">
+                                <div class="input-group-text x-slot-nexus">
                                     <i class="fas fa-lg fa-file-alt text-white"></i>
                                 </div>
                             </x-slot>
@@ -363,22 +363,22 @@
                     </div>
                     <div class="row">
                         <div class="form-group clearfix">
-                            <div class="icheck-primary d-inline" style="margin-right: 25px;">
+                            <div class="icheck-nexus d-inline" style="margin-right: 25px;">
                                 <input type="radio" id="radio_empresa" name="enderecoLocSrv" checked value="1">
                                 <label for="radio_empresa">Endereço da Empresa</label>
                             </div>
-                            <div class="icheck-primary d-inline" style="margin-right: 25px;">
+                            <div class="icheck-nexus d-inline" style="margin-right: 25px;">
                                 <input type="radio" id="radio_cliente" name="enderecoLocSrv" value="2">
                                 <label for="radio_cliente">Endereço do Cliente</label>
                             </div>
-                            <div class="icheck-primary d-inline" style="margin-right: 25px;">
+                            <div class="icheck-nexus d-inline" style="margin-right: 25px;">
                                 <input type="radio" id="radio_outro" name="enderecoLocSrv" value="3">
                                 <label for="radio_outro">Outro Endereço</label>
                             </div>
                         </div>
                     </div>
                     <!-- Endereço de outro local -->
-                    <x-adminlte-callout class="bloco-endereco" theme="info" title-class="text-info text-uppercase" icon="fa-solid fa-file-invoice-dollar" title="Local da prestação do serviço">
+                    <x-adminlte-callout title="Local da prestação do serviço" title-class="text-uppercase" icon="fa-solid fa-file-invoice-dollar" theme="" class="callout-nexus bloco-endereco">
                         <div class="row">
                             <!-- Campo escondido para tratamento interno -->
                             <input id="ibgeCodMun" type="hidden" name="ibgeCodMun">
@@ -386,7 +386,7 @@
                             <!-- CEP -->
                             <x-adminlte-input name="cep" type="text" label="CEP" fgroup-class="col-md-2">
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-location-dot"></i>
                                     </div>
                                 </x-slot>
@@ -396,7 +396,7 @@
                             <!-- Logradouro -->
                             <x-adminlte-input name="logradouro" type="text" label="Logradouro" fgroup-class="col-md-5">
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-address-book"></i>
                                     </div>
                                 </x-slot>
@@ -405,7 +405,7 @@
                             <!-- Numero -->
                             <x-adminlte-input name="numero" type="text" label="Número" fgroup-class="col-md-2">
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-hashtag"></i>
                                     </div>
                                 </x-slot>
@@ -421,7 +421,7 @@
                             <!-- Cidade -->
                             <x-adminlte-input name="cidade" type="text" label="Cidade" fgroup-class="col-md-4">
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-city"></i>
                                     </div>
                                 </x-slot>
@@ -452,8 +452,8 @@
                 </x-adminlte-card>
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
-                        <x-adminlte-button class="btn-flat" type="submit" label="Emitir NFS-e" theme="info" icon="fa-solid fa-share-from-square"/>
-                        <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('emissaoSimpNFS.inicioGet', ['empresa' => $empresa, 'cliente' => $cliente]) }}'" label="Voltar" theme="info" icon=""/>
+                        <x-adminlte-button class="btn-nexus" type="submit" label="Emitir NFS-e" theme="info" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('emissaoSimpNFS.inicioGet', ['empresa' => $empresa, 'cliente' => $cliente]) }}'" label="Voltar" theme="info" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>

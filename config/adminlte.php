@@ -352,7 +352,7 @@ return [
                     'icon' => 'nav-icon fa-regular fa-circle',
                 ],
                 [
-                    'text' => 'Grupos e Serviços da NFS-e',
+                    'text' => 'Grupos e Serviços NFS-e',
                     'url'  => '/parametros/sistema/homeParametrosSistemaServicos',
                     'icon' => 'nav-icon fa-regular fa-circle',
                 ],
@@ -840,6 +840,11 @@ return [
                     'type' => 'css',
                     'asset' => true,
                     'location' => 'vendor/datatables-plugins/buttons/css/buttons.bootstrap4.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/datatables-plugins/buttons/js/buttons.flash.min.js',
                 ],
             ],
         ],

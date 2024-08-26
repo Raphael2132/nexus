@@ -23,7 +23,7 @@
 <form method="post" action="{{route('empresa.inserir')}}" id="quickForm" novalidate="novalidate">
     @csrf 
     @method('post')
-    <x-adminlte-card title="Cadastro de Nova Empresa" theme="navy">
+    <x-adminlte-card title="Cadastro de Nova Empresa" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
         <div class="row">
             <!-- Nome -->
@@ -52,8 +52,8 @@
         <!-- /.card -->
         <x-slot name="footerSlot">
             <div class="d-flex justify-content-between w-100">
-                <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.empresa') }}'" label="Voltar" theme="info" icon=""/>
+                <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
+                <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.empresa') }}'" label="Voltar" theme="" icon=""/>
             </div>
         </x-slot>
     </x-adminlte-card>
@@ -67,7 +67,6 @@
 @section('plugins.Inputmask', true)
 @section('plugins.jqueryValidation', true)
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
 
 @section('js')
 <script>

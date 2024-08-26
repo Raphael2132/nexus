@@ -1,21 +1,21 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro do Grupo de Serviço da NFS-e')
+@section('title', 'Grupos e Serviços da NFS-e')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Parâmetros do Sistema</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.parSisServico')}}">Grupos e Serviços da NFS-e</a>
-                </li>
-                <li class="breadcrumb-item active">Cadastro de Serviço</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros do Sistema</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.parSisServico')}}">Grupos e Serviços da NFS-e</a>
+            </li>
+            <li class="breadcrumb-item active">Cadastro de Serviço</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -23,7 +23,7 @@
     <div class="col-md-8">
         <form method="post" action="{{route('parametrosSistemaServico.inserir')}}" id="quickForm" novalidate="novalidate">
             @csrf 
-            <x-adminlte-card title="Cadastro de Novo Grupo de Serviço" theme="navy">
+            <x-adminlte-card title="Cadastro de Novo Grupo de Serviço" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 <div class="row">
                     @php
                         $data = DB::table('parametros_sistema_servico_grupos')->orderBy('grupo_codigo', 'asc')->get();
@@ -37,17 +37,27 @@
                         }
                         $array_opt = array_combine($new_array1, $new_array2);
                     @endphp
-                    <!-- Provedor -->
-                    <x-adminlte-select name="grupo" label="Grupo do Serviço" fgroup-class="col-md-9">
+                    <!-- Grupo do Serviço -->
+                    <x-adminlte-select name="grupo" fgroup-class="col-md-9">
+                        <x-slot name="label">
+                            Grupo do Serviço <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
                     </x-adminlte-select>
                     <!-- Código do Serviço -->
-                    <x-adminlte-input name="codigo" label="Código do Serviço" type="number" fgroup-class="col-md-3"/>
+                    <x-adminlte-input name="codigo" type="number" fgroup-class="col-md-3">
+                        <x-slot name="label">
+                            Código do Serviço <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
                 
                 <div class="row">
                     <!-- Empresa do Serviço -->
-                    <x-adminlte-textarea name="descricao" label="Descriçao" rows=3 label-class="text-dark" igroup-size="sm" placeholder="Informe a descrição do serviço..." fgroup-class="col-md-12">
+                    <x-adminlte-textarea name="descricao" rows=3 label-class="text-dark" igroup-size="sm" placeholder="Informe a descrição do serviço..." fgroup-class="col-md-12">
+                        <x-slot name="label">
+                            Descrição <span style="color:red;">*</span>
+                        </x-slot>
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-navy">
                                 <i class="fas fa-lg fa-file-alt text-white"></i>
@@ -66,8 +76,8 @@
                 <!-- /.card -->
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
-                        <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                        <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parSisServico') }}'" label="Voltar" theme="info" icon=""/>
+                        <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.parSisServico') }}'" label="Voltar" theme="info" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>
@@ -141,6 +151,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 });

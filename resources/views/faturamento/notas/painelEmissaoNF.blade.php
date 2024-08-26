@@ -4,21 +4,21 @@
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Faturamento de Notas</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.emissaoNF')}}">Filtro Emissão de NF</a>
-                </li>
-                <li class="breadcrumb-item active">
-                    <a href="{{ route('emissaoNF.consultaNF') }}">Consulta Emissão de NF</a>
-                </li>
-                <li class="breadcrumb-item active">Painel de Emissão</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Faturamento de Notas</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.emissaoNF')}}">Filtro Emissão de NF</a>
+            </li>
+            <li class="breadcrumb-item active">
+                <a href="{{ route('emissaoNF.consultaNF') }}">Consulta Emissão de NF</a>
+            </li>
+            <li class="breadcrumb-item active">Painel de Emissãode de NF</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 
@@ -27,7 +27,7 @@
 <div class="col-md-12">
 
     <!-- ********** Painel Principal da Emissão de NF ********** -->
-    <x-adminlte-card title="Painel de Emissão de Notas Fiscais" theme="navy" collapsible maximizable>
+    <x-adminlte-card title="Painel de Emissão de Notas Fiscais" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
         @php 
             $data = DB::table('cadastro_empresas')->where('empresa_codigo', $empresaNF)->get();
 
@@ -70,34 +70,12 @@
                     'searching' => false,
                     'lengthChange' => false,
                     'pageLength' => 10,
-                    'language' => [
-                        'decimal' =>        '',
-                        'emptyTable' =>     'Sem dados disponíveis na tabela',
-                        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-                        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-                        'infoPostFix' =>    '',
-                        'thousands' =>      ',',
-                        'lengthMenu' =>     'Mostrar _MENU_ registros',
-                        'loadingRecords' => 'Carregando...',
-                        'processing' =>     '',
-                        'search' =>         'Pesquisar:',
-                        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-                        'paginate' => [
-                            'first' =>      'Primeiro',
-                            'last' =>       'Último',
-                            'next' =>       'Próximo',
-                            'previous' =>   'Anterior'
-                        ],
-                        'aria' => [
-                            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-                        ],
-                    ],
+                    'language' => Helper::dataTableLangPtBR(),
+                    'order' => [[1, 'asc']],
                     'columns' => [['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false]],
                 ];
                 @endphp
-                <x-adminlte-card title="Lista de Notas Disponíveis" theme="navy" theme-mode="outline" collapsible maximizable>
+                <x-adminlte-card title="Lista de Notas Disponíveis" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     <x-adminlte-datatable id="tabelaGeral" :heads="$heads" :config="$config" theme="light" striped hoverable>
                         @foreach($dadosHeader as $header)
                             @php 
@@ -115,7 +93,7 @@
                                 <td>
                                     <nobr class="d-flex justify-content-center">
                                         @if($nfSelecionada != $header->nfhdr_num)
-                                        <a class="btn btn-info btn-sm" title="Selecionar NF" href="{{route('emissaoNF.painelNF',['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num])}}">Selecionar</a>
+                                        <a class="btn btn-nexus btn-sm" title="Selecionar NF" href="{{route('emissaoNF.painelNF',['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num])}}">Selecionar</a>
                                         @else
                                         <a class="text-muted" title="NF Selecionada" href="">
                                             <i class="fa-solid fa-circle-check fa-lg text-success"></i>
@@ -136,10 +114,10 @@
 
             <!-- ************************************************** Bloco do Lado Direito do Painel Principal ************************************************** -->
             <div class="col-md-6">
-                <x-adminlte-card title="Geração de Notas" theme="navy" theme-mode="outline" collapsible maximizable>
+                <x-adminlte-card title="Geração de Notas" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     @if(!empty(trim($nfSelecionada)))
                     <div style="text-align: center">
-                        <a class="btn btn-info" title="Gerar NF-e / NFS-e" href="{{route('emissaoNF.gerarNF',['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $nfSelecionada, 'origem' => 'EMISSAO'])}}">Gerar NF-e / NFS-e</a>
+                        <a class="btn btn-nexus" title="Gerar NF-e / NFS-e" href="{{route('emissaoNF.gerarNF',['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $nfSelecionada, 'origem' => 'EMISSAO'])}}">Gerar NF-e / NFS-e</a>
                     </div>
                     @endif
                 </x-adminlte-card>
@@ -148,7 +126,7 @@
         </div>
         <x-slot name="footerSlot">
             <div style="float: right;">
-                <x-adminlte-button type="button" onclick="window.location='{{ route('emissaoNF.consultaNF') }}'" label="Voltar" theme="info" icon=""/>
+                <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('emissaoNF.consultaNF') }}'" label="Voltar" theme="" icon=""/>
             </div>
         </x-slot>
     </x-adminlte-card>
@@ -159,6 +137,8 @@
 <!-- Chamada dos Plugins usados na app -->
 @section('plugins.Sweetalert2', true)
 @section('plugins.jqueryValidation', true)
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 @stop

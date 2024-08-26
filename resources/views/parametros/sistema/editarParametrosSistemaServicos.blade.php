@@ -1,21 +1,21 @@
 @extends('adminlte::page')
 
-@section('title', 'Manutenção do Serviço da NFS-e')
+@section('title', 'Grupos e Serviços da NFS-e')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1>Parâmetros do Sistema</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.parSisServico')}}">Grupos e Serviços da NFS-e</a>
-                </li>
-                <li class="breadcrumb-item active">Manutenção do Serviço da NFS-e</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros do Sistema</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.parSisServico')}}">Grupos e Serviços da NFS-e</a>
+            </li>
+            <li class="breadcrumb-item active">Manutenção do Serviço da NFS-e</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -24,7 +24,7 @@
         <form method="post" action="{{route('parametrosSistemaServico.atualizar', [ 'grupo' => $dadosServico[0]['servico_grupo'],'servico' => $dadosServico[0]['servico_codigo'] ] )}}" id="quickForm" novalidate="novalidate">
             @csrf 
             @method('post')
-            <x-adminlte-card title="Serviço da NFS-e" theme="navy">
+            <x-adminlte-card title="Serviço da NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
                     @php
@@ -32,14 +32,25 @@
                         $desc_drupo = $dadosServico[0]->servico_grupo.' - '.$grupo_desc[0]->grupo_desc;
                     @endphp
                     <!-- Grupo do serviço -->
-                    <x-adminlte-input name="grupo" label="Grupo" type="text" value="{{$desc_drupo}}" fgroup-class="col-md-10" disabled/>
+                    <x-adminlte-input name="grupo" type="text" value="{{$desc_drupo}}" fgroup-class="col-md-10" disabled>
+                        <x-slot name="label">
+                            Grupo <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                     <!-- Código do Serviço -->
-                    <x-adminlte-input name="codigo" label="Código" type="number" value="{{$dadosServico[0]->servico_codigo}}" fgroup-class="col-md-2" disabled/>
+                    <x-adminlte-input name="codigo" type="number" value="{{$dadosServico[0]->servico_codigo}}" fgroup-class="col-md-2" disabled>
+                        <x-slot name="label">
+                            Código <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
                 
                 <div class="row">
                     <!-- Empresa do Serviço -->
                     <x-adminlte-textarea name="descricao" label="Descriçao" rows=3 label-class="text-dark" igroup-size="sm" placeholder="Informe a descrição do serviço..." fgroup-class="col-md-12">
+                        <x-slot name="label">
+                            Descrição <span style="color:red;">*</span>
+                        </x-slot>
                         {{$dadosServico[0]->servico_desc}}
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-navy">
@@ -59,8 +70,8 @@
                 <!-- /.card -->
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
-                        <x-adminlte-button class="btn-flat" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                        <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parSisServico') }}'" label="Voltar" theme="info" icon=""/>
+                        <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.parSisServico') }}'" label="Voltar" theme="info" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>

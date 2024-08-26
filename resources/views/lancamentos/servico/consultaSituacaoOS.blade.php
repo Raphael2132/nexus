@@ -4,18 +4,18 @@
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Lançamento de Serviços</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.situacaoOS')}}">Situação de OS</a>
-                </li>
-                <li class="breadcrumb-item active">Consulta Situação de OS</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Lançamento de Serviços</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.situacaoOS')}}">Situação de OS</a>
+            </li>
+            <li class="breadcrumb-item active">Consulta Situação de OS</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 
@@ -31,35 +31,14 @@ $heads = [
     'Responsável'
 ];
 $config = [
-    'lengthMenu' => [ 10, 25, 50, 100],
-    'language' => [
-        'decimal' =>        '',
-        'emptyTable' =>     'Sem dados disponíveis na tabela',
-        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-        'infoPostFix' =>    '',
-        'thousands' =>      ',',
-        'lengthMenu' =>     'Mostrar _MENU_ registros',
-        'loadingRecords' => 'Carregando...',
-        'processing' =>     '',
-        'search' =>         'Pesquisar:',
-        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-        'paginate' => [
-            'first' =>      'Primeiro',
-            'last' =>       'Último',
-            'next' =>       'Próximo',
-            'previous' =>   'Anterior'
-        ],
-        'aria' => [
-            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-        ],
-    ],
+    'lengthMenu' => [ 5, 10, 25, 50, 100],
+    'pageLength' => 10,
+    'language' => Helper::dataTableLangPtBR(),
+    'order' => [[0, 'asc'],[2, 'asc']],
 ];
 @endphp
 
-<x-adminlte-card title="Consulta da Situação das OS Emitidas" theme="navy" collapsible maximizable>
+<x-adminlte-card title="Consulta da Situação das OS Emitidas" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
     <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
         @foreach ($dadosOS as $os)
             @php
@@ -94,9 +73,9 @@ $config = [
     <x-slot name="footerSlot">
         <div class="d-flex justify-content-between w-100">
             <form method="get" action="{{ route('home.emissaoOS') }}">
-                <x-adminlte-button label="Nova OS" theme="info" icon="fas fa-user-plus" type="submit"/>
+                <x-adminlte-button class="btn-nexus" label="Nova OS" theme="" icon="fa-solid fa-file-circle-plus" type="submit"/>
             </form>
-            <x-adminlte-button type="button" onclick="window.location='{{ route('home.situacaoOS') }}'" label="Voltar" theme="info" icon=""/>
+            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.situacaoOS') }}'" label="Voltar" theme="" icon=""/>
         </div>
     </x-slot>
 </x-adminlte-card>

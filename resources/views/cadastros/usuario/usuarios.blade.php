@@ -23,8 +23,7 @@
 @php
 $heads = [
     'Empresa',
-    'Código',
-    'Nome',
+    'Usuário',
     'Email',
     'Tipo do Usuário',
     'Data de Inclusão',
@@ -33,31 +32,10 @@ $heads = [
 ];
 $config = [
     'lengthMenu' => [ 5, 10, 25, 50],
-    'language' => [
-        'decimal' =>        '',
-        'emptyTable' =>     'Sem dados disponíveis na tabela',
-        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-        'infoPostFix' =>    '',
-        'thousands' =>      ',',
-        'lengthMenu' =>     'Mostrar _MENU_ registros',
-        'loadingRecords' => 'Carregando...',
-        'processing' =>     '',
-        'search' =>         'Pesquisar:',
-        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-        'paginate' => [
-            'first' =>      'Primeiro',
-            'last' =>       'Último',
-            'next' =>       'Próximo',
-            'previous' =>   'Anterior'
-        ],
-        'aria' => [
-            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-        ],
-    ],
-    'columns' => [null, null, null, null, null, null, null, ['orderable' => false]],
+    'pageLength' => 10,
+    'language' => Helper::dataTableLangPtBR(),
+    'order' => [[0, 'asc'],[1, 'asc']],
+    'columns' => [null, null, null, null, null, null, ['orderable' => false]],
 ];
 
 if($tipo == 'T'){
@@ -73,7 +51,7 @@ if($tipo == 'T'){
 }
 @endphp
 
-<x-adminlte-card :title="$titulo" theme="navy" collapsible maximizable>
+<x-adminlte-card :title="$titulo" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
     <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
         @foreach ($usuarios as $usuario)
             @php
@@ -95,8 +73,7 @@ if($tipo == 'T'){
             @endphp
             <tr>
                 <td>{{ $usuario->usuario_empresa.' - '.$dataEmp[0]->empresa_nome }}</td>
-                <td>{{ $usuario->usuario_codigo }}</td>
-                <td>{{ $usuario->name }}</td>
+                <td>{{ $usuario->usuario_codigo.' - '.$usuario->name }}</td>
                 <td>{{ $usuario->email }}</td>
                 <td>{{ $tip_usu }}</td>
                 <td>{{ $data }}</td>
@@ -125,9 +102,9 @@ if($tipo == 'T'){
         <div class="d-flex justify-content-between w-100">
             <form method="get" action="{{ route('usuario.cadastro', ['tipo' => $tipo]) }}">
             @csrf 
-                <x-adminlte-button label="Novo Usuário" theme="info" icon="fas fa-user-plus" type="submit"/>
+                <x-adminlte-button class="btn-nexus" label="Novo Usuário" theme="" icon="fas fa-user-plus" type="submit"/>
             </form>
-            <x-adminlte-button type="button" onclick="window.location='{{ route('home.usuarios') }}'" label="Voltar" theme="info" icon=""/>
+            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.usuarios') }}'" label="Voltar" theme="" icon=""/>
         </div>
     </x-slot>
 </x-adminlte-card>
@@ -135,7 +112,8 @@ if($tipo == 'T'){
 
 <!-- Chamada dos Plugins usados na app -->  
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 @stop

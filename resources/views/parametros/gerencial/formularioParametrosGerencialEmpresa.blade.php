@@ -1,27 +1,27 @@
 @extends('adminlte::page')
 
-@section('title', 'Parâmetros Gerais Gerencial')
+@section('title', 'Geral da Empresa')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais Gerencial</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.parametrosGerEmp')}}">Geral da Empresa</a>
-                </li>
-                <li class="breadcrumb-item active">Manutenção Geral da Empresa</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.parametrosGerEmp')}}">Geral da Empresa</a>
+            </li>
+            <li class="breadcrumb-item active">Manutenção Geral da Empresa</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
 <div class="col-md-12">
-    <div class="card card-navy card-tabs">
-        <div class="card-header p-0 pt-1">
+    <div class="card card-tabs">
+        <div class="card-header card-nexus p-0 pt-1">
             <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
                 <li class="pt-2 px-3"><h3 class="card-title">Manutenção da Empresa</h3></li>
                 <li class="nav-item">
@@ -29,7 +29,16 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" id="custom-tabs-two-turnos-tab" data-toggle="pill" href="#custom-tabs-two-turnos" role="tab" aria-controls="custom-tabs-two-turnos" aria-selected="false">Turnos</a>
-                 </li>
+                </li>
+                <!-- Add ml-auto to align card-tools to the right -->
+                <div class="card-tools ml-auto">          
+                    <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                        <i class="fas fa-lg fa-expand"></i>     
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-lg fa-minus"></i>    
+                    </button>
+                </div>
             </ul>
         </div>
         <div class="card-body">
@@ -84,17 +93,7 @@
                             @php
                                 $horaIniFun = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_fun);
 
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "minYear" => 2000,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => true,
-                                    "timePicker24Hour" => true,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "HH:mm"],
-                                ];
+                                $config = Helper::dtRangeHoraPtBR();
                             @endphp
                             <x-adminlte-date-range name="horaIniFun" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-2">
                                 <x-slot name="label">
@@ -111,17 +110,7 @@
                             @php
                                 $horaFinFun = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_fin_fun);
 
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "minYear" => 2000,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => true,
-                                    "timePicker24Hour" => true,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "HH:mm"],
-                                ];
+                                $config = Helper::dtRangeHoraPtBR();
                             @endphp
                             <x-adminlte-date-range name="horaFinFun" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-2">
                                 <x-slot name="label">
@@ -146,17 +135,7 @@
                             @php
                                 $horaIniInt = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_int);
 
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "minYear" => 2000,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => true,
-                                    "timePicker24Hour" => true,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "HH:mm"],
-                                ];
+                                $config = Helper::dtRangeHoraPtBR();
                             @endphp
                             <x-adminlte-date-range name="horaIniInt" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-2">
                                 <x-slot name="label">
@@ -173,17 +152,7 @@
                             @php
                                 $horaFinInt = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_fin_int);
 
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "minYear" => 2000,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => true,
-                                    "timePicker24Hour" => true,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "HH:mm"],
-                                ];
+                                $config = Helper::dtRangeHoraPtBR();
                             @endphp
                             <x-adminlte-date-range name="horaFinInt" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-2">
                                 <x-slot name="label">
@@ -210,17 +179,7 @@
                             @php
                                 $horaIniSab = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_sab);
 
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "minYear" => 2000,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => true,
-                                    "timePicker24Hour" => true,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "HH:mm"],
-                                ];
+                                $config = Helper::dtRangeHoraPtBR();
                             @endphp
                             <x-adminlte-date-range name="horaIniSab" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-2">
                                 <x-slot name="label">
@@ -237,17 +196,7 @@
                             @php
                                 $horaFinSab = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_fin_sab);
 
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "minYear" => 2000,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => true,
-                                    "timePicker24Hour" => true,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "HH:mm"],
-                                ];
+                                $config = Helper::dtRangeHoraPtBR();
                             @endphp
                             <x-adminlte-date-range name="horaFinSab" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-2">
                                 <x-slot name="label">
@@ -272,17 +221,7 @@
                             @php
                                 $horaIniIntSab = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_int_sab);
 
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "minYear" => 2000,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => true,
-                                    "timePicker24Hour" => true,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "HH:mm"],
-                                ];
+                                $config = Helper::dtRangeHoraPtBR();
                             @endphp
                             <x-adminlte-date-range name="horaIniIntSab" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-2">
                                 <x-slot name="label">
@@ -299,17 +238,7 @@
                             @php
                                 $horaFinIntSab = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_fin_int_sab);
 
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "minYear" => 2000,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => true,
-                                    "timePicker24Hour" => true,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "HH:mm"],
-                                ];
+                                $config = Helper::dtRangeHoraPtBR();
                             @endphp
                             <x-adminlte-date-range name="horaFinIntSab" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-2">
                                 <x-slot name="label">
@@ -335,18 +264,8 @@
 
                             @php
                                 $horaIniDom = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_dom);
-
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "minYear" => 2000,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => true,
-                                    "timePicker24Hour" => true,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "HH:mm"],
-                                ];
+                                
+                                $config = Helper::dtRangeHoraPtBR();
                             @endphp
                             <x-adminlte-date-range name="horaIniDom" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-2">
                                 <x-slot name="label">
@@ -363,17 +282,7 @@
                             @php
                                 $horaFinDom = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_fin_dom);
 
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "minYear" => 2000,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => true,
-                                    "timePicker24Hour" => true,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "HH:mm"],
-                                ];
+                                $config = Helper::dtRangeHoraPtBR();
                             @endphp
                             <x-adminlte-date-range name="horaFinDom" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-2">
                                 <x-slot name="label">
@@ -398,17 +307,7 @@
                             @php
                                 $horaIniIntDom = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_int_dom);
 
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "minYear" => 2000,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => true,
-                                    "timePicker24Hour" => true,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "HH:mm"],
-                                ];
+                                $config = Helper::dtRangeHoraPtBR();
                             @endphp
                             <x-adminlte-date-range name="horaIniIntDom" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-2">
                                 <x-slot name="label">
@@ -425,17 +324,7 @@
                             @php
                                 $horaFinIntDom = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_fin_int_dom);
 
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "minYear" => 2000,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => true,
-                                    "timePicker24Hour" => true,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "HH:mm"],
-                                ];
+                                $config = Helper::dtRangeHoraPtBR();
                             @endphp
                             <x-adminlte-date-range name="horaFinIntDom" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-2">
                                 <x-slot name="label">
@@ -451,7 +340,7 @@
                         </div>
 
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button type="submit" label="Salvar" theme="" class="btn-nexus" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -476,7 +365,7 @@
 
                             @if($turno->partur_cod == 1)
                                 <div class="col-md-3">
-                                    <x-adminlte-card theme="navy" theme-mode="outline" title="Turno {{$turno->partur_cod}}" icon="fa-solid fa-person-digging">
+                                    <x-adminlte-card theme="" theme-mode="outline" header-class="card-outline-nexus" title="Turno {{$turno->partur_cod}}" icon="fa-solid fa-person-digging">
                                         <div class="text-muted">
                                             <div class="row">
                                                 <p class="text-sm col-md-12">Descrição
@@ -493,7 +382,7 @@
                                 </div>
                             @else 
                                 <div class="col-md-3">
-                                    <x-adminlte-card theme="navy" theme-mode="outline" title="Turno {{$turno->partur_cod}}" icon="fa-solid fa-person-digging">
+                                    <x-adminlte-card theme="" theme-mode="outline" header-class="card-outline-nexus" title="Turno {{$turno->partur_cod}}" icon="fa-solid fa-person-digging">
                                         <div class="text-muted">
                                             <div class="row">
                                                 <p class="text-sm col-md-6">Descrição
@@ -525,13 +414,13 @@
                             @endif
                         @endforeach
                     </div>
-                    <!-- Gera o Modal com os campos da inserção dos dados do endereço do usuario -->
+                    <!-- Gera o Modal com os campos da inserção dos dados do turno -->
                     <div class="row d-flex justify-content-center">
                         <form method="post" action="{{route('parametrosGerEmp.insertTurno', ['empresa' => $parametrosEmp[0]->parger_emp])}}" id="formulario-turno" novalidate="novalidate">
                         @csrf 
                         @method('post')    
                             <!-- Criação do Modal -->                           
-                            <x-adminlte-modal id="modalCustom" title="Novo Turno" size="lg" theme="navy" icon="fa-solid fa-briefcase" v-centered static-backdrop scrollable>
+                            <x-adminlte-modal id="modalCustom" title="Novo Turno" size="lg" theme="modal-nexus" icon="fa-solid fa-briefcase" v-centered static-backdrop scrollable>
                                 <div class="col-md-12">
 
                                     <div class="row">
@@ -555,17 +444,7 @@
                                         @php
                                             $horaIniIntDom = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_int_dom);
 
-                                            $config = [
-                                                "singleDatePicker" => true,
-                                                "showDropdowns" => true,
-                                                "minYear" => 2000,
-                                                "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                                "timePicker" => true,
-                                                "timePicker24Hour" => true,
-                                                "timePickerSeconds" => false,
-                                                "cancelButtonClasses" => "btn-danger",
-                                                "locale" => ["format" => "HH:mm"],
-                                            ];
+                                            $config = Helper::dtRangeHoraPtBR();
                                         @endphp
                                         <x-adminlte-date-range name="horaInicioTurno" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-6">
                                             <x-slot name="label">
@@ -581,17 +460,7 @@
                                         @php
                                             $horaIniIntDom = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_int_dom);
 
-                                            $config = [
-                                                "singleDatePicker" => true,
-                                                "showDropdowns" => true,
-                                                "minYear" => 2000,
-                                                "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                                "timePicker" => true,
-                                                "timePicker24Hour" => true,
-                                                "timePickerSeconds" => false,
-                                                "cancelButtonClasses" => "btn-danger",
-                                                "locale" => ["format" => "HH:mm"],
-                                            ];
+                                            $config = Helper::dtRangeHoraPtBR();
                                         @endphp
                                         <x-adminlte-date-range name="horaFinalTurno" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-6">
                                             <x-slot name="label">
@@ -608,8 +477,8 @@
                                     
                                     <!-- Criação dos botões do Modal -->  
                                     <x-slot name="footerSlot">
-                                        <x-adminlte-button class="mr-auto" theme="info" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
-                                        <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                                        <x-adminlte-button class="btn-nexus mr-auto" theme="" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
+                                        <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                                     </x-slot>
                                 </div>
                             </x-adminlte-modal>
@@ -617,7 +486,7 @@
                         <!-- Botão de chamada do Modal -->  
                         <div class="d-flex justify-content-center">
                             @if($parametrosEmp[0]->parger_tur_srv == 'S')
-                            <x-adminlte-button label="Novo Turno" data-toggle="modal" data-target="#modalCustom" class="bg-info" icon="fa-solid fa-briefcase"/>
+                            <x-adminlte-button label="Novo Turno" data-toggle="modal" data-target="#modalCustom" class="btn-nexus" icon="fa-solid fa-briefcase"/>
                             @endif
                         </div>
                     </div>
@@ -626,7 +495,7 @@
         </div>
         <div class="card-footer">
             <div class="d-flex justify-content-between w-100">
-                <x-adminlte-button type="button" onclick="window.location='{{ route('home.parametrosGerEmp') }}'" label="Voltar" theme="info" icon=""/>
+                <x-adminlte-button type="button" onclick="window.location='{{ route('home.parametrosGerEmp') }}'" label="Voltar" theme="" class="btn-nexus" icon=""/>
             </div>
         </div>
     </div>

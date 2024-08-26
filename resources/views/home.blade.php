@@ -25,35 +25,20 @@
         'Valor',
     ];
     $configOS = [
-        'lengthMenu' => [ 5, 10, 25, 50],
+        'lengthChange' => 'false', 
         'paging' => false,
         'searching' => false,
-        'language' => [
-            'decimal' =>        '',
-            'emptyTable' =>     'Sem dados disponíveis na tabela',
-            'info' =>           '',
-            'infoEmpty' =>      '',
-            'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-            'infoPostFix' =>    '',
-            'thousands' =>      ',',
-            'lengthMenu' =>     '',
-            'loadingRecords' => 'Carregando...',
-            'processing' =>     '',
-            'search' =>         'Pesquisar:',
-            'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-            'paginate' => [
-                'first' =>      'Primeiro',
-                'last' =>       'Último',
-                'next' =>       'Próximo',
-                'previous' =>   'Anterior'
-            ],
-            'aria' => [
-                'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-            ],
-        ],
+        'pageLength' => 5,
+        'info' => false, 
+        'language' => Helper::dataTableLangPtBR(),
         'order' => [[0, 'desc']],
-        'columns' => [['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false]],
+        'columns' => [
+            ['orderable' => false], 
+            ['orderable' => false], 
+            ['orderable' => false], 
+            ['orderable' => false], 
+            ['orderable' => false]
+        ],
     ];
 
     $headsNFS = [
@@ -65,35 +50,21 @@
         'Valor',
     ];
     $configNFS = [
-        'lengthMenu' => [ 5, 10, 25, 50],
+        'lengthChange' => 'false', 
         'paging' => false,
         'searching' => false,
-        'language' => [
-            'decimal' =>        '',
-            'emptyTable' =>     'Sem dados disponíveis na tabela',
-            'info' =>           '',
-            'infoEmpty' =>      '',
-            'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-            'infoPostFix' =>    '',
-            'thousands' =>      ',',
-            'lengthMenu' =>     '',
-            'loadingRecords' => 'Carregando...',
-            'processing' =>     '',
-            'search' =>         'Pesquisar:',
-            'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-            'paginate' => [
-                'first' =>      'Primeiro',
-                'last' =>       'Último',
-                'next' =>       'Próximo',
-                'previous' =>   'Anterior'
-            ],
-            'aria' => [
-                'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-            ],
-        ],
+        'pageLength' => 5,
+        'info' => false, 
+        'language' => Helper::dataTableLangPtBR(),
         'order' => [[0, 'desc']],
-        'columns' => [['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false]],
+        'columns' => [
+            ['orderable' => false], 
+            ['orderable' => false], 
+            ['orderable' => false], 
+            ['orderable' => false], 
+            ['orderable' => false], 
+            ['orderable' => false]
+        ],
     ];
 @endphp
 
@@ -101,39 +72,38 @@
     
     <div class="row">
         <div class="col-md-6">
-            <x-adminlte-card title="Relatório de NFS-e Geradas na Última Semana" theme="" theme-mode="outline" header-class="card-outline-nexus rounded-bottom">
-                
-                        <div class="d-flex">
-                            <p class="d-flex flex-column">
-                                <span class="text-bold text-lg">{{$qtdNFS}}</span>
-                                <span>Geradas essa semana</span>
-                            </p>
-                            <p class="ml-auto d-flex flex-column text-right">
-                                @if($perNfsSemana > 0)<span class="text-success"><i class="fas fa-arrow-up"></i>
-                                @elseif($perNfsSemana < 0)<span class="text-danger"><i class="fas fa-arrow-down"></i>@php $perNfsSemana *= -1;@endphp
-                                @else<span class="text-warning"><i class="fas fa-square fa-2xs"></i>
-                                @endif
-                                {{Helper::formataPorcentagem($perNfsSemana)}}%
-                                </span>
-                                <span class="text-muted">Desde a semana passada</span>
-                            </p>
-                        </div>
+            <x-adminlte-card title="Relatório de NFS-e Geradas na Última Semana" icon="fa-solid fa-chart-line" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
+                <div class="d-flex">
+                    <p class="d-flex flex-column">
+                        <span class="text-bold text-lg">{{$qtdNFS}}</span>
+                        <span>Geradas essa semana</span>
+                    </p>
+                    <p class="ml-auto d-flex flex-column text-right">
+                        @if($perNfsSemana > 0)<span class="text-success"><i class="fas fa-arrow-up"></i>
+                        @elseif($perNfsSemana < 0)<span class="text-danger"><i class="fas fa-arrow-down"></i>@php $perNfsSemana *= -1;@endphp
+                        @else<span class="text-warning"><i class="fas fa-square fa-2xs"></i>
+                        @endif
+                        {{Helper::formataPorcentagem($perNfsSemana)}}%
+                        </span>
+                        <span class="text-muted">Desde a semana passada</span>
+                    </p>
+                </div>
 
-                        <div class="chart">
-                            <canvas id="visitors-chart" height="140" width="639" style="display: block; width: 639px; height: 140px;" class="chartjs-render-monitor"></canvas>
-                        </div>
-                        <div class="d-flex flex-row justify-content-end">
-                            <span class="mr-2">
-                                <i class="fas fa-square text-primary"></i> Esta Semana
-                            </span>
-                            <span>
-                                <i class="fas fa-square text-gray"></i> Semana Passada
-                            </span>
-                        </div>
+                <div class="chart">
+                    <canvas id="visitors-chart" height="140" width="639" style="display: block; width: 639px; height: 140px;" class="chartjs-render-monitor"></canvas>
+                </div>
+                <div class="d-flex flex-row justify-content-end">
+                    <span class="mr-2">
+                        <i class="fas fa-square text-primary"></i> Esta Semana
+                    </span>
+                    <span>
+                        <i class="fas fa-square text-gray"></i> Semana Passada
+                    </span>
+                </div>
             </x-adminlte-card>
         </div>
         <div class="col-md-6">
-            <x-adminlte-card title="Resumo Geral da Empresa no Mês" theme="" theme-mode="outline" header-class="card-outline-nexus rounded-bottom">
+            <x-adminlte-card title="Resumo Geral da Empresa no Mês" icon="fa-solid fa-percent" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                 <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
                     <p class="text-teal text-xl">
                     <i class="fa-solid fa-money-bill-1"></i>
@@ -182,7 +152,7 @@
 
     <div class="row">
         <div class="col-md-6">
-            <x-adminlte-card title="Últimas OS Abertas" theme="" theme-mode="" header-class="card-nexus">
+            <x-adminlte-card title="Últimas OS Abertas" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 <x-adminlte-datatable id="table-os" :heads="$headsOS" :config="$configOS" theme="light" striped hoverable compressed>
                     @foreach($dadosOS as $os)
                         @php 
@@ -216,7 +186,7 @@
             </x-adminlte-card>
         </div>
         <div class="col-md-6">
-            <x-adminlte-card title="Últimas NFS-e Geradas" theme="" theme-mode="" header-class="card-nexus">
+            <x-adminlte-card title="Últimas NFS-e Geradas" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 <x-adminlte-datatable id="table-nfs" :heads="$headsNFS" :config="$configNFS" theme="light" striped hoverable compressed>
                     @foreach($dadosNFS as $nfs)
                         @php 
@@ -252,6 +222,8 @@
 @stop
 
 @section('plugins.Chartjs', true)
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 @stop

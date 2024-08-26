@@ -84,30 +84,7 @@
     $configAG = [
         'paging' => false,
         'searching' => false,
-        'language' => [
-            'decimal' =>        '',
-            'emptyTable' =>     'Sem dados disponíveis na tabela',
-            'info' =>           '',
-            'infoEmpty' =>      '',
-            'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-            'infoPostFix' =>    '',
-            'thousands' =>      ',',
-            'lengthMenu' =>     '',
-            'loadingRecords' => 'Carregando...',
-            'processing' =>     '',
-            'search' =>         'Pesquisar:',
-            'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-            'paginate' => [
-                'first' =>      'Primeiro',
-                'last' =>       'Último',
-                'next' =>       'Próximo',
-                'previous' =>   'Anterior'
-            ],
-            'aria' => [
-                'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-            ],
-        ],
+        'language' => Helper::dataTableLangPtBR(),
         'order' => [[1, 'asc'],[0, 'asc'],[2, 'asc']],
         'columns' => [
             ['orderable' => false, 'visible' => false], // Esconder primeira coluna

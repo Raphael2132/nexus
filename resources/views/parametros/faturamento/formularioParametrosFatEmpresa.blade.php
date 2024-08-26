@@ -1,21 +1,21 @@
 @extends('adminlte::page')
 
-@section('title', 'Parâmetros Gerais de Faturamento')
+@section('title', 'Geral da Empresa')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais de Faturamento</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.parametrosFatEmp')}}">Geral da Empresa</a>
-                </li>
-                <li class="breadcrumb-item active">Manutenção Geral da Empresa</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.parametrosFatEmp')}}">Geral da Empresa</a>
+            </li>
+            <li class="breadcrumb-item active">Manutenção Geral da Empresa</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -24,7 +24,7 @@
         <!-- Define se o formulario é edição ou novo -->
         <form method="post" action="{{route('parametrosFatEmp.update')}}" id="quickForm" novalidate="novalidate">
             @csrf 
-            <x-adminlte-card title="Manutenção dos Parâmetros Gerais de Faturamento" theme="navy">
+            <x-adminlte-card title="Manutenção dos Parâmetros Gerais de Faturamento" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
                     @php
@@ -42,14 +42,20 @@
                     @endphp
 
                     <!-- Empresa do Setor -->
-                    <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-12">
+                    <x-adminlte-select name="empresa" fgroup-class="col-md-12">
+                        <x-slot name="label">
+                            Empresa <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parfat_emp}}"/>
                     </x-adminlte-select>
                 </div>
 
                 <div class="row">              
                     <!-- Optante do Simples Nacional -->
-                    <x-adminlte-select name="optSimples" label="Optante do Simples Nacional" fgroup-class="col-md-6">
+                    <x-adminlte-select name="optSimples" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Optante do Simples Nacional <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{ $parametrosEmp[0]->parfat_sim }}" />
                     </x-adminlte-select>
                 </div>
@@ -57,8 +63,8 @@
                 <!-- /.card -->
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
-                        <x-adminlte-button class="btn-flat btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                        <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parametrosFatEmp') }}'" label="Voltar" theme="info" icon=""/>
+                        <x-adminlte-button class="btn-nexus btn_salvar" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.parametrosFatEmp') }}'" label="Voltar" theme="" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>
@@ -70,15 +76,12 @@
 <!-- Chamada dos Plugins usados na app -->
 @section('plugins.jqueryValidation', true)
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
 @section('plugins.Select2', true)
-@section('plugins.DateRangePicker', true)
 
 @section('css')
 @stop
 
 @section('js')
-<script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script>
 
 <!--
 |--------------------------------------------------------------------------
@@ -87,40 +90,7 @@
 -->
 <script>
     $(document).ready(function() {    
-
         $("#empresa").attr("disabled", true);
-
-        $('#aliqISS').mask('#.##0,00', {reverse: true});
-
-        //Esconde calendário de data
-        $(function() { 
-            $('#horaIniEx').on('showCalendar.daterangepicker', function(ev, picker) {
-
-                $('.calendar-table').hide();
-
-            }) 
-        });
-
-        //Esconde calendário de data
-        $(function() { 
-            $('#horaFinEx').on('showCalendar.daterangepicker', function(ev, picker) {
-
-                $('.calendar-table').hide();
-
-            }) 
-        });
-    });
-</script>
-
-<!--
-|--------------------------------------------------------------------------
-| Eventos onClick da app
-|--------------------------------------------------------------------------
--->
-<script>
-    //Ao clicar no botão salvar retira o disabled do campo para não ter problema no request do update do campo
-    $(".btn_salvar").click(function(){
-        $("#empresa").attr("disabled", false);
     });
 </script>
 
@@ -131,29 +101,12 @@
 -->
 <script>
 $(function () {
-
-    jQuery.validator.addMethod("maxpercent", function(value, element) {
-        return this.optional(element) || /^(\d{1,2}|\d{1,2}\,\d{1,2}|100\,[0]{1,2}|100)$/i.test(value);
-    }, "Porcentagem máxima de 100,00 %");
-
     $('#quickForm').validate({
         rules: {
             empresa: {
                 required: true
             },
-            aliqISS: {
-                required: true,
-                maxpercent: true
-            },
-            srvCFOP: {
-                required: true,
-                maxlength: 4,
-                minlength: 4,
-            },
-            horaIniEx: {
-                required: true
-            },
-            horaFinEx: {
+            optSimples: {
                 required: true
             },
         },
@@ -161,19 +114,8 @@ $(function () {
             empresa: {
                 required: "Por Favor informe a Empresa"
             },
-            aliqISS: {
-                required: "Por Favor informe uma Aliquota de ISS"
-            },
-            srvCFOP: {
-                required: "Por Favor informe um CFOP",
-                maxlength: "CFOP deve ter 4 digitos",
-                minlength: "CFOP deve ter 4 digitos"
-            },
-            horaIniEx: {
-                required: "Por Favor informe a hora de inicio do expediente"
-            },
-            horaFinEx: {
-                required: "Por Favor informe a hora do final do expediente"
+            optSimples: {
+                required: "Por Favor informe o campo Optante do Simples Nacional "
             },
         },
         errorElement: 'span',
@@ -186,6 +128,14 @@ $(function () {
         },
         unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
         }
     });
 });

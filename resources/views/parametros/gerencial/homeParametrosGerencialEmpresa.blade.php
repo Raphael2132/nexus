@@ -1,18 +1,18 @@
 @extends('adminlte::page')
 
-@section('title', 'Parâmetros Gerais Gerencial')
+@section('title', 'Geral da Empresa')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais Gerencial</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Geral da Empresa</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">Geral da Empresa</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -36,35 +36,13 @@
             'searching' => false,
             'lengthChange' => false,
             'pageLength' => 5,
-            'language' => [
-                'decimal' =>        '',
-                'emptyTable' =>     'Sem dados disponíveis na tabela',
-                'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-                'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-                'infoPostFix' =>    '',
-                'thousands' =>      ',',
-                'lengthMenu' =>     'Mostrar _MENU_ registros',
-                'loadingRecords' => 'Carregando...',
-                'processing' =>     '',
-                'search' =>         'Pesquisar:',
-                'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-                'paginate' => [
-                    'first' =>      'Primeiro',
-                    'last' =>       'Último',
-                    'next' =>       'Próximo',
-                    'previous' =>   'Anterior'
-                ],
-                'aria' => [
-                    'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                    'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-                ],
-            ],
+            'language' => Helper::dataTableLangPtBR(),
+            'order' => [[0, 'asc']],
             'columns' => [null, null, null, null, null,null, null, null,['orderable' => false]],
         ];
         @endphp
-        <x-adminlte-card  title="Empresas Cadastradas" theme="navy" theme-mode="outline">
-            <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable compressed>
+        <x-adminlte-card  title="Empresas Cadastradas" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
+            <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable>
                 @foreach ($dataParGerEmp as $empresa)
                     @php
                         $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo',$empresa->parger_emp)->get();

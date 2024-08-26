@@ -39,47 +39,23 @@
         $heads = [
             ['label' => '', 'no-export' => true, 'width' => 5],
             'Empresa',
-            'Código',
-            'Nome',
+            'Usuário',
             'Tipo do Usuário',
             'Status',
             ['label' => 'Opção', 'no-export' => true, 'width' => 5],
         ];
         
         $config = [
-            'searching' => false,
-            'lengthChange' => false,
+            'lengthMenu' => [ 5, 10, 25, 50],
             'pageLength' => 5,
-            'language' => [
-                'decimal' =>        '',
-                'emptyTable' =>     'Sem dados disponíveis na tabela',
-                'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-                'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-                'infoPostFix' =>    '',
-                'thousands' =>      ',',
-                'lengthMenu' =>     'Mostrar _MENU_ registros',
-                'loadingRecords' => 'Carregando...',
-                'processing' =>     '',
-                'search' =>         'Pesquisar:',
-                'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-                'paginate' => [
-                    'first' =>      'Primeiro',
-                    'last' =>       'Último',
-                    'next' =>       'Próximo',
-                    'previous' =>   'Anterior'
-                ],
-                'aria' => [
-                    'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-                    'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-                ],
-            ],
-            'columns' => [['orderable' => false], null, null, null, null, null, ['orderable' => false]],
+            'language' => Helper::dataTableLangPtBR(),
+            'order' => [[1, 'asc'],[2, 'asc']],
+            'columns' => [['orderable' => false], null, null, null, null, ['orderable' => false]],
         ];
         @endphp
 
-        <x-adminlte-card title="Lista de Usuários Cadastrados" theme="navy" theme-mode="outline">
-            <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable>
+        <x-adminlte-card title="Lista de Usuários Cadastrados" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
+            <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
                 @foreach ($usuarios as $usuario)
                     @php
                         if($usuario->usuario_tipo == 'A'){
@@ -99,7 +75,7 @@
                         <td>
                             <nobr class="d-flex justify-content-center">
                                 <!-- Cria o modal dos detalhes do usuario -->
-                                <x-adminlte-modal id="modalCustom_{{$usuario->usuario_codigo}}" title="Detalhes do Usuario" size="xl" theme="navy" icon="fa-solid fa-building" v-centered scrollable>
+                                <x-adminlte-modal id="modalCustom_{{$usuario->usuario_codigo}}" title="Detalhes do Usuario" size="xl" theme="modal-nexus" icon="fa-solid fa-address-card" v-centered scrollable>
                                     <div class="row" style="height:auto;">
                                         <!-- Conteudo da esquerda do modal -->
                                         <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
@@ -308,7 +284,7 @@
                                         </div>
                                     </div>
                                     <x-slot name="footerSlot">
-                                        <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                                        <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                                     </x-slot>
                                 </x-adminlte-modal>
                                 <!-- Gera o icone da lupa que abre o modal -->
@@ -318,8 +294,7 @@
                             </nobr>
                         </td>   
                         <td>{{ $usuario->usuario_empresa.' - '.$dataEmp[0]->empresa_nome }}</td>
-                        <td>{{ $usuario->usuario_codigo }}</td>
-                        <td>{{ $usuario->name }}</td>
+                        <td>{{ $usuario->usuario_codigo.' - '.$usuario->name }}</td>
                         <td>{{ $tip_usu }}</td>
                         <td>{{ $sts_usu }}</td>
                         <td>
@@ -347,7 +322,8 @@
 
 <!-- Chamada dos Plugins usados na app -->  
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 @stop

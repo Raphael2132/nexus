@@ -34,7 +34,7 @@
     <div class="col-md-8">
         <form method="post" action="{{route('prestador.inserir')}}" id="formulario-novo" novalidate="novalidate">
             @csrf 
-            <x-adminlte-card title="Cadastro de Novo Prestador" theme="navy">
+            <x-adminlte-card title="Cadastro de Novo Prestador" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
                     @php
@@ -124,17 +124,7 @@
                 <div class="row bloco-semana">
 
                     @php 
-                        $config = [
-                            "singleDatePicker" => true,
-                            "showDropdowns" => true,
-                            "minYear" => 2000,
-                            "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                            "timePicker" => true,
-                            "timePicker24Hour" => true,
-                            "timePickerSeconds" => false,
-                            "cancelButtonClasses" => "btn-danger",
-                            "locale" => ["format" => "HH:mm"],
-                        ];
+                        $config = Helper::dtRangeHoraPtBR();
                     @endphp
                     <x-adminlte-select name="usaInt" fgroup-class="col-md-4">
                         <x-slot name="label">
@@ -235,8 +225,8 @@
                 <!-- /.card -->
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
-                        <x-adminlte-button class="btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                        <x-adminlte-button type="button" onclick="window.location='{{ route('home.prestadores') }}'" label="Voltar" theme="info" icon=""/>
+                        <x-adminlte-button class="btn-nexus vbtn_salvar" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.prestadores') }}'" label="Voltar" theme="" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>
@@ -245,8 +235,8 @@
 </div>
 @else
 <div class="col-12 col-sm-12">
-    <div class="card card-navy card-tabs">
-        <div class="card-header p-0 pt-1">
+    <div class="card card-tabs">
+        <div class="card-header card-nexus p-0 pt-1">
             <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
                 <li class="pt-2 px-3"><h3 class="card-title">Manutenção do Prestador</h3></li>
                 <li class="nav-item">
@@ -261,6 +251,14 @@
                 <li class="nav-item">
                     <a class="nav-link" id="custom-tabs-two-endereco-tab" data-toggle="pill" href="#custom-tabs-two-endereco" role="tab" aria-controls="custom-tabs-two-endereco" aria-selected="false">Endereço</a>
                 </li>
+                <div class="card-tools ml-auto">          
+                    <button type="button" class="btn btn-tool" data-card-widget="maximize">
+                        <i class="fas fa-lg fa-expand"></i>     
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-lg fa-minus"></i>    
+                    </button>
+                </div>
             </ul>
         </div>
         <div class="card-body">
@@ -317,18 +315,7 @@
                             <x-adminlte-input name="rgPrestador" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosPrestador[0]['prestador_rg'] }}"></x-adminlte-input>
 
                             @php
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "startDate" => "js:moment()",
-                                    "minYear" => 1900,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => false,
-                                    "timePicker24Hour" => false,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "DD/MM/YYYY"],
-                                ];
+                                $config = Helper::dtRangeDataPtBR();
 
                                 if(!empty($dadosPrestador[0]['prestador_data_nascimento'])){
                                     $data_nascimento = date('d/m/Y', strtotime($dadosPrestador[0]['prestador_data_nascimento']));
@@ -358,18 +345,7 @@
 
                         <div class="row">
                             @php
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "startDate" => "js:moment()",
-                                    "minYear" => 1900,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => false,
-                                    "timePicker24Hour" => false,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "DD/MM/YYYY"],
-                                ];
+                                $config = Helper::dtRangeDataPtBR();
 
                                 if(!empty($dadosPrestador[0]['prestador_data_admissao'])){
                                     $data_admissao = date('d/m/Y', strtotime($dadosPrestador[0]['prestador_data_admissao']));
@@ -461,7 +437,7 @@
                         </div>
 
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button class="btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus btn_salvar" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -496,17 +472,7 @@
                                 }
                                 $array_opt_set = array_combine($new_array1_set, $new_array2_set);
 
-                                $config = [
-                                    "singleDatePicker" => true,
-                                    "showDropdowns" => true,
-                                    "minYear" => 2000,
-                                    "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                                    "timePicker" => true,
-                                    "timePicker24Hour" => true,
-                                    "timePickerSeconds" => false,
-                                    "cancelButtonClasses" => "btn-danger",
-                                    "locale" => ["format" => "HH:mm"],
-                                ];
+                                $config = Helper::dtRangeHoraPtBR();
                             @endphp
                             <!-- area -->
                             <x-adminlte-select name="areaPrestador" fgroup-class="col-md-6">
@@ -673,7 +639,7 @@
                             @push('js')<script>$(() => $("#horaFinIntDom").val('{{ $horaFinIntDom }}'))</script>@endpush
                         </div>
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button class="btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus btn_salvar" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -725,7 +691,7 @@
                             </x-adminlte-input>
                         </div>
                         <div class="d-flex justify-content-center">
-                            <x-adminlte-button class="btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus btn_salvar" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
                         </div>
                     </form>
                 </div>
@@ -741,7 +707,7 @@
                         @endphp
                         <!-- Se ainda não foi cadastrado endereço para o prestador cria card vazio -->
                         <div class="col-md-4">
-                            <x-adminlte-card theme="navy" title="Endereço">
+                            <x-adminlte-card title="Endereço" theme="" theme-mode="outline" header-class="card-outline-nexus">
                                 <i>Registros não encontrados</i>
                             </x-adminlte-card>
                         </div>
@@ -768,7 +734,7 @@
                                 @endphp
                                 <div class="col-md-4" style="float: left;">
                                     <!-- Card do Endereço do prestador -->
-                                    <x-adminlte-card theme="navy" :title="$titulo" :icon="$icone">
+                                    <x-adminlte-card :title="$titulo" :icon="$icone" theme="" theme-mode="outline" header-class="card-outline-nexus">
                                         <i>{{ $endereco->endereco_logradouro }}, {{ $endereco->endereco_numero }}</br>
                                             @php
                                                 if(!empty($endereco->endereco_complemento)){
@@ -787,7 +753,7 @@
                                             <form method="post" action="{{ route('enderecoPrestador.destroy', ['endereco' => $endereco->endereco_id, 'empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo]) }}" style="float: left;" >
                                             @csrf 
                                             @method('delete')
-                                                <x-adminlte-button class="btn-sm" theme="danger" icon="fa fa-lg fa-fw fa-trash" type="submit" style="margin-right: 5px;"/>
+                                                <x-adminlte-button title="Excluir Endereço" class="btn-sm" theme="danger" icon="fa fa-lg fa-fw fa-trash" type="submit" style="margin-right: 5px;"/>
                                             </form>
                                             @php
                                                 if($endereco->endereco_principal == "N"){
@@ -796,7 +762,7 @@
                                             <form method="get" action="{{ route('enderecoPrestador.principal', ['endereco' => $endereco->endereco_id, 'prestador_cod' => $endereco->endereco_prestador_codigo, 'empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo]) }}" style="float: left;">
                                             @csrf 
                                             @method('get')
-                                                <x-adminlte-button class="btn-sm" label="Tornar Principal" theme="success" icon="fa-solid fa-location-dot" type="submit"/>
+                                                <x-adminlte-button title="Tornar Principal" class="btn-sm" label="Tornar Principal" theme="success" icon="fa-solid fa-location-dot" type="submit"/>
                                             </form>
                                             @php 
                                                 }
@@ -817,7 +783,7 @@
                             @csrf 
                             @method('post')    
                                 <!-- Criação do Modal -->                           
-                                <x-adminlte-modal id="modalCustom" title="Novo Endereço" size="lg" theme="navy" icon="" v-centered static-backdrop scrollable>
+                                <x-adminlte-modal id="modalCustom" title="Novo Endereço" size="lg" theme="modal-nexus" icon="fa-solid fa-address-book" v-centered static-backdrop scrollable>
                                     <div style="height:400px;">
                                         <!-- Campos escondidos com o id e codigo do prestador para o request -->  
                                         <input id="prestador_codigo" type="hidden" value="{{ $dadosPrestador[0]['prestador_codigo'] }}" name="prestador_codigo">
@@ -916,15 +882,15 @@
                                         </div>
                                         <!-- Criação dos botões do Modal -->  
                                         <x-slot name="footerSlot">
-                                            <x-adminlte-button class="mr-auto" theme="success" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
-                                            <x-adminlte-button theme="danger" label="Voltar" data-dismiss="modal"/>
+                                            <x-adminlte-button class="btn-nexus mr-auto" theme="" label="Salvar" icon="fa-solid fa-share-from-square" type="submit"/>
+                                            <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
                                         </x-slot>
                                     </div>
                                 </x-adminlte-modal>
                             </form>
                             <!-- Botão de chamada do Modal -->  
                             <div class="d-flex justify-content-center">
-                                <x-adminlte-button label="Novo Endereço" data-toggle="modal" theme="info" data-target="#modalCustom" icon="fa-solid fa-address-book"/>
+                                <x-adminlte-button class="btn-nexus" label="Novo Endereço" data-toggle="modal" theme="" data-target="#modalCustom" icon="fa-solid fa-address-book"/>
                             </div>
                         </div>
                         
@@ -937,19 +903,19 @@
                 <div class="d-flex">
                     <form method="get" action="{{ route('prestador.cadastro') }}" style="float: left; margin-right: 2px;">
                     @csrf 
-                        <x-adminlte-button label="Novo Prestador" theme="info" icon="fa-solid fa-plus" type="submit"/>
+                        <x-adminlte-button class="btn-nexus" label="Novo Prestador" theme="" icon="fa-solid fa-plus" type="submit"/>
                     </form>
                     <form method="post" action="{{ route('prestador.destroy', ['prestador' => $dadosPrestador[0]]) }}" style="float: left;margin-left: 2px;">
                     @csrf 
                     @method('delete')
-                        <x-adminlte-button label="Excluir Prestador" theme="info" icon="fa-solid fa-trash" type="submit"/>
+                        <x-adminlte-button class="btn-nexus" label="Excluir Prestador" theme="" icon="fa-solid fa-trash" type="submit"/>
                     </form>
                 </div>
                 <div class="d-flex">
                     @if(!empty(trim($tipo)))
-                    <x-adminlte-button type="button" onclick="window.location='{{ route('prestador.consulta', ['tipo' => $tipo]) }}'" label="Voltar" theme="info" icon=""/>
+                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('prestador.consulta', ['tipo' => $tipo]) }}'" label="Voltar" theme="" icon=""/>
                     @else
-                    <x-adminlte-button type="button" onclick="window.location='{{ route('home.prestadores') }}'" label="Voltar" theme="info" icon=""/>
+                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.prestadores') }}'" label="Voltar" theme="" icon=""/>
                     @endif
                 </div>
             </div>
@@ -963,7 +929,6 @@
 <!-- Chamada dos Plugins usados na app -->
 @section('plugins.jqueryValidation', true)
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
 @section('plugins.DateRangePicker', true)
 @section('plugins.Inputmask', true)
 

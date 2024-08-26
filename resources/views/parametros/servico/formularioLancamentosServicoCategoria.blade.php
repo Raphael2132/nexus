@@ -1,25 +1,25 @@
 @extends('adminlte::page')
 
-@section('title', 'Categoria de Atendimento')
+@section('title', 'Categorias de Atendimento')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais de Serviços</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.lancSrvCategoria')}}">Categorias de Atendimento</a>
-                </li>
-                @if($acao == 'N')
-                    <li class="breadcrumb-item active">Cadastro Categoria de Atendimento</li>
-                @else
-                    <li class="breadcrumb-item active">Manutenção Categoria de Atendimento</li>
-                @endif
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.lancSrvCategoria')}}">Categorias de Atendimento</a>
+            </li>
+            @if($acao == 'N')
+                <li class="breadcrumb-item active">Cadastro Categoria de Atendimento</li>
+            @else
+                <li class="breadcrumb-item active">Manutenção Categoria de Atendimento</li>
+            @endif
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -32,7 +32,7 @@
         <form method="post" action="{{route('lancamentosSrvCategoria.update')}}" id="quickForm" novalidate="novalidate">
         @endif
             @csrf 
-            <x-adminlte-card title="Cadastro de Nova Categoria de Atendimento" theme="navy">
+            <x-adminlte-card title="Cadastro de Nova Categoria de Atendimento" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
                     @php
@@ -74,12 +74,12 @@
                     @endphp
                     <div class="d-flex justify-content-between w-100">
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-flat mr-2 btn_novo" type="button" onclick="window.location='{{ route('lancamentosSrvCategoria.cadastro') }}'" label="Nova Categoria" theme="info" icon="fa-solid fa-plus"/>
-                            <x-adminlte-button class="btn-flat mr-2 btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                            <x-adminlte-button class="btn-flat mr-2 btn_excluir" type="button" data-id="{{$tipoCat}}" data-token="{{ csrf_token() }}" label="Excluir" theme="info" icon="fa-solid fa-trash"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_novo" type="button" onclick="window.location='{{ route('lancamentosSrvCategoria.cadastro') }}'" label="Nova Categoria" theme="" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_salvar" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_excluir" type="button" data-id="{{$tipoCat}}" data-token="{{ csrf_token() }}" label="Excluir" theme="" icon="fa-solid fa-trash"/>
                         </div>
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.lancSrvCategoria') }}'" label="Voltar" theme="info" icon=""/>
+                            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.lancSrvCategoria') }}'" label="Voltar" theme="" icon=""/>
                         </div>
                     </div>
                 </x-slot>

@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Clientes')
+@section('title', 'Cadastro de Prestadores')
 
 @section('content_header')
 <div class="row mb-2">
@@ -32,30 +32,9 @@ $heads = [
 ];
 $config = [
     'lengthMenu' => [ 5, 10, 25, 50],
-    'language' => [
-        'decimal' =>        '',
-        'emptyTable' =>     'Sem dados disponíveis na tabela',
-        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-        'infoPostFix' =>    '',
-        'thousands' =>      ',',
-        'lengthMenu' =>     'Mostrar _MENU_ registros',
-        'loadingRecords' => 'Carregando...',
-        'processing' =>     '',
-        'search' =>         'Pesquisar:',
-        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-        'paginate' => [
-            'first' =>      'Primeiro',
-            'last' =>       'Último',
-            'next' =>       'Próximo',
-            'previous' =>   'Anterior'
-        ],
-        'aria' => [
-            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-        ],
-    ],
+    'pageLength' => 10,
+    'language' => Helper::dataTableLangPtBR(),
+    'order' => [[1, 'asc']],
     'columns' => [['orderable' => false], null, null, null, null, ['orderable' => false]],
 ];
 
@@ -69,7 +48,7 @@ if($tipo == 'A'){
 
 @endphp
 
-<x-adminlte-card :title="$titulo" theme="navy" collapsible maximizable>
+<x-adminlte-card :title="$titulo" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
     <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
         @foreach ($prestadores as $prestador)
             <tr>
@@ -96,14 +75,14 @@ if($tipo == 'A'){
                     <nobr class="d-flex justify-content-center">
                         <form method="get" action="{{route('prestador.editarCadastro', ['dadosPrestador' => $prestador->prestador_codigo, 'empresa' => $prestador->prestador_empresa, 'tipo' => $tipo])}}" style="float: left;">
                             @csrf
-                            <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Editar Registros" value="Edit" type="submit">
+                            <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Editar Registro" value="Edit" type="submit">
                                 <i class="fa fa-lg fa-fw fa-pen"></i>
                             </button>
                         </form>
                         <form method="post" action="{{ route('prestador.destroy', ['prestador' => $prestador]) }}" style="float: left;">
                             @csrf 
                             @method('delete')
-                            <button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Excluir Registros" value="Delete" type="submit" >
+                            <button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Excluir Registro" value="Delete" type="submit" >
                                 <i class="fa fa-lg fa-fw fa-trash"></i>
                             </button>
                         </form>
@@ -116,13 +95,16 @@ if($tipo == 'A'){
         <div class="d-flex justify-content-between w-100">
             <form method="get" action="{{ route('prestador.cadastro') }}">
                 @csrf 
-                <x-adminlte-button label="Novo Prestador" theme="info" icon="fas fa-user-plus" type="submit"/>
+                <x-adminlte-button class="btn-nexus" label="Novo Prestador" theme="" icon="fas fa-user-plus" type="submit"/>
             </form>
-            <x-adminlte-button type="button" onclick="window.location='{{ route('home.prestadores') }}'" label="Voltar" theme="info" icon=""/>
+            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.prestadores') }}'" label="Voltar" theme="" icon=""/>
         </div>
     </x-slot>
 </x-adminlte-card>
 @stop
+
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 @stop

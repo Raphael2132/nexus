@@ -1,21 +1,21 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Provedores de Geração da NFS-e')
+@section('title', 'Parâmetros da NFS-e')
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">
-                    <a href="{{route('home.parFatNfs')}}">Parâmetros da NFS-e</a>
-                </li>
-                <li class="breadcrumb-item active">Provedores da NFS-e</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.parFatNfs')}}">Parâmetros da NFS-e</a>
+            </li>
+            <li class="breadcrumb-item active">Provedores da NFS-e</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -26,39 +26,16 @@ $heads = [
     'Estado'
 ];
 $config = [
-    'searching' => false,
-    'lengthChange' => false,
-    'lengthMenu' => 5,
-    'language' => [
-        'decimal' =>        '',
-        'emptyTable' =>     'Sem dados disponíveis na tabela',
-        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-        'infoPostFix' =>    '',
-        'thousands' =>      ',',
-        'lengthMenu' =>     'Mostrar _MENU_ registros',
-        'loadingRecords' => 'Carregando...',
-        'processing' =>     '',
-        'search' =>         'Pesquisar:',
-        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-        'paginate' => [
-            'first' =>      'Primeiro',
-            'last' =>       'Último',
-            'next' =>       'Próximo',
-            'previous' =>   'Anterior'
-        ],
-        'aria' => [
-            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-        ],
-    ],
+    'lengthMenu' => [ 5, 10, 25, 50],
+    'pageLength' => 10,
+    'language' => Helper::dataTableLangPtBR(),
+    'order' => [[0, 'asc']],
 ];
 @endphp
 <div class="row">
     <div class="esquerdo col-md-6">
-        <x-adminlte-card title="Provedores Cadastrados de Emissão da NFS-e" theme="navy" theme-mode="outline" collapsible maximizable>
-            <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable>
+        <x-adminlte-card title="Provedores Cadastrados de Emissão da NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
+            <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
                 @foreach ($provedores as $provedor)
                     <tr>
                         <td>{{ $provedor->provedor_codigo }}</td>
@@ -72,7 +49,7 @@ $config = [
     <div class="direito col-md-6">
         <form method="post" action="{{route('parametrosNfsProvedor.inserir')}}" id="quickForm" novalidate="novalidate">
             @csrf 
-            <x-adminlte-card title="Cadastrar Novo Provedor" theme="navy" collapsible maximizable>
+            <x-adminlte-card title="Cadastrar Novo Provedor" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 @php
                     $dados_ibge = DB::table('ibge_estados')->orderby('ibge_sigla')->get();
@@ -99,21 +76,32 @@ $config = [
                     $codigo = DB::table('parametros_fat_nfs_provedores')->max('provedor_codigo') +1;
                 @endphp
 
-                <!-- Nome do Provedor -->
-                <x-adminlte-input name="codigo" label="Código" type="number" placeholder="Código do Provedor" value="{{$codigo}}" fgroup-class="col-md-12"/>
+                <!-- Código do Provedor -->
+                <x-adminlte-input name="codigo" type="number" placeholder="Código do Provedor" value="{{$codigo}}" fgroup-class="col-md-12">
+                    <x-slot name="label">
+                        Código <span style="color:red;">*</span>
+                    </x-slot>
+                </x-adminlte-input>
 
                 <!-- Estado -->
-                <x-adminlte-select name="uf" label="Estado do Provedor" fgroup-class="col-md-12">
+                <x-adminlte-select name="uf" fgroup-class="col-md-12">
+                    <x-slot name="label">
+                        Estado do Provedor <span style="color:red;">*</span>
+                    </x-slot>
                     <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
                 </x-adminlte-select>
 
                 <!-- Nome do Provedor -->
-                <x-adminlte-input name="cidade" label="Cidade" type="search" list="cidades" placeholder="Nome do Provedor" fgroup-class="col-md-12"/>
+                <x-adminlte-input name="cidade" type="search" list="cidades" placeholder="Nome do Provedor" fgroup-class="col-md-12">
+                    <x-slot name="label">
+                        Cidade <span style="color:red;">*</span>
+                    </x-slot>
+                </x-adminlte-input>
 
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
-                        <x-adminlte-button class="btn-flat" type="submit" label="Incluir" theme="info" icon="fa-solid fa-share-from-square"/>
-                        <x-adminlte-button class="btn-flat" type="button" onclick="window.location='{{ route('home.parFatNfs') }}'" label="Voltar" theme="info" icon=""/>
+                        <x-adminlte-button class="btn-nexus" type="submit" label="Incluir" theme="info" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.parFatNfs') }}'" label="Voltar" theme="info" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>
@@ -124,7 +112,8 @@ $config = [
 
 <!-- Chamada dos Plugins usados na app -->
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 @section('plugins.jqueryValidation', true)
 
 @section('css')
@@ -194,6 +183,9 @@ $config = [
 $(function () {
     $('#quickForm').validate({
         rules: {
+            codigo: {
+                required: true
+            },
             cidade: {
                 required: true,
                 maxlength: 80
@@ -209,6 +201,9 @@ $(function () {
             },
             uf: {
                 required: "Por Favor informe o Estado do Provedor"
+            },
+            codigo: {
+                required: "Por Favor informe o Código"
             },
         },
         errorElement: 'span',

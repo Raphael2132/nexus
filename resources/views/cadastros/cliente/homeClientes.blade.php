@@ -32,7 +32,7 @@
         </div>
     </div>
  
-    <x-adminlte-card title="Novos Clientes nos Últimos Seis Meses" theme="navy" theme-mode="outline" icon="fa-solid fa-chart-column" header-class="text-uppercase rounded-bottom border-info">
+    <x-adminlte-card title="Novos Clientes nos Últimos Seis Meses" icon="fa-solid fa-chart-column" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
         <div class="chart">
             <canvas id="stackedBarChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
         </div>
@@ -43,7 +43,6 @@
 <!-- Chamada dos Plugins usados na app -->  
 @section('plugins.Chartjs', true)
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
 
 @section('css')
 @stop
