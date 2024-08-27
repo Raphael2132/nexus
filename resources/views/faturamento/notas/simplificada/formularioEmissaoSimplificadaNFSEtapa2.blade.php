@@ -19,12 +19,11 @@
 @section('content')
 <div class="d-flex justify-content-center">
     <div class="col-md-12">
-        <form method="post" action="{{ route('emissaoSimpNFS.emitirNFS', ['empresa' => $empresa, 'cliente' => $cliente, 'enderecoCli' => $enderecoCli]) }}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{ route('emissaoSimpNFS.emitirNFS', ['empresa' => $empresa, 'cliente' => $cliente, 'enderecoCli' => $enderecoCli, 'enderecoLocSrv'=> $enderecoLocSrv]) }}" id="quickForm" novalidate="novalidate">
             @csrf 
             @method('post')
             <x-adminlte-card title="Emissão Simplificada de NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 @php
-
                     //Dados da Empresa
                     $data_emp = DB::table('cadastro_empresas')->where('empresa_codigo', $empresa)->get();
 
@@ -109,14 +108,20 @@
 
                     if(!empty($data_cli[0]->cliente_tel_residencial)){
                         $telRes_cli = Helper::mascaraTelResidencial($data_cli[0]->cliente_tel_residencial);
+                    }else{
+                        $telRes_cli = "Não Informado";
                     }
                     
                     if(!empty($data_cli[0]->cliente_tel_celular)){
                         $telCel_cli = Helper::mascaraTelCelular($data_cli[0]->cliente_tel_celular);
+                    }else{
+                        $telCel_cli = "Não Informado";
                     }
 
                     if(!empty($data_cli[0]->cliente_tel_comercial)){
                         $telCom_cli = Helper::mascaraTelComercial($data_cli[0]->cliente_tel_comercial);
+                    }else{
+                        $telCom_cli = "Não Informado";
                     }
 
                     if(!empty($data_cli[0]->cliente_tipo_email)){
@@ -130,111 +135,190 @@
                         $email_cli = $data_cli[0]->cliente_email;
                     }
                 @endphp
-                <!-- Dados da Empresa -->
-                <x-adminlte-callout title="Dados da Empresa" title-class="text-uppercase" icon="fa-solid fa-building" theme="" class="callout-nexus">
-                    <div class="text-muted">
-                        <div class="row quebra-linha">
-                            <p class="text-sm col-md-3">Empresa
-                                <b class="d-block">{{ $empresa_os }}</b>
-                            </p>
-                            <p class="text-sm col-md-3">CNPJ
-                                <b class="d-block">{{ $cnpj }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">Simples Nacional
-                                <b class="d-block">{{ $optSimples }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">Inscrição Estadual
-                                <b class="d-block">{{ $inscEstadual }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">Inscrição Municipal
-                                <b class="d-block">{{ $inscMunicipal }}</b>
-                            </p>
-                        </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <!-- Dados da Empresa -->
+                        <x-adminlte-callout title="Dados da Empresa" title-class="text-uppercase" icon="fa-solid fa-building" theme="" class="callout-nexus">
+                            <div class="text-muted">
+                                <div class="row quebra-linha">
+                                    <p class="text-sm col-md-4">Empresa
+                                        <b class="d-block">{{ $empresa_os }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-4">CNPJ
+                                        <b class="d-block">{{ $cnpj }}</b>
+                                    </p>
+                                </div>
+                                <div class="row quebra-linha">
+                                    <p class="text-sm col-md-4">Simples Nacional
+                                        <b class="d-block">{{ $optSimples }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-4">Inscrição Estadual
+                                        <b class="d-block">{{ $inscEstadual }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-4">Inscrição Municipal
+                                        <b class="d-block">{{ $inscMunicipal }}</b>
+                                    </p>
+                                </div>
+                            </div>
+                        </x-adminlte-callout>
+                        <!-- Local da Prestação do Serviço -->
+                        <x-adminlte-callout title="Local da Prestação do Serviço" title-class="text-uppercase" icon="fa-solid fa-location-dot" theme="" class="callout-nexus">
+                            @php
+                                if($enderecoLocSrv == 1){
+                                    $dadosLocSrv = DB::table('cadastro_empresa_enderecos')->where('endereco_empresa_codigo', $empresa)->where('endereco_principal', 'S')->first();
+                                    $endereco = $dadosLocSrv->endereco_logradouro.', '.$dadosLocSrv->endereco_numero;
+                                    if(!empty($dadosLocSrv->endereco_complemento)){
+                                        $complemento = $dadosLocSrv->endereco_complemento;
+                                    }else{
+                                        $complemento = '';
+                                    }
+                                    $cep = Helper::mascaraCEP($dadosLocSrv->endereco_cep);
+                                    $bairro = $dadosLocSrv->endereco_bairro;
+                                    $cidUF = $dadosLocSrv->endereco_cidade.' / '.$dadosLocSrv->endereco_uf;
+                                }elseif($enderecoLocSrv == 2){
+                                    $dadosLocSrv = DB::table('cadastro_cliente_enderecos')->where('endereco_cliente_codigo', $cliente)->where('endereco_seq', $enderecoCli)->first();
+                                    $endereco = $dadosLocSrv->endereco_logradouro.', '.$dadosLocSrv->endereco_numero;
+                                    if(!empty($dadosLocSrv->endereco_complemento)){
+                                        $complemento = $dadosLocSrv->endereco_complemento;
+                                    }else{
+                                        $complemento = '';
+                                    }
+                                    $cep = Helper::mascaraCEP($dadosLocSrv->endereco_cep);
+                                    $bairro = $dadosLocSrv->endereco_bairro;
+                                    $cidUF = $dadosLocSrv->endereco_cidade.' / '.$dadosLocSrv->endereco_uf;
+                                }else{
+                                    $endereco = $outEndLocSrv['logradouro'].', '.$outEndLocSrv['numero'];
+                                    if(!empty($outEndLocSrv['complemento'])){
+                                        $complemento = $outEndLocSrv['complemento'];
+                                    }else{
+                                        $complemento = '';
+                                    }
+                                    $cep =  $outEndLocSrv['cep'];
+                                    $bairro = $outEndLocSrv['bairro'];
+                                    $cidUF = $outEndLocSrv['cidade'].' / '.$outEndLocSrv['uf'];
+                                }
+                            @endphp
+                            <div class="text-muted">
+                                <div class="row quebra-linha">
+                                    <p class="text-sm col-md-3">Endereço
+                                        <b class="d-block">{{ $endereco }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-2">Complemento
+                                        <b class="d-block">{{ $complemento }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-2">CEP
+                                        <b class="d-block">{{ $cep }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-2">Bairro
+                                        <b class="d-block">{{ $bairro }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-3">Cidade / UF
+                                        <b class="d-block">{{ $cidUF }}</b>
+                                    </p>
+                                </div>
+                            </div>
+                        </x-adminlte-callout>
                     </div>
-                </x-adminlte-callout>
-                <!-- Dados Do Cliente -->
-                <x-adminlte-callout title="Dados do Cliente" title-class="text-uppercase" icon="fa-solid fa-user-tie" theme="" class="callout-nexus">
-                    <div class="text-muted">
-                        <div class="row quebra-linha">
-                            <p class="text-sm col-md-2">Cliente
-                                <b class="d-block">{{ $cliente_os }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">Tipo de Cadastro
-                                <b class="d-block">{{ $tipoCad }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">Tipo de Pessoa
-                                <b class="d-block">{{ $tipoPes }}</b>
-                            </p>
-                            @if($data_cli[0]->cliente_tipo_pessoa == 'J')
-                            <p class="text-sm col-md-2">CNPJ
-                                <b class="d-block">{{ $cnpj_cli }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">Tipo de Cadastro
-                                <b class="d-block">{{ $inscEst_cli }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">Tipo de Pessoa
-                                <b class="d-block">{{ $inscMun_cli }}</b>
-                            </p>
-                            @else
-                            <p class="text-sm col-md-2">CPF
-                                <b class="d-block">{{ $cpf_cli }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">RG
-                                <b class="d-block">{{ $rg_cli }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">Sexo
-                                <b class="d-block">{{ $sexo_cli }}</b>
-                            </p>
-                            @endif
-                        </div>
-                        <div class="row quebra-linha">
-                            <p class="text-sm col-md-2">Telefone Residencial
-                                <b class="d-block">{{ $telRes_cli }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">Telefone Celular
-                                <b class="d-block">{{ $telCel_cli }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">Telefone Comercial
-                                <b class="d-block">{{ $telCom_cli }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">Tipo do Email
-                                <b class="d-block">{{ $tipEma_cli }}</b>
-                            </p>
-                            <p class="text-sm col-md-4">Email
-                                <b class="d-block">{{ $email_cli }}</b>
-                            </p>
-                        </div>
-                        @php
-                            //Busca os dados dos endereços cadastrados do cliente
-                            $dadosEndCli = DB::table('cadastro_cliente_enderecos')->where('endereco_cliente_codigo', $cliente)->where('endereco_seq', $enderecoCli)->get();
+                    <div class="col-md-6 mb-3">
+                        <!-- Dados Do Cliente -->
+                        <x-adminlte-callout title="Dados do Cliente" title-class="text-uppercase" icon="fa-solid fa-user-tie" theme="" class="callout-nexus h-100">
+                            <div class="text-muted">
+                                <div class="row quebra-linha">
+                                    <p class="text-sm col-md-3">Tipo de Cadastro
+                                        <b class="d-block">{{ $tipoCad }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-3">Tipo de Pessoa
+                                        <b class="d-block">{{ $tipoPes }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-3">Cliente
+                                        <b class="d-block">{{ $cliente_os }}</b>
+                                    </p>
+                                    @if($data_cli[0]->cliente_tipo_pessoa == 'J')
+                                    <p class="text-sm col-md-3">CNPJ
+                                        <b class="d-block">{{ $cnpj_cli }}</b>
+                                    </p>
+                                    @else
+                                    <p class="text-sm col-md-3">CPF
+                                        <b class="d-block">{{ $cpf_cli }}</b>
+                                    </p>
+                                    @endif
+                                </div>
+                                <div class="row quebra-linha">
+                                    @if($data_cli[0]->cliente_tipo_pessoa == 'J')
+                                    <p class="text-sm col-md-3">Inscrição Estadual
+                                        <b class="d-block">{{ $inscEst_cli }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-3">Inscrição Municipal
+                                        <b class="d-block">{{ $inscMun_cli }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-3">RG
+                                        <b class="d-block">Não Informado</b>
+                                    </p>
+                                    <p class="text-sm col-md-3">Sexo
+                                        <b class="d-block">Não Informado</b>
+                                    </p>
+                                    @else
+                                    <p class="text-sm col-md-3">Inscrição Estadual
+                                        <b class="d-block">Não Informado</b>
+                                    </p>
+                                    <p class="text-sm col-md-3">Inscrição Municipal
+                                        <b class="d-block">Não Informado</b>
+                                    </p>
+                                    <p class="text-sm col-md-3">RG
+                                        <b class="d-block">{{ $rg_cli }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-3">Sexo
+                                        <b class="d-block">{{ $sexo_cli }}</b>
+                                    </p>
+                                    @endif
+                                </div>
+                                <div class="row quebra-linha">
+                                    <p class="text-sm col-md-3">Telefone Residencial
+                                        <b class="d-block">{{ $telRes_cli }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-3">Telefone Celular
+                                        <b class="d-block">{{ $telCel_cli }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-3">Telefone Comercial
+                                        <b class="d-block">{{ $telCom_cli }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-3">Email
+                                        <b class="d-block">{{ $email_cli }}</b>
+                                    </p>
+                                </div>
+                                @php
+                                    //Busca os dados dos endereços cadastrados do cliente
+                                    $dadosEndCli = DB::table('cadastro_cliente_enderecos')->where('endereco_cliente_codigo', $cliente)->where('endereco_seq', $enderecoCli)->get();
 
-                            if(!empty($dadosEndCli[0]->endereco_complemento)){
-                                $complemento = $dadosEndCli[0]->endereco_complemento;
-                            }else{
-                                $complemento = '';
-                            }
-                        @endphp
-                        <div class="row quebra-linha">
-                            <p class="text-sm col-md-2">Endereço
-                                <b class="d-block">{{ $dadosEndCli[0]->endereco_logradouro.', '.$dadosEndCli[0]->endereco_numero }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">Complemento
-                                <b class="d-block">{{ $complemento }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">CEP
-                                <b class="d-block">{{ Helper::mascaraCEP($dadosEndCli[0]->endereco_cep) }}</b>
-                            </p>
-                            <p class="text-sm col-md-2">Bairro
-                                <b class="d-block">{{ $dadosEndCli[0]->endereco_bairro }}</b>
-                            </p>
-                            <p class="text-sm col-md-4">Cidade / UF
-                                <b class="d-block">{{ $dadosEndCli[0]->endereco_cidade.' / '.$dadosEndCli[0]->endereco_uf }}</b>
-                            </p>
-                        </div>
+                                    if(!empty($dadosEndCli[0]->endereco_complemento)){
+                                        $complemento = $dadosEndCli[0]->endereco_complemento;
+                                    }else{
+                                        $complemento = '';
+                                    }
+                                @endphp
+                                <div class="row quebra-linha">
+                                    <p class="text-sm col-md-3">Endereço
+                                        <b class="d-block">{{ $dadosEndCli[0]->endereco_logradouro.', '.$dadosEndCli[0]->endereco_numero }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-2">Complemento
+                                        <b class="d-block">{{ $complemento }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-2">CEP
+                                        <b class="d-block">{{ Helper::mascaraCEP($dadosEndCli[0]->endereco_cep) }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-2">Bairro
+                                        <b class="d-block">{{ $dadosEndCli[0]->endereco_bairro }}</b>
+                                    </p>
+                                    <p class="text-sm col-md-3">Cidade / UF
+                                        <b class="d-block">{{ $dadosEndCli[0]->endereco_cidade.' / '.$dadosEndCli[0]->endereco_uf }}</b>
+                                    </p>
+                                </div>
+                            </div>
+                        </x-adminlte-callout>
                     </div>
-                </x-adminlte-callout>
+                </div>
                 <!-- Dados do Serviço -->
-                <x-adminlte-card title="Dados do Serviço" icon="fa-solid fa-file-invoice-dollar" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
+                <x-adminlte-card title="Dados do Serviço" icon="fa-solid fa-file-invoice-dollar fa-lg" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     @php
                         $dataParSrvEmp = DB::table('parametros_srv_empresas')->where('parsrv_emp', $empresa)->get();
                         $dadosGrupoSrv = DB::table('parametros_sistema_servico_grupos')->orderBy('grupo_codigo', 'asc')->get();
@@ -358,97 +442,6 @@
                         <!-- Valor da NFS -->
                         <x-adminlte-input name="vlrImpRec" label="Valor do Imposto a Recolher" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-4"/>
                     </div>
-                    <div class="row">
-                        <label for="form-group">Local da Prestação do Serviço <span style="color:red;">*</span></label>
-                    </div>
-                    <div class="row">
-                        <div class="form-group clearfix">
-                            <div class="icheck-nexus d-inline" style="margin-right: 25px;">
-                                <input type="radio" id="radio_empresa" name="enderecoLocSrv" checked value="1">
-                                <label for="radio_empresa">Endereço da Empresa</label>
-                            </div>
-                            <div class="icheck-nexus d-inline" style="margin-right: 25px;">
-                                <input type="radio" id="radio_cliente" name="enderecoLocSrv" value="2">
-                                <label for="radio_cliente">Endereço do Cliente</label>
-                            </div>
-                            <div class="icheck-nexus d-inline" style="margin-right: 25px;">
-                                <input type="radio" id="radio_outro" name="enderecoLocSrv" value="3">
-                                <label for="radio_outro">Outro Endereço</label>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Endereço de outro local -->
-                    <x-adminlte-callout title="Local da prestação do serviço" title-class="text-uppercase" icon="fa-solid fa-file-invoice-dollar" theme="" class="callout-nexus bloco-endereco">
-                        <div class="row">
-                            <!-- Campo escondido para tratamento interno -->
-                            <input id="ibgeCodMun" type="hidden" name="ibgeCodMun">
-                            
-                            <!-- CEP -->
-                            <x-adminlte-input name="cep" type="text" label="CEP" fgroup-class="col-md-2">
-                                <x-slot name="prependSlot">
-                                    <div class="input-group-text x-slot-nexus">
-                                        <i class="fa-solid fa-location-dot"></i>
-                                    </div>
-                                </x-slot>
-                            </x-adminlte-input>
-                        </div>
-                        <div class="row">
-                            <!-- Logradouro -->
-                            <x-adminlte-input name="logradouro" type="text" label="Logradouro" fgroup-class="col-md-5">
-                                <x-slot name="prependSlot">
-                                    <div class="input-group-text x-slot-nexus">
-                                        <i class="fa-solid fa-address-book"></i>
-                                    </div>
-                                </x-slot>
-                            </x-adminlte-input>
-
-                            <!-- Numero -->
-                            <x-adminlte-input name="numero" type="text" label="Número" fgroup-class="col-md-2">
-                                <x-slot name="prependSlot">
-                                    <div class="input-group-text x-slot-nexus">
-                                        <i class="fa-solid fa-hashtag"></i>
-                                    </div>
-                                </x-slot>
-                            </x-adminlte-input>
-
-                            <!-- Complemento -->
-                            <x-adminlte-input name="complemento" type="text" label="Complemento" fgroup-class="col-md-5"></x-adminlte-input>
-                        </div>
-                        <div class="row">
-                            <!-- Bairro -->
-                            <x-adminlte-input name="bairro" type="text" label="Bairro" fgroup-class="col-md-4"></x-adminlte-input>
-
-                            <!-- Cidade -->
-                            <x-adminlte-input name="cidade" type="text" label="Cidade" fgroup-class="col-md-4">
-                                <x-slot name="prependSlot">
-                                    <div class="input-group-text x-slot-nexus">
-                                        <i class="fa-solid fa-city"></i>
-                                    </div>
-                                </x-slot>
-                            </x-adminlte-input>
-
-                            @php
-                                $dados_ibge = DB::table('ibge_estados')->orderby('ibge_sigla')->get();
-
-                                $new_array1 =[];
-                                $new_array2 =[];
-
-                                foreach ($dados_ibge as $ibge) {
-                                    $new_array1[] = $ibge->ibge_sigla;
-                                    $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
-                                }
-                                $array_opt = array_combine($new_array1, $new_array2);
-                            @endphp
-
-                            <!-- Estado -->
-                            <x-adminlte-select name="uf" label="UF" fgroup-class="col-md-2">
-                                <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
-                            </x-adminlte-select>
-
-                            <!-- Pais -->
-                            <x-adminlte-input name="pais" type="text" label="Pais" fgroup-class="col-md-2"></x-adminlte-input>
-                        </div>
-                    </x-adminlte-callout>
                 </x-adminlte-card>
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
@@ -457,6 +450,30 @@
                     </div>
                 </x-slot>
             </x-adminlte-card>
+            <!-- Gera campos escondidos para passar array para o controler -->
+            @if($enderecoLocSrv == 3)
+            <input type="hidden" name="enderecoLocSrv" value="{{ $enderecoLocSrv }}">
+            <input type="hidden" name="ibgeCodMun" value="{{ $outEndLocSrv['ibgeCodMun'] }}">
+            <input type="hidden" name="cep" value="{{ $outEndLocSrv['cep'] }}">
+            <input type="hidden" name="logradouro" value="{{ $outEndLocSrv['logradouro'] }}">
+            <input type="hidden" name="numero" value="{{ $outEndLocSrv['numero'] }}">
+            <input type="hidden" name="complemento" value="{{ $outEndLocSrv['complemento'] }}">
+            <input type="hidden" name="bairro" value="{{ $outEndLocSrv['bairro'] }}">
+            <input type="hidden" name="cidade" value="{{ $outEndLocSrv['cidade'] }}">
+            <input type="hidden" name="uf" value="{{ $outEndLocSrv['uf'] }}">
+            <input type="hidden" name="pais" value="{{ $outEndLocSrv['pais'] }}">
+            @else 
+            <input type="hidden" name="enderecoLocSrv" value="{{ $enderecoLocSrv }}">
+            <input type="hidden" name="ibgeCodMun" value="">
+            <input type="hidden" name="cep" value="">
+            <input type="hidden" name="logradouro" value="">
+            <input type="hidden" name="numero" value="">
+            <input type="hidden" name="complemento" value="">
+            <input type="hidden" name="bairro" value="">
+            <input type="hidden" name="cidade" value="">
+            <input type="hidden" name="uf" value="">
+            <input type="hidden" name="pais" value="">
+            @endif
         </form>
     </div>
 </div>

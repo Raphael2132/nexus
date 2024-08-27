@@ -45,12 +45,44 @@ class EmissaoSimplificadaNFSController extends Controller
     //Chama a app de controle de pré abertura de OS
     public function etapa2(Request $request, $empresa, $cliente)
     {
-        //Verifica se o endereço foi do cliente foi informado
+        //Verifica se o endereço do cliente foi informado
         if(empty(trim($request->enderecoCli))){
             return redirect()->route('emissaoSimpNFS.inicioErro',['empresa'=>$request->empresa,'cliente'=>$cliente])->with('error', 'Informe o endereço do cliente!');
         }
+
+        //Verifica se o endereço do local do serviço foi informado
+        if(empty(trim($request->enderecoLocSrv))){
+            return redirect()->route('emissaoSimpNFS.inicioErro',['empresa'=>$request->empresa,'cliente'=>$cliente])->with('error', 'Informe o endereço do local do serviço!');
+        }
+
+        // Recupera a mensagem de erro da sessão, se existir (a função pode ser chamada pela emissão se der erro para voltar ao formulario)
+        $errorMsg = session('error', '');
+
+        if($request->enderecoLocSrv == 3){
+            // Converter os campos do request em um array
+            $outEndLocSrv = $request->only([
+                'ibgeCodMun', 
+                'cep', 
+                'logradouro', 
+                'numero', 
+                'complemento', 
+                'bairro', 
+                'cidade', 
+                'uf', 
+                'pais'
+            ]);
+        }else{
+            $outEndLocSrv = '';
+        }    
         
-        return view('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFSEtapa2',['empresa'=>$request->empresa,'cliente'=>$cliente,'enderecoCli'=>$request->enderecoCli]);
+        return view('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFSEtapa2',[
+            'empresa'=>$request->empresa,
+            'cliente'=>$cliente,
+            'enderecoCli'=>$request->enderecoCli,
+            'enderecoLocSrv'=>$request->enderecoLocSrv, 
+            'outEndLocSrv' => $outEndLocSrv
+        ])->with('error', $errorMsg);            
+        
     }
     
     //Retorna os códigos de serviço do grupo selecionado
@@ -72,13 +104,22 @@ class EmissaoSimplificadaNFSController extends Controller
     //Faz a emissão da NFS-e simplificada
     public function emitirNFS(Request $request, $empresa, $cliente, $enderecoCli)
     {        
+        // Limpa a mensagem de erro da sessão para a próxima requisição
+        // Isso acontece por que se acontecer erro aqui e voltar para a app de formulario garantimos que na volta limpamos a menssagem de erro
+        session()->forget('error');
+
         //Caso utilizar outro endereço para o local da prestação do serviço validar o cep
         if($request->enderecoLocSrv == 3){
             $cep = str_replace('-', '', $request->cep);
             $cep = str_replace('_', '', $cep);
 
             if(strlen($cep) < 8 || strlen($cep) > 8){
-                return redirect()->route('emissaoSimpNFS.etapa2Erro',['empresa' => $empresa, 'cliente' => $cliente, 'enderecoCli' => $enderecoCli])->with('error', 'Formato do CEP é inválido!');
+                //return redirect()->route('emissaoSimpNFS.etapa2Erro',['empresa' => $empresa, 'cliente' => $cliente, 'enderecoCli' => $enderecoCli])->with('error', 'Formato do CEP é inválido!');
+
+                // Adiciona a mensagem de erro à sessão para redirecionar ao formulário
+                session()->flash('error', 'Formato do CEP é inválido!');
+
+                return $this->etapa2($request, $empresa, $cliente, $enderecoCli);
             }
         }
 
@@ -97,7 +138,13 @@ class EmissaoSimplificadaNFSController extends Controller
         if($exec_fn[0]->ret_sts == '*'){
             //Falha, desfaz as alterações no banco de dados
             DB::rollBack();
-            return redirect()->route('emissaoSimpNFS.etapa2Erro',['empresa' => $empresa, 'cliente' => $cliente, 'enderecoCli' => $enderecoCli])->with('error', $exec_fn[0]->ret_msg);
+            
+            //return redirect()->route('emissaoSimpNFS.etapa2Erro',['empresa' => $empresa, 'cliente' => $cliente, 'enderecoCli' => $enderecoCli])->with('error', $exec_fn[0]->ret_msg);
+            
+            // Adiciona a mensagem de erro à sessão para redirecionar ao formulário
+            session()->flash('error', $exec_fn[0]->ret_msg);
+
+            return $this->etapa2($request, $empresa, $cliente, $enderecoCli);
         }else{
             $numControle = $exec_fn[0]->ret_num;
         }
@@ -110,7 +157,13 @@ class EmissaoSimplificadaNFSController extends Controller
         if($exec_fn[0]->ret_sts == '*'){
             //Falha, desfaz as alterações no banco de dados
             DB::rollBack();
-            return redirect()->route('emissaoSimpNFS.etapa2Erro',['empresa' => $empresa, 'cliente' => $cliente, 'enderecoCli' => $enderecoCli])->with('error', $exec_fn[0]->ret_msg);
+            
+            //return redirect()->route('emissaoSimpNFS.etapa2Erro',['empresa' => $empresa, 'cliente' => $cliente, 'enderecoCli' => $enderecoCli])->with('error', $exec_fn[0]->ret_msg);
+
+            // Adiciona a mensagem de erro à sessão para redirecionar ao formulário
+            session()->flash('error', $exec_fn[0]->ret_msg);
+
+            return $this->etapa2($request, $empresa, $cliente, $enderecoCli);
         }else{
             //Grava as alterações do banco
             DB::commit();
