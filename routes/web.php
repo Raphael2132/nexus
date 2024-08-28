@@ -298,6 +298,7 @@ Route::post('/lancamentos/servico/painelAberturaOS/previsaoEntrega/atualizar/{em
 Route::post('/lancamentos/servico/painelAberturaOS/observacao/{empresa}/{numOS}', [App\Http\Controllers\LancamentoSrvOsController::class, 'atualizaObservacao'])->name('lancamentoOS.atualizaObservacao');
 Route::post('/lancamentos/servico/painelAberturaOS/trocaClienteFatura/{empresa}/{numOS}', [App\Http\Controllers\LancamentoSrvOsController::class, 'atualizaCliFatura'])->name('lancamentoOS.atualizaCliFatura');
 Route::post('/lancamentos/servico/painelAberturaOS/descontoOS/{empresa}/{numOS}', [App\Http\Controllers\LancamentoSrvOsController::class, 'atualizaDescontoOS'])->name('lancamentoOS.atualizaDescontoOS');
+Route::post('/lancamentos/servico/painelAberturaOS/atualizaLocSrv/{empresa}/{numOS}/{cliente}', [App\Http\Controllers\LancamentoSrvOsController::class, 'atualizaLocSrv'])->name('lancamentoOS.atualizaLocSrv');
 
 /* ********** Rotas do painel de Abertura de OS - Contrele Utilizado: PainelAberturaOSController ********** */
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/consulta/{empresa}/{nos}/{estagioAPP}/{requisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'consultaRequisicao'])->name('painelOS.consultaRequisicao');
@@ -306,6 +307,7 @@ Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/abrir/{empr
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/consulta/{empresa}/{numOS}/{requisicao}/{sequencia}/{codTMO}/{estagioAPP}/{subEstagioRequisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'consultaServicoRequisicao'])->name('painelOS.consultaServicoRequisicao');
 Route::get('/lancamentos/servico/painelAberturaOS/requisicao/servico/selecionar/{empresa}/{area}/{setor}/{codigo}/{estagioAPP}/{subEstagioRequisicao}/{requisicao}', [App\Http\Controllers\PainelAberturaOSController::class, 'selecionarTMO'])->name('painelOS.selecionarTMO');
 Route::get('/lancamentos/servico/painelAberturaOS/previsaoEntrega/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'previsaoEntregaOS'])->name('painelOS.previsaoEntregaOS');
+Route::get('/lancamentos/servico/painelAberturaOS/trocaLocSrv/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'trocaLocSrv'])->name('painelOS.trocaLocSrv');
 Route::get('/lancamentos/servico/painelAberturaOS/orcamento/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'orcamentoOS'])->name('painelOS.orcamentoOS');
 Route::get('/lancamentos/servico/painelAberturaOS/total/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'totalOS'])->name('painelOS.totalOS');
 Route::get('/lancamentos/servico/painelAberturaOS/encerraOS/{empresa}/{numOS}', [App\Http\Controllers\PainelAberturaOSController::class, 'encerraOS'])->name('painelOS.encerraOS');

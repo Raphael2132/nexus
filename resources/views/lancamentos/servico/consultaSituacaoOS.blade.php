@@ -34,7 +34,7 @@ $config = [
     'lengthMenu' => [ 5, 10, 25, 50, 100],
     'pageLength' => 10,
     'language' => Helper::dataTableLangPtBR(),
-    'order' => [[0, 'asc'],[2, 'asc']],
+    'order' => [[0, 'asc'],[2, 'desc']],
 ];
 @endphp
 

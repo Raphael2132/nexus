@@ -626,4 +626,23 @@ class PainelAberturaOSController extends Controller
         
         return redirect(route('situacaoOS.carregaOS', ['empresa' => $empresa, 'cliente' => $dadosOS[0]->os_cli, 'nos' => $numOS, 'estagioAPP' => 'PRINCIPAL']))->with('success2', 'OS '.$numOS.' cancelada com sucesso!');
     }
+
+    //Metodo da troca do local de prestação do serviço da OS
+    public function trocaLocSrv($empresa, $numOS)
+    {
+        $empresaEndereco = DB::table('cadastro_empresa_enderecos')->where('endereco_empresa_codigo', $empresa)->where('endereco_principal', 'S')->get();
+        $dadosOS = DB::table('lancamento_srv_os')->where('os_emp', $empresa)->where('os_nos', $numOS)->get();
+
+        session(['glo_os_dadosEmpresaEndereco' => $empresaEndereco]);
+        session(['glo_os_dadosRequisicoes' => '']);
+        session(['glo_os_dadosOS' => $dadosOS]);
+        session(['glo_os_dadosServicos' => '']);
+        session(['glo_os_estagioAPP' => 'TROCA_LOCAL_SERVICO']);
+        session(['glo_os_subEstagioRequisicao' => '']);
+        session(['glo_os_dadosServicoSelecionado' => '']);
+        session(['glo_os_dadosTMO' => '']);
+        session(['glo_os_dadosTmoSelecionada' => '']);
+        
+        return view('/lancamentos/servico/painelAberturaOS');
+    }
 }

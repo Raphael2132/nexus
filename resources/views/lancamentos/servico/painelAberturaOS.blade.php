@@ -51,6 +51,7 @@ $altValorTOS = '';
 $altHoraTOS = '';
 $status_requisicao = '';
 $status_servico = '';
+$locPrtSrv = '';
 
 @endphp
 <div class="col-md-12">
@@ -2458,6 +2459,136 @@ $status_servico = '';
                 @endif
                 <!-- Fechamento do bloco TOTAIS_OS da tarefa da Abertura de OS -->
 
+                <!-- ********** Bloco TROCA_LOCAL_SERVICO da OS ********** -->
+                @if($glo_os_estagioAPP == "TROCA_LOCAL_SERVICO")
+                <x-adminlte-card title="Alteração do Local da Prestação do Serviço" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
+                    <x-adminlte-card title="Informações do Local de Serviço" theme="" theme-mode="" header-class="card-nexus">
+                        <form method="post" action="{{ route('lancamentoOS.atualizaLocSrv', ['empresa'=> $glo_os_empresa,'numOS'=> $glo_os_nos,'cliente'=> $glo_os_cliente]) }}" id="formulario-troca-loc-srv" novalidate="novalidate">
+                            @csrf 
+                            @method('post')
+                            @php 
+                                $locPrtSrv = $glo_os_dadosOS[0]->os_loc_srv;
+
+                                if($locPrtSrv == 'O'){
+                                    $ibge = $glo_os_dadosOS[0]->os_loc_srv_ibge_cod_mun;
+                                    $cep = $glo_os_dadosOS[0]->os_loc_srv_cep;
+                                    $logradouro = $glo_os_dadosOS[0]->os_loc_srv_logradouro;
+                                    $numero = $glo_os_dadosOS[0]->os_loc_srv_numero;
+                                    $complemento = $glo_os_dadosOS[0]->os_loc_srv_complemento;
+                                    $bairro = $glo_os_dadosOS[0]->os_loc_srv_bairro;
+                                    $cidade = $glo_os_dadosOS[0]->os_loc_srv_cidade;
+                                    $uf = $glo_os_dadosOS[0]->os_loc_srv_uf;
+                                    $pais = $glo_os_dadosOS[0]->os_loc_srv_pais;
+                                }else{
+                                    $ibge = '';
+                                    $cep = '';
+                                    $logradouro = '';
+                                    $numero = '';
+                                    $complemento = '';
+                                    $bairro = '';
+                                    $cidade = '';
+                                    $uf = '';
+                                    $pais = '';
+                                }
+                            @endphp
+                            <div class="row">
+                                <label for="form-group">Local da Prestação do Serviço</label>
+                            </div>
+                            <div class="row">
+                                <div class="form-group clearfix">
+                                    <div class="icheck-nexus d-inline" style="margin-right: 25px;">
+                                        <input type="radio" id="radio_empresa" name="enderecoLocSrv" value="1">
+                                        <label for="radio_empresa">Endereço da Empresa</label>
+                                    </div>
+                                    <div class="icheck-nexus d-inline" style="margin-right: 25px;">
+                                        <input type="radio" id="radio_cliente" name="enderecoLocSrv" value="2">
+                                        <label for="radio_cliente">Endereço do Cliente</label>
+                                    </div>
+                                    <div class="icheck-nexus d-inline" style="margin-right: 25px;">
+                                        <input type="radio" id="radio_outro" name="enderecoLocSrv" value="3">
+                                        <label for="radio_outro">Outro Endereço</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Dados do endereço do serviço -->
+                            <x-adminlte-callout class="callout-nexus bloco-endereco" theme="" title-class="text-uppercase" icon="fa-solid fa-address-book" title="Dados do Endereço">
+                                <div class="row">
+                                    <!-- Campo escondido para tratamento interno -->
+                                    <input id="ibgeCodMun" type="hidden" name="ibgeCodMun" value="{{$ibge}}">
+                                    
+                                    <!-- CEP -->
+                                    <x-adminlte-input name="cep" type="text" label="CEP" value="{{$cep}}" fgroup-class="col-md-4">
+                                        <x-slot name="prependSlot">
+                                            <div class="input-group-text x-slot-nexus">
+                                                <i class="fa-solid fa-location-dot"></i>
+                                            </div>
+                                        </x-slot>
+                                    </x-adminlte-input>
+                                </div>
+                                <div class="row">
+                                    <!-- Logradouro -->
+                                    <x-adminlte-input name="logradouro" type="text" label="Logradouro" value="{{$logradouro}}" fgroup-class="col-md-5">
+                                        <x-slot name="prependSlot">
+                                            <div class="input-group-text x-slot-nexus">
+                                                <i class="fa-solid fa-address-book"></i>
+                                            </div>
+                                        </x-slot>
+                                    </x-adminlte-input>
+
+                                    <!-- Numero -->
+                                    <x-adminlte-input name="numero" type="text" label="Número" value="{{$numero}}" fgroup-class="col-md-2">
+                                        <x-slot name="prependSlot">
+                                            <div class="input-group-text x-slot-nexus">
+                                                <i class="fa-solid fa-hashtag"></i>
+                                            </div>
+                                        </x-slot>
+                                    </x-adminlte-input>
+
+                                    <!-- Complemento -->
+                                    <x-adminlte-input name="complemento" type="text" label="Complemento" value="{{$complemento}}" fgroup-class="col-md-5"></x-adminlte-input>
+                                </div>
+                                <div class="row">
+                                    <!-- Bairro -->
+                                    <x-adminlte-input name="bairro" type="text" label="Bairro" value="{{$bairro}}" fgroup-class="col-md-3"></x-adminlte-input>
+
+                                    <!-- Cidade -->
+                                    <x-adminlte-input name="cidade" type="text" label="Cidade" value="{{$cidade}}" fgroup-class="col-md-4">
+                                        <x-slot name="prependSlot">
+                                            <div class="input-group-text x-slot-nexus">
+                                                <i class="fa-solid fa-city"></i>
+                                            </div>
+                                        </x-slot>
+                                    </x-adminlte-input>
+
+                                    @php
+                                        $dados_ibge = DB::table('ibge_estados')->orderby('ibge_sigla')->get();
+
+                                        $new_array1 =[];
+                                        $new_array2 =[];
+
+                                        foreach ($dados_ibge as $ibge) {
+                                            $new_array1[] = $ibge->ibge_sigla;
+                                            $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
+                                        }
+                                        $array_opt = array_combine($new_array1, $new_array2);
+                                    @endphp
+
+                                    <!-- Estado -->
+                                    <x-adminlte-select name="uf" label="UF" fgroup-class="col-md-3">
+                                        <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$uf}}"/>
+                                    </x-adminlte-select>
+
+                                    <!-- Pais -->
+                                    <x-adminlte-input name="pais" type="text" label="Pais" value="{{$pais}}" fgroup-class="col-md-2"></x-adminlte-input>
+                                </div>
+                            </x-adminlte-callout>
+                            <x-adminlte-button class="btn_hide_salvar_loc_srv" type="submit" label="Salvar" value="Salvar" theme=""/>
+                        </form>
+                    </x-adminlte-card>
+                </x-adminlte-card>
+                @endif
+                <!-- Fechamento do bloco TROCA_LOCAL_SERVICO da OS -->
+
             </div><!-- Fechamento do Bloco do Lado Direito do Painel Principal da Abertura de OS -->
             
         </div><!-- Fechamento do Posicionamento os blocos do lado esquerdo e direito na mesma linha -->
@@ -2487,6 +2618,15 @@ $status_servico = '';
                 <x-adminlte-button class="btn-nexus btn_geral" type="button" onclick="window.location='{{ route('situacaoOS.carregaOS', ['empresa' => $glo_os_empresa, 'cliente' => $glo_os_cliente, 'nos' => $glo_os_nos, 'estagioAPP' => 'PRINCIPAL']) }}'" label="Geral" theme="" icon=""/>
                 <x-adminlte-button class="btn-nexus btn_cancelar_os" type="button" data-toggle="modal" data-target="#modalCancelamentoOS" label="Cancelar OS" theme="" icon="fa-solid fa-ban"/>
                 <x-adminlte-button class="btn-nexus btn_previsao_entrega" type="button" onclick="window.location='{{ route('painelOS.previsaoEntregaOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Previsão de Entrega" theme="" icon="fa-solid fa-truck"/>
+                
+                @if($glo_os_estagioAPP == "PRINCIPAL")
+                <x-adminlte-button class="btn-nexus btn_troca_loc_srv" type="button" onclick="window.location='{{ route('painelOS.trocaLocSrv', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Altera Local Serviço" theme="" icon="fa-solid fa-location-dot"/>
+                @endif
+
+                @if($glo_os_estagioAPP == "TROCA_LOCAL_SERVICO")
+                <x-adminlte-button class="btn-nexus btn_atualiza_loc_srv" type="button" onclick="document.querySelector('.btn_hide_salvar_loc_srv').click()" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
+                @endif
+
                 <x-adminlte-button class="btn-nexus btn_total_os" type="button" onclick="window.location='{{ route('painelOS.totalOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Total OS" theme="" icon=""/>
 
                 <x-adminlte-button class="btn-nexus btn_atualizar_previsao_entrega" type="button" onclick="document.querySelector('.btn_hide_atualizar_previsao_entrega').click()" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
@@ -2526,7 +2666,7 @@ $status_servico = '';
                 <x-adminlte-button class="btn-nexus btn_incluir_tmo" type="button" onclick="document.querySelector('.btn_hide_incluir_tmo').click()" label="Incluir" theme="" icon="fa-solid fa-plus"/>
             </div>
             <div style="float: right;">
-                @if($glo_os_estagioAPP == "CONSULTA_REQUISICAO" || $glo_os_estagioAPP == "PREVISAO_ENTREGA" || $glo_os_estagioAPP == "TOTAIS_OS" || $glo_os_estagioAPP == "INCLUSAO_REQUISICAO")
+                @if($glo_os_estagioAPP == "CONSULTA_REQUISICAO" || $glo_os_estagioAPP == "PREVISAO_ENTREGA" || $glo_os_estagioAPP == "TOTAIS_OS" || $glo_os_estagioAPP == "INCLUSAO_REQUISICAO" || $glo_os_estagioAPP == "TROCA_LOCAL_SERVICO")
                 <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('situacaoOS.carregaOS', ['empresa' => $glo_os_empresa, 'cliente' => $glo_os_cliente, 'nos' => $glo_os_nos, 'estagioAPP' => 'PRINCIPAL']) }}'" label="Voltar" theme="" icon=""/>
                 @elseif($glo_os_estagioAPP == "ORCAMENTO_OS") 
                 <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('painelOS.totalOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Voltar" theme="" icon=""/>
@@ -2552,6 +2692,8 @@ $status_servico = '';
 @section('plugins.BootstrapSwitch', true)
 @section('plugins.Datatables', true)
 @section('plugins.DatatablesPlugins', true)
+@section('plugins.icheckBootstrap', true)
+@section('plugins.Inputmask', true)
 
 @section('css')
 <style>
@@ -2656,7 +2798,9 @@ $status_servico = '';
         $(".btn_hide_reabrir_requisicao").hide();
         $(".btn_hide_excluir_requisicao").hide();
 
-
+        //Botão quadro - TROCA_LOCAL_SERVICO
+        $(".btn_hide_salvar_loc_srv").hide();
+        
         /* **************************************** Ao iniciar a app verifica qual a etapa executada e realiza a exibição dos botões da etapa **************************************** */
 
         var estagioAPP = {!! json_encode($glo_os_estagioAPP) !!};
@@ -2692,6 +2836,7 @@ $status_servico = '';
             
             if(statusOS == 'F' || statusOS == 'C'){
                 $(".btn_previsao_entrega").hide();
+                $(".btn_troca_loc_srv").hide();
             }
 
             if(statusOS == 'C'){
@@ -2965,6 +3110,35 @@ $status_servico = '';
                 $(".btn_desconto_os").hide();
                 $(".btn_troca_cliente").hide();
             }
+        }else if(estagioAPP == 'TROCA_LOCAL_SERVICO'){
+
+            $(".btn_incluir_requisicao").hide();
+            $(".btn_novo_servico").hide();
+            $(".btn_incluir_tmo").hide();
+            $(".btn_atualizar_tmo").hide();
+            $(".btn_iniciar_servicos").hide();
+            $(".btn_finalizar_servicos").hide();
+            $(".btn_finalizar_requisicao").hide();
+            $(".btn_reabrir_requisicao").hide();
+            $(".btn_suspender_tmo").hide();
+            $(".btn_cancelar_tmo").hide();
+            $(".btn_reabrir_tmo").hide();
+            $(".btn_excluir_tmo").hide();
+            $(".btn_excluir_requisicao").hide();
+            $(".btn_orcamento").hide();
+            $(".btn_previsao_entrega").hide();
+            $(".btn_orcamentoPDF").hide();
+            $(".btn_gerar_orcamento").hide();
+            $(".btn_desconto_requisicao").hide();
+            $(".btn_total_os").hide();
+            $(".btn_encerra_os").hide();
+            $(".btn_observacao").hide();
+            $(".btn_desconto_os").hide();
+            $(".btn_troca_cliente").hide();
+            $(".btn_liberar_desconto_tmo").hide(); 
+            $(".btn_cancelar_os").hide(); 
+            $(".btn_aprovar_servicos").hide();
+            $(".btn_atualizar_previsao_entrega").hide();
         }
 
         
@@ -3462,6 +3636,66 @@ $status_servico = '';
             $('#perDescontoOS').mask('#.##0,00', {reverse: true});
             $('#valDescontoOS').mask('#.##0,00', {reverse: true});
             $('#valLiquidoOS').mask('#.##0,00', {reverse: true});
+        }
+
+        /* **************************************** Eventos Iniciais do bloco  - TROCA_LOCAL_SERVICO **************************************** */
+
+        if(estagioAPP == 'TROCA_LOCAL_SERVICO' ){
+
+            var locPrtSrv = {!! json_encode($locPrtSrv) !!};
+
+            if(locPrtSrv == 'E'){
+                $('input[name="enderecoLocSrv"][value="1"]').prop('checked', true); // Endereço da Empresa
+                $('.bloco-endereco').hide();
+            }else if(locPrtSrv == 'C'){
+                $('input[name="enderecoLocSrv"][value="2"]').prop('checked', true); // Endereço do Cliente
+                $('.bloco-endereco').hide();
+            }else{
+                $('input[name="enderecoLocSrv"][value="3"]').prop('checked', true); // Outro Endereço
+                $('.bloco-endereco').show();
+            }
+
+            // Init input mask on the target element.
+            $('#cep').inputmask({
+                "mask": "99999-999",
+                // Specify other options...
+            });
+
+            // Busca os dados do CEP informado
+            $("#cep").blur(function(){
+
+                // Remove tudo o que não é número para fazer a pesquisa
+                var cep = this.value.replace(/[^0-9]/, "");
+                
+                // Validação do CEP; caso o CEP não possua 8 números, então cancela
+                // a consulta
+                if(cep.length != 8){
+                    return false;
+                }
+                
+                // A url de pesquisa consiste no endereço do webservice + o cep que
+                // o usuário informou + o tipo de retorno desejado (entre "json",
+                // "jsonp", "xml", "piped" ou "querty")
+                var url = "https://viacep.com.br/ws/"+cep+"/json/";
+                
+                // Faz a pesquisa do CEP, tratando o retorno com try/catch para que
+                // caso ocorra algum erro (o cep pode não existir, por exemplo) a
+                // usabilidade não seja afetada, assim o usuário pode continuar//
+                // preenchendo os campos normalmente
+                $.getJSON(url, function(dadosRetorno){
+                    try{
+                        //console.log(dadosRetorno);
+                        // Preenche os campos de acordo com o retorno da pesquisa
+                        $("#logradouro").val(dadosRetorno.logradouro);
+                        $("#bairro").val(dadosRetorno.bairro);
+                        $("#cidade").val(dadosRetorno.localidade);
+                        $("#uf").val(dadosRetorno.uf);
+                        $("#complemento").val(dadosRetorno.complemento);
+                        $("#ibgeCodMun").val(dadosRetorno.ibge);
+                        $("#numero").focus();
+                    }catch(ex){}
+                });
+            });
         }
     });
 </script>
@@ -3983,6 +4217,42 @@ $status_servico = '';
         }
         */
         
+        /* **************************************** Eventos onClick dos blocos - MANUTENCAO_SERVICO  **************************************** */
+
+        if(estagioAPP == 'TROCA_LOCAL_SERVICO' ){
+
+            $("#radio_empresa").click(function(){
+                $('.bloco-endereco').hide();
+
+                $('#cep').val('');
+                $('#logradouro').val('');
+                $('#numero').val('');
+                $('#complemento').val('');
+                $('#bairro').val('');
+                $('#cidade').val('');
+                $('#uf').val('');
+                $('#pais').val('');
+                $('#ibgeCodMun').val('');
+            });
+
+            $("#radio_cliente").click(function(){
+                $('.bloco-endereco').hide();
+
+                $('#cep').val('');
+                $('#logradouro').val('');
+                $('#numero').val('');
+                $('#complemento').val('');
+                $('#bairro').val('');
+                $('#cidade').val('');
+                $('#uf').val('');
+                $('#pais').val('');
+                $('#ibgeCodMun').val('');
+            });
+
+            $("#radio_outro").click(function(){
+                $('.bloco-endereco').show();
+            });
+        }
     });
 </script>
 

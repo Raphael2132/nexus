@@ -372,4 +372,74 @@ class LancamentoSrvOsController extends Controller
         
         return redirect(route('painelOS.totalOS', ['empresa' => $empresa, 'numOS' => $numOS]))->with('success', 'Desconto da OS Realizado com Sucesso!');
     }
+
+    //Cria a OS e chama a app de controle de pré abertura de OS
+    public function atualizaLocSrv(Request $request, $empresa, $numOS, $cliente)
+    {     
+        //Caso utilizar outro endereço para o local da prestação do serviço validar o cep
+        if($request->enderecoLocSrv == 3){
+            $cep = Helper::limpaCEP($request->cep);
+
+            if(strlen($cep) < 8 || strlen($cep) > 8){
+                return redirect()->back()->with('error', 'Formato do CEP é inválido!');
+            }
+        }
+
+        if($request->enderecoLocSrv == 3){
+
+            $enderecoLocSrv = 'O';
+            $loc_srv_cep = Helper::limpaCEP($request->cep);
+            $loc_srv_logradouro = $request->logradouro;
+            $loc_srv_numero = $request->numero;
+            $loc_srv_complemento = $request->complemento;
+            $loc_srv_bairro = $request->bairro;
+            $loc_srv_cidade = $request->cidade;
+            $loc_srv_uf = $request->uf;
+            $loc_srv_pais = $request->pais;
+            $loc_srv_ibge_cod_mun = $request->ibgeCodMun;
+
+        }elseif($request->enderecoLocSrv == 2){
+
+            $enderecoLocSrv = 'C';
+            $loc_srv_cep = null;
+            $loc_srv_logradouro = null;
+            $loc_srv_numero = null;
+            $loc_srv_complemento = null;
+            $loc_srv_bairro = null;
+            $loc_srv_cidade = null;
+            $loc_srv_uf = null;
+            $loc_srv_pais = null;
+            $loc_srv_ibge_cod_mun = null;
+
+        }else{
+
+            $enderecoLocSrv = 'E';
+            $loc_srv_cep = null;
+            $loc_srv_logradouro = null;
+            $loc_srv_numero = null;
+            $loc_srv_complemento = null;
+            $loc_srv_bairro = null;
+            $loc_srv_cidade = null;
+            $loc_srv_uf = null;
+            $loc_srv_pais = null;
+            $loc_srv_ibge_cod_mun = null;
+        }
+
+        DB::table('lancamento_srv_os')
+        ->where('os_emp', $empresa)
+        ->where('os_nos', $numOS)
+        ->update(['os_loc_srv' => $enderecoLocSrv,
+            'os_loc_srv_cep' => $loc_srv_cep,
+            'os_loc_srv_logradouro' => $loc_srv_logradouro,
+            'os_loc_srv_numero' => $loc_srv_numero,
+            'os_loc_srv_complemento' => $loc_srv_complemento,
+            'os_loc_srv_bairro' => $loc_srv_bairro,
+            'os_loc_srv_cidade' => $loc_srv_cidade,
+            'os_loc_srv_uf' => $loc_srv_uf,
+            'os_loc_srv_pais' => $loc_srv_pais,
+            'os_loc_srv_ibge_cod_mun' => $loc_srv_ibge_cod_mun
+        ]);  
+
+        return redirect(route('situacaoOS.carregaOS', ['empresa' => $request->empresa, 'cliente' => $request->cliente, 'nos' => $numOS, 'estagioAPP' => 'PRINCIPAL']))->with('success', 'Local da Prestação do Serviço alterado com sucesso!');
+    }
 }
