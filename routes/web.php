@@ -424,6 +424,7 @@ Route::post('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFSE/e
 Route::get('/faturamento/notas/simplificada/controleReemissaoSimpNF', [App\Http\Controllers\HomeController::class, 'reemissaoSimpNF'])->name('home.reemissaoSimpNF');
 
 Route::get('/faturamento/notas/simplificada/consultaReemissaoSimpNF', [App\Http\Controllers\FaturamentoNfsSimplificadaController::class, 'consultaReemissaoSimpNF'])->name('reemissaoSimpNF.consultaReemissaoSimpNF');
+Route::get('/faturamento/notas/simplificada/consultaReemissaoSimpNF/redir', [App\Http\Controllers\FaturamentoNfsSimplificadaController::class, 'redirConsultaReemissaoSimpNF'])->name('reemissaoSimpNF.redirConsultaReemissaoSimpNF');
 
 /* ********** Rotas de Impressão de NFS-e ********** */
 Route::get('/faturamento/notas/impressao/nfse/{empresa}/{numControle}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'nfseGerarPDF'])->name('impresaoNF.nfsePDF');
@@ -431,12 +432,18 @@ Route::get('/faturamento/notas/impressao/nfse/{empresa}/{numControle}', [App\Htt
 /* ********** Rotas de Emissao de NF ********** */
 Route::get('/faturamento/notas/controleEmissaoNF', [App\Http\Controllers\HomeController::class, 'emissaoNF'])->name('home.emissaoNF');
 
-Route::get('/faturamento/notas/consultaEmissaoNF', [App\Http\Controllers\FaturamentoNfHeaderController::class, 'consultaNF'])->name('emissaoNF.consultaNF');
-Route::get('/faturamento/notas/painelEmissaoNF/{empresa}/{cliente}/{nfSelecionada}', [App\Http\Controllers\FaturamentoNfHeaderController::class, 'painelNF'])->name('emissaoNF.painelNF');
+Route::get('/faturamento/notas/consultaEmissaoNF/filtro', [App\Http\Controllers\PainelEmissaoNfController::class, 'filtroConsultaNF'])->name('emissaoNF.filtroConsultaNF');
+Route::get('/faturamento/notas/consultaEmissaoNF', [App\Http\Controllers\PainelEmissaoNfController::class, 'consultaNF'])->name('emissaoNF.consultaNF');
+Route::get('/faturamento/notas/painelEmissaoNF/{empresa}/{cliente}', [App\Http\Controllers\PainelEmissaoNfController::class, 'painelNF'])->name('emissaoNF.painelNF');
+Route::get('/faturamento/notas/painelEmissaoNF/aberto/{empresa}/{cliente}/{estagio_app}', [App\Http\Controllers\PainelEmissaoNfController::class, 'painelNfAberto'])->name('emissaoNF.painelNfAberto');
 
-Route::get('/faturamento/notas/controleGeracaoNF/{empresa}/{cliente}/{nfSelecionada}/{origem}', [App\Http\Controllers\FaturamentoGeracaoNfController::class, 'gerarNF'])->name('emissaoNF.gerarNF');
+Route::get('/faturamento/notas/painelEmissaoNF/notas/insert/{empresa}/{numNF}/{cliente}', [App\Http\Controllers\FinanceiroRecebimentoNotaController::class, 'insert'])->name('emissaoNF.inserirNotas');
+Route::get('/faturamento/notas/painelEmissaoNF/notas/delete/{empresa}/{numNF}/{cliente}', [App\Http\Controllers\FinanceiroRecebimentoNotaController::class, 'delete'])->name('emissaoNF.desmarcarNotas');
+
+Route::get('/faturamento/notas/controleGeracaoNF/{empresa}/{nfReemissao}/{origem}', [App\Http\Controllers\FaturamentoGeracaoNfController::class, 'gerarNF'])->name('emissaoNF.gerarNF');
 
 /* ********** Rotas de Reemissao de NF ********** */
 Route::get('/faturamento/notas/controleReemissaoNF', [App\Http\Controllers\HomeController::class, 'reemissaoNF'])->name('home.reemissaoNF');
 
-Route::get('/faturamento/notas/consultaReemissaoNF', [App\Http\Controllers\FaturamentoNfHeaderController::class, 'consultaReemissaoNF'])->name('reemissaoNF.consultaReemissaoNF');
+Route::get('/faturamento/notas/consultaReemissaoNF', [App\Http\Controllers\PainelEmissaoNfController::class, 'consultaReemissaoNF'])->name('reemissaoNF.consultaReemissaoNF');
+Route::get('/faturamento/notas/consultaReemissaoNF/redir', [App\Http\Controllers\PainelEmissaoNfController::class, 'redirConsultaReemissaoNF'])->name('reemissaoNF.redirConsultaReemissaoNF');

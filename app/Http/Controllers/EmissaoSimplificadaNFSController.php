@@ -149,6 +149,10 @@ class EmissaoSimplificadaNFSController extends Controller
             $numControle = $exec_fn[0]->ret_num;
         }
 
+        //Gera um array das NF para utilizar no controleGeracaoNF
+        $where_hdr = [];
+        $where_hdr[] = $numControle;
+
         //Faz a geração da NFS-e depois de gerar as tabelas da NF
 
         //Gera da tabela de nota fiscal de serviço
@@ -172,8 +176,6 @@ class EmissaoSimplificadaNFSController extends Controller
         //Gera o xml de envio
         $nfsxml = new Nfsxml($empresa, $numControle);
         $nfsxml->emitirNFS();
-
-        $pathXML = $nfsxml->nomeArquivo;
 
         $dadosNF = DB::table('faturamento_nf_headers')->where('nfhdr_emp', $empresa)->where('nfhdr_num', $numControle)->get();
 
@@ -203,6 +205,6 @@ class EmissaoSimplificadaNFSController extends Controller
             'nfs_dt_emi' => $dataGeracaoNF,
             'nfs_hr_emi' => $horaGeracaoNF]);
         
-        return view('/faturamento/notas/controleGeracaoNF', ['empresa' => $empresa, 'numControle' => $numControle, 'pathXML' => $pathXML, 'origem' => 'EMISSAO_SIMP']);
+        return view('/faturamento/notas/controleGeracaoNF', ['empresa' => $empresa, 'where_hdr' => $where_hdr, 'origem' => 'EMISSAO_SIMP']);
     }
 }

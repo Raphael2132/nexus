@@ -23,7 +23,12 @@
 
 
 @section('content')
-
+@php
+    //Define as variaveis de sessão aqui na view por que depois de 2 redirect elas são destruidas
+    session(['glo_where_emissao_nf_completo' => $glo_where_emissao_nf_completo]);
+    session(['glo_where_emissao_nf_semi' => $glo_where_emissao_nf_semi]);
+    session(['glo_id_recebimento' => $glo_id_recebimento]);
+@endphp
 <div class="col-md-12">
 
     <!-- ********** Painel Principal da Emissão de NF ********** -->
@@ -34,16 +39,16 @@
             $data_cli = DB::table('cadastro_clientes')->where('cliente_codigo', $clienteNF)->get();
         @endphp
         <div class="row">
-            <div style="width:100%; margin: 10px;">
-                <table style="width:100%; font-style: normal; color:#343232; border-collapse: separate; border-spacing: 5px 5px;">
+            <div style="width:100%; margin: 10px; color:#fff">
+                <table style="width:100%; font-style: normal; border-collapse: separate; border-spacing: 5px 5px;">
                     <tbody>
                         <tr style="text-align: center;">
-                            <td style="background-color: #DCDCDC; border-radius: 8px; border: 1px solid #C0C0C0;"><strong>Empresa</strong></td>
-                            <td style="background-color: #DCDCDC; border-radius: 8px; border: 1px solid #C0C0C0;"><strong>Cliente</strong></td>
+                            <td style="background-color: #00abab; border-radius: 8px; border: 1px solid #008f8f;"><strong>Empresa</strong></td>
+                            <td style="background-color: #00abab; border-radius: 8px; border: 1px solid #008f8f;"><strong>Cliente</strong></td>
                         </tr>
-                        <tr style="border: 1px solid #DDD; background-color: #fff; text-align: center;">
-                            <td style="border: 1px solid #C0C0C0; border-radius: 8px; text-align: center;">{{$empresaNF.' - '.$data[0]->empresa_nome}}</td>
-                            <td style="border: 1px solid #C0C0C0; border-radius: 8px; text-align: center;">{{$clienteNF.' - '.$data_cli[0]->cliente_nome}}</td>
+                        <tr style="border: 1px solid #008f8f; background-color: #fff; color:#008f8f; text-align: center;">
+                            <td style="border: 1px solid #008f8f; border-radius: 8px; text-align: center;">{{$empresaNF.' - '.$data[0]->empresa_nome}}</td>
+                            <td style="border: 1px solid #008f8f; border-radius: 8px; text-align: center;">{{$clienteNF.' - '.$data_cli[0]->cliente_nome}}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -56,27 +61,58 @@
             <!-- ************************************************** Bloco do Lado Esquerdo do Painel Principal ************************************************** -->
             <div class="col-md-6">
                 @php
-                // Monta os dados da tabela do bloco
-                $heads = [
-                    ['label' => '', 'no-export' => true, 'width' => 10],
-                    'Pedido / OS',
-                    'Data',
-                    'Origem',
-                    'Tipo NF',
-                    'Valor'
-                ];
-                
-                $config = [
-                    'searching' => false,
-                    'lengthChange' => false,
-                    'pageLength' => 10,
-                    'language' => Helper::dataTableLangPtBR(),
-                    'order' => [[1, 'asc']],
-                    'columns' => [['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false]],
-                ];
+                    // Monta os dados da tabela do bloco
+                    $heads = [
+                        ['label' => '', 'no-export' => true, 'width' => 10],
+                        'Pedido / OS',
+                        'Data',
+                        'Origem',
+                        'Tipo NF',
+                        'Valor',
+                        ['label' => '', 'no-export' => true, 'width' => 10],
+                    ];
+                    if($estagio_app == 'SELECAO_NF'){
+                        $config = [
+                            'searching' => false,
+                            'lengthChange' => false,
+                            'pageLength' => 10,
+                            'language' => Helper::dataTableLangPtBR(),
+                            'order' => [
+                                [1, 'asc']
+                            ],
+                            'columns' => [
+                                ['orderable' => false], 
+                                ['orderable' => false], 
+                                ['orderable' => false], 
+                                ['orderable' => false], 
+                                ['orderable' => false], 
+                                ['orderable' => false], 
+                                ['orderable' => false]
+                            ],
+                        ];
+                    }else{                        
+                        $config = [
+                            'searching' => false,
+                            'lengthChange' => false,
+                            'pageLength' => 10,
+                            'language' => Helper::dataTableLangPtBR(),
+                            'order' => [
+                                [1, 'asc']
+                            ],
+                            'columns' => [
+                                ['orderable' => false], 
+                                ['orderable' => false], 
+                                ['orderable' => false], 
+                                ['orderable' => false], 
+                                ['orderable' => false], 
+                                ['orderable' => false], 
+                                ['orderable' => false, 'visible' => false]
+                            ],
+                        ];
+                    }
                 @endphp
                 <x-adminlte-card title="Lista de Notas Disponíveis" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
-                    <x-adminlte-datatable id="tabelaGeral" :heads="$heads" :config="$config" theme="light" striped hoverable>
+                    <x-adminlte-datatable id="tabelaNotas" :heads="$heads" :config="$config" theme="light" striped hoverable>
                         @foreach($dadosHeader as $header)
                             @php 
                                 $data = DB::table('cadastro_empresas')->where('empresa_codigo', $header->nfhdr_emp)->get();
@@ -88,14 +124,19 @@
                                 }else{
                                     $origem = "Peças";
                                 }
+
+                                //Verifica se a nota para o recebimento já foi selecionada
+                                $notaReceb = DB::table('financeiro_recebimento_notas')->where('recnf_id_rec', $glo_id_recebimento)->where('recnf_emp', $empresaNF)->where('recnf_num', $header->nfhdr_num)->count();
                             @endphp
                             <tr>
                                 <td>
                                     <nobr class="d-flex justify-content-center">
-                                        @if($nfSelecionada != $header->nfhdr_num)
-                                        <a class="btn btn-nexus btn-sm" title="Selecionar NF" href="{{route('emissaoNF.painelNF',['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num])}}">Selecionar</a>
+                                        @if($notaReceb == 0)
+                                            @if($estagio_app == 'SELECAO_NF')
+                                            <a class="btn btn-nexus btn-sm" title="Selecionar NF" href="{{route('emissaoNF.inserirNotas',['empresa' => $empresaNF, 'numNF' => $header->nfhdr_num, 'cliente' => $clienteNF])}}">Selecionar</a>
+                                            @endif
                                         @else
-                                        <a class="text-muted" title="NF Selecionada" href="">
+                                        <a class="text-muted" title="NF Selecionada" href="#">
                                             <i class="fa-solid fa-circle-check fa-lg text-success"></i>
                                         </a>
                                         @endif
@@ -106,21 +147,42 @@
                                 <td>{{$origem}}</td>
                                 <td>NFS-e</td>
                                 <td>{{Helper::formataValorMonetario($header->nfhdr_vlr_tot_nf)}}</td>
+                                <td>
+                                    <nobr class="d-flex justify-content-center">
+                                        @if($notaReceb > 0 && $estagio_app == 'SELECAO_NF')
+                                        <a class="btn btn-nexus btn-sm" title="Selecionar NF" href="{{route('emissaoNF.desmarcarNotas',['empresa' => $empresaNF, 'numNF' => $header->nfhdr_num, 'cliente' => $clienteNF])}}">Desmarcar</a>
+                                        @endif
+                                    </nobr>
+                                </td>
                             </tr>
                         @endforeach
                     </x-adminlte-datatable>
+                    
+                    <x-slot name="footerSlot">
+                        @if($estagio_app == 'SELECAO_NF')
+                        <a class="btn btn-nexus mr-auto" title="Selecionar NF" href="{{route('emissaoNF.painelNfAberto',['empresa' => $empresaNF, 'cliente' => $clienteNF, 'estagio_app' => 'GERACAO_NF'])}}">
+                            <i class="fa-solid fa-file-invoice-dollar"></i> Faturar Notas
+                        </a>
+                        @elseif($estagio_app == 'GERACAO_NF')
+                        <a class="btn btn-nexus mr-auto" title="Selecionar NF" href="{{route('emissaoNF.painelNfAberto',['empresa' => $empresaNF, 'cliente' => $clienteNF, 'estagio_app' => 'SELECAO_NF'])}}">
+                            <i class="fa-solid fa-folder-open"></i> Reabrir Seleção
+                        </a>
+                        @endif
+                    </x-slot>
+                    
                 </x-adminlte-card>
             </div>
 
             <!-- ************************************************** Bloco do Lado Direito do Painel Principal ************************************************** -->
             <div class="col-md-6">
-                <x-adminlte-card title="Geração de Notas" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
-                    @if(!empty(trim($nfSelecionada)))
+                <!-- ***** Bloco de Botões da Geração da NF-e/NFS-e/Cupom/SAT ***** -->
+                @if($estagio_app == 'GERACAO_NF')
+                <x-adminlte-card title="Gerar Nota Fiscal" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     <div style="text-align: center">
-                        <a class="btn btn-nexus" title="Gerar NF-e / NFS-e" href="{{route('emissaoNF.gerarNF',['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $nfSelecionada, 'origem' => 'EMISSAO'])}}">Gerar NF-e / NFS-e</a>
+                        <a class="btn btn-nexus" title="Gerar NF-e / NFS-e" href="{{route('emissaoNF.gerarNF',['empresa' => $header->nfhdr_emp, 'nfReemissao' => ' ', 'origem' => 'EMISSAO'])}}">Gerar NF-e / NFS-e</a>
                     </div>
-                    @endif
                 </x-adminlte-card>
+                @endif
             </div>
 
         </div>

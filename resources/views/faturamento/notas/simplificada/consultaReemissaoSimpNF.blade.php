@@ -22,24 +22,27 @@
 @section('content')
 
 @php
-$heads = [
-    'Empresa',
-    'Cliente',
-    'Data Emissao',
-    'ES',
-    'Nota',
-    'Valor',
-    'Tipo',
-    'Situação',
-    ['label' => 'Impressão', 'no-export' => true, 'width' => 10],
-];
-$config = [
-    'lengthMenu' => [5, 10, 25, 50, 100],
-    'pageLength' => 10,
-    'language' => Helper::dataTableLangPtBR(),
-    'order' => [[0, 'asc'],[3, 'desc']],
-    'columns' => [null, null, null, null, null, null, null, null, ['orderable' => false]],
-];
+    //Define as variaveis de sessão aqui na view por que depois de 2 redirect elas são destruidas
+    session(['glo_where_reemissao_nf' => $glo_where_reemissao_nf]);
+
+    $heads = [
+        'Empresa',
+        'Cliente',
+        'Data Emissao',
+        'ES',
+        'Nota',
+        'Valor',
+        'Tipo',
+        'Situação',
+        ['label' => 'Impressão', 'no-export' => true, 'width' => 10],
+    ];
+    $config = [
+        'lengthMenu' => [5, 10, 25, 50, 100],
+        'pageLength' => 10,
+        'language' => Helper::dataTableLangPtBR(),
+        'order' => [[0, 'asc'],[3, 'desc']],
+        'columns' => [null, null, null, null, null, null, null, null, ['orderable' => false]],
+    ];
 @endphp
 
 <x-adminlte-card title="Reemissão Simplificada de NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
@@ -75,13 +78,13 @@ $config = [
                 <td>{{Helper::formataValorMonetario($header->nfhdr_vlr_tot_nf)}}</td>
                 <td>NFS-e</td>
                 @if($stsNF == 1)
-                <td class="max-width-sts"><span class="badge badge-danger">NFS-e Não Enviada: {{$dadosXmlNfsEnv[0]->nfsenv_obs}}</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
+                <td class="max-width-sts"><span class="badge badge-danger">NFS-e Não Enviada: {{$dadosXmlNfsEnv[0]->nfsenv_obs}}</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'nfReemissao' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
                 @elseif($stsNF == 2)
-                <td class="max-width-sts"><span class="badge badge-danger">NFS-e Rejeitada: Erro {{$dadosXmlNfsEnv[0]->nfsenv_sts_emi.' - '.$dadosXmlNfsEnv[0]->nfsenv_obs}}</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
+                <td class="max-width-sts"><span class="badge badge-danger">NFS-e Rejeitada: Erro {{$dadosXmlNfsEnv[0]->nfsenv_sts_emi.' - '.$dadosXmlNfsEnv[0]->nfsenv_obs}}</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'nfReemissao' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
                 @elseif($stsNF == 3)
                 <td class="max-width-sts"><span class="badge badge-success">{{$dadosXmlNfsEnv[0]->nfsenv_obs}}</span></td>
                 @else
-                <td class="max-width-sts"><span class="badge badge-info">Geração Iniciada</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
+                <td class="max-width-sts"><span class="badge badge-info">Geração Iniciada</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'nfReemissao' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
                 @endif
                 @if($stsNF != 4)
                 <td class="d-flex justify-content-center"><a class="btn btn-outline-nexus btn-sm" href="{{route('impresaoNF.nfsePDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num])}}" target="_blank">Abrir NFS-e</a></td>

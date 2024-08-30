@@ -11,60 +11,126 @@ class FaturamentoGeracaoNfController extends Controller
 {
     //private $nfsxml;
 
-    public function gerarNF($empresa, $cliente, $nfSelecionada, $origem)
+    public function gerarNF($empresa, $nfReemissao, $origem)
     {
 
+        if($origem == 'EMISSAO'){//Gera dados da Emissão de Notas
+
+            $idRecebimento = session('glo_id_recebimento');
+            $where = session('glo_where_emissao_nf_completo');
+            $where_semi = session('glo_where_emissao_nf_semi');
+            $where_reemissao = '';
+
+            //Busca as notas do recebimento realizado
+            $notasReceb = DB::table('financeiro_recebimento_notas')->where('recnf_id_rec', $idRecebimento)->where('recnf_emp', $empresa)->orderby('recnf_num')->get();
+
+            //Gera um array das NF para utilizar no controleGeracaoNF
+            $where_hdr = [];
+
+            foreach($notasReceb as $nota){
+                $where_hdr[] = $nota->recnf_num;
+            }
+
+        }elseif($origem == 'REEMISSAO' || $origem == 'REEMISSAO_SIMP'){//Gera dados da Reemissão de Notas
+
+            $idRecebimento = '';
+            $where = '';
+            $where_semi = '';
+            $where_reemissao = session('glo_where_reemissao_nf');
+
+            //Gera um array das NF para utilizar no controleGeracaoNF
+            $where_hdr = [];
+            $where_hdr[] = $nfReemissao;
+        }
+
+        $notasHDR = DB::table('faturamento_nf_headers')->where('nfhdr_emp', $empresa)->wherein('nfhdr_num', $where_hdr)->orderby('nfhdr_num')->get();
         
-        //Inicia o Database Transaction
-        DB::beginTransaction();
+        foreach($notasHDR as $nota){
 
-        //Gera da tabela de nota fiscal de serviço
-        $exec_fn = DB::select("select ret_sts, ret_msg from fn_faturamento_gera_nfs('".$empresa."',".$nfSelecionada.");");
+            //Inicia o Database Transaction
+            DB::beginTransaction();
 
-        if($exec_fn[0]->ret_sts == '*'){
-            //Falha, desfaz as alterações no banco de dados
-            DB::rollBack();
-            return redirect()->back()->with('error', $exec_fn[0]->ret_msg);
-        }else{
-            //Grava as alterações do banco
-            DB::commit();
-        }
+            //Gera da tabela de nota fiscal de serviço
+            $exec_fn = DB::select("select ret_sts, ret_msg from fn_faturamento_gera_nfs('".$empresa."',".$nota->nfhdr_num.");");
 
-        //Gera o xml de envio
-        $nfsxml = new Nfsxml($empresa, $nfSelecionada);
-        $nfsxml->emitirNFS();
+            if($exec_fn[0]->ret_sts == '*'){
+                //Falha, desfaz as alterações no banco de dados
+                DB::rollBack();
+                return redirect()->back()->with('error', $exec_fn[0]->ret_msg);
+            }else{
+                //Grava as alterações do banco
+                DB::commit();
+            }
 
-        $pathXML = $nfsxml->nomeArquivo;
+            //Gera o xml de envio
+            $nfsxml = new Nfsxml($empresa, $nota->nfhdr_num);
+            $nfsxml->emitirNFS();
 
-        $dadosNF = DB::table('faturamento_nf_headers')->where('nfhdr_emp', $empresa)->where('nfhdr_num', $nfSelecionada)->get();
+            $pathXML = $nfsxml->nomeArquivo;
 
-        $dataGeracaoNF = date('Y-m-d');
-        $horaGeracaoNF = date('Hi');
+            $dadosNF = DB::table('faturamento_nf_headers')->where('nfhdr_emp', $empresa)->where('nfhdr_num', $nota->nfhdr_num)->get();
 
-        $stsEnvio = DB::table('faturamento_nfs_xml_envios')->where('nfsenv_emp', $empresa)->where('nfsenv_nfhdr_num', $nfSelecionada)->get();
+            $dataGeracaoNF = date('Y-m-d');
+            $horaGeracaoNF = date('Hi');
 
-        if($stsEnvio[0]->nfsenv_sts == 3){
-            $status = 'G';
-        }else{
-            $status = 'E';
-        }
+            $stsEnvio = DB::table('faturamento_nfs_xml_envios')->where('nfsenv_emp', $empresa)->where('nfsenv_nfhdr_num', $nota->nfhdr_num)->get();
 
-        //Atualiza os dados da NF
-        DB::table('faturamento_nf_headers')
+            if($stsEnvio[0]->nfsenv_sts == 3){
+                $status = 'G';
+            }else{
+                $status = 'E';
+            }
+
+            //Atualiza os dados da NF
+            DB::table('faturamento_nf_headers')
+                    ->where('nfhdr_emp', $empresa)
+                    ->where('nfhdr_num', $nota->nfhdr_num)
+                    ->update(['nfhdr_sts' => $status,
+                    'nfhdr_dt_nf' => $dataGeracaoNF,
+                    'nfhdr_hr_nf' => $horaGeracaoNF]);
+            
+            DB::table('faturamento_nfs')
+            ->where('nfs_emp', $empresa)
+            ->where('nfs_nfhdr_num', $nota->nfhdr_num)
+            ->update(['nfs_sts' => $status,
+                'nfs_dt_emi' => $dataGeracaoNF,
+                'nfs_hr_emi' => $horaGeracaoNF]);
+
+            //Verifica a Origem da NF
+            if($origem == 'EMISSAO'){
+    
+                //Busca a nota do faturamento para pegar o numero e serie da NF
+                $notaHDR = DB::table('faturamento_nf_headers')
                 ->where('nfhdr_emp', $empresa)
-                ->where('nfhdr_num', $nfSelecionada)
-                ->update(['nfhdr_sts' => $status,
-                'nfhdr_dt_nf' => $dataGeracaoNF,
-                'nfhdr_hr_nf' => $horaGeracaoNF]);
+                ->where('nfhdr_num', $nota->nfhdr_num)
+                ->first();
+
+                DB::table('financeiro_recebimento_notas')
+                ->where('recnf_id_rec', $idRecebimento)
+                ->where('recnf_emp', $empresa)
+                ->where('recnf_num', $nota->nfhdr_num)
+                ->update(['recnf_num_nf' => $notaHDR->nfhdr_num_nf,
+                    'recnf_ser_nf' => $notaHDR->nfhdr_ser_nf]);
+            }
+        }
+
+        //Verifica a Origem da NF
+        if($origem == 'EMISSAO'){
+
+            DB::table('financeiro_recebimento_headers')
+            ->where('rechdr_id', $idRecebimento)
+            ->where('rechdr_emp', $empresa)
+            ->update(['rechdr_sts' => 'F']);
+        }
         
-        DB::table('faturamento_nfs')
-        ->where('nfs_emp', $empresa)
-        ->where('nfs_nfhdr_num', $nfSelecionada)
-        ->update(['nfs_sts' => $status,
-            'nfs_dt_emi' => $dataGeracaoNF,
-            'nfs_hr_emi' => $horaGeracaoNF]);
-        
-        return view('/faturamento/notas/controleGeracaoNF', ['empresa' => $empresa, 'numControle' => $nfSelecionada, 'pathXML' => $pathXML, 'origem' => $origem]);
+        return view('/faturamento/notas/controleGeracaoNF', [
+            'empresa' => $empresa, 
+            'origem' => $origem,
+            'where_hdr' => $where_hdr,
+            'where_completo' => $where, 
+            'where_semi' => $where_semi,
+            'glo_where_reemissao_nf' => $where_reemissao
+        ]);
     }
 
     public function abrirXml($xml,$nf,$empresa)

@@ -182,6 +182,16 @@ class FaturamentoNfsSimplificadaController extends Controller
         $dados = DB::select("select * from faturamento_nf_headers where nfhdr_sts not in('C') and nfhdr_ori in('02') ".$where." order by nfhdr_dt_nf desc, nfhdr_num_nf desc");
 
 
-        return view('/faturamento/notas/simplificada/consultaReemissaoSimpNF',['dadosHeader'=>$dados]);
+        return view('/faturamento/notas/simplificada/consultaReemissaoSimpNF',['dadosHeader'=>$dados, 'glo_where_reemissao_nf' => $where]);
+    }
+
+    public function redirConsultaReemissaoSimpNF(Request $request)
+    { 
+        //Vamos passar como variavel no redirect por que depois de 2 redirect elas são destruidas
+        $where = session('glo_where_reemissao_nf');
+
+        $dados = DB::select("select * from faturamento_nf_headers where nfhdr_sts not in('C') and nfhdr_ori in('02') ".$where." order by nfhdr_dt_nf desc, nfhdr_num_nf desc");
+
+        return view('/faturamento/notas/simplificada/consultaReemissaoSimpNF',['dadosHeader'=>$dados, 'glo_where_reemissao_nf' => $where]);
     }
 }

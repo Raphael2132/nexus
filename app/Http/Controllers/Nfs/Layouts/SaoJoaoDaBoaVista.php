@@ -241,14 +241,14 @@ class SaoJoaoDaBoaVista{
                 $path = $nfsxml->layout->config->pathDownloadRetorno.$nomeArquivoRetorno;
                 $dom->save($path);
 
-                self::processaRetorno($nfsxml, $dom, 200, '', $path);//quando tiver acesso a prefeitura mudar o terceiro parametro para o status correto da conexao
+                self::processaRetorno($nfsxml, $dom, 200, '', $path, $nomeArquivoRetorno);//quando tiver acesso a prefeitura mudar o terceiro parametro para o status correto da conexao
 
             }else{
 
                 $stsConexao = $response->getStatusCode();
                 $msgConexao = Helper::removerAcento(utf8_encode($response->getBody()),'N');
 
-                self::processaRetorno($nfsxml, '', $stsConexao, $msgConexao, '');
+                self::processaRetorno($nfsxml, '', $stsConexao, $msgConexao, '', '');
 
             }
 
@@ -257,7 +257,7 @@ class SaoJoaoDaBoaVista{
         }
     }
 
-    public static function processaRetorno($nfsxml, $retorno, $stsConexao, $msgErroConexao, $pathRetorno){
+    public static function processaRetorno($nfsxml, $retorno, $stsConexao, $msgErroConexao, $pathRetorno, $nomeArquivoRetorno){
         
         //echo "<br> Entrei no processaRetorno <br>";
 
@@ -320,7 +320,9 @@ class SaoJoaoDaBoaVista{
                     'nfsenv_dt_inc' => $dataIns,
                     'nfsenv_num_nfs' => $numeroNota,
                     'nfsenv_sts_emi' => $statusEmissao,
-                    'nfsenv_obs' => $messageText
+                    'nfsenv_obs' => $messageText,
+                    'nfsenv_nom_arq_env' => $nfsxml->nomeArquivo,
+                    'nfsenv_nom_arq_ret' => $nomeArquivoRetorno,
                 ]);
 
             }else{
@@ -336,7 +338,9 @@ class SaoJoaoDaBoaVista{
                     'nfsenv_dt_atu' => $dataIns,
                     'nfsenv_num_nfs' => $numeroNota,
                     'nfsenv_sts_emi' => $statusEmissao,
-                    'nfsenv_obs' => $messageText
+                    'nfsenv_obs' => $messageText,
+                    'nfsenv_nom_arq_env' => $nfsxml->nomeArquivo,
+                    'nfsenv_nom_arq_ret' => $nomeArquivoRetorno,
                 ]);
 
             }
@@ -356,7 +360,9 @@ class SaoJoaoDaBoaVista{
                     'nfsenv_dt_atu' => $dataIns,
                     'nfsenv_dt_inc' => $dataIns,
                     'nfsenv_sts_emi' => $stsConexao,
-                    'nfsenv_obs' => $msgErroConexao
+                    'nfsenv_obs' => $msgErroConexao,
+                    'nfsenv_nom_arq_env' => $nfsxml->nomeArquivo,
+                    'nfsenv_nom_arq_ret' => $nomeArquivoRetorno,
                 ]);
 
             }else{
@@ -372,7 +378,9 @@ class SaoJoaoDaBoaVista{
                     'nfsenv_dt_atu' => $dataIns,
                     'nfsenv_num_nfs' => null,
                     'nfsenv_sts_emi' => $stsConexao,
-                    'nfsenv_obs' => $msgErroConexao
+                    'nfsenv_obs' => $msgErroConexao,
+                    'nfsenv_nom_arq_env' => $nfsxml->nomeArquivo,
+                    'nfsenv_nom_arq_ret' => $nomeArquivoRetorno,
                 ]);
             }
         }

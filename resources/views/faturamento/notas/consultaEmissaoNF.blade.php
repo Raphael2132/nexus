@@ -22,18 +22,22 @@
 @section('content')
 
 @php
-$heads = [
-    'Empresa',
-    'Cliente',
-    'Quantidade Notas',
-    'Valor Total'
-];
-$config = [
-    'lengthMenu' => [5, 10, 25, 50, 100],
-    'pageLength' => 10,
-    'language' => Helper::dataTableLangPtBR(),
-    'order' => [[0, 'asc'],[1, 'asc']],
-];
+    //Define as variaveis de sessão aqui na view por que depois de 2 redirect elas são destruidas
+    session(['glo_where_emissao_nf_completo' => $glo_where_emissao_nf_completo]);
+    session(['glo_where_emissao_nf_semi' => $glo_where_emissao_nf_semi]);
+
+    $heads = [
+        'Empresa',
+        'Cliente',
+        'Quantidade Notas',
+        'Valor Total'
+    ];
+    $config = [
+        'lengthMenu' => [5, 10, 25, 50, 100],
+        'pageLength' => 10,
+        'language' => Helper::dataTableLangPtBR(),
+        'order' => [[0, 'asc'],[1, 'asc']],
+    ];
 @endphp
 
 <x-adminlte-card title="Consulta de Notas para Emissão" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
@@ -46,7 +50,7 @@ $config = [
             @endphp
             <tr>
                 <td>{{$header->nfhdr_emp.' - '.$data[0]->empresa_nome}}</td>
-                <td><a href="{{route('emissaoNF.painelNF',['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli, 'nfSelecionada' => ' '])}}">{{$header->nfhdr_cli.' - '.$data_cli[0]->cliente_nome}}</a></td>
+                <td><a href="{{route('emissaoNF.painelNF',['empresa' => $header->nfhdr_emp, 'cliente' => $header->nfhdr_cli])}}">{{$header->nfhdr_cli.' - '.$data_cli[0]->cliente_nome}}</a></td>
                 <td>{{$header->qtd_reg}}</td>
                 <td>{{Helper::formataValorMonetario($header->total_pedidos)}}</td>
             </tr>

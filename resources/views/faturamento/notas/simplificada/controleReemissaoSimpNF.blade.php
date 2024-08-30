@@ -81,8 +81,20 @@
                 </div>
                 <div class="row">
                     <!-- Valor Pedido / OS -->
-                    <x-adminlte-input name="vlrIniOS" label="Valor Inicial da ES" type="text" value="" placeholder="de 0,00" fgroup-class="col-md-6"/>
-                    <x-adminlte-input name="vlrFinOS" label="Valor Final da ES" type="text" value="" placeholder="até 0,00" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="vlrIniOS" label="Valor Inicial da ES" type="text" value="" placeholder="de 0,00" fgroup-class="col-md-6">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-brazilian-real-sign"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input>
+                    <x-adminlte-input name="vlrFinOS" label="Valor Final da ES" type="text" value="" placeholder="até 0,00" fgroup-class="col-md-6">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-brazilian-real-sign"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
                 <x-slot name="footerSlot">
                     <x-adminlte-button class="btn-nexus" type="submit" label="Pesquisar" theme="info" icon="fa-solid fa-magnifying-glass"/>
