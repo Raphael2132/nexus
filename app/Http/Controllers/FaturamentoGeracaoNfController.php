@@ -110,7 +110,8 @@ class FaturamentoGeracaoNfController extends Controller
                 ->where('recnf_emp', $empresa)
                 ->where('recnf_num', $nota->nfhdr_num)
                 ->update(['recnf_num_nf' => $notaHDR->nfhdr_num_nf,
-                    'recnf_ser_nf' => $notaHDR->nfhdr_ser_nf]);
+                    'recnf_ser_nf' => $notaHDR->nfhdr_ser_nf,
+                    'recnf_dt_nf' => $notaHDR->nfhdr_dt_nf]);
             }
         }
 

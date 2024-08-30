@@ -110,6 +110,9 @@ class PainelEmissaoNfController extends Controller
         $where = session('glo_where_emissao_nf_completo');
         $where_semi = session('glo_where_emissao_nf_semi');
 
+        // Chama o método que faz a exclusão de todos os recebimentos com data menor que a do dia atual
+        $this->limpaRecebimentoAberto();
+
         //Insere o Header da tabela de recebimentos
         $idRecebimento = FinanceiroRecebimentoHeaderController::insert($empresa,'NFV');
 
@@ -156,6 +159,7 @@ class PainelEmissaoNfController extends Controller
         ]);
     }
 
+    //Chama a consulta de reemissão vinda do Filtro
     public function consultaReemissaoNF(Request $request)
     { 
         $where = "";
@@ -227,6 +231,7 @@ class PainelEmissaoNfController extends Controller
         return view('/faturamento/notas/consultaReemissaoNF',['dadosHeader'=>$dados, 'glo_where_reemissao_nf' => $where]);
     }
 
+    //Chama a consulta vinda de redirs mantendo o where do filtro original
     public function redirConsultaReemissaoNF()
     { 
         //Vamos passar como variavel no redirect por que depois de 2 redirect elas são destruidas
@@ -235,5 +240,28 @@ class PainelEmissaoNfController extends Controller
         $dados = DB::select("select * from faturamento_nf_headers where nfhdr_sts not in('A','C') and nfhdr_ori in('01') ".$where." order by nfhdr_dt_nf desc, nfhdr_num_nf desc");
 
         return view('/faturamento/notas/consultaReemissaoNF',['dadosHeader'=>$dados, 'glo_where_reemissao_nf' => $where]);
+    }
+
+    // Limpa os recebimentos que ficaram em aberto dos dias anteriores
+    public function limpaRecebimentoAberto()
+    {
+        $dtHJ = date('Y-m-d');
+
+        // Busca todos os recebimentos com data menor que a data de hoje
+        $recebimentosAbertos = DB::table('financeiro_recebimento_headers')
+            ->where('rechdr_dti', '<', $dtHJ)
+            ->where('rechdr_sts', 'A')
+            ->get();
+
+        // Para cada recebimento encontrado, exclui o cabeçalho e as notas associadas
+        foreach($recebimentosAbertos as $recebimento) {
+            DB::table('financeiro_recebimento_headers')
+                ->where('rechdr_id', $recebimento->rechdr_id)
+                ->delete();
+
+            DB::table('financeiro_recebimento_notas')
+                ->where('recnf_id_rec', $recebimento->rechdr_id)
+                ->delete();
+        }
     }
 }
