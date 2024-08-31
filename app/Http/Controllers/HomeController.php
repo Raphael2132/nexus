@@ -698,4 +698,10 @@ class HomeController extends Controller
 
         return view('/lancamentos/producao/homePainelOperador');
     }
+
+    //Redireciona a app para o home do painel de produção
+    public function homeOrcamentoOS()
+    {    
+        return view('/lancamentos/servico/homeOrcamentoOS');
+    }
 }

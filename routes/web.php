@@ -341,6 +341,11 @@ Route::post('/lancamentos/servico/painelAberturaOS/requisicao/servico/desconto/a
 
 Route::delete('/lancamentos/servico/painelAberturaOS/requisicao/servico/{servicoOS}/{empresa}/{numOS}/{requisicao}/destroy', [App\Http\Controllers\LancamentoSrvOsServicoController::class, 'destroy'])->name('servicoOS.destroy');
 
+/* ********** Rotas de Emissao de OS ********** */
+Route::get('/lancamentos/servico/homeOrcamentoOS', [App\Http\Controllers\HomeController::class, 'homeOrcamentoOS'])->name('home.orcamentoOS');
+
+Route::get('/lancamentos/servico/consultaOrcamentoOS', [App\Http\Controllers\LancamentoSrvOsOrcamentosController::class, 'consultaOrcamentoOS'])->name('orcamento.consultaOrcamento');
+
 /*
 |--------------------------------------------------------------------------
 | Área de Serviços - Controle de Produção

@@ -519,8 +519,8 @@ return [
                             'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                         [
-                            'text' => 'Orçamentos',//Consulta de OS geradas
-                            'url'  => '',
+                            'text' => 'Orçamentos',
+                            'url'  => '/lancamentos/servico/homeOrcamentoOS',
                             'icon' => 'nav-icon fa-regular fa-circle',
                         ],
                     ],

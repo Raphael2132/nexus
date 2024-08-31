@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Emissão de NFS-e')
+@section('title', 'Orçamentos')
 
 @section('content_header')
 <div class="row mb-2">
@@ -9,7 +9,7 @@
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item active">Filtro Emissão de NF</li>
+            <li class="breadcrumb-item active">Filtro Orçamentos</li>
         </ol>
     </div>
 </div>
@@ -18,10 +18,10 @@
 @section('content')
 <div class="d-flex justify-content-center">
     <div class="col-md-8">
-        <form method="get" action="{{route('emissaoNF.filtroConsultaNF')}}" id="quickForm2" novalidate="novalidate">
+        <form method="get" action="{{route('orcamento.consultaOrcamento')}}" id="formulario-orcamento" novalidate="novalidate">
         @csrf 
         @method('get')
-            <x-adminlte-card title="Filtro de Emissão de NF-e / NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
+            <x-adminlte-card title="Filtro de Orçamentos Emitidos" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 @php
                     $data = DB::table('cadastro_empresas')->select('empresa_codigo', 'empresa_nome')->orderBy('empresa_codigo', 'asc')->get();
 
@@ -46,7 +46,7 @@
                     echo $html;
                 @endphp
                 <div class="row"> 
-                    <!-- Empresa -->
+                    <!-- Empresa do Setor -->
                     <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-12">
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$emp_sel}}"/>
                     </x-adminlte-select>
@@ -57,47 +57,30 @@
                 </div>
                 <div class="row">
                     <!-- Número pedido / OS -->
-                    <x-adminlte-input name="numOS" label="Número do Pedido / OS" type="text" value="" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="numOS" label="Número da OS" type="text" value="" fgroup-class="col-md-6"/>
                 </div>
                 <div class="row">
                     @php
                         $config = Helper::dtRangeDataPtBR();
                     @endphp
                     <!-- Data de Pedido / OS -->
-                    <x-adminlte-date-range name="dtIniOS" label="Data Inicial do Pedido / OS" :config="$config" placeholder="de dia/mês/ano" fgroup-class="col-md-6">
+                    <x-adminlte-date-range name="dtIniOS" label="Data Inicial da OS" :config="$config" placeholder="de dia/mês/ano" fgroup-class="col-md-6">
                         <x-slot name="prependSlot">
-                            <div class="input-group-text x-slot-nexus">
+                        <div class="input-group-text x-slot-nexus">
                                 <i class="far fa-lg fa-calendar-alt"></i>
                             </div>
                         </x-slot>
                     </x-adminlte-date-range>
-                    <x-adminlte-date-range name="dtFinOS" label="Data Final do Pedido / OS" :config="$config" placeholder="até dia/mês/ano" fgroup-class="col-md-6">
+                    <x-adminlte-date-range name="dtFinOS" label="Data Final da OS" :config="$config" placeholder="até dia/mês/ano" fgroup-class="col-md-6">
                         <x-slot name="prependSlot">
-                            <div class="input-group-text x-slot-nexus">
+                        <div class="input-group-text x-slot-nexus">
                                 <i class="far fa-lg fa-calendar-alt"></i>
                             </div>
                         </x-slot>
                     </x-adminlte-date-range>
-                </div>
-                <div class="row">
-                    <!-- Valor Pedido / OS -->
-                    <x-adminlte-input name="vlrIniOS" label="Valor Inicial do Pedido / OS" type="text" value="" placeholder="de 0,00" fgroup-class="col-md-6">
-                        <x-slot name="prependSlot">
-                            <div class="input-group-text x-slot-nexus">
-                                <i class="fa-solid fa-brazilian-real-sign"></i>
-                            </div>
-                        </x-slot>
-                    </x-adminlte-input>
-                    <x-adminlte-input name="vlrFinOS" label="Valor Final do Pedido / OS" type="text" value="" placeholder="até 0,00" fgroup-class="col-md-6">
-                        <x-slot name="prependSlot">
-                            <div class="input-group-text x-slot-nexus">
-                                <i class="fa-solid fa-brazilian-real-sign"></i>
-                            </div>
-                        </x-slot>
-                    </x-adminlte-input>
                 </div>
                 <x-slot name="footerSlot">
-                    <x-adminlte-button class="btn-nexus" type="submit" label="Pesquisar" theme="info" icon="fa-solid fa-magnifying-glass"/>
+                    <x-adminlte-button class="btn-nexus" type="submit" label="Pesquisar" theme="" icon="fa-solid fa-magnifying-glass"/>
                 </x-slot>
             </x-adminlte-card>
         </form>
