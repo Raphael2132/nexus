@@ -57,7 +57,31 @@
                 </div>
                 <div class="row">
                     <!-- Número pedido / OS -->
-                    <x-adminlte-input name="numOS" label="Número da OS" type="text" value="" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="numOS" label="Número da OS" type="number" value="" fgroup-class="col-md-6"/>
+                </div>
+                <div class="row">
+                    <!-- Número pedido / OS -->
+                    <x-adminlte-input name="numOrc" label="Número do Orçamento" type="number" value="" fgroup-class="col-md-6"/>
+                </div>
+                <div class="row">
+                    @php
+                        $config = Helper::dtRangeDataPtBR();
+                    @endphp
+                    <!-- Data de Pedido / OS -->
+                    <x-adminlte-date-range name="dtIniOrc" label="Data Inicial do Orçamento" :config="$config" placeholder="de dia/mês/ano" fgroup-class="col-md-6">
+                        <x-slot name="prependSlot">
+                        <div class="input-group-text x-slot-nexus">
+                                <i class="far fa-lg fa-calendar-alt"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-date-range>
+                    <x-adminlte-date-range name="dtFinOrc" label="Data Final do Orçamento" :config="$config" placeholder="até dia/mês/ano" fgroup-class="col-md-6">
+                        <x-slot name="prependSlot">
+                        <div class="input-group-text x-slot-nexus">
+                                <i class="far fa-lg fa-calendar-alt"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-date-range>
                 </div>
                 <div class="row">
                     @php
