@@ -71,18 +71,42 @@
 
                 <div class="row">
                     <!-- Inscrição Estadual -->
-                    <x-adminlte-input name="usuario" type="text" label="Usuario de Acesso" fgroup-class="col-md-6" value="{{$dadosConexao[0]['conexao_usuario']}}"></x-adminlte-input>
+                    <x-adminlte-input name="usuario" type="text" label="Usuario de Acesso" fgroup-class="col-md-6" value="{{$dadosConexao[0]['conexao_usuario']}}">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input>
 
                     <!-- Inscrição Municipal -->
-                    <x-adminlte-input name="senha" type="text" label="Senha de Acesso" fgroup-class="col-md-6" value="{{$dadosConexao[0]['conexao_senha']}}"></x-adminlte-input>
+                    <x-adminlte-input name="senha" type="text" label="Senha de Acesso" fgroup-class="col-md-6" value="{{$dadosConexao[0]['conexao_senha']}}">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 <div class="row">
                     <!-- Inscrição Municipal -->
-                    <x-adminlte-input name="token" type="text" label="Token de Acesso" fgroup-class="col-md-6" value="{{$dadosConexao[0]['conexao_token']}}"></x-adminlte-input>
+                    <x-adminlte-input name="token" type="text" label="Token de Acesso" fgroup-class="col-md-6" value="{{$dadosConexao[0]['conexao_token']}}">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-unlock"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input>
 
                     <!-- Inscrição Municipal -->
-                    <x-adminlte-input name="wsdl" type="text" label="Caminho URL / WSDL" fgroup-class="col-md-6" value="{{$dadosConexao[0]['conexao_wsdl']}}"></x-adminlte-input>
+                    <x-adminlte-input name="wsdl" type="text" label="Caminho URL / WSDL" fgroup-class="col-md-6" value="{{$dadosConexao[0]['conexao_wsdl']}}">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-route"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 <!-- /.card -->

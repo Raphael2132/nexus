@@ -96,6 +96,11 @@ $config = [
                     <x-slot name="label">
                         Cidade <span style="color:red;">*</span>
                     </x-slot>
+                    <x-slot name="prependSlot">
+                        <div class="input-group-text x-slot-nexus">
+                            <i class="fa-solid fa-city"></i>
+                        </div>
+                    </x-slot>
                 </x-adminlte-input>
 
                 <x-slot name="footerSlot">

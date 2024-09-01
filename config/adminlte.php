@@ -501,7 +501,7 @@ return [
 
         [
             'text' => 'Serviços',
-            'icon' => 'nav-icon fa-solid fa-file-pen',
+            'icon' => 'nav-icon fa-solid fa-file-invoice',
             'can' => 'is_emite_os',
             'submenu' => [
                 [

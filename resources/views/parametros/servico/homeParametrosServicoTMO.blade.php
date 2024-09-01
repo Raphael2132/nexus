@@ -17,7 +17,7 @@
 
 @section('content')
 <div class="col-md-4">
-    <x-adminlte-small-box title="Serviço" text="Tarefas de Mão de Obra" icon="fas fa-people-roof" theme="primary" url="{{route('parametrosSrvTMO.cadastro')}}" url-text="Cadastrar"/>
+    <x-adminlte-small-box title="Serviço" text="Tarefas de Mão de Obra" icon="fas fa-person-digging" theme="primary" url="{{route('parametrosSrvTMO.cadastro')}}" url-text="Cadastrar"/>
 </div>
 <div class="col-md-12">
     {{-- Setup data for datatables --}}

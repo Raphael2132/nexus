@@ -17,7 +17,7 @@
 
 @section('content')
 <div class="col-md-4">
-    <x-adminlte-small-box title="Setores" text="Empresa" icon="fas fa-folder-tree" theme="primary" url="{{route('parametrosSrvSetor.cadastro')}}" url-text="Cadastrar"/>
+    <x-adminlte-small-box title="Setores" text="Empresa" icon="fas fa-briefcase" theme="primary" url="{{route('parametrosSrvSetor.cadastro')}}" url-text="Cadastrar"/>
 </div>
 <div class="col-md-12">
     {{-- Setup data for datatables --}}

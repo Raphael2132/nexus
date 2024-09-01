@@ -48,6 +48,11 @@
                 <x-slot name="label">
                     Nome <span style="color:red;">*</span>
                 </x-slot>
+                <x-slot name="prependSlot">
+                    <div class="input-group-text x-slot-nexus">
+                        <i class="fa-solid fa-id-badge fa-lg"></i>
+                    </div>
+                </x-slot>
             </x-adminlte-input>
 
             <!-- CPF / CNPJ -->
@@ -55,13 +60,24 @@
                 <x-slot name="label">
                     CPF / CNPJ <span style="color:red;">*</span>
                 </x-slot>
+                <x-slot name="prependSlot">
+                    <div class="input-group-text x-slot-nexus">
+                        <i class="fa-regular fa-id-card"></i>
+                    </div>
+                </x-slot>
             </x-adminlte-input>
         </div>
 
         <div id="dadosPessoal">
             <div class="row">
                 <!-- RG -->
-                <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-4"></x-adminlte-input>
+                <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-4">
+                    <x-slot name="prependSlot">
+                        <div class="input-group-text x-slot-nexus">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                    </x-slot>
+                </x-adminlte-input>
 
                 @php
                     $config = Helper::dtRangeDataPtBR();
@@ -69,7 +85,7 @@
                 <!-- Data de Nascimento -->
                 <x-adminlte-date-range name="dataNascimento" label="Data de Nascimento" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
                     <x-slot name="prependSlot">
-                        <div class="input-group-text">
+                        <div class="input-group-text x-slot-nexus">
                             <i class="far fa-lg fa-calendar-alt"></i>
                         </div>
                     </x-slot>

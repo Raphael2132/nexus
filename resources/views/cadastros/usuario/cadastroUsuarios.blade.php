@@ -75,6 +75,11 @@
                     <x-slot name="label">
                         Nome <span style="color:red;">*</span>
                     </x-slot>
+                    <x-slot name="prependSlot">
+                        <div class="input-group-text x-slot-nexus">
+                            <i class="fa-solid fa-id-badge fa-lg"></i>
+                        </div>
+                    </x-slot>
                 </x-adminlte-input>
 
                 <!-- Senha -->
@@ -120,7 +125,7 @@
                             Email <span style="color:red;">*</span>
                         </x-slot>
                         <x-slot name="prependSlot">
-                            <div class="input-group-text">
+                            <div class="input-group-text x-slot-nexus">
                                 <i class="fa-solid fa-envelope"></i>
                             </div>
                         </x-slot>

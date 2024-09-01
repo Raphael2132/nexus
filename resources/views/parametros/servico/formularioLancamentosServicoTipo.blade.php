@@ -197,12 +197,22 @@
                         <x-slot name="label">
                             Percentual Máximo de Desconto <span style="color:red;">*</span>
                         </x-slot>
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-percent"></i>
+                            </div>
+                        </x-slot>
                     </x-adminlte-input>
 
                     <!-- Valor Máximo de Desconto -->
                     <x-adminlte-input name="valMaxDes" type="text" placeholder="0,00" value="{{$vmd_sel}}" fgroup-class="col-md-6">
                         <x-slot name="label">
                             Valor Máximo de Desconto <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-brazilian-real-sign"></i>
+                            </div>
                         </x-slot>
                     </x-adminlte-input>
                 </div>

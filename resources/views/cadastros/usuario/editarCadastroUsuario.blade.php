@@ -119,6 +119,11 @@
                                 <x-slot name="label">
                                     Nome do Usuário <span style="color:red;">*</span>
                                 </x-slot>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-id-badge fa-lg"></i>
+                                    </div>
+                                </x-slot>
                             </x-adminlte-input>
 
                             <!-- CPF -->
@@ -126,13 +131,24 @@
                                 <x-slot name="label">
                                     CPF <span style="color:red;">*</span>
                                 </x-slot>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-regular fa-id-card"></i>
+                                    </div>
+                                </x-slot>
                             </x-adminlte-input>
                         </div>
 
                         <div class="row">
 
                             <!-- RG -->
-                            <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosUsuario[0]['usuario_rg'] }}"></x-adminlte-input>
+                            <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosUsuario[0]['usuario_rg'] }}">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-id-card"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
 
                             @php
                                 $config = Helper::dtRangeDataPtBR();
@@ -146,7 +162,7 @@
                             <!-- Data de Nascimento -->
                             <x-adminlte-date-range name="dataNascimento" label="Data de Nascimento" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-calendar-alt"></i>
                                     </div>
                                 </x-slot>
@@ -232,7 +248,7 @@
                             <!-- Telefone Residencial -->
                             <x-adminlte-input name="telResidencial" type="text" label="Telefone Residencial" fgroup-class="col-md-6" value="{{$dadosUsuario[0]['usuario_tel_residencial'] }}">
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="fas fa-phone"></i>
                                     </div>
                                 </x-slot>
@@ -241,7 +257,7 @@
                             <!-- Telefone Celular -->
                             <x-adminlte-input name="telCelular" type="text" label="Telefone Celular" fgroup-class="col-md-6" value="{{$dadosUsuario[0]['usuario_tel_celular'] }}">
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-mobile-retro"></i>
                                     </div>
                                 </x-slot>
@@ -263,7 +279,7 @@
                                     Email <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-envelope"></i>
                                     </div>
                                 </x-slot>
@@ -382,7 +398,7 @@
                                                 CEP <span style="color:red;">*</span>
                                             </x-slot>
                                             <x-slot name="prependSlot">
-                                                <div class="input-group-text">
+                                                <div class="input-group-text x-slot-nexus">
                                                     <i class="fa-solid fa-location-dot"></i>
                                                 </div>
                                             </x-slot>
@@ -395,7 +411,7 @@
                                                     Logradouro <span style="color:red;">*</span>
                                                 </x-slot>
                                                 <x-slot name="prependSlot">
-                                                    <div class="input-group-text">
+                                                    <div class="input-group-text x-slot-nexus">
                                                         <i class="fa-solid fa-address-book"></i>
                                                     </div>
                                                 </x-slot>
@@ -407,7 +423,7 @@
                                                     Número <span style="color:red;">*</span>
                                                 </x-slot>
                                                 <x-slot name="prependSlot">
-                                                    <div class="input-group-text">
+                                                    <div class="input-group-text x-slot-nexus">
                                                         <i class="fa-solid fa-hashtag"></i>
                                                     </div>
                                                 </x-slot>
@@ -433,7 +449,7 @@
                                                     Cidade <span style="color:red;">*</span>
                                                 </x-slot>
                                                 <x-slot name="prependSlot">
-                                                    <div class="input-group-text">
+                                                    <div class="input-group-text x-slot-nexus">
                                                         <i class="fa-solid fa-city"></i>
                                                     </div>
                                                 </x-slot>

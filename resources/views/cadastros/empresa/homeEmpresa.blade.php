@@ -17,7 +17,12 @@
 
 @section('content')
 <div class="row">
-    <div class="col-md-8"> 
+    <div class="col-md-4">
+        <x-adminlte-small-box title="Cadastro" text="Empresa" icon="fas fa-building-circle-check" theme="primary" url="{{ route('empresa.cadastro') }}" url-text="Cadastrar Empresa"/>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12"> 
         {{-- Setup data for datatables --}}
         @php
         $heads = [
@@ -205,9 +210,6 @@
                 @endforeach
             </x-adminlte-datatable>
         </x-adminlte-card>
-    </div>
-    <div class="col-md-4"> 
-        <x-adminlte-small-box title="Cadastro" text="Empresa" icon="fas fa-user-plus" theme="primary" url="{{ route('empresa.cadastro') }}" url-text="Cadastrar Empresa"/>
     </div>
 </div>
 @stop

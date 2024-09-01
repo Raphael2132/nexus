@@ -100,7 +100,7 @@
                                     Hora Ini. Funcionamento <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -117,7 +117,7 @@
                                     Hora Fin. Funcionamento <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -142,7 +142,7 @@
                                     Hora Ini. Intervalo <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -159,7 +159,7 @@
                                     Hora Fin. Intervalo <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -186,7 +186,7 @@
                                     Hora Ini. Sábado <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -203,7 +203,7 @@
                                     Hora Fin. Sábado <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -228,7 +228,7 @@
                                     Hora Ini. Intervalo Sábado <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -245,7 +245,7 @@
                                     Hora Fin. Intervalo Sábado <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -272,7 +272,7 @@
                                     Hora Ini. Domingo <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -289,7 +289,7 @@
                                     Hora Fin. Domingo <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -314,7 +314,7 @@
                                     Hora Ini. Intervalo Domingo <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -331,7 +331,7 @@
                                     Hora Fin. Intervalo Domingo <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -451,7 +451,7 @@
                                                 Hora Ini. Turno <span style="color:red;">*</span>
                                             </x-slot>
                                             <x-slot name="appendSlot">
-                                                <div class="input-group-text">
+                                                <div class="input-group-text x-slot-nexus">
                                                     <i class="far fa-lg fa-clock"></i>
                                                 </div>
                                             </x-slot>
@@ -467,7 +467,7 @@
                                                 Hora Fin. Turno <span style="color:red;">*</span>
                                             </x-slot>
                                             <x-slot name="appendSlot">
-                                                <div class="input-group-text">
+                                                <div class="input-group-text x-slot-nexus">
                                                     <i class="far fa-lg fa-clock"></i>
                                                 </div>
                                             </x-slot>

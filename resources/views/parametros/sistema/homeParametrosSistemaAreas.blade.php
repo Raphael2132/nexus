@@ -62,7 +62,7 @@
     </x-adminlte-card>
 </div>
 <div class="direito col-md-3">
-    <x-adminlte-small-box title="Áreas" text="Sistema" icon="fas fa-globe" theme="primary" url="{{route('parametrosSistemaAreas.cadastro')}}" url-text="Cadastrar"/>
+    <x-adminlte-small-box title="Áreas" text="Sistema" icon="fas fa-folder-tree" theme="primary" url="{{route('parametrosSistemaAreas.cadastro')}}" url-text="Cadastrar"/>
 </div>
 @stop
 

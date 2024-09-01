@@ -81,12 +81,22 @@
                         <x-slot name="label">
                             Numeração da NFS-e <span style="color:red;">*</span>
                         </x-slot>
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-hashtag"></i>
+                            </div>
+                        </x-slot>
                     </x-adminlte-input>
 
                     <!-- Série da NFS-e -->
                     <x-adminlte-input name="serieNFS" type="text" fgroup-class="col-md-6" value="{{$dadosEmissao[0]['parnfs_serie']}}">
                         <x-slot name="label">
                             Série da NFS-e <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-font"></i>
+                            </div>
                         </x-slot>
                     </x-adminlte-input>
                 </div>

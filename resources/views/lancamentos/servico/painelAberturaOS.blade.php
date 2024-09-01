@@ -1405,17 +1405,32 @@ $locPrtSrv = '';
                                 <x-slot name="label">
                                     Qtd. de Horas <span style="color:red;">*</span>
                                 </x-slot>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-clock-rotate-left fa-flip-horizontal"></i>
+                                    </div>
+                                </x-slot>
                             </x-adminlte-input>
                             <!-- Valor da Hora -->
                             <x-adminlte-input name="valUniHrTMO" type="text" value="{{$valUniHrTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4">
                                 <x-slot name="label">
                                     Valor Unitário <span style="color:red;">*</span>
                                 </x-slot>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-brazilian-real-sign"></i>
+                                    </div>
+                                </x-slot>
                             </x-adminlte-input>
                             <!-- Valor Total -->
                             <x-adminlte-input name="valTotHrTMO" type="text" value="{{$valTotHrTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4">
                                 <x-slot name="label">
                                     Valor Total <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-brazilian-real-sign"></i>
+                                    </div>
                                 </x-slot>
                             </x-adminlte-input>
                         </div>
@@ -1428,11 +1443,29 @@ $locPrtSrv = '';
                                 $valLiqTMO_sel = $glo_os_dadosServicoSelecionado[0]->srv_vtl;
                             @endphp
                             <!-- Quantidade de Hortas -->
-                            <x-adminlte-input name="perDesTMO" label="Percentual de Desconto" type="text" value="{{$perDesTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
+                            <x-adminlte-input name="perDesTMO" label="Percentual de Desconto" type="text" value="{{$perDesTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-percent"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
                             <!-- Valor da Hora -->
-                            <x-adminlte-input name="valDesTMO" label="Valor de Desconto" type="text" value="{{$valDesTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
+                            <x-adminlte-input name="valDesTMO" label="Valor de Desconto" type="text" value="{{$valDesTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-brazilian-real-sign"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
                             <!-- Valor Total -->
-                            <x-adminlte-input name="valLiqTMO" label="Valor Total Líquido" type="text" value="{{$valLiqTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
+                            <x-adminlte-input name="valLiqTMO" label="Valor Total Líquido" type="text" value="{{$valLiqTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-brazilian-real-sign"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
                         </div>
                         @endif
 
@@ -1493,7 +1526,7 @@ $locPrtSrv = '';
                                 <!-- Data da NF -->
                                 <x-adminlte-date-range name="dataNfTerceiroTMO" label="Data da NF" :config="$config_dt_nf" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
                                     <x-slot name="prependSlot">
-                                        <div class="input-group-text">
+                                        <div class="input-group-text x-slot-nexus">
                                             <i class="far fa-lg fa-calendar-alt"></i>
                                         </div>
                                     </x-slot>
@@ -1519,9 +1552,21 @@ $locPrtSrv = '';
                                 <x-adminlte-options :options="['1' => 'Valor', '2' => 'Percentual']" selected="{{$tipCustoTMO_sel}}"/>
                             </x-adminlte-select>
                             <!-- Valor do custo -->
-                            <x-adminlte-input name="valCustoTMO" label="Valor do Custo" type="text" value="{{$valCustoTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
+                            <x-adminlte-input name="valCustoTMO" label="Valor do Custo" type="text" value="{{$valCustoTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-brazilian-real-sign"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
                             <!-- Valor percentual do custo -->
-                            <x-adminlte-input name="perCustoTMO" label="Percentual do custo" type="text" value="{{$perCustoTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4"/>
+                            <x-adminlte-input name="perCustoTMO" label="Percentual do custo" type="text" value="{{$perCustoTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-percent"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
                         </div>
 
                         @if($glo_os_estagioAPP == "INCLUSAO_SERVICO")
@@ -1721,12 +1766,23 @@ $locPrtSrv = '';
                                 @endif 
 
                                 <!-- Grupo do serviço -->
-                                <x-adminlte-input name="qtdHrSrv" label="Tempo Serviço OS" type="text" value="{{$glo_os_dadosOS[0]->os_qtd_hr}}" placeholder="0.00" fgroup-class="col-md-2" disabled/>
+                                <x-adminlte-input name="qtdHrSrv" label="Tempo Serviço OS" type="text" value="{{$glo_os_dadosOS[0]->os_qtd_hr}}" placeholder="0.00" fgroup-class="col-md-2" disabled>
+                                    <x-slot name="prependSlot">
+                                        <div class="input-group-text x-slot-nexus">
+                                            <i class="fa-solid fa-clock-rotate-left fa-flip-horizontal"></i>
+                                        </div>
+                                    </x-slot>
+                                </x-adminlte-input>
 
                                 <!-- Grupo do serviço -->
                                 <x-adminlte-input name="qtdHoraOS" type="text" value="{{$glo_os_dadosOS[0]->os_qtd_hr_pre_ent}}" placeholder="0.00" fgroup-class="col-md-2">
                                     <x-slot name="label">
                                         Duração Prevista OS <span style="color:red;">*</span>
+                                    </x-slot>
+                                    <x-slot name="prependSlot">
+                                        <div class="input-group-text x-slot-nexus">
+                                            <i class="fa-solid fa-clock-rotate-left fa-flip-horizontal"></i>
+                                        </div>
                                     </x-slot>
                                 </x-adminlte-input>
 
@@ -2429,19 +2485,43 @@ $locPrtSrv = '';
                                         <tr>
                                             <td>
                                                 <!-- Grupo do serviço -->
-                                                <x-adminlte-input name="valBrutoOS" type="text" value="{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vlt)}}" placeholder="0,00" fgroup-class="col-md-12" igroup-size="sm" disabled/>
+                                                <x-adminlte-input name="valBrutoOS" type="text" value="{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vlt)}}" placeholder="0,00" fgroup-class="col-md-12" igroup-size="sm" disabled>
+                                                    <x-slot name="prependSlot">
+                                                        <div class="input-group-text x-slot-nexus">
+                                                            <i class="fa-solid fa-brazilian-real-sign"></i>
+                                                        </div>
+                                                    </x-slot>
+                                                </x-adminlte-input>
                                             </td>
                                             <td>
                                                 <!-- Grupo do serviço -->
-                                                <x-adminlte-input name="perDescontoOS" type="text" value="{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_per_des)}}" placeholder="0,00" fgroup-class="col-md-12" igroup-size="sm"/>
+                                                <x-adminlte-input name="perDescontoOS" type="text" value="{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_per_des)}}" placeholder="0,00" fgroup-class="col-md-12" igroup-size="sm">
+                                                    <x-slot name="prependSlot">
+                                                        <div class="input-group-text x-slot-nexus">
+                                                            <i class="fa-solid fa-percent"></i>
+                                                        </div>
+                                                    </x-slot>
+                                                </x-adminlte-input>
                                             </td>
                                             <td>
                                                 <!-- Grupo do serviço -->
-                                                <x-adminlte-input name="valDescontoOS" type="text" value="{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_val_des)}}" placeholder="0,00" fgroup-class="col-md-12" igroup-size="sm"/>
+                                                <x-adminlte-input name="valDescontoOS" type="text" value="{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_val_des)}}" placeholder="0,00" fgroup-class="col-md-12" igroup-size="sm">
+                                                    <x-slot name="prependSlot">
+                                                        <div class="input-group-text x-slot-nexus">
+                                                            <i class="fa-solid fa-brazilian-real-sign"></i>
+                                                        </div>
+                                                    </x-slot>
+                                                </x-adminlte-input>
                                             </td>
                                             <td>
                                                 <!-- Grupo do serviço -->
-                                                <x-adminlte-input name="valLiquidoOS" type="text" value="{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vlt)}}" placeholder="0,00" fgroup-class="col-md-12" igroup-size="sm" disabled/>
+                                                <x-adminlte-input name="valLiquidoOS" type="text" value="{{Helper::formataValorMonetario($glo_os_dadosOS[0]->os_vlt)}}" placeholder="0,00" fgroup-class="col-md-12" igroup-size="sm" disabled>
+                                                    <x-slot name="prependSlot">
+                                                        <div class="input-group-text x-slot-nexus">
+                                                            <i class="fa-solid fa-brazilian-real-sign"></i>
+                                                        </div>
+                                                    </x-slot>
+                                                </x-adminlte-input>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -3570,10 +3650,12 @@ $locPrtSrv = '';
                 $("#valCustoTMO").prop('disabled', false);
                 $("#perCustoTMO").hide();
                 $('label[for="perCustoTMO"]').hide();
+                $("#perCustoTMO").closest('.input-group').find('.x-slot-nexus').hide();
             }else{
                 $("#valCustoTMO").prop('disabled', true);
                 $("#perCustoTMO").show();
                 $('label[for="perCustoTMO"]').show();
+                $("#perCustoTMO").closest('.input-group').find('.x-slot-nexus').show();
             }
         }
 
@@ -3780,12 +3862,14 @@ $locPrtSrv = '';
                     $("#perCustoTMO").val('0.00');
                     $("#perCustoTMO").hide();
                     $('label[for="perCustoTMO"]').hide();
+                    $("#perCustoTMO").closest('.input-group').find('.x-slot-nexus').hide();
                 }else{
                     $("#valCustoTMO").prop('disabled', true);
                     $("#valCustoTMO").val('');
                     $("#perCustoTMO").val('');
                     $("#perCustoTMO").show();
                     $('label[for="perCustoTMO"]').show();
+                    $("#perCustoTMO").closest('.input-group').find('.x-slot-nexus').show();
                 }
             });
 

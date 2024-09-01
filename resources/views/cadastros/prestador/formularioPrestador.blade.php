@@ -66,12 +66,22 @@
                         <x-slot name="label">
                             Nome do Prestador <span style="color:red;">*</span>
                         </x-slot>
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-id-badge fa-lg"></i>
+                            </div>
+                        </x-slot>
                     </x-adminlte-input>
                     
                     <!-- Descrição -->
                     <x-adminlte-input name="cpfPrestador" type="text" value="" fgroup-class="col-md-4">
                         <x-slot name="label">
                             CPF <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-regular fa-id-card"></i>
+                            </div>
                         </x-slot>
                     </x-adminlte-input>
                 </div>
@@ -138,7 +148,7 @@
                             Hora Ini. Intervalo <span style="color:red;">*</span>
                         </x-slot>
                         <x-slot name="appendSlot">
-                            <div class="input-group-text">
+                            <div class="input-group-text x-slot-nexus">
                                 <i class="far fa-lg fa-clock"></i>
                             </div>
                         </x-slot>
@@ -149,7 +159,7 @@
                             Hora Fin. Intervalo <span style="color:red;">*</span>
                         </x-slot>
                         <x-slot name="appendSlot">
-                            <div class="input-group-text">
+                            <div class="input-group-text x-slot-nexus">
                                 <i class="far fa-lg fa-clock"></i>
                             </div>
                         </x-slot>
@@ -170,7 +180,7 @@
                             Hora Ini. Intervalo Sábado <span style="color:red;">*</span>
                         </x-slot>
                         <x-slot name="appendSlot">
-                            <div class="input-group-text">
+                            <div class="input-group-text x-slot-nexus">
                                 <i class="far fa-lg fa-clock"></i>
                             </div>
                         </x-slot>
@@ -181,7 +191,7 @@
                             Hora Fin. Intervalo Sábado <span style="color:red;">*</span>
                         </x-slot>
                         <x-slot name="appendSlot">
-                            <div class="input-group-text">
+                            <div class="input-group-text x-slot-nexus">
                                 <i class="far fa-lg fa-clock"></i>
                             </div>
                         </x-slot>
@@ -203,7 +213,7 @@
                             Hora Ini. Intervalo Domingo <span style="color:red;">*</span>
                         </x-slot>
                         <x-slot name="appendSlot">
-                            <div class="input-group-text">
+                            <div class="input-group-text x-slot-nexus">
                                 <i class="far fa-lg fa-clock"></i>
                             </div>
                         </x-slot>
@@ -215,7 +225,7 @@
                             Hora Fin. Intervalo Domingo <span style="color:red;">*</span>
                         </x-slot>
                         <x-slot name="appendSlot">
-                            <div class="input-group-text">
+                            <div class="input-group-text x-slot-nexus">
                                 <i class="far fa-lg fa-clock"></i>
                             </div>
                         </x-slot>
@@ -300,6 +310,11 @@
                                 <x-slot name="label">
                                     Nome <span style="color:red;">*</span>
                                 </x-slot>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-id-badge fa-lg"></i>
+                                    </div>
+                                </x-slot>
                             </x-adminlte-input>
 
                             <!-- CPF / CNPJ -->
@@ -307,12 +322,23 @@
                                 <x-slot name="label">
                                     CPF <span style="color:red;">*</span>
                                 </x-slot>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-regular fa-id-card"></i>
+                                    </div>
+                                </x-slot>
                             </x-adminlte-input>
                         </div>
 
                         <div class="row">
                             <!-- RG -->
-                            <x-adminlte-input name="rgPrestador" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosPrestador[0]['prestador_rg'] }}"></x-adminlte-input>
+                            <x-adminlte-input name="rgPrestador" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosPrestador[0]['prestador_rg'] }}">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-id-card"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
 
                             @php
                                 $config = Helper::dtRangeDataPtBR();
@@ -326,7 +352,7 @@
                             <!-- Data de Nascimento -->
                             <x-adminlte-date-range name="dataNascimento" label="Data de Nascimento" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
                                 <x-slot name="prependSlot">
-                                <div class="input-group-text">
+                                <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-calendar-alt"></i>
                                     </div>
                                 </x-slot>
@@ -374,7 +400,7 @@
                                     Data de Admissão <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="prependSlot">
-                                <div class="input-group-text">
+                                <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-calendar-alt"></i>
                                     </div>
                                 </x-slot>
@@ -384,7 +410,7 @@
                             <!-- Data de Demissao -->
                             <x-adminlte-date-range name="dataDemissao" label="Data de Demissão" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-4">
                                 <x-slot name="prependSlot">
-                                <div class="input-group-text">
+                                <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-calendar-alt"></i>
                                     </div>
                                 </x-slot>
@@ -433,6 +459,11 @@
                                     Código de Usuário do Sistema <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-adminlte-options :options="$array_opt_usu" empty-option="Selecione..." selected="{{$usuario}}"/>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-passport fa-lg"></i>
+                                    </div>
+                                </x-slot>
                             </x-adminlte-select>
                         </div>
 
@@ -537,7 +568,7 @@
                                     Hora Ini. Intervalo <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -552,7 +583,7 @@
                                     Hora Fin. Intervalo <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -577,7 +608,7 @@
                                     Hora Ini. Intervalo Sábado <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -592,7 +623,7 @@
                                     Hora Fin. Intervalo Sábado <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -616,7 +647,7 @@
                                     Hora Ini. Intervalo Domingo <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -631,7 +662,7 @@
                                     Hora Fin. Intervalo Domingo <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="appendSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="far fa-lg fa-clock"></i>
                                     </div>
                                 </x-slot>
@@ -664,7 +695,7 @@
                                     Email <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-envelope"></i>
                                     </div>
                                 </x-slot>
@@ -675,7 +706,7 @@
                             <!-- Telefone Residencial -->
                             <x-adminlte-input name="telResidencial" type="text" label="Telefone Residencial" fgroup-class="col-md-4" value="{{$dadosPrestador[0]['prestador_tel_residencial'] }}">
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="fas fa-phone"></i>
                                     </div>
                                 </x-slot>
@@ -684,7 +715,7 @@
                             <!-- Telefone Celular -->
                             <x-adminlte-input name="telCelular" type="text" label="Telefone Celular" fgroup-class="col-md-4" value="{{$dadosPrestador[0]['prestador_tel_celular'] }}">
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-mobile-retro"></i>
                                     </div>
                                 </x-slot>
@@ -795,7 +826,7 @@
                                                 CEP <span style="color:red;">*</span>
                                             </x-slot>
                                             <x-slot name="prependSlot">
-                                                <div class="input-group-text">
+                                                <div class="input-group-text x-slot-nexus">
                                                     <i class="fa-solid fa-location-dot"></i>
                                                 </div>
                                             </x-slot>
@@ -808,7 +839,7 @@
                                                     Logradouro <span style="color:red;">*</span>
                                                 </x-slot>
                                                 <x-slot name="prependSlot">
-                                                    <div class="input-group-text">
+                                                    <div class="input-group-text x-slot-nexus">
                                                         <i class="fa-solid fa-address-book"></i>
                                                     </div>
                                                 </x-slot>
@@ -820,7 +851,7 @@
                                                     Número <span style="color:red;">*</span>
                                                 </x-slot>
                                                 <x-slot name="prependSlot">
-                                                    <div class="input-group-text">
+                                                    <div class="input-group-text x-slot-nexus">
                                                         <i class="fa-solid fa-hashtag"></i>
                                                     </div>
                                                 </x-slot>
@@ -846,7 +877,7 @@
                                                     Cidade <span style="color:red;">*</span>
                                                 </x-slot>
                                                 <x-slot name="prependSlot">
-                                                    <div class="input-group-text">
+                                                    <div class="input-group-text x-slot-nexus">
                                                         <i class="fa-solid fa-city"></i>
                                                     </div>
                                                 </x-slot>

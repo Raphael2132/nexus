@@ -373,31 +373,31 @@
                     </div>
                     <div class="row">
                         <!-- Descrição do serviço -->
-                        <x-adminlte-textarea name="descSrv" rows=4 igroup-size="sm" label-class="text-dark" placeholder="Escreva a descrição do serviço..." fgroup-class="col-md-4" >
+                        <x-adminlte-textarea name="descSrv" rows=4 label-class="text-dark" placeholder="Escreva a descrição do serviço..." fgroup-class="col-md-4">
                             <x-slot name="label">
                                 Descrição dos Serviços Prestados <span style="color:red;">*</span>
                             </x-slot>
                             <x-slot name="prependSlot">
                                 <div class="input-group-text x-slot-nexus">
-                                    <i class="fas fa-lg fa-file-alt text-white"></i>
+                                    <i class="fas fa-lg fa-file-alt"></i>
                                 </div>
                             </x-slot>
                         </x-adminlte-textarea>
                         
                         <!-- Informações Complementares -->
-                        <x-adminlte-textarea name="infoCmp" label="Informações Complementares" rows=4 igroup-size="sm" label-class="text-dark" placeholder="Escreva as informações complementares..." fgroup-class="col-md-4" >
+                        <x-adminlte-textarea name="infoCmp" label="Informações Complementares" rows=4 label-class="text-dark" placeholder="Escreva as informações complementares..." fgroup-class="col-md-4">
                             <x-slot name="prependSlot">
                                 <div class="input-group-text x-slot-nexus">
-                                    <i class="fas fa-lg fa-file-alt text-white"></i>
+                                    <i class="fas fa-lg fa-file-alt"></i>
                                 </div>
                             </x-slot>
                         </x-adminlte-textarea>
                         
                         <!-- Informações Complementares -->
-                        <x-adminlte-textarea name="obsNFS" label="Observações da NFS-e" rows=4 igroup-size="sm" label-class="text-dark" placeholder="Escreva as observações..." fgroup-class="col-md-4" >
+                        <x-adminlte-textarea name="obsNFS" label="Observações da NFS-e" rows=4 label-class="text-dark" placeholder="Escreva as observações..." fgroup-class="col-md-4">
                             <x-slot name="prependSlot">
                                 <div class="input-group-text x-slot-nexus">
-                                    <i class="fas fa-lg fa-file-alt text-white"></i>
+                                    <i class="fas fa-lg fa-file-alt"></i>
                                 </div>
                             </x-slot>
                         </x-adminlte-textarea>
@@ -408,22 +408,63 @@
                             <x-slot name="label">
                                 Valor da Nota Fiscal <span style="color:red;">*</span>
                             </x-slot>
+                            <x-slot name="prependSlot">
+                                <div class="input-group-text x-slot-nexus">
+                                    <i class="fa-solid fa-brazilian-real-sign"></i>
+                                </div>
+                            </x-slot>
                         </x-adminlte-input>
                     </div>
                     <div class="row">
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="inssRet" label="Valor do INSS Retido" type="text" placeholder="0,00" fgroup-class="col-md-2"/>
+                        <x-adminlte-input name="inssRet" label="Valor do INSS Retido" type="text" placeholder="0,00" fgroup-class="col-md-2">
+                            <x-slot name="prependSlot">
+                                <div class="input-group-text x-slot-nexus">
+                                    <i class="fa-solid fa-brazilian-real-sign"></i>
+                                </div>
+                            </x-slot>
+                        </x-adminlte-input>
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="irrfRet" label="Valor do IRRF Retido" type="text" placeholder="0,00" fgroup-class="col-md-2"/>
+                        <x-adminlte-input name="irrfRet" label="Valor do IRRF Retido" type="text" placeholder="0,00" fgroup-class="col-md-2">
+                            <x-slot name="prependSlot">
+                                <div class="input-group-text x-slot-nexus">
+                                    <i class="fa-solid fa-brazilian-real-sign"></i>
+                                </div>
+                            </x-slot>
+                        </x-adminlte-input>
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="csllRet" label="Valor do CSLL Retido" type="text" placeholder="0,00" fgroup-class="col-md-2"/>
+                        <x-adminlte-input name="csllRet" label="Valor do CSLL Retido" type="text" placeholder="0,00" fgroup-class="col-md-2">
+                            <x-slot name="prependSlot">
+                                <div class="input-group-text x-slot-nexus">
+                                    <i class="fa-solid fa-brazilian-real-sign"></i>
+                                </div>
+                            </x-slot>
+                        </x-adminlte-input>
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="pisRet" label="Valor do PIS Retido" type="text" placeholder="0,00" fgroup-class="col-md-2"/>
+                        <x-adminlte-input name="pisRet" label="Valor do PIS Retido" type="text" placeholder="0,00" fgroup-class="col-md-2">
+                            <x-slot name="prependSlot">
+                                <div class="input-group-text x-slot-nexus">
+                                    <i class="fa-solid fa-brazilian-real-sign"></i>
+                                </div>
+                            </x-slot>
+                        </x-adminlte-input>
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="cofinsRet" label="Valor do COFINS Retido" type="text" placeholder="0,00" fgroup-class="col-md-2"/>
+                        <x-adminlte-input name="cofinsRet" label="Valor do COFINS Retido" type="text" placeholder="0,00" fgroup-class="col-md-2">
+                            <x-slot name="prependSlot">
+                                <div class="input-group-text x-slot-nexus">
+                                    <i class="fa-solid fa-brazilian-real-sign"></i>
+                                </div>
+                            </x-slot>
+                        </x-adminlte-input>
                         <!-- Valor da NFS -->
-                         <!-- por hora não vai usar
-                        <x-adminlte-input name="outRet" label="Outras Retenções" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-2"/>
+                        <!-- por hora não vai usar
+                        <x-adminlte-input name="outRet" label="Outras Retenções" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-2">
+                            <x-slot name="prependSlot">
+                                <div class="input-group-text x-slot-nexus">
+                                    <i class="fa-solid fa-brazilian-real-sign"></i>
+                                </div>
+                            </x-slot>
+                        </x-adminlte-input>
                         -->
                     </div>
                     <div class="row">
@@ -432,15 +473,31 @@
                             <x-slot name="label">
                                 Valor da Base de Cálculo <span style="color:red;">*</span>
                             </x-slot>
+                            <x-slot name="prependSlot">
+                                <div class="input-group-text x-slot-nexus">
+                                    <i class="fa-solid fa-brazilian-real-sign"></i>
+                                </div>
+                            </x-slot>
                         </x-adminlte-input>
                         <!-- Valor da NFS -->
                         <x-adminlte-input name="aliqISS" type="text" placeholder="0,00" value="{{$dataParSrvEmp[0]->parsrv_alq_iss}}" fgroup-class="col-md-4">
                             <x-slot name="label">
                                 Aliquota de ISS <span style="color:red;">*</span>
                             </x-slot>
+                            <x-slot name="prependSlot">
+                                <div class="input-group-text x-slot-nexus">
+                                    <i class="fa-solid fa-percent"></i>
+                                </div>
+                            </x-slot>
                         </x-adminlte-input>
                         <!-- Valor da NFS -->
-                        <x-adminlte-input name="vlrImpRec" label="Valor do Imposto a Recolher" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-4"/>
+                        <x-adminlte-input name="vlrImpRec" label="Valor do Imposto a Recolher" type="text" placeholder="0,00" value="0.00" fgroup-class="col-md-4">
+                            <x-slot name="prependSlot">
+                                <div class="input-group-text x-slot-nexus">
+                                    <i class="fa-solid fa-brazilian-real-sign"></i>
+                                </div>
+                            </x-slot>
+                        </x-adminlte-input>
                     </div>
                 </x-adminlte-card>
                 <x-slot name="footerSlot">

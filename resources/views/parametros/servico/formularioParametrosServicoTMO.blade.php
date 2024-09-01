@@ -294,6 +294,11 @@
                         <x-slot name="label">
                             Quantidade de Horas <span style="color:red;">*</span>
                         </x-slot>
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-clock-rotate-left fa-flip-horizontal"></i>
+                            </div>
+                        </x-slot>
                     </x-adminlte-input>
 
                     <!-- Valor da hora da tarefa -->
@@ -301,12 +306,22 @@
                         <x-slot name="label">
                             Valor da Hora <span style="color:red;">*</span>
                         </x-slot>
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-brazilian-real-sign"></i>
+                            </div>
+                        </x-slot>
                     </x-adminlte-input>
 
                     <!-- Valor total da tarefa -->
                     <x-adminlte-input name="valTot" type="text" value="{{$totTMO_sel}}" placeholder="0,00" fgroup-class="col-md-4">
                         <x-slot name="label">
                             Valor Total da TMO <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-brazilian-real-sign"></i>
+                            </div>
                         </x-slot>
                     </x-adminlte-input>
                 </div>
@@ -375,9 +390,21 @@
                         }
                     @endphp
                     <!--Valor do custo gerencial de terceiros -->
-                    <x-adminlte-input name="valCGT" label="Valor do Custo" type="text" value="{{$valCGT_sel}}" placeholder="0,00" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="valCGT" label="Valor do Custo" type="text" value="{{$valCGT_sel}}" placeholder="0,00" fgroup-class="col-md-6">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-brazilian-real-sign"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input>
                     <!-- Porcentagem do custo de terceiros -->
-                    <x-adminlte-input name="perCGT" label="Porcentagem do Custo" type="text" value="{{$perCGT_sel}}" placeholder="0,00" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="perCGT" label="Porcentagem do Custo" type="text" value="{{$perCGT_sel}}" placeholder="0,00" fgroup-class="col-md-6">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="fa-solid fa-percent"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>                                
 
                 <!-- /.card -->

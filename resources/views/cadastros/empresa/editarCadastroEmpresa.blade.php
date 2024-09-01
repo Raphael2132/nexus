@@ -109,7 +109,7 @@
                                     Email <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-envelope"></i>
                                     </div>
                                 </x-slot>
@@ -118,7 +118,7 @@
                             <!-- Telefone Celular -->
                             <x-adminlte-input name="telCelular" type="text" label="Telefone Celular" fgroup-class="col-md-3" value="{{$dadosEmpresa[0]['empresa_tel_celular'] }}">
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-mobile-retro"></i>
                                     </div>
                                 </x-slot>
@@ -127,7 +127,7 @@
                             <!-- Telefone Comercial -->
                             <x-adminlte-input name="telComercial" type="text" label="Telefone Comercial" fgroup-class="col-md-3" value="{{$dadosEmpresa[0]['empresa_tel_comercial'] }}">
                                 <x-slot name="prependSlot">
-                                    <div class="input-group-text">
+                                    <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-shop"></i>
                                     </div>
                                 </x-slot>
@@ -239,7 +239,7 @@
                                                 CEP <span style="color:red;">*</span>
                                             </x-slot>
                                             <x-slot name="prependSlot">
-                                                <div class="input-group-text">
+                                                <div class="input-group-text x-slot-nexus">
                                                     <i class="fa-solid fa-location-dot"></i>
                                                 </div>
                                             </x-slot>
@@ -252,7 +252,7 @@
                                                     Logradouro <span style="color:red;">*</span>
                                                 </x-slot>
                                                 <x-slot name="prependSlot">
-                                                    <div class="input-group-text">
+                                                    <div class="input-group-text x-slot-nexus">
                                                         <i class="fa-solid fa-address-book"></i>
                                                     </div>
                                                 </x-slot>
@@ -264,7 +264,7 @@
                                                     Número <span style="color:red;">*</span>
                                                 </x-slot>
                                                 <x-slot name="prependSlot">
-                                                    <div class="input-group-text">
+                                                    <div class="input-group-text x-slot-nexus">
                                                         <i class="fa-solid fa-hashtag"></i>
                                                     </div>
                                                 </x-slot>
@@ -290,7 +290,7 @@
                                                     Cidade <span style="color:red;">*</span>
                                                 </x-slot>
                                                 <x-slot name="prependSlot">
-                                                    <div class="input-group-text">
+                                                    <div class="input-group-text x-slot-nexus">
                                                         <i class="fa-solid fa-city"></i>
                                                     </div>
                                                 </x-slot>
