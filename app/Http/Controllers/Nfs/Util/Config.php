@@ -72,17 +72,17 @@ class Config{
             
             echo "O servidor está rodando no localhost.";
 
-            $this->path = "/home";
-            $this->pathDownload = '/home/'.$cnpj.'/file/doc/nfsxml/envio/';
-            $this->pathDownloadRetorno = '/home/'.$cnpj.'/file/doc/nfsxml/retorno/';
+            $this->path = $_SERVER['DOCUMENT_ROOT'];
+            $this->pathDownload = $_SERVER['DOCUMENT_ROOT'].'/'.$cnpj.'/file/doc/nfsxml/envio/';
+            $this->pathDownloadRetorno = $_SERVER['DOCUMENT_ROOT'].'/'.$cnpj.'/file/doc/nfsxml/retorno/';
         
         } else {
             
             echo "O servidor está rodando em um IP: " . $serverName;
 
-            $this->path = $_SERVER['DOCUMENT_ROOT'];
-            $this->pathDownload = $_SERVER['DOCUMENT_ROOT'].'/'.$cnpj.'/file/doc/nfsxml/envio/';
-            $this->pathDownloadRetorno = $_SERVER['DOCUMENT_ROOT'].'/'.$cnpj.'/file/doc/nfsxml/retorno/';
+            $this->path = "/home";
+            $this->pathDownload = '/home/'.$cnpj.'/file/doc/nfsxml/envio/';
+            $this->pathDownloadRetorno = '/home/'.$cnpj.'/file/doc/nfsxml/retorno/';
         }
 
         echo "<br> Document Root: path: ".$_SERVER['DOCUMENT_ROOT']."<br>";
