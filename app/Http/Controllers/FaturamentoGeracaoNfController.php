@@ -73,8 +73,6 @@ class FaturamentoGeracaoNfController extends Controller
             $nfsxml = new Nfsxml($empresa, $nota->nfhdr_num);
             $nfsxml->emitirNFS();
 
-            $pathXML = $nfsxml->nomeArquivo;
-
             $dadosNF = DB::table('faturamento_nf_headers')->where('nfhdr_emp', $empresa)->where('nfhdr_num', $nota->nfhdr_num)->get();
 
             $dataGeracaoNF = date('Y-m-d');
