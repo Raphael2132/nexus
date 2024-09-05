@@ -88,7 +88,7 @@ Route::get('/logo/{cnpj}/{filename}', function ($cnpj, $filename) {
 // Icone da Empresa Logada
 Route::get('/icone/{cnpj}/{filename}', function ($cnpj, $filename) {
     
-    $filePath = '/home/' . $cnpj . '/file/img/' . $filename . '_logo_ico.png';
+    $filePath = '/home/' . $cnpj . '/file/img/' . $filename;
 
     if (File::exists($filePath)) {
         $file = File::get($filePath);
