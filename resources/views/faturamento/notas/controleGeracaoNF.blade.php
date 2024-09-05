@@ -68,7 +68,24 @@
                             @php 
                                 $dataNfsXML = DB::table('faturamento_nfs_xml_envios')->where('nfsenv_emp', $empresa)->where('nfsenv_nfhdr_num', $nota->nfhdr_num)->where('nfsenv_num', $nota->nfhdr_num_nf)->first();
 
-                                $pathXML = $dataNfsXML->nfsenv_cnpj.'/file/doc/nfsxml/envio/'.$dataNfsXML->nfsenv_nom_arq_env;
+                                // Obter o nome do host do servidor
+                                if(!empty($_SERVER['SERVER_NAME'])){
+                                    $serverName = $_SERVER['SERVER_NAME'];
+                                }else{
+                                    $serverName = '';
+                                }
+
+                                // Verificar se está rodando no localhost
+                                if ($serverName == '127.0.0.1' || stripos($serverName, 'localhost') !== false) {
+                                    
+                                    $pathXML = $dataNfsXML->nfsenv_cnpj.'/file/doc/nfsxml/envio/'.$dataNfsXML->nfsenv_nom_arq_env;
+                                    $servidor = "localhost";
+                                
+                                } else {
+                                    
+                                    $pathXML = '/home/$dataNfsXML->nfsenv_cnpj.'/file/doc/nfsxml/envio/'.$dataNfsXML->nfsenv_nom_arq_env;
+                                    $servidor = "vps";
+                                }                                
                                 
                                 if($nota->nfhdr_ori == '02'){
                                     $origemLabel = 'ES';
@@ -125,7 +142,11 @@
                                 </td>
                                 <td style="border: 0px; width: 10%;">
                                     <p class="text-sm">Arquivo
+                                        @if($servidor == "localhost")
                                         <b class="d-block"><a href="{{asset($pathXML)}}" target="_blank">XML</a></b>
+                                        @else
+                                        <b class="d-block"><a href="{{$pathXML}}" target="_blank">XML</a></b>
+                                        @endif
                                     </p>
                                 </td>
                             </tr>

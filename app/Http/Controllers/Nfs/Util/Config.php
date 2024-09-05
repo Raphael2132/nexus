@@ -70,7 +70,7 @@ class Config{
         // Verificar se está rodando no localhost
         if ($serverName == '127.0.0.1' || stripos($serverName, 'localhost') !== false) {
             
-            echo "O servidor está rodando no localhost.";
+            //echo "O servidor está rodando no localhost.";
 
             $this->path = $_SERVER['DOCUMENT_ROOT'];
             $this->pathDownload = $_SERVER['DOCUMENT_ROOT'].'/'.$cnpj.'/file/doc/nfsxml/envio/';
@@ -78,16 +78,16 @@ class Config{
         
         } else {
             
-            echo "O servidor está rodando em um IP: " . $serverName;
+            //echo "O servidor está rodando em um IP: " . $serverName;
 
             $this->path = "/home";
             $this->pathDownload = '/home/'.$cnpj.'/file/doc/nfsxml/envio/';
             $this->pathDownloadRetorno = '/home/'.$cnpj.'/file/doc/nfsxml/retorno/';
         }
 
-        echo "<br> Document Root: path: ".$_SERVER['DOCUMENT_ROOT']."<br>";
-        echo "<br> Teste setXMLPath: path D: ".$this->path.' / pathDownload D: '.$this->pathDownload."<br>";
-        echo "<br> Teste setXMLPath: path R: ".$this->path.' / pathDownload R: '.$this->pathDownloadRetorno."<br>";exit;
+        //echo "<br> Document Root: path: ".$_SERVER['DOCUMENT_ROOT']."<br>";
+        //echo "<br> Teste setXMLPath: path D: ".$this->path.' / pathDownload D: '.$this->pathDownload."<br>";
+        //echo "<br> Teste setXMLPath: path R: ".$this->path.' / pathDownload R: '.$this->pathDownloadRetorno."<br>";
     }
 
     /* Verifica se o diretório onde é gravado o XML para download existe e caso nõa exista cria-lo */
