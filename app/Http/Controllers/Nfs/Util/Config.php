@@ -61,7 +61,7 @@ class Config{
         //echo "<br> Entrei no setXMLPath <br>";
 
         // Obter o nome do host do servidor
-        /*if(!empty($_SERVER['SERVER_NAME'])){
+        if(!empty($_SERVER['SERVER_NAME'])){
             $serverName = $_SERVER['SERVER_NAME'];
         }else{
             $serverName = '';
@@ -75,7 +75,8 @@ class Config{
         } else {
             
             echo "O servidor está rodando em um IP: " . $serverName;
-        }*/
+        }
+        exit;
 
         $this->path = $_SERVER['DOCUMENT_ROOT'];//Por hora vai no root quando estiver em servidor ver como vai ficar
         $this->pathDownload = $_SERVER['DOCUMENT_ROOT'].'/'.$cnpj.'/file/doc/nfsxml/envio/';

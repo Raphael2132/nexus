@@ -53,6 +53,9 @@
                 $data_cli = DB::table('cadastro_clientes')->where('cliente_codigo', $header->nfhdr_cli)->get();
                 $dadosXmlNfsEnv = DB::table('faturamento_nfs_xml_envios')->where('nfsenv_emp',$header->nfhdr_emp)->where('nfsenv_num',$header->nfhdr_num_nf)->get();
                 
+                $moduloRPS = DB::table('parametros_sistema_modulos')->where('modulo_empresa_codigo', $header->nfhdr_emp)->first();
+                $geraRPS = DB::table('parametros_fat_nfs')->where('parnfs_empresa', $header->nfhdr_emp)->first();
+
                 if(!empty($header->nfhdr_dt_nf)){
                     $dataNF = Helper::formataData($header->nfhdr_dt_nf);
                 }else{
@@ -86,8 +89,14 @@
                 @else
                 <td class="max-width-sts"><span class="badge badge-info">Geração Iniciada</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'nfReemissao' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
                 @endif
-                @if($stsNF != 4)
+                @if($stsNF == 3)
                 <td class="d-flex justify-content-center"><a class="btn btn-outline-nexus btn-sm" href="{{route('impresaoNF.nfsePDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num])}}" target="_blank">Abrir NFS-e</a></td>
+                @elseif($stsNF == 2 || $stsNF == 1)
+                    @if($moduloRPS->modulo_emissao_rps == "S" && $geraRPS->parnfs_impressao_rps == "S")
+                    <td class="d-flex justify-content-center"><a class="btn btn-outline-nexus btn-sm" href="{{route('impresaoRPS.rpsPDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num])}}" target="_blank">Abrir RPS</a></td>
+                    @else
+                    <td></td>
+                    @endif
                 @else
                 <td></td>
                 @endif

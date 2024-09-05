@@ -23,6 +23,7 @@
 
 @php
 $heads = [
+    'OS',
     'Empresa',
     'Cliente',
     'OS / Data',
@@ -34,7 +35,17 @@ $config = [
     'lengthMenu' => [ 5, 10, 25, 50, 100],
     'pageLength' => 10,
     'language' => Helper::dataTableLangPtBR(),
-    'order' => [[0, 'asc'],[2, 'desc']],
+    'order' => [[1, 'asc'],[0, 'desc']],
+    'columns' => [
+        ['orderable' => false, 'visible' => false], // Esconder primeira coluna
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+    ],
+
 ];
 @endphp
 
@@ -55,6 +66,7 @@ $config = [
 
             @endphp
             <tr>
+                <td>{{ $os->os_nos }}</td>
                 <td>{{ $empresa }}</td>
                 <td>{{ $cliente }}</td>
                 <td><a href="{{route('situacaoOS.carregaOS', ['empresa' => $os->os_emp, 'cliente' => $os->os_cli, 'nos' => $os->os_nos, 'estagioAPP' => 'PRINCIPAL'])}}">{{ $os->os_nos.' - '.$data_os }}</a></td>

@@ -193,7 +193,7 @@
                             $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $nfs->nfs_emp)->get();
                         @endphp
                         <tr>
-                            <td>{{$nfs->nfs_nnfs.'-'.$nfs->nfs_snfs}}</td>
+                            <td>{{$nfs->nfs_nrps.'-'.$nfs->nfs_srps}}</td>
                             <td>{{$nfs->nfs_nfhdr_num_ped}}</td>
                             <td>{{$nfs->nfs_emp.' - '.$dataEmp[0]->empresa_nome}}</td>
                             <td>{{$nfs->nfs_cli.' - '.$nfs->nfs_nom_tom}}</td>

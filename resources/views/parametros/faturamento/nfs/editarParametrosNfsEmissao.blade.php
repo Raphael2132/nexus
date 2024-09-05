@@ -76,10 +76,10 @@
                 </div>
 
                 <div class="row">
-                    <!-- Número da NFS-e -->
+                    <!-- Número do RPS -->
                     <x-adminlte-input name="numeroNFS" type="number" fgroup-class="col-md-6" value="{{$dadosEmissao[0]['parnfs_numeracao']}}">
                         <x-slot name="label">
-                            Numeração da NFS-e <span style="color:red;">*</span>
+                            Numeração do RPS <span style="color:red;">*</span>
                         </x-slot>
                         <x-slot name="prependSlot">
                             <div class="input-group-text x-slot-nexus">
@@ -88,10 +88,10 @@
                         </x-slot>
                     </x-adminlte-input>
 
-                    <!-- Série da NFS-e -->
+                    <!-- Série do RPS -->
                     <x-adminlte-input name="serieNFS" type="text" fgroup-class="col-md-6" value="{{$dadosEmissao[0]['parnfs_serie']}}">
                         <x-slot name="label">
-                            Série da NFS-e <span style="color:red;">*</span>
+                            Série do RPS <span style="color:red;">*</span>
                         </x-slot>
                         <x-slot name="prependSlot">
                             <div class="input-group-text x-slot-nexus">
@@ -236,6 +236,39 @@ $(function () {
         Toast.fire({
             icon: "success",
             title: "{{ session('success') }}"
+        });
+    @endif
+
+    @if(Session::has('error'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Erro!!!",
+            text: "{{ session('error') }}",
+            icon: "error"
+        });
+    @endif
+
+    @if(Session::has('info'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Aviso!",
+            text: "{{ session('info') }}",
+            icon: "info",
+            customClass: {
+                icon: "no-before-icon",
+            }
+        });
+    @endif
+
+    @if(Session::has('success2'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Sucesso!",
+            text: "{{ session('success2') }}",
+            icon: "success",
+            customClass: {
+                icon: "no-before-icon",
+            }
         });
     @endif
 </script>

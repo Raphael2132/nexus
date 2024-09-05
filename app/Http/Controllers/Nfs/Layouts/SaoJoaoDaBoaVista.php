@@ -215,8 +215,8 @@ class SaoJoaoDaBoaVista{
                         </notaFiscal>
                     </nfeResposta>';
                 
-                /*
-                $xmlRetorno = '
+                
+                /*$xmlRetorno = '
                     <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
                     <nfeResposta>
                         <notaFiscal>
@@ -290,9 +290,10 @@ class SaoJoaoDaBoaVista{
                 $status = '2';
             }
 
+            /*
             if($numeroNota == 0){
                 $numeroNota = $numeroRps;
-            }
+            }*/
 
             $xmlRet = file_get_contents($pathRetorno);
 
@@ -344,6 +345,15 @@ class SaoJoaoDaBoaVista{
                 ]);
 
             }
+
+            //Atualiza o número da NFS-e Emitida pela prefeitura na tabela faturamento_nfs
+            DB::table('faturamento_nfs')
+            ->where('nfs_emp', $nfsxml->empresa)
+            ->where('nfs_nfhdr_num', $nfsxml->numControle)
+            ->where('nfs_nrps', $nfsxml->nfs->numero)
+            ->update([
+                'nfs_nnfs' => $numeroNota
+            ]);
 
         }else{
 

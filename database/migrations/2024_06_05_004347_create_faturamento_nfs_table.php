@@ -15,13 +15,14 @@ return new class extends Migration
             $table->id('nfs_id');
             $table->enum('nfs_sts',['G','E','C','I'])->default('I');//Status da NFS G - Gerada, E - Erro, C - Cancelada, I - Iniciada
             $table->string('nfs_emp',6);//Empresa emitente da nfs
-            $table->decimal('nfs_nnfs',9,0);//Número da nota fiscal de serviços
-            $table->string('nfs_snfs',5);//Série da nota fiscal de serviços
             $table->integer('nfs_nfhdr_num');//Número de controle da NF -> faturamento_nf_headers.nfhdr_num
+            $table->decimal('nfs_nrps',9,0);//Número do RPS
+            $table->string('nfs_srps',5);//Série do RPS
+            $table->decimal('nfs_nnfs',9,0)->nullable();//Número da nota fiscal de serviços atribuido pela prefeitura
             $table->integer('nfs_nfhdr_num_ped');//Número do pedido / OS -> faturamento_nf_headers.nfhdr_num_ped
             $table->string('nfs_cli',10);//Cliente da nfs
-            $table->date('nfs_dt_emi')->nullable();//Data da Emissão da NFS
-            $table->decimal('nfs_hr_emi',4,0)->default(0);//Hora da Emissão da NFS
+            $table->date('nfs_dt_emi')->nullable();//Data da Emissão da RPS/NFS
+            $table->decimal('nfs_hr_emi',4,0)->default(0);//Hora da Emissão da RPS/NFS
             $table->decimal('nfs_vlr_srv',15,2)->default(0);// Valor dos Servicos
             $table->decimal('nfs_vlr_dsc',15,2)->default(0);// Valor das Descontos 
             $table->decimal('nfs_vlr_ded',15,2)->default(0);// Valor das Deducoes 

@@ -2719,6 +2719,17 @@ $locPrtSrv = '';
                 <x-adminlte-button class="btn-nexus btn_orcamento" type="button" onclick="window.location='{{ route('painelOS.orcamentoOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Orçamento" theme="" icon="fa-solid fa-file-invoice-dollar"/>
                 <x-adminlte-button class="btn-nexus btn_encerra_os" type="button" onclick="window.location='{{ route('painelOS.encerraOS', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}'" label="Encerrar OS" theme="" icon="fa-solid fa-handshake"/>
 
+                @if($glo_os_estagioAPP == "TOTAIS_OS")
+                    <!-- Verifica se a empresa emite RPS -->
+                    @php 
+                        $moduloRPS = DB::table('parametros_sistema_modulos')->where('modulo_empresa_codigo', $glo_os_empresa)->first();
+                        $geraRPS = DB::table('parametros_fat_nfs')->where('parnfs_empresa', $glo_os_empresa)->first();
+                    @endphp
+                    @if($moduloRPS->modulo_emissao_rps == "S" && $geraRPS->parnfs_impressao_rps == "S")
+                    <x-adminlte-button class="btn-nexus btn_rpsPDF" type="button" label="Gerar RPS" theme="" icon="fa-solid fa-file-pdf"/>
+                    @endif
+                @endif
+
                 <x-adminlte-button class="btn-nexus btn_orcamentoPDF" type="button" onclick="window.open('{{ route('painelOS.orcamentoPDF', ['empresa' => $glo_os_empresa, 'numOS' => $glo_os_nos]) }}');" label="Gerar PDF" theme="" icon="fa-solid fa-file-pdf"/>
 
                 <x-adminlte-button class="btn-nexus btn_incluir_requisicao" type="button" onclick="document.querySelector('.btn_hide_incluir_requisicao').click()" label="Incluir Requisição" theme="" icon="fa-solid fa-plus"/>
@@ -2913,6 +2924,7 @@ $locPrtSrv = '';
             $(".btn_troca_cliente").hide();
             $(".btn_liberar_desconto_tmo").hide();  
             $(".btn_aprovar_servicos").hide();
+            $(".btn_rpsPDF").hide();
             
             if(statusOS == 'F' || statusOS == 'C'){
                 $(".btn_previsao_entrega").hide();
@@ -2951,6 +2963,7 @@ $locPrtSrv = '';
             $(".btn_liberar_desconto_tmo").hide(); 
             $(".btn_cancelar_os").hide(); 
             $(".btn_aprovar_servicos").hide();
+            $(".btn_rpsPDF").hide();
 
         }else if(estagioAPP == 'CONSULTA_REQUISICAO'){
 
@@ -2973,6 +2986,7 @@ $locPrtSrv = '';
             $(".btn_troca_cliente").hide();
             $(".btn_liberar_desconto_tmo").hide(); 
             $(".btn_cancelar_os").hide(); 
+            $(".btn_rpsPDF").hide();
 
             var status_requisicao = {!! json_encode($status_requisicao) !!};
             if(status_requisicao == 'F'){
@@ -3017,7 +3031,8 @@ $locPrtSrv = '';
             $(".btn_troca_cliente").hide();
             $(".btn_liberar_desconto_tmo").hide();   
             $(".btn_cancelar_os").hide();  
-            $(".btn_aprovar_servicos").hide();         
+            $(".btn_aprovar_servicos").hide();  
+            $(".btn_rpsPDF").hide();       
 
             if(subEstagioRequisica != 'TMO_SELECIONADA'){
                 $(".btn_incluir_tmo").hide();
@@ -3046,6 +3061,7 @@ $locPrtSrv = '';
             $(".btn_troca_cliente").hide();
             $(".btn_cancelar_os").hide(); 
             $(".btn_aprovar_servicos").hide();
+            $(".btn_rpsPDF").hide();
 
             var status_requisicao = {!! json_encode($status_requisicao) !!};
             if(status_requisicao == 'F'){
@@ -3100,6 +3116,7 @@ $locPrtSrv = '';
             $(".btn_liberar_desconto_tmo").hide(); 
             $(".btn_cancelar_os").hide(); 
             $(".btn_aprovar_servicos").hide();
+            $(".btn_rpsPDF").hide();
 
         }else if(estagioAPP == 'ORCAMENTO_OS_IMPRESSAO'){
 
@@ -3129,6 +3146,7 @@ $locPrtSrv = '';
             $(".btn_liberar_desconto_tmo").hide(); 
             $(".btn_cancelar_os").hide(); 
             $(".btn_aprovar_servicos").hide();
+            $(".btn_rpsPDF").hide();
 
         }else if(estagioAPP == 'ORCAMENTO_OS'){
 
@@ -3183,12 +3201,17 @@ $locPrtSrv = '';
             $(".btn_liberar_desconto_tmo").hide(); 
             $(".btn_cancelar_os").hide(); 
             $(".btn_aprovar_servicos").hide();
+            $(".btn_rpsPDF").hide();
 
             if(statusOS == 'F' || statusOS == 'C'){
                 $(".btn_encerra_os").hide();
                 $(".btn_observacao").hide();
                 $(".btn_desconto_os").hide();
                 $(".btn_troca_cliente").hide();
+            }
+
+            if(statusOS == 'F'){
+                $(".btn_rpsPDF").show();
             }
         }else if(estagioAPP == 'TROCA_LOCAL_SERVICO'){
 
@@ -4265,6 +4288,54 @@ $locPrtSrv = '';
         var estagioAPP = {!! json_encode($glo_os_estagioAPP) !!};
         var subEstagioRequisica = {!! json_encode($glo_os_subEstagioRequisicao) !!};
 
+        function gerarRPS(params) {
+            var empresa = params.empresa;
+            var numOS = params.numOS;
+            var appOrigem = params.appOrigem;
+
+            var url = "{{ route('impresaoRPS.validaRPS', [':empresa', ':numOS', ':appOrigem' ]) }}";
+            url = url.replace(':empresa', empresa);
+            url = url.replace(':numOS', numOS);
+            url = url.replace(':appOrigem', appOrigem);
+
+            $.ajax({
+                url: url,
+                dataType: "JSON",
+                type: 'GET',
+                data: {
+                    '_token': $('meta[name=csrf-token]').attr("content"),
+                    '_method': 'GET',
+                    "empresa": empresa,
+                    "numOS": numOS,
+                    "appOrigem": appOrigem
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        // Abre o PDF em uma nova aba
+                        var url = "{{ route('impresaoRPS.rpsPDF', [':empresa', ':numControle' ]) }}";
+                        url = url.replace(':empresa', response.empresa);
+                        url = url.replace(':numControle', response.numeroHDR);
+
+                        window.open(url, '_blank');
+                    } else if (response.status === 'error') {
+                        Swal.fire({
+                            confirmButtonColor: "#007bff",
+                            title: "Aviso!",
+                            text: response.message,
+                            icon: "info",
+                            customClass: {
+                                icon: "no-before-icon",
+                            }
+                        });
+                        return;
+                    }
+                },
+                error: function() {
+                    alert('Erro ao gerar PDF.');
+                }
+            });
+        } 
+
         /* **************************************** Eventos onClick dos blocos - INCLUSAO_SERVICO   **************************************** */
 
         /* foi adicionado nova propriedade no validate que resolve o problema
@@ -4335,6 +4406,19 @@ $locPrtSrv = '';
 
             $("#radio_outro").click(function(){
                 $('.bloco-endereco').show();
+            });
+        }
+
+        /* **************************************** Eventos onClick dos blocos - TOTAIS_OS  **************************************** */
+
+        if(estagioAPP == 'TOTAIS_OS' ){
+
+            $(".btn_rpsPDF").click(function(){
+                gerarRPS({
+                    empresa: {!! json_encode($glo_os_empresa) !!},
+                    numOS: {!! json_encode($glo_os_nos) !!},
+                    appOrigem: 'ABERTURA_OS'
+                });
             });
         }
     });

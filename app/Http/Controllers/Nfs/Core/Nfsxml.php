@@ -42,8 +42,8 @@ class Nfsxml {
         //echo "<br> metodo getNFS <br>";
         $this->lote = array();
 
-        $sql = "SELECT nfs_nnfs,
-                       nfs_snfs
+        $sql = "SELECT nfs_nrps,
+                       nfs_srps
                 from faturamento_nfs
                 where 
                     nfs_emp = '".$this->empresa."' and 
@@ -52,8 +52,8 @@ class Nfsxml {
         $rs = DB::select($sql);
         $dados = $rs[0];
     
-        //echo "<br> dados: ".$this->empresa.' / '.$dados->nfs_nnfs.' / '.$dados->nfs_snfs." <br>";
-        $this->nfs = new NFS($this->empresa, $dados->nfs_nnfs, $dados->nfs_snfs, $this->numControle);
+        //echo "<br> dados: ".$this->empresa.' / '.$dados->nfs_nrps.' / '.$dados->nfs_srps." <br>";
+        $this->nfs = new NFS($this->empresa, $dados->nfs_nrps, $dados->nfs_srps, $this->numControle);
 
         $this->nfs->empresa;
     }

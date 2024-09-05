@@ -58,6 +58,13 @@ class FaturamentoGeracaoNfController extends Controller
                 DB::rollBack();
                 return redirect()->back()->with('error', $exec_fn[0]->ret_msg);
             }else{
+
+                //Atualiza os dados da NF para Geração I - Iniciada
+                DB::table('faturamento_nf_headers')
+                ->where('nfhdr_emp', $empresa)
+                ->where('nfhdr_num', $nota->nfhdr_num)
+                ->update(['nfhdr_sts' => 'I']);
+
                 //Grava as alterações do banco
                 DB::commit();
             }

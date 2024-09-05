@@ -51,7 +51,7 @@ class Tributacao {
                 WHERE 
                     empresa = '".$empresa."' and 
                     num_controle = ".$numControle." and 
-                    num_nf =".$numero;
+                    num_rps = ".$numero;
         $rs = DB::select($sql);
         $dados = $rs[0];
 

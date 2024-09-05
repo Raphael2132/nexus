@@ -37,7 +37,7 @@ class Servico {
                 WHERE 
                     empresa = '".$empresa."' and 
                     num_controle = ".$numControle." and 
-                    num_nf =".$numero;
+                    num_rps =".$numero;
         $rs = DB::select($sql);
 
         foreach ($rs as $dados) {

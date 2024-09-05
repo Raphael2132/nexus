@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('faturamento_nfs_xml_envios', function (Blueprint $table) {
             $table->id('nfsenv_id');
             $table->string('nfsenv_emp',6);//Empresa emissora da nfs
-            $table->decimal('nfsenv_num',9,0);//Número da nfs emitida
+            $table->decimal('nfsenv_num',9,0);//Número do RPS emitida
             $table->integer('nfsenv_nfhdr_num');//Número de controle da NF -> faturamento_nf_headers.nfhdr_num
             $table->string('nfsenv_cnpj',14);//Cnpj do emissor da nfs
             $table->string('nfsenv_pro',60)->nullable();//PROTOCOLO

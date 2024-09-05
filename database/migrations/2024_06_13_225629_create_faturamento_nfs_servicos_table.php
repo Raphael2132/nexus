@@ -17,8 +17,8 @@ return new class extends Migration
             $table->integer('nfssrv_num');//Número de controle da NF -> faturamento_nf_headers.nfhdr_num
             $table->integer('nfssrv_req');//requisiçao da nfs
             $table->integer('nfssrv_seq');//sequencia do item na requisiçao da nfs
-            $table->decimal('nfssrv_nnfs',9,0);//Número da nota fiscal de serviços
-            $table->string('nfssrv_snfs',5);//Série da nota fiscal de serviços
+            $table->decimal('nfssrv_nrps',9,0);//Número do RPS
+            $table->string('nfssrv_srps',5);//Série do RPS
             $table->string('nfssrv_req_dsc',80)->nullable(); // descrição da requisição
             $table->string('nfssrv_tmo',15)->nullable(); // Código da Tarefa (Serviço)
             $table->string('nfssrv_tmo_dsc',40)->nullable();//descriçao da tmo

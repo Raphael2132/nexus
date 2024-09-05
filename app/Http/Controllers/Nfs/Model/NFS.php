@@ -59,8 +59,8 @@ class NFS {
                 FROM faturamento_nfs  
                 WHERE 
                     nfs_emp = '".$this->empresa."' and 
-                    nfs_nnfs = ".$this->numero." and
-                    trim(nfs_snfs) = trim('".$this->serie."') and  
+                    nfs_nrps = ".$this->numero." and
+                    trim(nfs_srps) = trim('".$this->serie."') and  
                     nfs_nfhdr_num = ".$this->numControle;
 
         $rs = DB::select($sql);

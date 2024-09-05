@@ -169,6 +169,13 @@ class EmissaoSimplificadaNFSController extends Controller
 
             return $this->etapa2($request, $empresa, $cliente, $enderecoCli);
         }else{
+
+            //Atualiza os dados da NF para Geração I - Iniciada
+            DB::table('faturamento_nf_headers')
+            ->where('nfhdr_emp', $empresa)
+            ->where('nfhdr_num', $numControle)
+            ->update(['nfhdr_sts' => 'I']);
+
             //Grava as alterações do banco
             DB::commit();
         }

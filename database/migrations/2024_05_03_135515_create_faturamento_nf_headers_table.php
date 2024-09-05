@@ -18,8 +18,8 @@ return new class extends Migration
             $table->enum('nfhdr_sts', ['C', 'E', 'G', 'A', 'I'])->default('A');// Status da NF ( C - Cancelado, E - Erro, G - Gerado, A - Aberto, I - Iniciado )
             $table->enum('nfhdr_tip_reg', ['H'])->default('H');// Tipo de Registro ( H - Header )
             $table->integer('nfhdr_num_ped')->default(0);// Numero do Pedido / OS / Emissão Simplificada
-            $table->decimal('nfhdr_num_nf',9,0)->default(0);// Numero da NF / Cupom 
-            $table->string('nfhdr_ser_nf',5)->nullable();// Serie da NF / Cupom
+            $table->decimal('nfhdr_num_nf',9,0)->default(0);// Numero da NF / RPS / Cupom 
+            $table->string('nfhdr_ser_nf',5)->nullable();// Serie da NF / RPS / Cupom
             $table->date('nfhdr_dt_nf')->nullable();// Data da NF / Cupom
             $table->decimal('nfhdr_hr_nf',4,0)->default(0);// Hora da NF
             $table->decimal('nfhdr_cfop',4,0)->default(0);// Código Fiscal de Operações e de Prestações

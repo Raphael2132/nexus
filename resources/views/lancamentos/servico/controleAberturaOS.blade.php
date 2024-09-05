@@ -172,7 +172,6 @@
                                     @if($data_cli[0]->cliente_tipo_pessoa == 'J')
                                     <p class="text-sm col-md-3">CNPJ
                                         <b class="d-block">{{ $cnpj_cli }}</b>
-                                    </p>lass="d-block">{{ $inscMun_cli }}</b>
                                     </p>
                                     @else
                                     <p class="text-sm col-md-3">CPF

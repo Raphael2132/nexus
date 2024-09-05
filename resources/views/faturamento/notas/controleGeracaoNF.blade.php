@@ -107,7 +107,20 @@
                                 </td>
                                 <td style="border: 0px; width: 15%;">
                                     <p class="text-sm">Impressão
+                                        @if($dataNfsXML->nfsenv_sts == 1 || $dataNfsXML->nfsenv_sts == 2)
+                                            <!-- Verifica se a empresa emite RPS -->
+                                            @php 
+                                                $moduloRPS = DB::table('parametros_sistema_modulos')->where('modulo_empresa_codigo', $empresa)->first();
+                                                $geraRPS = DB::table('parametros_fat_nfs')->where('parnfs_empresa', $empresa)->first();
+                                            @endphp
+                                            @if($moduloRPS->modulo_emissao_rps == "S" && $geraRPS->parnfs_impressao_rps == "S")
+                                                <b class="d-block"><a href="{{route('impresaoRPS.rpsPDF',['empresa' => $nota->nfhdr_emp, 'numControle' => $nota->nfhdr_num])}}" target="_blank">Abrir RPS</a></b>
+                                            @else
+                                                <b class="d-block">NFS-e Não Gerada</b>
+                                            @endif
+                                        @else
                                         <b class="d-block"><a href="{{route('impresaoNF.nfsePDF',['empresa' => $nota->nfhdr_emp, 'numControle' => $nota->nfhdr_num])}}" target="_blank">Abrir NFS-e</a></b>
+                                        @endif
                                     </p>
                                 </td>
                                 <td style="border: 0px; width: 10%;">

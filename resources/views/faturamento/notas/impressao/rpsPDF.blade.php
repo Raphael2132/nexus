@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Impressão da NFS-e</title>
+    <title>Impressão do RPS</title>
 
     <style type="text/css">
         @media print {
@@ -229,7 +229,7 @@
         .nfeArea .wrapper-border {
             border: 1px solid #000;
             border-width: 0 1px 1px;
-            height: 55mm;
+            height: 80mm;
         }
 
         .nfeArea .wrapper-border table {
@@ -356,12 +356,11 @@
 @php 
     $dadosNFS = DB::table('faturamento_nfs')->where('nfs_emp',$empresa)->where('nfs_nfhdr_num',$numControle)->get();
     $dadosSrvNFS = DB::table('faturamento_nfs_servicos')->where('nfssrv_emp',$empresa)->where('nfssrv_num',$numControle)->orderby('nfssrv_req')->orderby('nfssrv_seq')->get();
-    $dadosXmlNfsEnv = DB::table('faturamento_nfs_xml_envios')->where('nfsenv_emp',$empresa)->where('nfsenv_num',$dadosNFS[0]->nfs_nrps)->get();
     $dadosEmp = DB::table('cadastro_empresas')->where('empresa_codigo',$empresa)->get();
     $dadosEmpEnd = DB::table('cadastro_empresa_enderecos')->where('endereco_empresa_codigo',$empresa)->get();
-    $dadosCodSrv = DB::table('parametros_sistema_servicos')->where('servico_codigo',$dadosNFS[0]->nfs_cod_srv)->get();
     $dadosConexao = DB::table('parametros_fat_nfs')->where('parnfs_empresa',$empresa)->get();
     $dadosParSrvEmp = DB::table('parametros_srv_empresas')->where('parsrv_emp',$empresa)->get();
+    $dadosReq = DB::table('lancamento_srv_os_requisicoes')->where('req_emp',$empresa)->where('req_nos',$dadosNFS[0]->nfs_nfhdr_num_ped)->get();
 
     //O provedor é numeração fixa para todos os clientes, verifica qual provedor da Empresa e gera caminho da img
     if($dadosConexao[0]->parnfs_provedor == 1){
@@ -423,6 +422,16 @@
         $outInfo = '';
     }
 
+    $descRPS = '';
+
+    foreach($dadosReq as $req){
+        if(empty($descRPS)){
+            $descRPS = $req->req_dsc;
+        }else{
+            $descRPS .= ' | '.$req->req_dsc;
+        }
+    }
+
 @endphp
 
 <div class="page nfeArea">
@@ -437,7 +446,7 @@
                                     @php 
                                         $fullpath = public_path($pathImgPrefeitura); 
                                     @endphp
-                                    <td rowspan="3" style="width: 75%; text-align: center; vertical-align: middle; height: 25mm;">
+                                    <td rowspan="2" style="width: 75%; text-align: center; vertical-align: middle; height: 25mm;">
                                         <table style="width: 100%; border-collapse: collapse; border: none;">
                                             <tr style="border: none;">
                                                 <!-- Bloco da Imagem -->
@@ -447,48 +456,21 @@
                                                 <!-- Bloco do Texto -->
                                                 <td style="width: 70%; text-align: center; vertical-align: middle; border: none;">
                                                     <span class="font-11" style="display: block;">Prefeitura Municipal de {{$dadosEmpEnd[0]->endereco_cidade}}</span>
-                                                    <span class="font-12" style="display: block; font-weight: bold;">Secretaria Municipal de Nota Fiscal de Serviços Eletrônica</span>
+                                                    <span class="font-11" style="display: block;">Secretaria Municipal de Finanças</span>
+                                                    <span class="font-12" style="display: block; font-weight: bold;">RECIBO PROVISÓRIO DE SERVIÇOS - RPS</span>
                                                 </td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td class="txt-upper" style="width: 25%;">
-                                        <span class="nf-label">Número da Nota</span>
-                                        <span class="info">{{str_pad($dadosNFS[0]->nfs_nnfs, 9, "0", STR_PAD_LEFT)}}</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span class="nf-label">Data e Hora da Emissão</span>
-                                        <span class="info">{{Helper::formataDataHora($dadosXmlNfsEnv[0]->nfsenv_dt_atu)}}</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span class="nf-label">Código de Verificação</span>
-                                        <span class="info">{{$dadosXmlNfsEnv[0]->nfsenv_cod_ver}}</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="pd-0">
-                        <table cellpadding="0" cellspacing="0" style="margin-bottom: -1px;" border="1">
-                            <tbody>
-                                <tr>
-                                    <td style="width: 32mm">
-                                        <span class="nf-label">Competência</span>
-                                        <span class="info">{{Helper::formataData($dadosNFS[0]->nfs_dt_emi)}}</span>
-                                    </td>
-                                    <td style="width: 32mm">
                                         <span class="nf-label">Número / Série do RPS</span>
                                         <span class="info">{{str_pad($dadosNFS[0]->nfs_nrps, 9, "0", STR_PAD_LEFT).'-'.$dadosNFS[0]->nfs_srps}}</span>
                                     </td>
-                                    <td style="width: 32mm">
-                                        <span class="nf-label">Número da NFS Substituída</span>
-                                        <span class="info">{{str_pad('0', 9, "0", STR_PAD_LEFT)}}</span>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span class="nf-label">Data de Emissão</span>
+                                        <span class="info">{{Helper::formataData($dadosNFS[0]->nfs_dt_emi)}}</span>
                                     </td>
                                 </tr>
                             </tbody>
@@ -539,114 +521,105 @@
 
         <!-- Destinatário/Emitente -->
         <p class="area-name">PRESTADOR DO(S) SERVIÇO(S)</p>
-        <div style="width:100%; height: 11%;">
-            <div style="width:20%;float:left;display: flex; align-items: center; justify-content: center;">
-                @php 
-                    $fullpath = public_path($pathImgEmpresa); 
-                @endphp
-                <img style="width:95%; height: auto;margin-top: 10px;" class="client_logo" src="data:image/png;base64, <?php echo base64_encode(file_get_contents($fullpath)); ?>" />
-            </div>
-            <div style="width:80%;float:right;">
-                                
-                <table cellpadding="0" cellspacing="0" class="boxDestinatario" border="1">
-                    <tbody>
-                        <tr>
-                            <td class="pd-0">
-                                <table cellpadding="0" cellspacing="0" border="1">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <span class="nf-label">NOME/RAZÃO SOCIAL</span>
-                                                <span class="info">{{$dadosEmp[0]->empresa_nome}}</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="pd-0">
-                                <table cellpadding="0" cellspacing="0" border="1">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <span class="nf-label">ENDEREÇO</span>
-                                                <span class="info">{{$dadosEmpEnd[0]->endereco_logradouro.', '.$dadosEmpEnd[0]->endereco_numero}}</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="pd-0">
-                                <table cellpadding="0" cellspacing="0" border="1">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <span class="nf-label">Bairro</span>
-                                                <span class="info">{{$dadosEmpEnd[0]->endereco_bairro}}</span>
-                                            </td>
-                                            <td style="width: 15%;">
-                                                <span class="nf-label">CEP</span>
-                                                <span class="info">{{Helper::mascaraCEP($dadosEmpEnd[0]->endereco_cep)}}</span>
-                                            </td>
-                                            <td style="width: 35%;">
-                                                <span class="nf-label">MUNICÍPIO</span>
-                                                <span class="info">{{$dadosEmpEnd[0]->endereco_cidade}}</span>
-                                            </td>
-                                            <td style="width: 10%;">
-                                                <span class="nf-label">UF</span>
-                                                <span class="info">{{$dadosEmpEnd[0]->endereco_uf}}</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="pd-0">
-                                <table cellpadding="0" cellspacing="0" border="1">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <span class="nf-label">Complemento</span>
-                                                <span class="info">{{$dadosEmpEnd[0]->endereco_complemento}}</span>
-                                            </td>
-                                            <td style="width: 35%;">
-                                                <span class="nf-label">Telefone</span>
-                                                <span class="info">{{$telEmp}}</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="pd-0">
-                                <table cellpadding="0" cellspacing="0" style="margin-bottom: -1px;" border="1">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <span class="nf-label">CNPJ</span>
-                                                <span class="info">{{Helper::mascaraCNPJ($dadosEmp[0]->empresa_cnpj)}}</span>
-                                            </td>
-                                            <td style="width: 30%;">
-                                                <span class="nf-label">INSCRIÇÃO MUNICIPAL</span>
-                                                <span class="info">{{$dadosEmp[0]->empresa_insc_municipal}}</span>
-                                            </td>
-                                            <td style="width: 40%;">
-                                                <span class="nf-label">Email</span>
-                                                <span class="info">{{$dadosEmp[0]->empresa_email}}</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div style="width:100%; height: 11%;">                  
+            <table cellpadding="0" cellspacing="0" class="boxDestinatario" border="1">
+                <tbody>
+                    <tr>
+                        <td class="pd-0">
+                            <table cellpadding="0" cellspacing="0" border="1">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span class="nf-label">NOME/RAZÃO SOCIAL</span>
+                                            <span class="info">{{$dadosEmp[0]->empresa_nome}}</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pd-0">
+                            <table cellpadding="0" cellspacing="0" border="1">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span class="nf-label">ENDEREÇO</span>
+                                            <span class="info">{{$dadosEmpEnd[0]->endereco_logradouro.', '.$dadosEmpEnd[0]->endereco_numero}}</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pd-0">
+                            <table cellpadding="0" cellspacing="0" border="1">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span class="nf-label">Bairro</span>
+                                            <span class="info">{{$dadosEmpEnd[0]->endereco_bairro}}</span>
+                                        </td>
+                                        <td style="width: 15%;">
+                                            <span class="nf-label">CEP</span>
+                                            <span class="info">{{Helper::mascaraCEP($dadosEmpEnd[0]->endereco_cep)}}</span>
+                                        </td>
+                                        <td style="width: 35%;">
+                                            <span class="nf-label">MUNICÍPIO</span>
+                                            <span class="info">{{$dadosEmpEnd[0]->endereco_cidade}}</span>
+                                        </td>
+                                        <td style="width: 10%;">
+                                            <span class="nf-label">UF</span>
+                                            <span class="info">{{$dadosEmpEnd[0]->endereco_uf}}</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pd-0">
+                            <table cellpadding="0" cellspacing="0" border="1">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span class="nf-label">Complemento</span>
+                                            <span class="info">{{$dadosEmpEnd[0]->endereco_complemento}}</span>
+                                        </td>
+                                        <td style="width: 35%;">
+                                            <span class="nf-label">Telefone</span>
+                                            <span class="info">{{$telEmp}}</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="pd-0">
+                            <table cellpadding="0" cellspacing="0" style="margin-bottom: -1px;" border="1">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span class="nf-label">CNPJ</span>
+                                            <span class="info">{{Helper::mascaraCNPJ($dadosEmp[0]->empresa_cnpj)}}</span>
+                                        </td>
+                                        <td style="width: 30%;">
+                                            <span class="nf-label">INSCRIÇÃO MUNICIPAL</span>
+                                            <span class="info">{{$dadosEmp[0]->empresa_insc_municipal}}</span>
+                                        </td>
+                                        <td style="width: 40%;">
+                                            <span class="nf-label">Email</span>
+                                            <span class="info">{{$dadosEmp[0]->empresa_email}}</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <p class="area-name">TOMADOR DO(S) SERVIÇO(S)</p>
@@ -755,7 +728,18 @@
         </table>
 
         <p class="area-name">DISCRIMINAÇÃO DO(S) SERVIÇO(S)</p>
-		<div class="wrapper-border">
+        <div class="wrapper-border">
+            <table cellpadding="0" cellspacing="0" border="1" class="boxProdutoServico" style="border-bottom: 0px !important; height: 20mm;">
+                <tbody>
+                    <tr>
+                        <td colspan="4" style="border-top: 0px;border-bottom: 0px !important;">
+                            <span class="nf-label">Descrição</span>
+                            <span class="info">{{$descRPS}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
             <table cellpadding="0" cellspacing="0" border="1" class="boxProdutoServico" style="border-bottom: 0px !important;">
                 <thead class="listProdutoServico" id="table">
                     <tr class="titles">
@@ -818,7 +802,7 @@
         <table class="tabela" cellpadding="0" cellspacing="0" border="1">
             <tbody>
                 <tr>
-                    <td colspan="4" style="border-top: 0px;">
+                    <td colspan="4" style="border-top: 0px; height: 10mm;">
                         <span class="nf-label">Observações</span>
                         <span class="info">{{$dadosNFS[0]->nfs_obs}}</span>
                     </td>
@@ -832,30 +816,18 @@
             <table cellpadding="0" cellspacing="0" border="1" class="boxImposto">
                 <tbody>
                     <tr>
-                        <td colspan="4">
-                            <span class="nf-label">CÓDIGO DE CLASSIFICAÇÃO DO SERVIÇO</span>
-                            <span class="info" style="text-align: left !important;">{{$dadosCodSrv[0]->servico_codigo.' - '.$dadosCodSrv[0]->servico_desc}}</span>
-                        </td>
-                    </tr>
-                    <tr>
                         <td>
                             <span class="nf-label">VALOR DO(S) SERVIÇO(S) </span>
                             <span class="info">{{Helper::formataValorMonetario($dadosNFS[0]->nfs_vlr_srv)}}</span>
                         </td>
                         <td>
-                            <span class="nf-label">VALOR DEDUÇÕES</span>
+                            <span class="nf-label">VALOR DESCONTOS</span>
                             <span class="info">{{Helper::formataValorMonetario($dadosNFS[0]->nfs_vlr_ded)}}</span>
-                        </td>
-                        <td>
-                            <span class="nf-label">DESCONTO INCONDICIONADO</span>
-                            <span class="info">{{Helper::formataValorMonetario($dadosNFS[0]->nfs_vlr_dsc)}}</span>
                         </td>
                         <td>
                             <span class="nf-label">BASE DE CÁLCULO ISS</span>
                             <span class="info">{{Helper::formataValorMonetario($dadosNFS[0]->nfs_vlr_tot)}}</span>
                         </td>
-                    </tr>
-                    <tr>
                         <td>
                             <span class="nf-label">ALÍQUOTA ISS (%)</span>
                             <span class="info">{{Helper::formataValorMonetario($dadosNFS[0]->nfs_alq_nfs)}}</span>
@@ -863,14 +835,6 @@
                         <td>
                             <span class="nf-label">VALOR DO ISS</span>
                             <span class="info">{{Helper::formataValorMonetario($vlrIss)}}</span>
-                        </td>
-                        <td>
-                            <span class="nf-label">VALOR DO ISS RETIRDO</span>
-                            <span class="info">{{Helper::formataValorMonetario($vlrIssRet)}}</span>
-                        </td>
-                        <td>
-                            <span class="nf-label">DESCONTO CONDICIONADO</span>
-                            <span class="info">{{Helper::formataValorMonetario(0)}}</span>
                         </td>
                     </tr>
                 </tbody>
@@ -902,10 +866,6 @@
                         <td>
                             <span class="nf-label">INSS</span>
                             <span class="info">{{Helper::formataValorMonetario($dadosNFS[0]->nfs_inss_ret)}}</span>
-                        </td>
-                        <td>
-                            <span class="nf-label">OUTRAS RENTENÇÕES</span>
-                            <span class="info">{{Helper::formataValorMonetario(0)}}</span>
                         </td>
                     </tr>
                 </tbody>
@@ -941,7 +901,8 @@
             <tbody>
                 <tr>
                     <td class="field infoComplementar" style="height: 24mm;">
-                        <span class="nf-label">{{$outInfo}}</span>
+                        <span class="nf-label">Este recibo Provisório de Serviços - RPS não é válido como documento fiscal. O prestador do serviço, no prazo de até 5 (Cinco) dias da emissão deste RPS, deverá
+                        substituí-lo por uma Nota Fiscal de Serviços Eletrônica.</span>
                     </td>
                 </tr>
             </tbody>
