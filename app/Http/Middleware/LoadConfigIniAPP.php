@@ -68,9 +68,11 @@ class LoadConfigIniAPP
                     }
 
                 }else{
-
+                    
                     $logoPath = 'home/'. $cnpj . '/file/img/' . $codigo . '_logo.png';
                         
+                    echo $domain.' logo: '.$logoPath;exit;
+
                     if (file_exists($logoPath)) {
                         config([
                             'adminlte.auth_logo.img.path' => 'home/'. $cnpj . '/file/img/' . $codigo . '_logo.png',
