@@ -76,7 +76,7 @@ class Config{
             
             echo "O servidor está rodando em um IP: " . $serverName;
         }
-        exit;
+        echo "<br>Root: ".$_SERVER['DOCUMENT_ROOT'];exit;
 
         $this->path = $_SERVER['DOCUMENT_ROOT'];//Por hora vai no root quando estiver em servidor ver como vai ficar
         $this->pathDownload = $_SERVER['DOCUMENT_ROOT'].'/'.$cnpj.'/file/doc/nfsxml/envio/';
