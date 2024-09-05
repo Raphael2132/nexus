@@ -68,7 +68,23 @@
             <tr>
                 @php 
                     $logo_emp = $glo_os_dadosEmpresa[0]->empresa_cnpj."/file/img/".$glo_os_dadosEmpresa[0]->empresa_codigo."_logo.png";
-                    $fullpath = '/home/'.$logo_emp;//public_path($logo_emp); 
+
+                    // Obter o nome do host do servidor
+                    if(!empty($_SERVER['SERVER_NAME'])){
+                        $serverName = $_SERVER['SERVER_NAME'];
+                    }else{
+                        $serverName = '';
+                    }
+
+                    // Verificar se está rodando no localhost
+                    if ($serverName == '127.0.0.1' || stripos($serverName, 'localhost') !== false) {
+                        
+                        $fullpath = public_path($logo_emp); 
+                    
+                    } else {
+                        
+                        $fullpath = '/home/'.$logo_emp;
+                    } 
                 @endphp
                 <td rowspan="4" style="width: 40%;text-align: center;"><img src="data:image/png;base64, <?php echo base64_encode(file_get_contents($fullpath)); ?>" style="max-width: 60%; max-height: 60%;" /></td>
                 <td rowspan="4" style="width: 30%;">
