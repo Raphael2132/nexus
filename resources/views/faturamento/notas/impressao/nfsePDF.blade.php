@@ -542,7 +542,22 @@
         <div style="width:100%; height: 11%;">
             <div style="width:20%;float:left;display: flex; align-items: center; justify-content: center;">
                 @php 
-                    $fullpath = public_path($pathImgEmpresa); 
+                    // Obter o nome do host do servidor
+                    if(!empty($_SERVER['SERVER_NAME'])){
+                        $serverName = $_SERVER['SERVER_NAME'];
+                    }else{
+                        $serverName = '';
+                    }
+
+                    // Verificar se está rodando no localhost
+                    if ($serverName == '127.0.0.1' || stripos($serverName, 'localhost') !== false) {
+                        
+                        $fullpath = public_path($pathImgEmpresa); 
+                    
+                    } else {
+                        
+                        $fullpath = '/home/'.$pathImgEmpresa;
+                    } 
                 @endphp
                 <img style="width:95%; height: auto;margin-top: 10px;" class="client_logo" src="data:image/png;base64, <?php echo base64_encode(file_get_contents($fullpath)); ?>" />
             </div>
