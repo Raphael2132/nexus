@@ -68,7 +68,7 @@ class Config{
         }
 
         // Verificar se está rodando no localhost
-        if ($serverName == '127.0.0.1' || $serverIP == '' || stripos($serverName, 'localhost') !== false) {
+        if ($serverName == '127.0.0.1' || stripos($serverName, 'localhost') !== false) {
             
             echo "O servidor está rodando no localhost.";
         
