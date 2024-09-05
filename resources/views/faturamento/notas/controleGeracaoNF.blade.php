@@ -83,7 +83,7 @@
                                 
                                 } else {
                                     
-                                    $pathXML = '/home/$dataNfsXML->nfsenv_cnpj.'/file/doc/nfsxml/envio/'.$dataNfsXML->nfsenv_nom_arq_env;
+                                    $pathXML = '/home/'.$dataNfsXML->nfsenv_cnpj.'/file/doc/nfsxml/envio/'.$dataNfsXML->nfsenv_nom_arq_env;
                                     $servidor = "vps";
                                 }                                
                                 
