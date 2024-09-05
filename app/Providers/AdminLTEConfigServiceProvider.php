@@ -57,7 +57,7 @@ class AdminLTEConfigServiceProvider extends ServiceProvider
 
                         if (file_exists($icoLogoPath)) {
 
-                            $logoIcoUrl = route('logoIco.file', ['cnpj' => $empresa->empresa_cnpj, 'filename' => $empresa->empresa_codigo . '_logo.png']);
+                            $logoIcoUrl = route('logoIco.file', ['cnpj' => $empresa->empresa_cnpj, 'filename' => $empresa->empresa_codigo . '_logo_ico.png']);
 
                             config([
                                 //Admin Panel Logo
