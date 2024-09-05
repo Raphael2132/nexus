@@ -19,13 +19,15 @@ class LoadConfigIniAPP
      */
     public function handle(Request $request, Closure $next): Response
     {
+        //Aqui temos que acertar quando tivermos o domínio correto do sistema para separar o subdominio do cliente do endereço de acesso
         $host = $request->getHost();
         $domain = str_replace(['http://', 'https://', 'www.'], '', $host);
         //$domain = explode('.', $domain)[0];
 
-        // Carregar o caminho do arquivo .ini da configuração
+        // Carregar o caminho do arquivo config.ini
         $iniPath = config('app.empresa_ini_path');
         
+        //Verificamos se o arquivo de inicialização existe
         if (file_exists($iniPath)) {
             $ini = parse_ini_file($iniPath, true);
 
@@ -36,7 +38,7 @@ class LoadConfigIniAPP
                 $username = $ini[$domain]['username'];
                 $password = $ini[$domain]['password'];
 
-                // Configurar a conexão ao banco de dados dinamicamente
+                // Configurar a conexão ao banco de dados dinamicamente pelo banco do cliente do acesso
                 Config::set('database.connections.empresa', [
                     'driver' => 'pgsql',
                     'host' => env('DB_HOST', '127.0.0.1'),
@@ -50,29 +52,30 @@ class LoadConfigIniAPP
                     'sslmode' => 'prefer',
                 ]);
 
+                //Define a conexão a ser utilizada
                 DB::setDefaultConnection('empresa');
 
-                /*
-                // Carregar dados da empresa para configurar o AdminLTE
-                $empresa = DB::table('cadastro_empresas')->where('empresa_cnpj', $cnpj)->first();
+                //Verifica se o Host é o localhost ou produção
+                //Se for localhost busca a imagem da tela de login da empresa logada de local diferente
+                if($domain == '127.0.0.1'){
 
-                if ($empresa) {
-                    $logoPath = public_path($empresa->empresa_cnpj . '/file/img/' . $empresa->empresa_codigo . '_logo.png');
-                    
+                    $logoPath = public_path($cnpj . '/file/img/' . $codigo . '_logo.png');
+                        
                     if (file_exists($logoPath)) {
                         config([
-                            'adminlte.auth_logo.img.path' => $empresa->empresa_cnpj . '/file/img/' . $empresa->empresa_codigo . '_logo.png',
+                            'adminlte.auth_logo.img.path' => $cnpj . '/file/img/' . $codigo . '_logo.png',
                         ]);
                     }
-                }
-                */
 
-                $logoPath = public_path($cnpj . '/file/img/' . $codigo . '_logo.png');
-                    
-                if (file_exists($logoPath)) {
-                    config([
-                        'adminlte.auth_logo.img.path' => $cnpj . '/file/img/' . $codigo . '_logo.png',
-                    ]);
+                }else{
+
+                    $logoPath = 'home/'. $cnpj . '/file/img/' . $codigo . '_logo.png';
+                        
+                    if (file_exists($logoPath)) {
+                        config([
+                            'adminlte.auth_logo.img.path' => 'home/'. $cnpj . '/file/img/' . $codigo . '_logo.png',
+                        ]);
+                    }
                 }
 
             } else {
