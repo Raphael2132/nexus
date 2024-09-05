@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,27 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/contato', [App\Http\Controllers\HomeController::class, 'contato'])->name('contato');
+
+/*
+|--------------------------------------------------------------------------
+| XML de Envio
+|--------------------------------------------------------------------------
+|
+| Área destina as rotas envolvidas na exibição do XML enviados de NFS-e e NF-e.
+|
+*/
+Route::get('/nfse/envio/xml/{cnpj}/{filename}', function ($cnpj, $filename) {
+    // Construa o caminho completo baseado no CNPJ
+    $filePath = '/home/'.$cnpj.'/file/doc/nfsxml/envio/' . $filename;
+
+    // Verifica se o arquivo existe
+    if (!file_exists($filePath)) {
+        abort(404, 'Arquivo não encontrado.');
+    }
+
+    // Retorna o arquivo para download ou exibição no navegador
+    return response()->file($filePath);
+})->name('nfs.xmlEnvio');
 
 /*
 |--------------------------------------------------------------------------

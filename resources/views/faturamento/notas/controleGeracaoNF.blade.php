@@ -145,7 +145,7 @@
                                         @if($servidor == "localhost")
                                         <b class="d-block"><a href="{{asset($pathXML)}}" target="_blank">XML</a></b>
                                         @else
-                                        <b class="d-block"><a href="{{$pathXML}}" target="_blank">XML</a></b>
+                                        <b class="d-block"><a href="{{ route('nfs.xmlEnvio', ['cnpj' => $dataNfsXML->nfsenv_cnpj, 'filename' => $dataNfsXML->nfsenv_nom_arq_env]) }}" target="_blank">XML</a></b>
                                         @endif
                                     </p>
                                 </td>
