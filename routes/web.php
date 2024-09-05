@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +40,7 @@ Route::get('/contato', [App\Http\Controllers\HomeController::class, 'contato'])-
 
 /*
 |--------------------------------------------------------------------------
-| XML de Envio
+| XML de NF
 |--------------------------------------------------------------------------
 |
 | Área destina as rotas envolvidas na exibição do XML enviados de NFS-e e NF-e.
@@ -56,6 +58,31 @@ Route::get('/nfse/envio/xml/{cnpj}/{filename}', function ($cnpj, $filename) {
     // Retorna o arquivo para download ou exibição no navegador
     return response()->file($filePath);
 })->name('nfs.xmlEnvio');
+
+/*
+|--------------------------------------------------------------------------
+| Imagens do Cliente
+|--------------------------------------------------------------------------
+|
+| Área destina as rotas envolvidas na exibição das Imagens do Cliente
+|
+*/
+Route::get('/logo/{cnpj}/{filename}', function ($cnpj, $filename) {
+    
+    $filePath = '/home/' . $cnpj . '/file/img/' . $filename;
+
+    if (File::exists($filePath)) {
+        $file = File::get($filePath);
+        $type = File::mimeType($filePath);
+
+        $response = Response::make($file, 200);
+        $response->header("Content-Type", $type);
+
+        return $response;
+    }
+
+    abort(404, 'Logo não encontrada.');
+})->name('logo.file');
 
 /*
 |--------------------------------------------------------------------------
