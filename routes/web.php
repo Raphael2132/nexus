@@ -67,6 +67,7 @@ Route::get('/nfse/envio/xml/{cnpj}/{filename}', function ($cnpj, $filename) {
 | Área destina as rotas envolvidas na exibição das Imagens do Cliente
 |
 */
+// Logo da Empresa Logada
 Route::get('/logo/{cnpj}/{filename}', function ($cnpj, $filename) {
     
     $filePath = '/home/' . $cnpj . '/file/img/' . $filename;
@@ -83,6 +84,24 @@ Route::get('/logo/{cnpj}/{filename}', function ($cnpj, $filename) {
 
     abort(404, 'Logo não encontrada.');
 })->name('logo.file');
+
+// Icone da Empresa Logada
+Route::get('/icone/{cnpj}/{filename}', function ($cnpj, $filename) {
+    
+    $filePath = '/home/' . $cnpj . '/file/img/' . $filename . '_logo_ico.png';
+
+    if (File::exists($filePath)) {
+        $file = File::get($filePath);
+        $type = File::mimeType($filePath);
+
+        $response = Response::make($file, 200);
+        $response->header("Content-Type", $type);
+
+        return $response;
+    }
+
+    abort(404, 'Icone não encontrada.');
+})->name('logoIco.file');
 
 /*
 |--------------------------------------------------------------------------

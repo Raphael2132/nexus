@@ -32,13 +32,38 @@ class AdminLTEConfigServiceProvider extends ServiceProvider
                         'adminlte.title' => $empresa->empresa_nome,
                     ]);
 
-                    $icoLogoPath = public_path($empresa->empresa_cnpj.'/file/img/'.$empresa->empresa_codigo.'_logo_ico.png');
+                    // Obter o nome do host do servidor
+                    if(!empty($_SERVER['SERVER_NAME'])){
+                        $serverName = $_SERVER['SERVER_NAME'];
+                    }else{
+                        $serverName = '';
+                    }
 
-                    if (file_exists($icoLogoPath)) {
-                        config([
-                            //Admin Panel Logo
-                            'adminlte.logo_img' => $empresa->empresa_cnpj.'/file/img/'.$empresa->empresa_codigo.'_logo_ico.png',
-                        ]);
+                    // Verificar se está rodando no localhost
+                    if ($serverName == '127.0.0.1' || stripos($serverName, 'localhost') !== false) {
+
+                        $icoLogoPath = public_path($empresa->empresa_cnpj.'/file/img/'.$empresa->empresa_codigo.'_logo_ico.png');
+
+                        if (file_exists($icoLogoPath)) {
+                            config([
+                                //Admin Panel Logo
+                                'adminlte.logo_img' => $empresa->empresa_cnpj.'/file/img/'.$empresa->empresa_codigo.'_logo_ico.png',
+                            ]);
+                        }
+
+                    } else {
+
+                        $icoLogoPath = '/home/'.$empresa->empresa_cnpj.'/file/img/'.$empresa->empresa_codigo.'_logo_ico.png';
+
+                        if (file_exists($icoLogoPath)) {
+
+                            $logoIcoUrl = route('logoIco.file', ['cnpj' => $empresa->empresa_cnpj, 'filename' => $empresa->empresa_codigo . '_logo.png']);
+
+                            config([
+                                //Admin Panel Logo
+                                'adminlte.logo_img' => $logoIcoUrl,
+                            ]);
+                        }
                     }
 
                     if (!empty($empresa->empresa_nome_logo)) {
