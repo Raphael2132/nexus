@@ -71,7 +71,7 @@ class LoadConfigIniAPP
                     
                     $logoPath = '/home/'. $cnpj . '/file/img/' . $codigo . '_logo.png';
                         
-                    echo $domain.' logo: '.$logoPath;exit;
+                    //echo $domain.' logo: '.$logoPath;exit;
 
                     if (file_exists($logoPath)) {
                         config([
