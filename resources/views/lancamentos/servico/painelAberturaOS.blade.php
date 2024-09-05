@@ -1893,9 +1893,30 @@ $locPrtSrv = '';
                                 <tbody>
                                     <tr>
                                         @php 
-                                            $logo_emp = $glo_os_dadosEmpresa[0]->empresa_cnpj."/file/img/".$glo_os_dadosEmpresa[0]->empresa_codigo."_logo.png";
+                                            // Obter o nome do host do servidor
+                                            if(!empty($_SERVER['SERVER_NAME'])){
+                                                $serverName = $_SERVER['SERVER_NAME'];
+                                            }else{
+                                                $serverName = '';
+                                            }
+
+                                            // Verificar se está rodando no localhost
+                                            if ($serverName == '127.0.0.1' || stripos($serverName, 'localhost') !== false) {
+                                                
+                                                $logo_emp = $glo_os_dadosEmpresa[0]->empresa_cnpj."/file/img/".$glo_os_dadosEmpresa[0]->empresa_codigo."_logo.png";
+                                                $host = "localhost";
+                                            
+                                            } else {
+                                                
+                                                $logo_emp = '';
+                                                $host = "producao";
+                                            } 
                                         @endphp
+                                        @if($host == "localhost")
                                         <td rowspan="4" style="width: 40%;"><div class="d-flex justify-content-center"><img src="{{ asset($logo_emp) }}" style="max-width: 60%; max-height: 60%; float: right;" /></div></td>
+                                        @else
+                                        <td rowspan="4" style="width: 40%;"><div class="d-flex justify-content-center"><img src="{{ route('logo.file', ['cnpj' => $glo_os_dadosEmpresa[0]->empresa_cnpj, 'filename' => $glo_os_dadosEmpresa[0]->empresa_codigo . '_logo.png']) }}" style="max-width: 60%; max-height: 60%; float: right;" /></div></td>
+                                        @endif
                                         <td rowspan="4">
                                             <p class="text-sm">Endereço
                                                 <b class="d-block">{{$glo_os_dadosEmpresaEndereco[0]->endereco_logradouro.', '.$glo_os_dadosEmpresaEndereco[0]->endereco_numero}}</b>
