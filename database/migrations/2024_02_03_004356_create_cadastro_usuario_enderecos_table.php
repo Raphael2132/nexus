@@ -25,7 +25,6 @@ return new class extends Migration
             $table->string('endereco_uf', 2)->nullable();
             $table->string('endereco_pais', 40)->nullable();
             $table->timestamps();
-            $table->unique(['endereco_seq', 'endereco_usuario_codigo'], 'ak_cadastro_usuario_enderecos');
             $table->foreign('endereco_usuario_codigo', 'fk_cadastro_usuario_enderecos')->references('usuario_codigo')->on('users')->onDelete('cascade');
         });
     }
