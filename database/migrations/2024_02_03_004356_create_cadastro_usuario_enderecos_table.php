@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('cadastro_usuario_enderecos', function (Blueprint $table) {
             $table->id('endereco_id');
             $table->biginteger('endereco_seq');
-            $table->string('endereco_usuario_codigo', 10)->unsigned();
+            $table->string('endereco_usuario_codigo', 6)->unsigned();
             $table->enum('endereco_principal', ['S', 'N']);
             $table->string('endereco_cep',8)->nullable();
             $table->string('endereco_logradouro', 100)->nullable();
