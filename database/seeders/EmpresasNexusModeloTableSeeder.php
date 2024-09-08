@@ -7,14 +7,14 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class UsuariosTableSeeder extends Seeder
+class EmpresasNexusModeloTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        DB::table('users')->insert(
+        DB::table('cadastro_empresas')->insert(
             ['empresa_codigo' => 'E00001',
             'empresa_nome' => "Empresa Matriz Modelo",
             'empresa_cnpj' => "12345678912345",

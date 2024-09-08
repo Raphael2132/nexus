@@ -7,14 +7,14 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class UsuariosTableSeeder extends Seeder
+class EmpresasNexusModeloMfTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        DB::table('users')->insert(
+        DB::table('cadastro_empresas')->insert(
             ['empresa_codigo' => 'E00001',
             'empresa_nome' => "Empresa Matriz Modelo",
             'empresa_cnpj' => "11223344556677",
@@ -28,7 +28,7 @@ class UsuariosTableSeeder extends Seeder
             'updated_at' => date('Y-m-d H:i:s')]
         );
 
-        DB::table('users')->insert(
+        DB::table('cadastro_empresas')->insert(
             ['empresa_codigo' => 'E00002',
             'empresa_nome' => "Empresa Filial Modelo",
             'empresa_cnpj' => "99887766554433",

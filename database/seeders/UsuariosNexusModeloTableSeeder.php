@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class UsuariosTableSeeder extends Seeder
+class UsuariosNexusModeloTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
