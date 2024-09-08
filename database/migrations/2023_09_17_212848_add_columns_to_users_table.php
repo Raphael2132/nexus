@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('usuario_codigo', 6);
             $table->enum('usuario_status', ['A', 'D'])->default('A');
-            $table->enum('usuario_tipo', ['A', 'P'])->default('P');
+            $table->enum('usuario_tipo', ['M', 'A', 'P'])->default('P');//Master Administrador Padrão
             $table->enum('usuario_altera_permissoes_acesso', ['S', 'N'])->default('N');
             $table->enum('usuario_acesso_pararametros', ['S', 'N'])->default('N');
             $table->enum('usuario_acesso_cadastros', ['S', 'N'])->default('N');

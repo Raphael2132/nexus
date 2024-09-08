@@ -23,7 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('lancamento_srv_os', function (Blueprint $table) {
-            $table->dropColumn('os_cal_aut_pe');
+            $table->dropColumn('os_qtd_hr_pre_ent');
+            $table->dropColumn('os_cal_aut_pre_ent');
         });
     }
 };
