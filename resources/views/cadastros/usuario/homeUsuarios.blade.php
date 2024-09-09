@@ -60,6 +60,8 @@
                     @php
                         if($usuario->usuario_tipo == 'A'){
                             $tip_usu = 'Administrador';
+                        }elseif($usuario->usuario_tipo == 'M'){
+                            $tip_usu = 'Master';
                         }else{
                             $tip_usu = 'Padrão';
                         }

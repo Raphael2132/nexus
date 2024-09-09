@@ -94,7 +94,7 @@
                                 <x-slot name="label">
                                     Tipo de Usuário <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['A' => 'Administrador', 'P' => 'Padrão']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_tipo']}}"/>
+                                <x-adminlte-options :options="['A' => 'Administrador', 'M' => 'Master', 'P' => 'Padrão']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_tipo']}}"/>
                             </x-adminlte-select>
 
                             <!-- Status do Usuario -->
