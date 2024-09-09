@@ -21,7 +21,7 @@ class LoadConfigIniAPP
     {
         //Aqui temos que acertar quando tivermos o domínio correto do sistema para separar o subdominio do cliente do endereço de acesso
         $host = $request->getHost();
-        $domain = str_replace(['http://', 'https://', 'www.'], '', $host);
+        $domain = str_replace(['http://', 'https://', 'www.', '.nexuserpcloud.com.br'], '', $host);
         //$domain = explode('.', $domain)[0];
 
         // Carregar o caminho do arquivo config.ini
