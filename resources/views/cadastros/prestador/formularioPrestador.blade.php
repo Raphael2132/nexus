@@ -253,7 +253,7 @@
                     <a class="nav-link active" id="custom-tabs-two-dados-pessoais-tab" data-toggle="pill" href="#custom-tabs-two-dados-pessoais" role="tab" aria-controls="custom-tabs-two-dados-pessoais" aria-selected="true">Dados Pessoais</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="custom-tabs-two-servico-tab" data-toggle="pill" href="#custom-tabs-two-servico" role="tab" aria-controls="custom-tabs-two-servico" aria-selected="false">Servico</a>
+                    <a class="nav-link" id="custom-tabs-two-servico-tab" data-toggle="pill" href="#custom-tabs-two-servico" role="tab" aria-controls="custom-tabs-two-servico" aria-selected="false">Serviço</a>
                  </li>
                 <li class="nav-item">
                     <a class="nav-link" id="custom-tabs-two-contato-tab" data-toggle="pill" href="#custom-tabs-two-contato" role="tab" aria-controls="custom-tabs-two-contato" aria-selected="false">Contato</a>
