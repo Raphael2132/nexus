@@ -654,7 +654,7 @@
         var altera_permissoes_acesso = {!! json_encode($altera_permissoes_acesso) !!};
         var tipo_usuario = {!! json_encode($tipo_usuario) !!};
 
-        if(altera_permissoes_acesso == 'N' || tipo_usuario != 'A' || tipo_usuario != 'M'){
+        if(altera_permissoes_acesso == 'N' || (tipo_usuario != 'A' && tipo_usuario != 'M')){
             $("#btn-submit-permissao").hide();
             $("#acessoCadastros").attr("disabled", true);
             $("#altPerAcesso").attr("disabled", true);
