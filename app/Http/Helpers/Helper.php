@@ -118,7 +118,7 @@ class Helper
 
     public static function limpaHoraMinuto(string $hora)
     {
-        $horaLimpa = str_replace(" =>", "", $hora);
+        $horaLimpa = str_replace(":", "", $hora);
         return $horaLimpa;
     }
 
