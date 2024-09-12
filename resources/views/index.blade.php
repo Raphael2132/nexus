@@ -47,7 +47,7 @@
                     <!-- não iremos cadastrar aqui<li><a href="{{ route('register') }}" >Cadastrar</a></li>-->
                 @endif
             @endauth
-            <a class="link animated fadeInUp delay-1s" href="#">Saiba Mais</a>
+            <a class="link animated fadeInUp delay-1s" href="https://nexuserpcloud.com.br/" target="_blank">Saiba Mais</a>
         </div>
     </header><!--header-end-->
 </div>

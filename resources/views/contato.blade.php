@@ -33,11 +33,11 @@
                 </div>
                 <div class="contact-info-box phone clearfix">
                 	<h3><i class="fa-solid fa-phone"></i>Telefone:</h3>
-                	<span>(19) 9 9901-9111 / (19) 9 9230-4154</span>
+                	<span>(19) 9 9230-4154</span>
                 </div>
                 <div class="contact-info-box email clearfix">
                 	<h3><i class="fa-solid fa-envelope"></i></i>Email:</h3>
-                	<span>atendimentofusiontech.com@fusiontech.com</span>
+                	<span>suporte@fusiontechsystems.com.br</span>
                 </div>
             	<div class="contact-info-box hours clearfix">
                 	<h3><i class="fa-solid fa-clock"></i></i>Horário Atendimento:</h3>
@@ -50,7 +50,7 @@
                     <li class="youtube"><a href="#"><i class="fa-brands fa-youtube"></i></a></li>
                     <li class="instagram"><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
                     <li class="whatsapp"><a href="#"><i class="fa-brands fa-whatsapp"></i></a></li>
-                    <li class="site"><a href="#"><i class="fa-solid fa-globe"></i></a></li>
+                    <li class="site"><a href="https://fusiontechsystems.com.br/" target="_blank"><i class="fa-solid fa-globe"></i></a></li>
                 </ul>
                 </div>
             </div>
