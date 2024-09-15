@@ -150,7 +150,19 @@ class CadastroEmpresaController extends Controller
                 'empresa_insc_estadual' => $request->insEstadual,
                 'empresa_insc_municipal' => $request->insMunicipal,
                 'empresa_nome_logo' => $request->nomeLogo]);
-        }        
+
+        }elseif($atualiza == 'smtp'){//Aba de dados do email smtp
+
+            $atualizaempresa = DB::table('cadastro_empresas')
+                ->where('empresa_id', $empresa)
+                ->where('empresa_codigo', $empresa_cod)
+                ->update(['empresa_smtp_host' => $request->hostSMTP,
+                'empresa_smtp_port' => $request->portaSMTP,
+                'empresa_smtp_username' => $request->userSMTP,
+                'empresa_smtp_password' => $request->senhaSMTP,
+                'empresa_smtp_encryption' => $request->criptSMTP,
+                'empresa_smtp_from_address' => $request->emailSMTP]);
+        }            
         
         return redirect(route('empresa.editarCadastro', ['dadosEmpresa' => $empresa_cod]))->with('success', 'Dados atualizados com sucesso!');
     }

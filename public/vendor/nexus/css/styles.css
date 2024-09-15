@@ -77,14 +77,20 @@
     color: #fff !important;
 }
 
-.layout-navbar-fixed .wrapper .sidebar-nexus .brand-link:not([class*="navbar"]) {
-    background: transparent ;
-}
-
 [class*="sidebar-dark"] .btn-sidebar, [class*="sidebar-dark"] .form-control-sidebar {
     background: #020017 linear-gradient(180deg, #06023e, #020017) repeat-x !important;
     border: 1px solid #56606a !important;
     color: #fff !important;
+}
+
+/* ***** Tema do Sidebar (Cabeçalho) ***** */
+.layout-navbar-fixed .wrapper .sidebar-nexus .brand-link:not([class*="navbar"]) {
+    background: #F8F8FF;
+    color: #008f8f;
+}
+
+[class*="sidebar-dark"] .brand-link {
+    border-bottom: 2px solid #008f8f;
 }
 
 /* ***** Tema do User Menu (Botão de Sair do Sistema) ***** */

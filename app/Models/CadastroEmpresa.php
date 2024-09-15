@@ -20,7 +20,13 @@ class CadastroEmpresa extends Model
         'empresa_tel_comercial',
         'empresa_insc_estadual',
         'empresa_insc_municipal',
-        'empresa_nome_logo'
+        'empresa_nome_logo',
+        'empresa_smtp_host',
+        'empresa_smtp_port',
+        'empresa_smtp_username',
+        'empresa_smtp_password',
+        'empresa_smtp_encryption',
+        'empresa_smtp_from_address'
     ];
 
     protected $table = 'cadastro_empresas';

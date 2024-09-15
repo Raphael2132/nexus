@@ -47,13 +47,20 @@
                 @endphp
                 <div class="row"> 
                     <!-- Empresa do Setor -->
-                    <x-adminlte-select name="empresa" label="Empresa" fgroup-class="col-md-12">
+                    <x-adminlte-select name="empresa" fgroup-class="col-md-12">
+                        <x-slot name="label">
+                            Empresa <span style="color:red;">*</span>
+                        </x-slot>
                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$emp_sel}}"/>
                     </x-adminlte-select>
                 </div>
                 <div class="row">
                     <!-- Prestador responsavel da TMO -->
-                    <x-adminlte-input name="cliente" label="Cliente" type="search" list="clientes" value="" fgroup-class="col-md-12"/>
+                    <x-adminlte-input name="cliente" type="search" list="clientes" value="" fgroup-class="col-md-12">
+                        <x-slot name="label">
+                            Cliente <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
                 <x-slot name="footerSlot">
                     <x-adminlte-button class="btn-nexus" type="submit" label="Prosseguir" theme="info" icon="fa-solid fa-share-from-square"/>

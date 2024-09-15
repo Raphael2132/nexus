@@ -36,7 +36,17 @@ require __DIR__.'/auth.php';
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+/*
+|--------------------------------------------------------------------------
+| Contatp
+|--------------------------------------------------------------------------
+|
+| Área destina as rotas envolvidas no contato e evio do email de contato.
+|
+*/
 Route::get('/contato', [App\Http\Controllers\HomeController::class, 'contato'])->name('contato');
+Route::post('/contato/email', [App\Http\Controllers\ContatoController::class, 'enviarEmailContato'])->name('contato.email');
 
 /*
 |--------------------------------------------------------------------------

@@ -34,7 +34,7 @@ return [
     */
 
     'mailers' => [
-        'smtp' => [
+        'smtp_fusiontech' => [
             'transport' => 'smtp',
             'url' => env('MAIL_URL'),
             'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
@@ -44,6 +44,17 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
+        ],
+
+        'smtp_cliente' => [
+            'transport' => 'smtp',
+            'host' => null,
+            'port' => null,
+            'encryption' => null,
+            'username' => null,
+            'password' => null,
+            'timeout' => null,
+            'auth_mode' => null,
         ],
 
         'ses' => [
@@ -99,8 +110,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'suporte@fusiontechsystems.com.br'),
+        'name' => env('MAIL_FROM_NAME', 'Nexus'),
     ],
 
     /*

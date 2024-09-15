@@ -35,6 +35,9 @@
                 <li class="nav-item">
                     <a class="nav-link" id="custom-tabs-two-endereco-tab" data-toggle="pill" href="#custom-tabs-two-endereco" role="tab" aria-controls="custom-tabs-two-endereco" aria-selected="false">Endereço</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-smtp-tab" data-toggle="pill" href="#custom-tabs-two-smtp" role="tab" aria-controls="custom-tabs-two-smtp" aria-selected="false">Email SMTP</a>
+                </li>
                 <div class="card-tools ml-auto">          
                     <button type="button" class="btn btn-tool" data-card-widget="maximize">
                         <i class="fas fa-lg fa-expand"></i>     
@@ -339,6 +342,94 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Aba dos dados do Email SMTP da empresa -->
+                <div class="tab-pane fade" id="custom-tabs-two-smtp" role="tabpanel" aria-labelledby="custom-tabs-two-smtp-tab">
+                    <form method="post" action="{{route('empresa.atualizar', ['empresa' => $dadosEmpresa[0]['empresa_id'], 'empresa_cod' => $dadosEmpresa[0]['empresa_codigo'], 'atualiza' => 'smtp'])}}" id="formulario-smtp" novalidate="novalidate">
+                    @csrf 
+                    @method('post')
+                        <div class="row">
+                            <!-- Servidor Host -->
+                            <x-adminlte-input name="hostSMTP" type="text" fgroup-class="col-md-6" value="{{$dadosEmpresa[0]['empresa_smtp_host'] }}">
+                                <x-slot name="label">
+                                    Servidor Host <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-server"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
+
+                            <!-- Porta Servidor SMTP -->
+                            <x-adminlte-input name="portaSMTP" type="number" fgroup-class="col-md-6" value="{{$dadosEmpresa[0]['empresa_smtp_port'] }}">
+                                <x-slot name="label">
+                                    Porta <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-door-closed"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
+                        </div>
+
+                        <div class="row">
+                            <!-- Criptografia SMTP -->
+                            <x-adminlte-select name="criptSMTP" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Criptografia <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-adminlte-options :options="['SSL' => 'SSL','TLS' => 'TLS']" empty-option="Selecione..." selected="{{$dadosEmpresa[0]['empresa_smtp_encryption'] }}"/>
+                            </x-adminlte-select>
+
+                            <!-- Email do Remetente -->
+                            <x-adminlte-input name="emailSMTP" type="email" placeholder="email@exemplo.com" fgroup-class="col-md-6" value="{{$dadosEmpresa[0]['empresa_smtp_from_address'] }}">
+                                <x-slot name="label">
+                                    Email Remetente <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-envelope"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
+                        </div>
+
+                        <div class="row">
+                            <!-- Usuario -->
+                            <x-adminlte-input name="userSMTP" type="text" placeholder="Usuário SMTP" fgroup-class="col-md-6" autocomplete="off" value="{{$dadosEmpresa[0]['empresa_smtp_username'] }}">
+                                <x-slot name="label">
+                                    Usuário SMTP<span style="color:red;">*</span>
+                                </x-slot>
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-id-badge fa-lg"></i>
+                                    </div>
+                                </x-slot>
+                            </x-adminlte-input>
+
+                            <!-- Senha -->
+                            <x-adminlte-input name="senhaSMTP" type="password" placeholder="Senha" igroup-size="md" fgroup-class="col-md-6" autocomplete="new-password" value="{{$dadosEmpresa[0]['empresa_smtp_password'] }}">
+                                <x-slot name="prependSlot">
+                                    <div class="input-group-text x-slot-nexus">
+                                        <i class="fa-solid fa-key"></i>
+                                    </div>
+                                </x-slot>
+                                <x-slot name="label">
+                                    Senha SMTP<span style="color:red;">*</span>
+                                </x-slot>
+                                <x-slot name="appendSlot">
+                                    <x-adminlte-button class="toggle-password btn-outline-nexus" theme="" data-target="senhaSMTP" icon="fa fa-eye"/>
+                                </x-slot>
+                            </x-adminlte-input>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
         <div class="card-footer">
@@ -370,10 +461,32 @@
 @section('plugins.Select2', true)
 @section('plugins.Inputmask', true)
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
 @section('plugins.jqueryValidation', true)
 
 @section('js')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+
+        togglePasswordButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const targetInput = document.querySelector(`input[name="${this.getAttribute('data-target')}"]`);
+                const icon = this.querySelector('i');
+
+                if (targetInput.type === 'password') {
+                    targetInput.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    targetInput.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+    });
+</script>
+
 <script>
 
     $(document).ready(function() {
@@ -610,6 +723,76 @@ $(function () {
       $(element).removeClass('is-invalid');
     }
   });
+});
+</script>
+
+<script>
+$(function () {
+    $('#formulario-smtp').validate({
+        rules: {
+            hostSMTP: {
+                required: true,
+                maxlength: 80
+            },
+            portaSMTP: {
+                required: true,
+                maxlength: 3
+            },
+            userSMTP: {
+                required: true,
+                maxlength: 60
+            },
+            senhaSMTP: {
+                required: true,
+                maxlength: 30
+            },
+            criptSMTP: {
+                required: true,
+                maxlength: 3
+            },
+            emailSMTP: {
+                required: true,
+                maxlength: 80
+            },
+        },
+        messages: {
+            hostSMTP: {
+                required: "Por Favor informe o Servidor Host",
+                maxlength: "Informe no máximo 80 caracteres para o Servidor Host"
+            },
+            portaSMTP: {
+                required: "Por Favor informe a Porta do Servidor",
+                maxlength: "Informe no máximo 3 dígitos para a Porta do Servidor"
+            },
+            userSMTP: {
+                required: "Por Favor informe o Usuário SMTP",
+                maxlength: "Informe no máximo 60 caracteres para o Usuário SMTP"
+            },
+            senhaSMTP: {
+                required: "Por Favor informe a Senha SMTP",
+                maxlength: "Informe no máximo 30 caracteres na Senha SMTP"
+            },
+            criptSMTP: {
+                required: "Por Favor informe a Criptografia do SMTP",
+                maxlength: "Informe no máximo 3 caracteres na Criptografia"
+            },
+            emailSMTP: {
+                required: "Por Favor informe um o Email de Remetente",
+                maxlength: "Informe no máximo 80 caracteres no Email de Remetente"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+        $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+        $(element).removeClass('is-invalid');
+        }
+    });
 });
 </script>
 
