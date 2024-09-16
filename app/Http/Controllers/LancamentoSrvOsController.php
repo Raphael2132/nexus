@@ -43,6 +43,9 @@ class LancamentoSrvOsController extends Controller
             return redirect()->back()->with('error', 'É obrigátorio informar o cliente!');
         }
 
+        $dadosOS = DB::table('lancamento_srv_os')->where('os_emp', 'E00001')->where('os_nos', 55)->first();
+        //return view('email.emailEncerramentoOS',['ordemServico' => $dadosOS ]);
+
         return view('/lancamentos/servico/controleAberturaOS',['empresa'=>$request->empresa,'cliente'=>$cliente]);
     }
 

@@ -14,6 +14,8 @@ use Dompdf\Options;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Helpers\Helper;
 use App\Http\Helpers\HelperControleProducao;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EmailEncerraOS;
 
 class PainelAberturaOSController extends Controller
 {
@@ -543,6 +545,29 @@ class PainelAberturaOSController extends Controller
         $requisicoesOS = DB::table('lancamento_srv_os_requisicoes')->where('req_emp', $empresa)->where('req_nos', $numOS)->orderby('req_seq', 'asc')->get();
         $servicosOS = DB::table('lancamento_srv_os_servicos')->where('srv_emp', $empresa)->where('srv_nos', $numOS)->orderby('srv_req', 'asc')->orderby('srv_seq', 'asc')->get();
         $dadosOS = DB::table('lancamento_srv_os')->where('os_emp', $empresa)->where('os_nos', $numOS)->get();
+
+        //Fazer a verificação se avia o cliente do encerramento da OS
+        if($dadosOS[0]->os_cli_avs == "S"){
+
+            $dadosEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $dadosOS[0]->os_emp)->first();
+            $dadosCli = DB::table('cadastro_clientes')->where('cliente_codigo', $dadosOS[0]->os_cli)->first();
+
+             // Verificar se a empresa tem configurações de e-mail específicas
+            if (!empty($dadosEmp->empresa_smtp_host) && !empty($dadosCli->cliente_email)) {
+
+                // Configuração dinâmica do SMTP para o envio pela empresa
+                config([
+                    'mail.mailers.smtp_cliente.host' => $dadosEmp->empresa_smtp_host,
+                    'mail.mailers.smtp_cliente.port' => $dadosEmp->empresa_smtp_port,
+                    'mail.mailers.smtp_cliente.encryption' => $dadosEmp->empresa_smtp_encryption,
+                    'mail.mailers.smtp_cliente.username' => $dadosEmp->empresa_smtp_username,
+                    'mail.mailers.smtp_cliente.password' => $dadosEmp->empresa_smtp_password,
+                ]);
+
+                // Usar o mailer específico da empresa
+                Mail::mailer('smtp_cliente')->to($dadosCli->cliente_email)->send(new EmailEncerraOS($dadosOS[0],$dadosEmp->empresa_smtp_from_address));
+            }
+        }
 
         session(['glo_os_dadosEmpresaEndereco' => $empresaEndereco]);
         session(['glo_os_dadosRequisicoes' => $requisicoesOS]);
