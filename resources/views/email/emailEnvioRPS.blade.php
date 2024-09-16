@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Encerramento de Ordem de Serviço</title>
+    <title>Emissão do RPS</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -63,8 +63,8 @@
     </style>
 </head>
 @php 
-    $dadosCli = DB::table('cadastro_clientes')->where('cliente_codigo', $ordemServico->os_cli)->first();
-    $dadosEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $ordemServico->os_emp)->first();
+    $dadosCli = DB::table('cadastro_clientes')->where('cliente_codigo', $dadosNFS->nfs_cli)->first();
+    $dadosEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $dadosNFS->nfs_emp)->first();
 
     if(empty($dadosEmp->empresa_email)){
         $email = '';
@@ -88,16 +88,6 @@
         }
     }
 
-    $dadosReq = DB::table('lancamento_srv_os_requisicoes')->where('req_emp', $ordemServico->os_emp)->where('req_nos', $ordemServico->os_nos)->get();
-    $servicos = '';
-    foreach($dadosReq as $req){
-        if(empty($servicos)){
-            $servicos = $req->req_dsc;
-        }else{
-            $servicos .= " | ".$req->req_dsc;
-        }
-    }
-
     // Obter o nome do host do servidor
     if(!empty($_SERVER['SERVER_NAME'])){
         $serverName = $_SERVER['SERVER_NAME'];
@@ -107,7 +97,7 @@
 
     // Verificar se está rodando no localhost
     if ($serverName != '127.0.0.1') {
-        $logoEmp = "https://".$serverName."/logo/".$dadosEmp->empresa_cnpj."/".$ordemServico->os_emp."_logo.png"; 
+        $logoEmp = "https://".$serverName."/logo/".$dadosEmp->empresa_cnpj."/".$dadosNFS->nfs_emp."_logo.png"; 
         $logoNexus = "https://".$serverName."/img/sistema/logo_nexus_v2.png"; 
     } else {
         $logoEmp = ""; 
@@ -122,18 +112,16 @@
         </div>
 
         <!-- Conteúdo do email -->
-        <h1>Encerramento de Ordem de Serviço</h1>
+        <h1>Emissão do RPS</h1>
         
         <p>Olá, <strong>{{ $dadosCli->cliente_nome }}</strong>,</p>
 
-        <p>É com satisfação que informamos que sua ordem de serviço <strong>Nº {{ str_pad($ordemServico->os_nos, 6, '0', STR_PAD_LEFT) }}</strong> foi encerrada com sucesso!</p>
+        <p>É com satisfação que informamos que o RPS referente a OS <strong>Nº {{ str_pad($dadosNFS->nfs_nfhdr_num_ped, 6, '0', STR_PAD_LEFT) }}</strong> foi gerada!</p>
         
         <p>Abaixo estão os detalhes da OS:</p>
         <ul>
-            <li><strong>Serviços:</strong> {{ $servicos }}</li>
-            <li><strong>Valor Total:</strong> R${{ Helper::formataValorMonetario($ordemServico->os_vlt) }}</li>
-            <li><strong>Data de Abertura:</strong> {{ Helper::formataDataHora($ordemServico->os_dha) }}</li>
-            <li><strong>Data de Encerramento:</strong> {{ Helper::formataDataHora($ordemServico->os_dhf) }}</li>
+            <li><strong>Valor Total:</strong> R${{ Helper::formataValorMonetario($dadosNFS->nfs_vlr_tot) }}</li>
+            <li><strong>Data da Emissão:</strong> {{ Helper::formataData($dadosNFS->nfs_dt_emi).' '.Helper::formataHoraMinuto($dadosNFS->nfs_hr_emi) }}</li>
             <li><strong>Empresa Prestadora:</strong> {{ $dadosEmp->empresa_nome }}</li>
         </ul>
 

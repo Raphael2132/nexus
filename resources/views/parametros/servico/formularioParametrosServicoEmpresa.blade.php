@@ -148,6 +148,24 @@
                     </x-adminlte-select>
                 </div>
 
+                <div class="row">
+                    <!-- Avisa Encerramento da OS -->
+                    <x-adminlte-select name="encOsEmail" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Avisa Encerramento da OS <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parsrv_enc_os_email}}"/>
+                    </x-adminlte-select>
+
+                    <!-- Envia RPS por Email -->
+                    <x-adminlte-select name="envRpsEmail" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Envia RPS por Email <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parsrv_env_rps_email}}"/>
+                    </x-adminlte-select>
+                </div>
+
                 <!-- /.card -->
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">

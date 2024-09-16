@@ -1831,12 +1831,12 @@ $locPrtSrv = '';
                             </div>
                             <div class="row">
                                 <!-- Gera novo orçamento -->
-                                <x-adminlte-select name="clienteAguardaTermino" label="Cliente Aguarda Final do Serviço" fgroup-class="col-md-6">
+                                <x-adminlte-select name="clienteAguardaTermino" label="Cliente Aguarda o Final do Serviço" fgroup-class="col-md-6">
                                     <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$glo_os_dadosOS[0]->os_cli_agr}}"/>
                                 </x-adminlte-select>
                                 
                                 <!-- Gera novo orçamento -->
-                                <x-adminlte-select name="avisaClienteTermino" label="Avisa Cliente o Final do Serviço" fgroup-class="col-md-6">
+                                <x-adminlte-select name="avisaClienteTermino" label="Avisa Cliente do Encerramento da OS" fgroup-class="col-md-6">
                                     <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$glo_os_dadosOS[0]->os_cli_avs}}"/>
                                 </x-adminlte-select>
                             </div>
@@ -4333,9 +4333,10 @@ $locPrtSrv = '';
                 success: function(response) {
                     if (response.status === 'success') {
                         // Abre o PDF em uma nova aba
-                        var url = "{{ route('impresaoRPS.rpsPDF', [':empresa', ':numControle' ]) }}";
+                        var url = "{{ route('impresaoRPS.rpsPDF', [':empresa', ':numControle', ':appOrigem' ]) }}";
                         url = url.replace(':empresa', response.empresa);
                         url = url.replace(':numControle', response.numeroHDR);
+                        url = url.replace(':appOrigem', appOrigem);
 
                         window.open(url, '_blank');
                     } else if (response.status === 'error') {

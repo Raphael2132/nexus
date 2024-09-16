@@ -167,6 +167,9 @@ class LancamentoSrvOsController extends Controller
             $horaPrev = date('Hi', strtotime($dataHoraPrev));
         }
 
+        //Verifica se por padrão envia email no encerramento da OS
+        $parSrv = DB::table('parametros_srv_empresas')->where('parsrv_emp', $empresa)->first();
+
         $usuario = Auth::user()->usuario_codigo;
 
         $nextval=DB::select("SELECT nextval('sq_lancamento_srv_numero_os')")[0]->nextval;
@@ -194,6 +197,7 @@ class LancamentoSrvOsController extends Controller
             'os_loc_srv_uf' => $loc_srv_uf,
             'os_loc_srv_pais' => $loc_srv_pais,
             'os_loc_srv_ibge_cod_mun' => $loc_srv_ibge_cod_mun,
+            'os_cli_avs' => $parSrv->parsrv_enc_os_email,
         ];
         
         $novaOS = LancamentoSrvOs::create($dados);

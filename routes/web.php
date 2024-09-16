@@ -514,7 +514,7 @@ Route::get('/faturamento/notas/impressao/nfse/{empresa}/{numControle}', [App\Htt
 
 /* ********** Rotas de Impressão de RPS ********** */
 Route::get('/faturamento/notas/impressao/validaRPS/{empresa}/{numOS}/{appOrigem}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'validaRPS'])->name('impresaoRPS.validaRPS');
-Route::get('/faturamento/notas/impressao/rps/{empresa}/{numControle}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'rpsGerarPDF'])->name('impresaoRPS.rpsPDF');
+Route::get('/faturamento/notas/impressao/rps/{empresa}/{numControle}/{appOrigem}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'rpsGerarPDF'])->name('impresaoRPS.rpsPDF');
 
 
 /* ********** Rotas de Emissao de NF ********** */

@@ -36,7 +36,9 @@ class ParametrosSrvEmpresasController extends Controller
             'parsrv_grp_srv' => $request->grupoSrv,
             'parsrv_cod_srv' => $request->codigoSrv,
             'parsrv_exg_iss' => $request->exiISS,
-            'parsrv_iss_ret' => $request->issRet]);
+            'parsrv_iss_ret' => $request->issRet,
+            'parsrv_env_rps_email' => $request->envRpsEmail,
+            'parsrv_enc_os_email' => $request->encOsEmail]);
         
         return redirect(route('parametrosSrvEmp.editarCadastro', ['empresa' => $request->empresa]))->with('success', 'Parâmetros Gerais de Serviços atualizado com sucesso!');
     }

@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\DB;
 use stdClass;
 //use Barryvdh\DomPDF\Facade\Pdf;
 //use PDF;
-//use Mpdf\Mpdf;
-//use TCPDF;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EmailRPS;
 
 class FaturamentoNotasImpressaoController extends Controller
 {
@@ -49,7 +49,7 @@ class FaturamentoNotasImpressaoController extends Controller
         return response($output, 200)->header('Content-Type', 'application/pdf');
     }
 
-    public function rpsGerarPDF($empresa, $numControle)
+    public function rpsGerarPDF($empresa, $numControle, $appOrigem)
     {
         // Opções de configuração
         $options = new Options();
@@ -78,6 +78,69 @@ class FaturamentoNotasImpressaoController extends Controller
 
         // Saída do PDF (nome do arquivo)
         $output = $dompdf->output();
+
+        //Verifica a app de origem que está imprimindo o RPS
+        if($appOrigem == 'ABERTURA_OS'){
+
+            //Verifica se envia RPS no email do cliente
+            $parSrv = DB::table('parametros_srv_empresas')->where('parsrv_emp', $empresa)->first();
+            $dadosNfs = DB::table('faturamento_nfs')->where('nfs_emp', $empresa)->where('nfs_nfhdr_num', $numControle)->first();
+            $dadosCli = DB::table('cadastro_clientes')->where('cliente_codigo', $dadosNfs->nfs_cli)->first();
+            $dadosEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $empresa)->first();
+
+            if($parSrv->parsrv_env_rps_email == 'S' && !empty($dadosCli->cliente_email) && !empty($dadosEmp->empresa_smtp_host) && $dadosNfs->nfs_rps_env_email == 'N'){
+
+                // Obter o nome do host do servidor
+                if(!empty($_SERVER['SERVER_NAME'])){
+                    $serverName = $_SERVER['SERVER_NAME'];
+                }else{
+                    $serverName = '';
+                }
+
+                // Verificar se está rodando no localhost
+                if ($serverName != '127.0.0.1') {
+
+                    $temporaryDirectory = sys_get_temp_dir() . '/' . $dadosEmp->empresa_cnpj;
+
+                    if (!is_dir($temporaryDirectory)) {
+                        mkdir($temporaryDirectory, 0755, true);
+                    }
+
+                } else {
+
+                    $temporaryDirectory = $dadosEmp->empresa_cnpj.'/file/doc/tmp';
+                    $temporaryDirectory = public_path($temporaryDirectory);
+
+                    if (!is_dir($temporaryDirectory)) {
+                        mkdir($temporaryDirectory, 0755, true);
+                    }
+                } 
+
+                // Caminho onde o PDF será salvo
+                $filePath = $temporaryDirectory.'/rps_' . $dadosNfs->nfs_nrps . '.pdf';
+
+                // Salva o PDF gerado no servidor
+                file_put_contents($filePath, $output);
+
+                // Configuração dinâmica do SMTP para o envio pela empresa
+                config([
+                    'mail.mailers.smtp_cliente.host' => $dadosEmp->empresa_smtp_host,
+                    'mail.mailers.smtp_cliente.port' => $dadosEmp->empresa_smtp_port,
+                    'mail.mailers.smtp_cliente.encryption' => $dadosEmp->empresa_smtp_encryption,
+                    'mail.mailers.smtp_cliente.username' => $dadosEmp->empresa_smtp_username,
+                    'mail.mailers.smtp_cliente.password' => $dadosEmp->empresa_smtp_password,
+                ]);
+
+                // Usar o mailer específico da empresa
+                Mail::mailer('smtp_cliente')->to($dadosCli->cliente_email)->send(new EmailRPS($dadosNfs, $dadosEmp->empresa_smtp_from_address, $filePath));
+
+                // Atualiza o status para indicar que o e-mail foi enviado
+                DB::table('faturamento_nfs')
+                ->where('nfs_emp', $empresa)
+                ->where('nfs_nfhdr_num', $numControle)
+                ->update(['nfs_rps_env_email' => 'S']);
+            }
+        }
 
         // Retorna a resposta HTTP com o PDF para abrir em uma nova aba
         return response($output, 200)->header('Content-Type', 'application/pdf');
