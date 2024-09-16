@@ -39,7 +39,7 @@ class EmailRPS extends Mailable
                     ->subject('Emissão do RPS referente a OS Nº ' . $os)
                     ->view('email.emailEnvioRPS')
                     ->attach($this->filePath, [
-                        'as' => 'RPS_'.$this->dadosNfs->nfs_nrps.'.pdf',
+                        'as' => 'RPS_'.$this->dadosNFS->nfs_nrps.'.pdf',
                         'mime' => 'application/pdf',
                     ])
                     ->with('dadosNFS', $this->dadosNFS);
