@@ -47,8 +47,10 @@
         }
         .footer .text {
             text-align: center;
+            color: white;
         }
         .footer .linha2 {
+            color: white;
             text-align: center;
             font-size: 12px;
         }

@@ -46,9 +46,11 @@
             width: 40%;
         }
         .footer .text {
+            color: white;
             text-align: center;
         }
         .footer .linha2 {
+            color: white;
             text-align: center;
             font-size: 12px;
         }
