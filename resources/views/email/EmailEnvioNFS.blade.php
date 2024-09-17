@@ -98,7 +98,7 @@
     // Verificar se está rodando no localhost
     if (!empty($serverName)) {
         $logoEmp = "https://".$serverName."/logo/".$dadosEmp->empresa_cnpj."/".$dadosNFS->nfs_emp."_logo.png"; 
-        $logoNexus = "https://".$serverName."/img/sistema/logo_nexus_v2.png";
+        $logoNexus = "https://".$serverName."/img/sistema/logo_nexus_v2.png"; 
     }
 @endphp
 <body>
