@@ -27,7 +27,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Nexus'),
+    'name' => env('APP_NAME', 'Nexus ERP Cloud'),
 
     /*
     |--------------------------------------------------------------------------
@@ -183,6 +183,7 @@ return [
         App\Providers\EmpresaServiceProvider::class,
         App\Providers\ModulosServiceProvider::class,
         App\Providers\AdminLTEConfigServiceProvider::class,
+        App\Providers\CustomNotificationServiceProvider::class,
     ])->toArray(),
 
     /*

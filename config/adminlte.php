@@ -168,12 +168,12 @@ return [
     |
     */
 
-    'classes_auth_card' => 'card-outline card-navy',
-    'classes_auth_header' => '',
+    'classes_auth_card' => '',
+    'classes_auth_header' => 'card-outline-nexus',
     'classes_auth_body' => '',
     'classes_auth_footer' => '',
     'classes_auth_icon' => '',
-    'classes_auth_btn' => 'btn-flat btn-info',
+    'classes_auth_btn' => 'btn-nexus',
 
     /*
     |--------------------------------------------------------------------------
