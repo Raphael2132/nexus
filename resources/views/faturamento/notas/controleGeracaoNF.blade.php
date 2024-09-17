@@ -131,12 +131,12 @@
                                                 $geraRPS = DB::table('parametros_fat_nfs')->where('parnfs_empresa', $empresa)->first();
                                             @endphp
                                             @if($moduloRPS->modulo_emissao_rps == "S" && $geraRPS->parnfs_impressao_rps == "S")
-                                                <b class="d-block"><a href="{{route('impresaoRPS.rpsPDF',['empresa' => $nota->nfhdr_emp, 'numControle' => $nota->nfhdr_num])}}" target="_blank">Abrir RPS</a></b>
+                                                <b class="d-block"><a href="{{route('impresaoRPS.rpsPDF',['empresa' => $nota->nfhdr_emp, 'numControle' => $nota->nfhdr_num, 'appOrigem' => 'IMPRESSAO'])}}" target="_blank">Abrir RPS</a></b>
                                             @else
                                                 <b class="d-block">NFS-e Não Gerada</b>
                                             @endif
                                         @else
-                                        <b class="d-block"><a href="{{route('impresaoNF.nfsePDF',['empresa' => $nota->nfhdr_emp, 'numControle' => $nota->nfhdr_num])}}" target="_blank">Abrir NFS-e</a></b>
+                                        <b class="d-block"><a href="{{route('impresaoNF.nfsePDF',['empresa' => $nota->nfhdr_emp, 'numControle' => $nota->nfhdr_num, 'appOrigem' => 'IMPRESSAO'])}}" target="_blank">Abrir NFS-e</a></b>
                                         @endif
                                     </p>
                                 </td>

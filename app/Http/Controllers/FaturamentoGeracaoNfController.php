@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\DB;
 use stdClass;
 use App\Http\Controllers\Nfs\Core\Nfsxml;
 use File;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EmailNFS;
+
 class FaturamentoGeracaoNfController extends Controller
 {
     //private $nfsxml;
@@ -127,6 +130,39 @@ class FaturamentoGeracaoNfController extends Controller
             ->where('rechdr_id', $idRecebimento)
             ->where('rechdr_emp', $empresa)
             ->update(['rechdr_sts' => 'F']);
+        }
+
+        if($stsEnvio[0]->nfsenv_sts == 3){
+
+            //Verifica se envia a NFS-e no email do cliente
+            $parFat = DB::table('parametros_fat_empresas')->where('parfat_emp', $empresa)->first();
+            $dadosNfs = DB::table('faturamento_nfs')->where('nfs_emp', $empresa)->where('nfs_nfhdr_num', $nota->nfhdr_num)->first();
+            $dadosCli = DB::table('cadastro_clientes')->where('cliente_codigo', $dadosNfs->nfs_cli)->first();
+            $dadosEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $empresa)->first();
+
+            if($parFat->parfat_env_nfs_email == 'S' && !empty($dadosCli->cliente_email) && !empty($dadosEmp->empresa_smtp_host)){
+            
+                $filePath = FaturamentoNotasImpressaoController::nfseGerarPDF($empresa, $nota->nfhdr_num, 'EMAIL');
+
+                // Configuração dinâmica do SMTP para o envio pela empresa
+                config([
+                    'mail.mailers.smtp_cliente.host' => $dadosEmp->empresa_smtp_host,
+                    'mail.mailers.smtp_cliente.port' => $dadosEmp->empresa_smtp_port,
+                    'mail.mailers.smtp_cliente.encryption' => $dadosEmp->empresa_smtp_encryption,
+                    'mail.mailers.smtp_cliente.username' => $dadosEmp->empresa_smtp_username,
+                    'mail.mailers.smtp_cliente.password' => $dadosEmp->empresa_smtp_password,
+                ]);
+
+                // Usar o mailer específico da empresa
+                Mail::mailer('smtp_cliente')->to($dadosCli->cliente_email)->send(new EmailNFS($dadosNfs, $dadosEmp->empresa_smtp_from_address, $filePath));
+
+                // Atualiza o status para indicar que o e-mail foi enviado
+                DB::table('faturamento_nfs')
+                ->where('nfs_emp', $empresa)
+                ->where('nfs_nfhdr_num', $nota->nfhdr_num)
+                ->update(['nfs_nfs_env_email' => 'S']);                
+
+            }
         }
         
         return view('/faturamento/notas/controleGeracaoNF', [

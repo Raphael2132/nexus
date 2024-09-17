@@ -51,6 +51,7 @@ class FaturamentoNfs extends Model
         'nfs_cod_ver',
         'nfs_vlr_des_iss_inc',
         'nfs_obs',
-        'nfs_pais_tom'
+        'nfs_pais_tom',
+        'nfs_rps_env_email'
     ];
 }

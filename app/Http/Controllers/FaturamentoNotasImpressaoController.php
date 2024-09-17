@@ -14,7 +14,7 @@ use App\Mail\EmailRPS;
 
 class FaturamentoNotasImpressaoController extends Controller
 {
-    public function nfseGerarPDF($empresa, $numControle)
+    public static function nfseGerarPDF($empresa, $numControle, $appOrigem)
     {
 
         // Opções de configuração
@@ -45,8 +45,51 @@ class FaturamentoNotasImpressaoController extends Controller
         // Saída do PDF (nome do arquivo)
         $output = $dompdf->output();
 
-        // Retorna a resposta HTTP com o PDF para abrir em uma nova aba
-        return response($output, 200)->header('Content-Type', 'application/pdf');
+        //Se for Origem do Email salva o pdf no servidor e devolve o caminho e se for impressão abre o PDF na nova aba
+        if($appOrigem == "EMAIL"){
+
+            $dadosNfs = DB::table('faturamento_nfs')->where('nfs_emp', $empresa)->where('nfs_nfhdr_num', $numControle)->first();
+            $dadosEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $empresa)->first();
+
+            // Obter o nome do host do servidor
+            if(!empty($_SERVER['SERVER_NAME'])){
+                $serverName = $_SERVER['SERVER_NAME'];
+            }else{
+                $serverName = '';
+            }
+
+            // Verificar se está rodando no localhost
+            if ($serverName != '127.0.0.1') {
+
+                $temporaryDirectory = sys_get_temp_dir() . '/' . $dadosEmp->empresa_cnpj;
+
+                if (!is_dir($temporaryDirectory)) {
+                    mkdir($temporaryDirectory, 0755, true);
+                }
+
+            } else {
+
+                $temporaryDirectory = $dadosEmp->empresa_cnpj.'/file/doc/tmp';
+                $temporaryDirectory = public_path($temporaryDirectory);
+
+                if (!is_dir($temporaryDirectory)) {
+                    mkdir($temporaryDirectory, 0755, true);
+                }
+            } 
+
+            // Caminho onde o PDF será salvo
+            $filePath = $temporaryDirectory.'/nfs_' . $dadosNfs->nfs_nnfs . '.pdf';
+
+            // Salva o PDF gerado no servidor
+            file_put_contents($filePath, $output);
+
+            return $filePath;
+
+        }else{
+
+            // Retorna a resposta HTTP com o PDF para abrir em uma nova aba
+            return response($output, 200)->header('Content-Type', 'application/pdf');
+        }
     }
 
     public function rpsGerarPDF($empresa, $numControle, $appOrigem)

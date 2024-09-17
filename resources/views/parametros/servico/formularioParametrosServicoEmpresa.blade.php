@@ -288,6 +288,12 @@ $(function () {
             issRet: {
                 required: true
             },
+            encOsEmail: {
+                required: true
+            },
+            envRpsEmail: {
+                required: true
+            },
         },
         messages: {
             empresa: {
@@ -312,6 +318,12 @@ $(function () {
             },
             issRet: {
                 required: "Por Favor informe o ISS Retido"
+            },
+            encOsEmail: {
+                required: "Por Favor informe se Avisa Encerramento da OS"
+            },
+            envRpsEmail: {
+                required: "Por Favor informe se Envia RPS por Email"
             },
         },
         errorElement: 'span',

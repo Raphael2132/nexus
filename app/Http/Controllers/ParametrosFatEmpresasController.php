@@ -29,7 +29,8 @@ class ParametrosFatEmpresasController extends Controller
 
         $atualizausuario = DB::table('parametros_fat_empresas')
         ->where('parfat_emp', $request->empresa)
-        ->update(['parfat_sim' => $request->optSimples]);
+        ->update(['parfat_sim' => $request->optSimples,
+        'parfat_env_nfs_email' => $request->envNfse]);
         
         return redirect(route('parametrosFatEmp.editarCadastro', ['empresa' => $request->empresa]))->with('success', 'Parâmetros Gerais de Faturamento atualizado com sucesso!');
     }

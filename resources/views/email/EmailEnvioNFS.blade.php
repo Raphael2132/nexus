@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Emissão do RPS</title>
+    <title>Emissão da NFS-e</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -112,14 +112,19 @@
         </div>
 
         <!-- Conteúdo do email -->
-        <h1>Emissão do RPS</h1>
+        <h1>Emissão da NFS-e</h1>
         
         <p>Olá, <strong>{{ $dadosCli->cliente_nome }}</strong>,</p>
 
-        <p>É com satisfação que informamos que o RPS referente a OS <strong>Nº {{ str_pad($dadosNFS->nfs_nfhdr_num_ped, 6, '0', STR_PAD_LEFT) }}</strong> foi gerada!</p>
+        @if($dadosNFS->nfs_origem == 'ES')
+        <p>É com satisfação que informamos que a NFS-e <strong>Nº {{ str_pad($dadosNFS->nfs_nnfs, 6, '0', STR_PAD_LEFT) }}</strong> foi gerada!</p>
+        @else
+        <p>É com satisfação que informamos que a NFS-e referente a OS <strong>Nº {{ str_pad($dadosNFS->nfs_nfhdr_num_ped, 6, '0', STR_PAD_LEFT) }}</strong> foi gerada!</p>
+        @endif
         
-        <p>Abaixo estão os detalhes da OS:</p>
+        <p>Abaixo estão os detalhes da NFS-e:</p>
         <ul>
+            <li><strong>NFS-e:</strong> {{ str_pad($dadosNFS->nfs_nnfs, 6, '0', STR_PAD_LEFT) }}</li>
             <li><strong>Valor Total:</strong> R${{ Helper::formataValorMonetario($dadosNFS->nfs_vlr_tot) }}</li>
             <li><strong>Data da Emissão:</strong> {{ Helper::formataData($dadosNFS->nfs_dt_emi).' '.Helper::formataHoraMinuto($dadosNFS->nfs_hr_emi) }}</li>
             <li><strong>Empresa Prestadora:</strong> {{ $dadosEmp->empresa_nome }}</li>
@@ -138,7 +143,7 @@
             <div class="linha1">
                 <img class="logo" src="{{$logoNexus}}" alt="Logo da Empresa"/>
                 <div class="text">
-                    <p>RPS emitido pelo sistema <a href="https://nexuserpcloud.com.br/" target="_blank"><strong>Nexus ERP Cloud</strong></a></p>
+                    <p>NFS-e emitida pelo sistema <a href="https://nexuserpcloud.com.br/" target="_blank"><strong>Nexus ERP Cloud</strong></a></p>
                 </div>
             </div>
             <!-- Linha 2 -->

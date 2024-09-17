@@ -18,6 +18,8 @@ class ParametrosSrvEmpresas extends Model
         'parsrv_grp_srv',
         'parsrv_cod_srv',
         'parsrv_exg_iss',
-        'parsrv_iss_ret'
+        'parsrv_iss_ret',
+        'parsrv_env_rps_email',
+        'parsrv_enc_os_email'
     ];
 }

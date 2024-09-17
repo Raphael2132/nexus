@@ -510,7 +510,7 @@ Route::get('/faturamento/notas/simplificada/consultaReemissaoSimpNF', [App\Http\
 Route::get('/faturamento/notas/simplificada/consultaReemissaoSimpNF/redir', [App\Http\Controllers\FaturamentoNfsSimplificadaController::class, 'redirConsultaReemissaoSimpNF'])->name('reemissaoSimpNF.redirConsultaReemissaoSimpNF');
 
 /* ********** Rotas de Impressão de NFS-e ********** */
-Route::get('/faturamento/notas/impressao/nfse/{empresa}/{numControle}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'nfseGerarPDF'])->name('impresaoNF.nfsePDF');
+Route::get('/faturamento/notas/impressao/nfse/{empresa}/{numControle}/{appOrigem}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'nfseGerarPDF'])->name('impresaoNF.nfsePDF');
 
 /* ********** Rotas de Impressão de RPS ********** */
 Route::get('/faturamento/notas/impressao/validaRPS/{empresa}/{numOS}/{appOrigem}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'validaRPS'])->name('impresaoRPS.validaRPS');

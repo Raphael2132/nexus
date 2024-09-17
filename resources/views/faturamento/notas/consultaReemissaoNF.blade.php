@@ -100,10 +100,10 @@
                 <td class="max-width-sts"><span class="badge badge-info">Geração Iniciada</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'nfReemissao' => $header->nfhdr_num, 'origem' => 'REEMISSAO'])}}">Reenviar</a></td>
                 @endif
                 @if($stsNF == 3)
-                <td class="d-flex justify-content-center"><a class="btn btn-outline-nexus btn-sm" href="{{route('impresaoNF.nfsePDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num])}}" target="_blank">Abrir NFS-e</a></td>
+                <td class="d-flex justify-content-center"><a class="btn btn-outline-nexus btn-sm" href="{{route('impresaoNF.nfsePDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num, 'appOrigem' => 'IMPRESSAO'])}}" target="_blank">Abrir NFS-e</a></td>
                 @elseif($stsNF == 2 || $stsNF == 1)
                     @if($moduloRPS->modulo_emissao_rps == "S" && $geraRPS->parnfs_impressao_rps == "S")
-                    <td class="d-flex justify-content-center"><a class="btn btn-outline-nexus btn-sm" href="{{route('impresaoRPS.rpsPDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num])}}" target="_blank">Abrir RPS</a></td>
+                    <td class="d-flex justify-content-center"><a class="btn btn-outline-nexus btn-sm" href="{{route('impresaoRPS.rpsPDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num, 'appOrigem' => 'REEMISSAO'])}}" target="_blank">Abrir RPS</a></td>
                     @else
                     <td></td>
                     @endif

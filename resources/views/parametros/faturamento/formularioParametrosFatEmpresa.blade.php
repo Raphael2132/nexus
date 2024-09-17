@@ -58,6 +58,13 @@
                         </x-slot>
                         <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{ $parametrosEmp[0]->parfat_sim }}" />
                     </x-adminlte-select>
+                    <!-- Optante do Simples Nacional -->
+                    <x-adminlte-select name="envNfse" fgroup-class="col-md-6">
+                        <x-slot name="label">
+                            Envia NFS-e por Email <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{ $parametrosEmp[0]->parfat_env_nfs_email }}" />
+                    </x-adminlte-select>
                 </div>
 
                 <!-- /.card -->
@@ -109,6 +116,9 @@ $(function () {
             optSimples: {
                 required: true
             },
+            envNfse: {
+                required: true
+            },
         },
         messages: {
             empresa: {
@@ -116,6 +126,9 @@ $(function () {
             },
             optSimples: {
                 required: "Por Favor informe o campo Optante do Simples Nacional "
+            },
+            envNfse: {
+                required: "Por Favor informe o campo Envia NFS-e por Email"
             },
         },
         errorElement: 'span',

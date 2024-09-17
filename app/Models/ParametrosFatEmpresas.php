@@ -13,6 +13,7 @@ class ParametrosFatEmpresas extends Model
     
     protected $fillable = [
         'parfat_emp',
-        'parfat_sim'
+        'parfat_sim',
+        'parfat_env_nfs_email'
     ];
 }
