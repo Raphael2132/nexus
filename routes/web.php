@@ -511,10 +511,12 @@ Route::get('/faturamento/notas/simplificada/consultaReemissaoSimpNF/redir', [App
 
 /* ********** Rotas de Impressão de NFS-e ********** */
 Route::get('/faturamento/notas/impressao/nfse/{empresa}/{numControle}/{appOrigem}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'nfseGerarPDF'])->name('impresaoNF.nfsePDF');
+Route::get('/faturamento/notas/email/nfse/{empresa}/{numControle}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'enviaNfsEmail'])->name('impresaoNF.nfseEmail');
 
 /* ********** Rotas de Impressão de RPS ********** */
 Route::get('/faturamento/notas/impressao/validaRPS/{empresa}/{numOS}/{appOrigem}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'validaRPS'])->name('impresaoRPS.validaRPS');
 Route::get('/faturamento/notas/impressao/rps/{empresa}/{numControle}/{appOrigem}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'rpsGerarPDF'])->name('impresaoRPS.rpsPDF');
+Route::get('/faturamento/notas/email/rps/{empresa}/{numControle}', [App\Http\Controllers\FaturamentoNotasImpressaoController::class, 'enviaRpsEmail'])->name('impresaoRPS.rpsEmail');
 
 
 /* ********** Rotas de Emissao de NF ********** */

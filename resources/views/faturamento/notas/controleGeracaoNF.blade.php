@@ -106,12 +106,23 @@
                                         <b class="d-block">{{$nota->nfhdr_num_ped}}</b>
                                     </p>
                                 </td>
-                                <td style="border: 0px; width: 15%;">
-                                    <p class="text-sm">Nr./Série NFS-e
+                                <td style="border: 0px; width: 10%;">
+                                    <p class="text-sm">Nr./Série RPS
                                         <b class="d-block">{{$nota->nfhdr_num_nf.'-'.$nota->nfhdr_ser_nf}}</b>
                                     </p>
                                 </td>
-                                <td style="border: 0px; width: 35%;">
+                                <td style="border: 0px; width: 10%;">
+                                    @if($dataNfsXML->nfsenv_sts == 3)
+                                    <p class="text-sm">Nr. NFS-e
+                                        <b class="d-block">{{$dataNfsXML->nfsenv_num_nfs}}</b>
+                                    </p>
+                                    @else
+                                    <p class="text-sm">Nr. NFS-e
+                                        <b class="d-block">Não Gerada</b>
+                                    </p>
+                                    @endif
+                                </td>
+                                <td style="border: 0px; width: 30%;">
                                     <p class="text-sm">Status da Geração
                                         @if($dataNfsXML->nfsenv_sts == 3)
                                         <b class="text-md d-block"><span class="badge badge-success">{{$dataNfsXML->nfsenv_obs}}</span></b>

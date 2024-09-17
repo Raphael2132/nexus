@@ -34,7 +34,7 @@
         'Valor',
         'Tipo',
         'Situação',
-        ['label' => 'Impressão', 'no-export' => true, 'width' => 10],
+        ['label' => 'Impressão / Email', 'no-export' => true, 'width' => 15],
     ];
     $config = [
         'lengthMenu' => [5, 10, 25, 50, 100],
@@ -90,14 +90,18 @@
                 <td class="max-width-sts"><span class="badge badge-info">Geração Iniciada</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'nfReemissao' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
                 @endif
                 @if($stsNF == 3)
-                <td class="d-flex justify-content-center"><a class="btn btn-outline-nexus btn-sm" href="{{route('impresaoNF.nfsePDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num, 'appOrigem' => 'IMPRESSAO'])}}" target="_blank">Abrir NFS-e</a></td>
+                <td class="d-flex justify-content-center"><a class="btn btn-outline-nexus btn-sm mr-2" href="{{route('impresaoNF.nfsePDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num, 'appOrigem' => 'IMPRESSAO'])}}" target="_blank">Abrir NFS-e</a>
+                <a class="btn btn-outline-nexus btn-sm" href="{{route('impresaoNF.nfseEmail',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num])}}">Enviar Email</a></td>
                 @elseif($stsNF == 2 || $stsNF == 1)
                     @if($moduloRPS->modulo_emissao_rps == "S" && $geraRPS->parnfs_impressao_rps == "S")
-                    <td class="d-flex justify-content-center"><a class="btn btn-outline-nexus btn-sm" href="{{route('impresaoRPS.rpsPDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num, 'appOrigem' => 'REEMISSAO_SIMP'])}}" target="_blank">Abrir RPS</a></td>
+                    <td class="d-flex justify-content-center"><a class="btn btn-outline-nexus btn-sm mr-2" href="{{route('impresaoRPS.rpsPDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num, 'appOrigem' => 'REEMISSAO_SIMP'])}}" target="_blank">Abrir RPS</a>
+                    <a class="btn btn-outline-nexus btn-sm" href="{{route('impresaoRPS.rpsEmail',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num])}}">Enviar Email</a></td>
                     @else
+                    <td></td>
                     <td></td>
                     @endif
                 @else
+                <td></td>
                 <td></td>
                 @endif
             </tr>
@@ -114,6 +118,7 @@
 
 @section('plugins.Datatables', true)
 @section('plugins.DatatablesPlugins', true)
+@section('plugins.Sweetalert2', true)
 
 @section('css')
 <style>
@@ -132,4 +137,56 @@
 @stop
 
 @section('js')
+<script>
+    @if(Session::has('success'))
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "success",
+            title: "{{ session('success') }}"
+        });
+    @endif
+
+    @if(Session::has('error'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Erro!!!",
+            text: "{{ session('error') }}",
+            icon: "error"
+        });
+    @endif
+
+    @if(Session::has('info'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Aviso!",
+            text: "{{ session('info') }}",
+            icon: "info",
+            customClass: {
+                icon: "no-before-icon",
+            }
+        });
+    @endif
+
+    @if(Session::has('success2'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Sucesso!",
+            text: "{{ session('success2') }}",
+            icon: "success",
+            customClass: {
+                icon: "no-before-icon",
+            }
+        });
+    @endif
+</script>
 @stop

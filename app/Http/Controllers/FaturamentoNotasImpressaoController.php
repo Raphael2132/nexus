@@ -11,6 +11,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EmailRPS;
+use App\Mail\EmailNFS;
 
 class FaturamentoNotasImpressaoController extends Controller
 {
@@ -223,5 +224,189 @@ class FaturamentoNotasImpressaoController extends Controller
         }
 
         return response()->json(['status' => 'success', 'message' => '', 'numeroHDR' => $numControle, 'empresa' => $empresa]);
+    }
+
+    public static function enviaNfsEmail($empresa, $numControle)
+    {
+
+        //Busca os dados de envio
+        $parSrv = DB::table('parametros_srv_empresas')->where('parsrv_emp', $empresa)->first();
+        $dadosNfs = DB::table('faturamento_nfs')->where('nfs_emp', $empresa)->where('nfs_nfhdr_num', $numControle)->first();
+        $dadosCli = DB::table('cadastro_clientes')->where('cliente_codigo', $dadosNfs->nfs_cli)->first();
+        $dadosEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $empresa)->first();
+
+        //Verifica se existe host e email do cliente
+        if(!empty($dadosCli->cliente_email) && !empty($dadosEmp->empresa_smtp_host)){
+
+            // Opções de configuração
+            $options = new Options();
+            $options->set('isHtml5ParserEnabled', true);
+            $options->set('isPhpEnabled', true);
+            $options->set('pdfBackend', 'auto');
+            //$options->set('dpi', 150);
+            
+            // Cria uma instância do Dompdf com opções padrão
+            $dompdf = new Dompdf($options);
+
+            // Carrega o HTML da View para ser convertido em PDF
+            $html = view('/faturamento/notas/impressao/nfsePDF', ['empresa' => $empresa, 'numControle' => $numControle])->render();
+
+            // Carrega o HTML no Dompdf
+            $dompdf->loadHtml($html);
+
+            // (Optional) Setup the paper size and orientation
+            $dompdf->setPaper('A4', 'portrait');
+
+            // Renderiza o PDF (gera o conteúdo do PDF)
+            $dompdf->render();
+
+            // Saída do PDF (nome do arquivo)
+            $output = $dompdf->output();
+
+            // Obter o nome do host do servidor
+            if(!empty($_SERVER['SERVER_NAME'])){
+                $serverName = $_SERVER['SERVER_NAME'];
+            }else{
+                $serverName = '';
+            }
+
+            // Verificar se está rodando no localhost
+            if ($serverName != '127.0.0.1') {
+
+                $temporaryDirectory = sys_get_temp_dir() . '/' . $dadosEmp->empresa_cnpj;
+
+                if (!is_dir($temporaryDirectory)) {
+                    mkdir($temporaryDirectory, 0755, true);
+                }
+
+            } else {
+
+                $temporaryDirectory = $dadosEmp->empresa_cnpj.'/file/doc/tmp';
+                $temporaryDirectory = public_path($temporaryDirectory);
+
+                if (!is_dir($temporaryDirectory)) {
+                    mkdir($temporaryDirectory, 0755, true);
+                }
+            } 
+
+            // Caminho onde o PDF será salvo
+            $filePath = $temporaryDirectory.'/nfs_' . $dadosNfs->nfs_nnfs . '.pdf';
+
+            // Salva o PDF gerado no servidor
+            file_put_contents($filePath, $output);
+
+            // Configuração dinâmica do SMTP para o envio pela empresa
+            config([
+                'mail.mailers.smtp_cliente.host' => $dadosEmp->empresa_smtp_host,
+                'mail.mailers.smtp_cliente.port' => $dadosEmp->empresa_smtp_port,
+                'mail.mailers.smtp_cliente.encryption' => $dadosEmp->empresa_smtp_encryption,
+                'mail.mailers.smtp_cliente.username' => $dadosEmp->empresa_smtp_username,
+                'mail.mailers.smtp_cliente.password' => $dadosEmp->empresa_smtp_password,
+            ]);
+
+            // Usar o mailer específico da empresa
+            Mail::mailer('smtp_cliente')->to($dadosCli->cliente_email)->send(new EmailNFS($dadosNfs, $dadosEmp->empresa_smtp_from_address, $filePath));
+
+            return redirect()->back()->with('success2', 'PDF da NFS-e enviada por email com sucesso!');
+
+        }else{
+
+            if(empty($dadosCli->cliente_email)){
+                return redirect()->back()->with('info', 'Cliente não tem email cadastrado!');
+            }else{
+                return redirect()->back()->with('info', 'Empresa não tem Host SMTP casdastrado!');
+            }
+        }
+    }
+
+    public function enviaRpsEmail($empresa, $numControle)
+    {
+        //Busca os dados de envio
+        $parSrv = DB::table('parametros_srv_empresas')->where('parsrv_emp', $empresa)->first();
+        $dadosNfs = DB::table('faturamento_nfs')->where('nfs_emp', $empresa)->where('nfs_nfhdr_num', $numControle)->first();
+        $dadosCli = DB::table('cadastro_clientes')->where('cliente_codigo', $dadosNfs->nfs_cli)->first();
+        $dadosEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $empresa)->first();
+
+        //Verifica se existe host e email do cliente
+        if(!empty($dadosCli->cliente_email) && !empty($dadosEmp->empresa_smtp_host)){
+
+            // Opções de configuração
+            $options = new Options();
+            $options->set('isHtml5ParserEnabled', true);
+            $options->set('isPhpEnabled', true);
+            $options->set('pdfBackend', 'auto');
+            //$options->set('dpi', 150);
+            
+            // Cria uma instância do Dompdf com opções padrão
+            $dompdf = new Dompdf($options);
+
+            // Carrega o HTML da View para ser convertido em PDF
+            $html = view('/faturamento/notas/impressao/rpsPDF', ['empresa' => $empresa, 'numControle' => $numControle])->render();
+
+            // Carrega o HTML no Dompdf
+            $dompdf->loadHtml($html);
+
+            // (Optional) Setup the paper size and orientation
+            $dompdf->setPaper('A4', 'portrait');
+
+            // Renderiza o PDF (gera o conteúdo do PDF)
+            $dompdf->render();
+
+            // Saída do PDF (nome do arquivo)
+            $output = $dompdf->output();
+
+            // Obter o nome do host do servidor
+            if(!empty($_SERVER['SERVER_NAME'])){
+                $serverName = $_SERVER['SERVER_NAME'];
+            }else{
+                $serverName = '';
+            }
+
+            // Verificar se está rodando no localhost
+            if ($serverName != '127.0.0.1') {
+
+                $temporaryDirectory = sys_get_temp_dir() . '/' . $dadosEmp->empresa_cnpj;
+
+                if (!is_dir($temporaryDirectory)) {
+                    mkdir($temporaryDirectory, 0755, true);
+                }
+
+            } else {
+
+                $temporaryDirectory = $dadosEmp->empresa_cnpj.'/file/doc/tmp';
+                $temporaryDirectory = public_path($temporaryDirectory);
+
+                if (!is_dir($temporaryDirectory)) {
+                    mkdir($temporaryDirectory, 0755, true);
+                }
+            } 
+
+            // Caminho onde o PDF será salvo
+            $filePath = $temporaryDirectory.'/rps_' . $dadosNfs->nfs_nrps . '.pdf';
+
+            // Salva o PDF gerado no servidor
+            file_put_contents($filePath, $output);
+
+            // Configuração dinâmica do SMTP para o envio pela empresa
+            config([
+                'mail.mailers.smtp_cliente.host' => $dadosEmp->empresa_smtp_host,
+                'mail.mailers.smtp_cliente.port' => $dadosEmp->empresa_smtp_port,
+                'mail.mailers.smtp_cliente.encryption' => $dadosEmp->empresa_smtp_encryption,
+                'mail.mailers.smtp_cliente.username' => $dadosEmp->empresa_smtp_username,
+                'mail.mailers.smtp_cliente.password' => $dadosEmp->empresa_smtp_password,
+            ]);
+
+            // Usar o mailer específico da empresa
+            Mail::mailer('smtp_cliente')->to($dadosCli->cliente_email)->send(new EmailRPS($dadosNfs, $dadosEmp->empresa_smtp_from_address, $filePath));
+            return redirect()->back()->with('success2', 'PDF do RPS enviada por email com sucesso!');
+
+        }else{
+
+            if(empty($dadosCli->cliente_email)){
+                return redirect()->back()->with('info', 'Cliente não tem email cadastrado!');
+            }else{
+                return redirect()->back()->with('info', 'Empresa não tem Host SMTP casdastrado!');
+            }
+        }
     }
 }
