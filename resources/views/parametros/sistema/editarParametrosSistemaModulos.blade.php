@@ -40,6 +40,34 @@
                 </div>
 
                 <div class="row">
+                    @php
+                        $config = Helper::dtRangeDataPtBR();
+                        
+                        if(!empty($dadosModulo[0]->modulo_dt_validade)){
+                            $dataValidade = date('d/m/Y', strtotime($dadosModulo[0]->modulo_dt_validade));
+                        }else{
+                            $dataValidade = '';
+                        }
+                    @endphp
+                    <!-- Data de Expiração -->
+                    <x-adminlte-date-range name="dataValidade" label="Data de Expiração" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-3">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text x-slot-nexus">
+                                <i class="far fa-lg fa-calendar-alt"></i>
+                            </div>
+                        </x-slot>
+                    </x-adminlte-date-range>
+                    @push('js')<script>$(() => $("#dataValidade").val('{{ $dataValidade }}'))</script>@endpush
+
+                    <!-- Quantidade de Usuários -->
+                    <x-adminlte-input name="qtdUsu" type="number" value="{{$dadosModulo[0]->modulo_qtd_usuarios}}" fgroup-class="col-md-3">
+                        <x-slot name="label">
+                            Qtd. de Usuários <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
+                </div>
+
+                <div class="row">
                     <!-- Utiliza Módulo Serviços -->
                     <x-adminlte-select name="modSrv" fgroup-class="col-md-3">
                         <x-slot name="label">
@@ -92,7 +120,7 @@
 <!-- Chamada dos Plugins usados na app -->  
 @section('plugins.jqueryValidation', true)
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
+@section('plugins.DateRangePicker', true)
 
 @section('js')
 <!--
@@ -122,6 +150,12 @@ $(function () {
             emiNfsSimp: {
                 required: true
             },
+            dataValidade: {
+                required: true
+            },
+            qtdUsu: {
+                required: true
+            },
         },
         messages: {
             modSrv: {
@@ -135,6 +169,12 @@ $(function () {
             },
             emiNfsSimp: {
                 required: "Por Favor informe se utiliza o Módulo de Emissão Simplificada NFS-e"
+            },
+            dataValidade: {
+                required: "Por Favor informe a Data de Expiração da licença"
+            },
+            qtdUsu: {
+                required: "Por Favor informe a Qtd. de Usuários permitida"
             },
         },
         errorElement: 'span',
@@ -176,6 +216,39 @@ $(function () {
         Toast.fire({
             icon: "success",
             title: "{{ session('success') }}"
+        });
+    @endif
+
+    @if(Session::has('error'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Erro!!!",
+            text: "{{ session('error') }}",
+            icon: "error"
+        });
+    @endif
+
+    @if(Session::has('info'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Aviso!",
+            text: "{{ session('info') }}",
+            icon: "info",
+            customClass: {
+                icon: "no-before-icon",
+            }
+        });
+    @endif
+
+    @if(Session::has('success2'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Sucesso!",
+            text: "{{ session('success2') }}",
+            icon: "success",
+            customClass: {
+                icon: "no-before-icon",
+            }
         });
     @endif
 </script>

@@ -27,6 +27,8 @@ use Illuminate\Http\Request;
 use stdClass;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Facades\Modulos;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -213,6 +215,23 @@ class HomeController extends Controller
                 $qtdCliMes = (($qtdCliAtu - $qtdCliPas) / $qtdCliPas) * 100;
             }else{
                 $qtdCliMes = 0;
+            }
+        }
+
+        if (Auth::user()->usuario_tipo == 'A' || Auth::user()->usuario_tipo == 'M') {
+            $modulos = Modulos::getModulos();
+        
+            $dataValidade = Carbon::parse($modulos->modulo_dt_validade);
+            $dataHoje = Carbon::today();
+        
+            $diferencaDias = $dataHoje->diffInDays($dataValidade, false);
+        
+            if ($diferencaDias > 0 && $diferencaDias <= 5) {
+                $menssagem = "Faltam ".$diferencaDias." dias para a sua licença expirar!</br>Data de Validade da Licença: ".Carbon::parse($dataValidade)->format('d/m/Y')."</br>Fique atento para não perder o acesso ao sistema.";
+                session()->flash('warning', $menssagem);  // Salva a mensagem na sessão
+            } elseif ($diferencaDias == 0) {
+                $menssagem = "A sua licença expira hoje!</br>Fique atento para não perder o acesso ao sistema.";
+                session()->flash('warning', $menssagem);  // Salva a mensagem na sessão
             }
         }
 

@@ -8,6 +8,7 @@ use App\Models\User;
 use stdClass;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Facades\Modulos;
 
 class CadastroUsuarioController extends Controller
 {
@@ -81,7 +82,24 @@ class CadastroUsuarioController extends Controller
     //Insere os dados de um novo usuario
     public function inserir(Request $request, $tipo){
 
-        $nextval=DB::select("SELECT last_value FROM users_id_seq")[0]->last_value+1;
+        $modulos = Modulos::getModulos();
+
+        $qtdUser = DB::table('users')->where('usuario_codigo', '<>', 'MASTER')->where('usuario_status', 'A')->where('usuario_empresa', $request->empresa)->count();
+
+        //Não permitir cadastrar usuario se ja tiver cadastrado a quantidade limite da empresa
+        if($qtdUser >= $modulos->modulo_qtd_usuarios){
+            return redirect()->back()->with('info', 'A quantidade máxima de Usuários ativos permitida para a empresa '.$request->empresa.' já foi atingida! A quantidade permitida é de até '.$qtdUser.' usuários, para adquirir mais usuários entre em contato com o nosso atendimento!');
+        }
+
+        //Verifica se existe o email cadastrado por que não pode repetir
+        $qtdEmail = DB::table('users')->where('email', $request->email)->count();
+
+        if($qtdEmail > 0){
+            return redirect()->back()->with('error', 'O Email informado já foi cadastrado em outro usuário!');
+        }
+
+        //$nextval=DB::select("SELECT last_value FROM users_id_seq")[0]->last_value+1;
+        $nextval=DB::select("SELECT nextval('sq_cad_usuarios')")[0]->nextval;
 
         $codigo = 'U'.str_pad($nextval,5,'0',STR_PAD_LEFT);
 
@@ -118,6 +136,24 @@ class CadastroUsuarioController extends Controller
 
         //Verifica qual parte das informações estão sendo atualizados
         if($atualiza == 'dados'){
+
+            //Não podemos permitir que um usuario desativado seja ativado novamente se o limite já foi atingido
+            if($request->statusUsuario == 'A'){
+
+                $stsUsu = DB::table('users')->where('usuario_codigo', $usuario_cod)->where('usuario_empresa', $request->empUsuario)->first();
+
+                if($stsUsu->usuario_status == "D"){
+
+                    $modulos = Modulos::getModulos();
+
+                    $qtdUser = DB::table('users')->where('usuario_codigo', '<>', 'MASTER')->where('usuario_status', 'A')->where('usuario_empresa', $request->empUsuario)->count();
+                    
+                    //Não permitir cadastrar usuario se ja tiver cadastrado a quantidade limite da empresa
+                    if($qtdUser >= $modulos->modulo_qtd_usuarios){
+                        return redirect()->back()->with('info', 'A quantidade máxima de Usuários ativos permitida para a empresa '.$request->empUsuario.' já foi atingida! A quantidade permitida é de até '.$qtdUser.' usuários, para adquirir mais usuários entre em contato com o nosso atendimento!');
+                    }
+                }
+            }
 
             //Não pode permitir que o usuario logado se desative
             if($usuario_cod == Auth::user()->usuario_codigo && $request->statusUsuario == "D"){
@@ -216,6 +252,13 @@ class CadastroUsuarioController extends Controller
             //Verifica se ao menos um dos telefones foi informado
             if(empty($telefoneResidencial) && empty($telefoneCelular)){
                 return redirect()->back()->with('error', 'Informe ao menos um dos Telefones');
+            }
+
+            //Verifica se existe o email cadastrado por que não pode repetir
+            $qtdEmail = DB::table('users')->where('usuario_codigo', '<>', $usuario_cod)->where('email', $request->email)->count();
+
+            if($qtdEmail > 0){
+                return redirect()->back()->with('error', 'O Email informado já foi cadastrado em outro usuário!');
             }
 
             DB::table('users')

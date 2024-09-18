@@ -147,6 +147,7 @@
 <!-- Chamada dos Plugins usados na app -->  
 @section('plugins.jqueryValidation', true)
 @section('plugins.Select2', true)
+@section('plugins.Sweetalert2', true)
 
 @section('css')
 @stop
@@ -253,5 +254,58 @@ $(function () {
         }
     });
 });
+</script>
+
+<script>
+    @if(Session::has('success'))
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "success",
+            title: "{{ session('success') }}"
+        });
+    @endif
+
+    @if(Session::has('error'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Erro!!!",
+            text: "{{ session('error') }}",
+            icon: "error"
+        });
+    @endif
+
+    @if(Session::has('info'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Aviso!",
+            text: "{{ session('info') }}",
+            icon: "info",
+            customClass: {
+                icon: "no-before-icon",
+            }
+        });
+    @endif
+
+    @if(Session::has('success2'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Sucesso!",
+            text: "{{ session('success2') }}",
+            icon: "success",
+            customClass: {
+                icon: "no-before-icon",
+            }
+        });
+    @endif
 </script>
 @stop

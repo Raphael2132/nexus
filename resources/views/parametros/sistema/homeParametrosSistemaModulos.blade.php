@@ -22,6 +22,8 @@
         @php
             $heads = [
                 'Empresa',
+                'Data de Expiração',
+                'Qtd. de Usuários',
                 'Módulo de Serviços',
                 'Módulo Emissão de RPS',
                 'Módulo Emissão de NFS-e',
@@ -34,7 +36,7 @@
                 'pageLength' => 5,
                 'language' => Helper::dataTableLangPtBR(),
                 'order' => [[0, 'asc']],
-                'columns' => [null, null, null, null, null, ['orderable' => false]],
+                'columns' => [null, null, null, null, null, null, null, ['orderable' => false]],
             ];
         @endphp
 
@@ -52,6 +54,8 @@
                     @endphp
                     <tr>   
                         <td>{{ $empresa }}</td>
+                        <td>{{ Helper::formataData($modulo->modulo_dt_validade) }}</td>
+                        <td>{{ $modulo->modulo_qtd_usuarios }}</td>
                         <td>{{ $modSrv }}</td>
                         <td>{{ $emiRPS }}</td>
                         <td>{{ $emiNFS }}</td>

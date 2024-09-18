@@ -603,7 +603,6 @@
 <!-- Chamada dos Plugins usados na app -->  
 @section('plugins.Select2', true)
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
 @section('plugins.jqueryValidation', true)
 @section('plugins.DateRangePicker', true)
 @section('plugins.Inputmask', true)
@@ -1036,11 +1035,35 @@ $(function () {
 
     @if(Session::has('error'))
         Swal.fire({
-        confirmButtonColor: "#007bff",
-        title: "Erro!!!",
-        text: "{{ session('error') }}",
-        icon: "error"
-    });
+            confirmButtonColor: "#007bff",
+            title: "Erro!!!",
+            text: "{{ session('error') }}",
+            icon: "error"
+        });
+    @endif
+
+    @if(Session::has('info'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Aviso!",
+            text: "{{ session('info') }}",
+            icon: "info",
+            customClass: {
+                icon: "no-before-icon",
+            }
+        });
+    @endif
+
+    @if(Session::has('success2'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Sucesso!",
+            text: "{{ session('success2') }}",
+            icon: "success",
+            customClass: {
+                icon: "no-before-icon",
+            }
+        });
     @endif
 </script>
 @stop
