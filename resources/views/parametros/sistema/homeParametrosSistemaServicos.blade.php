@@ -17,7 +17,15 @@
 
 @section('content')
 <div class="row">
-    <div class="esquerdo col-md-9">
+    <div class="col-md-3">
+    <x-adminlte-small-box title="Grupo" text="Serviços de NFS-e" icon="fas fa-users-rays" theme="primary" url="{{ route('parametrosSistemaGrpServico.cadastro') }}" url-text="Cadastrar"/>
+    </div>
+    <div class="col-md-3">
+    <x-adminlte-small-box title="Serviços" text="NFS-e" icon="fas fa-people-carry-box" theme="success" url="{{ route('parametrosSistemaServico.cadastro') }}" url-text="Cadastrar"/>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
         {{-- Setup data for datatables --}}
         @php
         $heads = [
@@ -60,8 +68,9 @@
                 @endforeach
             </x-adminlte-datatable>
         </x-adminlte-card>
-
-        {{-- Setup data for datatables --}}
+    </div>
+    <div class="col-md-6">
+    {{-- Setup data for datatables --}}
         @php
         $heads2 = [
             'Grupo',
@@ -112,10 +121,6 @@
             </x-adminlte-datatable>
         </x-adminlte-card>
     </div>
-    <div class="direito col-md-3">
-        <x-adminlte-small-box title="Grupo" text="Serviços de NFS-e" icon="fas fa-users-rays" theme="primary" url="{{ route('parametrosSistemaGrpServico.cadastro') }}" url-text="Cadastrar"/>
-        <x-adminlte-small-box title="Serviços" text="NFS-e" icon="fas fa-people-carry-box" theme="success" url="{{ route('parametrosSistemaServico.cadastro') }}" url-text="Cadastrar"/>
-    </div>
 </div>
 @stop
 
@@ -125,15 +130,6 @@
 @section('plugins.DatatablesPlugins', true)
 
 @section('css')
-<style>
-    .esquerdo {
-        float: left;
-    }
-
-    .direito {
-        float: right;
-    }
-</style>
 @stop
 
 @section('js')

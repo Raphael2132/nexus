@@ -53,7 +53,7 @@
                         </x-slot>
                         {{$dadosServico[0]->servico_desc}}
                         <x-slot name="prependSlot">
-                            <div class="input-group-text bg-navy">
+                            <div class="input-group-text x-slot-nexus">
                                 <i class="fas fa-lg fa-file-alt text-white"></i>
                             </div>
                         </x-slot>

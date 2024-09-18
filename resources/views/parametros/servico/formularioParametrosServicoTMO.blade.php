@@ -506,10 +506,12 @@
             $("#valCGT").prop('disabled', false);
             $("#perCGT").hide();
             $('label[for="perCGT"]').hide();
+            $("#perCGT").closest('.input-group').find('.x-slot-nexus').hide();
         }else{
             $("#valCGT").prop('disabled', true);
             $("#perCGT").show();
             $('label[for="perCGT"]').show();
+            $("#perCGT").closest('.input-group').find('.x-slot-nexus').show();
         }
     });
 </script>
@@ -582,12 +584,14 @@
                 $("#perCGT").val('0.00');
                 $("#perCGT").hide();
                 $('label[for="perCGT"]').hide();
+                $("#perCGT").closest('.input-group').find('.x-slot-nexus').hide();
             }else{
                 $("#valCGT").prop('disabled', true);
                 $("#valCGT").val('');
                 $("#perCGT").val('');
                 $("#perCGT").show();
                 $('label[for="perCGT"]').show();
+                $("#perCGT").closest('.input-group').find('.x-slot-nexus').show();
             }
         });
 

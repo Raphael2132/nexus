@@ -12,5 +12,5 @@ $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', Auth::user()-
             </a>. Todos os direitos reservados.
         </strong> 
     </div>
-    <strong>Usuário: </strong>{{ Auth::user()->name }} <strong>Loja: </strong> {{ Auth::user()->usuario_empresa.' - '.$dataEmp[0]->empresa_nome }}
+    <strong>Usuário: </strong>{{ Auth::user()->usuario_codigo.' - '.Auth::user()->name }} <strong>Loja: </strong> {{ Auth::user()->usuario_empresa.' - '.$dataEmp[0]->empresa_nome }}
 </footer>

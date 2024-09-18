@@ -21,16 +21,34 @@ class CadastroUsuarioController extends Controller
     //Chama a app de consulta com o pré filtro
     public function usuarios($tipo)
     {
-        if($tipo == 'T'){
-            $usuarios = $this->usuario->all();
-        }elseif($tipo == 'A'){
-            $usuarios = $this->usuario->where('usuario_status','=','A')->get();
-        }elseif($tipo == 'D'){
-            $usuarios = $this->usuario->where('usuario_status','=','D')->get();
-        }elseif($tipo == 'ADM'){
-            $usuarios = $this->usuario->where('usuario_tipo','=','A')->get();
+        //Se não for usuário MASTER o logado no sistema não exibe ele
+        if(Auth::user()->usuario_codigo != 'MASTER'){
+
+            if($tipo == 'T'){
+                $usuarios = $this->usuario->where('usuario_codigo','<>','MASTER')->get();
+            }elseif($tipo == 'A'){
+                $usuarios = $this->usuario->where('usuario_status','=','A')->where('usuario_codigo','<>','MASTER')->get();
+            }elseif($tipo == 'D'){
+                $usuarios = $this->usuario->where('usuario_status','=','D')->where('usuario_codigo','<>','MASTER')->get();
+            }elseif($tipo == 'ADM'){
+                $usuarios = $this->usuario->where('usuario_tipo','=','A')->where('usuario_codigo','<>','MASTER')->get();
+            }else{
+                $usuarios = $this->usuario->where('usuario_tipo','=','P')->where('usuario_codigo','<>','MASTER')->get();
+            }
+
         }else{
-            $usuarios = $this->usuario->where('usuario_tipo','=','P')->get();
+
+            if($tipo == 'T'){
+                $usuarios = $this->usuario->all();
+            }elseif($tipo == 'A'){
+                $usuarios = $this->usuario->where('usuario_status','=','A')->get();
+            }elseif($tipo == 'D'){
+                $usuarios = $this->usuario->where('usuario_status','=','D')->get();
+            }elseif($tipo == 'ADM'){
+                $usuarios = $this->usuario->where('usuario_tipo','=','A')->get();
+            }else{
+                $usuarios = $this->usuario->where('usuario_tipo','=','P')->get();
+            }
         }
 
         return view('/cadastros/usuario/usuarios',['usuarios'=>$usuarios,'tipo'=>$tipo]);

@@ -26,6 +26,7 @@ use App\Models\ParametrosGerEmpresa;
 use Illuminate\Http\Request;
 use stdClass;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -281,14 +282,26 @@ class HomeController extends Controller
 
     public function homeUsuarios()
     {      
-        //Monta variaveis dos cards
-        $usuAtivo = $this->usuario->where('usuario_status','=','A')->count();
-        $usuDesat = $this->usuario->where('usuario_status','=','D')->count();
-        $usuTot = $this->usuario->count();
-        $usuAdm = $this->usuario->where('usuario_tipo','=','A')->count();
-        $usuPdr = $this->usuario->where('usuario_tipo','=','P')->count();
+        //Se não for usuário MASTER o logado no sistema não exibe ele
+        if(Auth::user()->usuario_codigo == "MASTER"){
+            //Monta variaveis dos cards
+            $usuAtivo = $this->usuario->where('usuario_status','=','A')->count();
+            $usuDesat = $this->usuario->where('usuario_status','=','D')->count();
+            $usuTot = $this->usuario->count();
+            $usuAdm = $this->usuario->where('usuario_tipo','=','A')->count();
+            $usuPdr = $this->usuario->where('usuario_tipo','=','P')->count();
 
-        $usuarios = $this->usuario->reorder('usuario_codigo', 'asc')->get();
+            $usuarios = $this->usuario->reorder('usuario_codigo', 'asc')->get();
+        }else{
+            //Monta variaveis dos cards
+            $usuAtivo = $this->usuario->where('usuario_status','=','A')->where('usuario_codigo','<>','MASTER')->count();
+            $usuDesat = $this->usuario->where('usuario_status','=','D')->where('usuario_codigo','<>','MASTER')->count();
+            $usuTot = $this->usuario->where('usuario_codigo','<>','MASTER')->count();
+            $usuAdm = $this->usuario->where('usuario_tipo','=','A')->where('usuario_codigo','<>','MASTER')->count();
+            $usuPdr = $this->usuario->where('usuario_tipo','=','P')->where('usuario_codigo','<>','MASTER')->count();
+
+            $usuarios = $this->usuario->where('usuario_codigo','<>','MASTER')->reorder('usuario_codigo', 'asc')->get();
+        }
 
         return view('/cadastros/usuario/homeUsuarios',['usuarios'=>$usuarios,'usuAtivo'=>$usuAtivo,'usuDesat'=>$usuDesat,'usuTot'=>$usuTot,'usuAdm'=>$usuAdm,'usuPdr'=>$usuPdr]);
     }
