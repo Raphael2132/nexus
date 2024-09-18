@@ -114,6 +114,8 @@
 
                                                     if($usuario->usuario_tipo == 'A'){
                                                         $tipo = "Administrador";
+                                                    }elseif($usuario->usuario_tipo == 'M'){
+                                                        $tipo = "Master";
                                                     }else{
                                                         $tipo = "Padrão";
                                                     }

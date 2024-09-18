@@ -17,7 +17,9 @@ class ParametrosSistemaModulo extends Model
         'modulo_emissao_nfe',
         'modulo_emissao_nfs_simp',
         'modulo_servico',
-        'modulo_emissao_rps'
+        'modulo_emissao_rps',
+        'modulo_qtd_usuarios',
+        'modulo_dt_validade',
     ];
 
     protected $table = 'parametros_sistema_modulos';

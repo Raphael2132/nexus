@@ -30,7 +30,9 @@
             'Código',
             'Nome',
             'CNPJ',
-            ['label' => 'Opções', 'no-export' => true, 'width' => 15],
+            'Inscrição Estadual',
+            'Inscrição Municipal',
+            ['label' => 'Opções', 'no-export' => true, 'width' => 5],
         ];
 
         $config = [
@@ -39,7 +41,7 @@
             'pageLength' => 5,
             'language' => Helper::dataTableLangPtBR(),
             'order' => [[0, 'asc']],
-            'columns' => [['orderable' => false], null, null, null,['orderable' => false]],
+            'columns' => [['orderable' => false], null, null, null, null, null,['orderable' => false]],
         ];
         @endphp
         <x-adminlte-card  title="Empresas Cadastradas" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
@@ -47,6 +49,18 @@
                 @foreach ($empresas as $empresa)
                     @php
                         $cnpj = substr($empresa->empresa_cnpj,0,2).'.'.substr($empresa->empresa_cnpj,2,3).'.'.substr($empresa->empresa_cnpj,5,3).'/'.substr($empresa->empresa_cnpj,8,4).'-'.substr($empresa->empresa_cnpj,12,2);
+                        
+                        if(!empty($empresa->empresa_insc_estadual)){
+                            $inscEstad = $empresa->empresa_insc_estadual;
+                        }else{
+                            $inscEstad = "Não Cadastrado";
+                        }
+
+                        if(!empty($empresa->empresa_insc_municipal)){
+                            $inscMuni = $empresa->empresa_insc_municipal;
+                        }else{
+                            $inscMuni = "Não Cadastrado";
+                        }
                     @endphp
                     <tr>
                         <td>
@@ -58,36 +72,56 @@
                                         <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
                                             <div class="post">
                                                 <h4 class="text-primary">Dados Gerais da Empresa</h4>
-                                                @php
-                                                    if(!empty($empresa->empresa_insc_estadual)){
-                                                        $inscEstad = $empresa->empresa_insc_estadual;
-                                                    }else{
-                                                        $inscEstad = "Não Cadastrado";
-                                                    }
-
-                                                    if(!empty($empresa->empresa_insc_municipal)){
-                                                        $inscMuni = $empresa->empresa_insc_municipal;
-                                                    }else{
-                                                        $inscMuni = "Não Cadastrado";
-                                                    }
-                                                @endphp
                                                 <div class="text-muted">
-                                                    <p class="text-sm">Empresa
-                                                        <b class="d-block">{{ $empresa->empresa_codigo }} - {{ $empresa->empresa_nome }}</b>
-                                                    </p>
-                                                    <p class="text-sm">CNPJ
-                                                        <b class="d-block">{{ $cnpj }}</b>
-                                                    </p>
-                                                    <p class="text-sm">Inscrição Estadual
-                                                        <b class="d-block">{{ $inscEstad }}</b>
-                                                    </p>
-                                                    <p class="text-sm">Inscrição Municipal
-                                                        <b class="d-block">{{ $inscMuni }}</b>
-                                                    </p>
+                                                    <div class="row">
+                                                        <p class="text-sm col-md-6">Empresa
+                                                            <b class="d-block">{{ $empresa->empresa_codigo }} - {{ $empresa->empresa_nome }}</b>
+                                                        </p>
+                                                        <p class="text-sm col-md-6">CNPJ
+                                                            <b class="d-block">{{ $cnpj }}</b>
+                                                        </p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <p class="text-sm col-md-6">Inscrição Estadual
+                                                            <b class="d-block">{{ $inscEstad }}</b>
+                                                        </p>
+                                                        <p class="text-sm col-md-6">Inscrição Municipal
+                                                            <b class="d-block">{{ $inscMuni }}</b>
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="post">
-                                                <h4 class="text-primary">Parametrização</h4>
+                                                <h4 class="text-primary">Módulos de Acesso</h4>
+                                                <div class="text-muted">
+                                                    @php 
+                                                        $modulo = DB::table('parametros_sistema_modulos')->where('modulo_empresa_codigo', $empresa->empresa_codigo)->first();
+                                                    @endphp
+                                                    <div class="row">
+                                                        <p class="text-sm col-md-6">Data de Expiração 
+                                                            <b class="d-block">{{ Helper::formataData($modulo->modulo_dt_validade) }}</b>
+                                                        </p>
+                                                        <p class="text-sm col-md-6">Qtd. de Usuários
+                                                            <b class="d-block">{{ $modulo->modulo_qtd_usuarios }}</b>
+                                                        </p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <p class="text-sm col-md-6">Módulo de Serviços
+                                                            <b class="d-block">{{ Helper::formataSimNao($modulo->modulo_servico) }}</b>
+                                                        </p>
+                                                        <p class="text-sm col-md-6">Módulo de Emissão RPS
+                                                            <b class="d-block">{{ Helper::formataSimNao($modulo->modulo_emissao_rps) }}</b>
+                                                        </p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <p class="text-sm col-md-6">Módulo de Emissão NFS-e
+                                                            <b class="d-block">{{ Helper::formataSimNao($modulo->modulo_emissao_nfs) }}</b>
+                                                        </p>
+                                                        <p class="text-sm col-md-6">Módulo de Emissão Simplificada NFS-e
+                                                            <b class="d-block">{{ Helper::formataSimNao($modulo->modulo_emissao_nfs_simp) }}</b>
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <!-- Conteudo da direita do modal -->
@@ -189,6 +223,8 @@
                         <td>{{ $empresa->empresa_codigo }}</td>
                         <td>{{ $empresa->empresa_nome }}</td>
                         <td>{{ $cnpj }}</td>
+                        <td>{{ $inscEstad }}</td>
+                        <td>{{ $inscMuni }}</td>
                         <td>
                             <nobr class="d-flex justify-content-center">
                                 <form method="get" action="{{ route('empresa.editarCadastro', ['dadosEmpresa' => $empresa->empresa_codigo]) }}" style="float: left;">
