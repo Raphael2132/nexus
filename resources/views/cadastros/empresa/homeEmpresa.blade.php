@@ -66,7 +66,7 @@
                         <td>
                             <nobr class="d-flex justify-content-center">
                                 <!-- Cria o modal dos detalhes da empresa -->
-                                <x-adminlte-modal id="modalCustom_{{$empresa->empresa_codigo}}" title="Detalhes da Empresa" size="xl" theme="navy" icon="fa-solid fa-building" v-centered scrollable>
+                                <x-adminlte-modal id="modalCustom_{{$empresa->empresa_codigo}}" title="Detalhes da Empresa" size="xl" theme="modal-nexus" icon="fa-solid fa-building" v-centered scrollable>
                                     <div class="row" style="height:auto;">
                                         <!-- Conteudo da esquerda do modal -->
                                         <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">

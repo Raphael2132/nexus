@@ -30,31 +30,9 @@ $heads = [
     'Previsão Entrega'
 ];
 $config = [
-    'lengthMenu' => [ 10, 25, 50, 100],
-    'language' => [
-        'decimal' =>        '',
-        'emptyTable' =>     'Sem dados disponíveis na tabela',
-        'info' =>           'Mostrando _START_ a _END_ de _TOTAL_ registros',
-        'infoEmpty' =>      'Mostrando 0 a 0 de 0 registros',
-        'infoFiltered' =>   '(Filtrado do total de _MAX_ registros)',
-        'infoPostFix' =>    '',
-        'thousands' =>      ',',
-        'lengthMenu' =>     'Mostrar _MENU_ registros',
-        'loadingRecords' => 'Carregando...',
-        'processing' =>     '',
-        'search' =>         'Pesquisar:',
-        'zeroRecords' =>    'Nenhum registro correspondente encontrado',
-        'paginate' => [
-            'first' =>      'Primeiro',
-            'last' =>       'Último',
-            'next' =>       'Próximo',
-            'previous' =>   'Anterior'
-        ],
-        'aria' => [
-            'sortAscending' =>  ': ativar para classificar a coluna em ordem crescente',
-            'sortDescending' => ': ativar para classificar a coluna em ordem decrescente'
-        ],
-    ],
+    'lengthMenu' => [5, 10, 25, 50, 100],
+    'pageLength' => 10,
+    'language' => Helper::dataTableLangPtBR(),
     'order' => [[2, 'desc']],
     'columns' => [['orderable' => false],['orderable' => false],['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false]],
 ];
@@ -64,9 +42,9 @@ $_SESSION['where_consulta_painelOperador'] = $empresa_os;
 $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
 @endphp
 
-<x-adminlte-card title="Painel de Operações da Produção" theme="navy" theme-mode="outline">
+<x-adminlte-card title="Painel de Operações da Produção" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
     <!-- Tabela Principal da OS -->
-    <x-adminlte-datatable class="main-table" id="table1" :heads="$heads" :config="$config" head-theme="dark" theme="light" striped hoverable bordered compressed beautify>
+    <x-adminlte-datatable class="main-table" id="table1" :heads="$heads" :config="$config" head-theme="dark" theme="light" striped hoverable bordered compressed beautify with-buttons>
         @foreach ($dadosOS as $os)
             @php 
                 //Busca os dados dos Serviços relacionados a OS
@@ -247,11 +225,11 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
     </x-adminlte-datatable>
 
     <!-- Modal Único - Agenda dos Serviços da OS -->
-    <x-adminlte-modal id="modalAgendaSrv" title="Agenda Programada dos Serviços da OS" size="xl" theme="navy" icon="fa-solid fa-clipboard-list" v-centered scrollable>
+    <x-adminlte-modal id="modalAgendaSrv" title="Agenda Programada dos Serviços da OS" size="xl" theme="modal-nexus" icon="fa-solid fa-clipboard-list" v-centered scrollable>
         <!-- O conteúdo será carregado via AJAX -->
         <div id="modalContentAgendaSrv"></div>
         <x-slot name="footerSlot">
-            <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+            <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
         </x-slot>
     </x-adminlte-modal>
 
@@ -259,13 +237,13 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
     <form method="post" action="" id="addAuxForm" novalidate="novalidate">
         @csrf 
         @method('post')
-        <x-adminlte-modal id="modalAddAux" title="Inclusão de Prestador Auxiliar da TMO" size="xl" theme="navy" icon="fa-solid fa-people-carry-box" v-centered scrollable>
+        <x-adminlte-modal id="modalAddAux" title="Inclusão de Prestador Auxiliar da TMO" size="xl" theme="modal-nexus" icon="fa-solid fa-people-carry-box" v-centered scrollable>
             <!-- O conteúdo será carregado via AJAX -->
             <div id="modalContentAddAux"></div>
             <x-slot name="footerSlot">
                 <input type="hidden" id="selected-prtAux" name="selected_prtAux">
-                <x-adminlte-button type="submit" label="Incluir" theme="info" icon="fa-solid fa-user-plus"/>
-                <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                <x-adminlte-button class="btn-nexus" type="submit" label="Incluir" theme="" icon="fa-solid fa-user-plus"/>
+                <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
             </x-slot>
         </x-adminlte-modal>
     </form>
@@ -274,13 +252,13 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
     <form method="post" action="" id="addChangePrtForm" novalidate="novalidate">
         @csrf 
         @method('post')
-        <x-adminlte-modal id="modalAddChangePrt" title="Inclusão / Alteração do Prestador da TMO" size="xl" theme="navy" icon="fa-solid fa-people-arrows" v-centered scrollable>
+        <x-adminlte-modal id="modalAddChangePrt" title="Inclusão / Alteração do Prestador da TMO" size="xl" theme="modal-nexus" icon="fa-solid fa-people-arrows" v-centered scrollable>
             <!-- O conteúdo será carregado via AJAX -->
             <div id="modalContentAddChangePrt"></div>
             <x-slot name="footerSlot">
                 <input type="hidden" id="selected-prt" name="selected_prt">
-                <x-adminlte-button type="submit" label="Incluir / Alterar" theme="info" icon="fa-solid fa-pencil"/>
-                <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                <x-adminlte-button class="btn-nexus" type="submit" label="Incluir / Alterar" theme="" icon="fa-solid fa-pencil"/>
+                <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
             </x-slot>
         </x-adminlte-modal>
     </form>
@@ -289,12 +267,12 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
     <form method="post" action="" id="startServiceForm" novalidate="novalidate">
         @csrf 
         @method('post')
-        <x-adminlte-modal id="modalStartService" title="Iniciar Serviço" size="xl" theme="navy" icon="fa-solid fa-person-digging" v-centered scrollable>
+        <x-adminlte-modal id="modalStartService" title="Iniciar Serviço" size="xl" theme="modal-nexus" icon="fa-solid fa-person-digging" v-centered scrollable>
             <!-- O conteúdo será carregado via AJAX -->
             <div id="modalContentStartService"></div>
             <x-slot name="footerSlot">
-                <x-adminlte-button type="submit" label="Iniciar" theme="info" icon="fa-solid fa-circle-play"/>
-                <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                <x-adminlte-button class="btn-nexus" type="submit" label="Iniciar" theme="" icon="fa-solid fa-circle-play"/>
+                <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
             </x-slot>
         </x-adminlte-modal>
     </form>
@@ -303,12 +281,12 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
     <form method="post" action="" id="finishServiceForm" novalidate="novalidate">
         @csrf 
         @method('post')
-        <x-adminlte-modal id="modalFinishService" title="Finalizar Serviço" size="xl" theme="navy" icon="fa-solid fa-person-digging" v-centered scrollable>
+        <x-adminlte-modal id="modalFinishService" title="Finalizar Serviço" size="xl" theme="modal-nexus" icon="fa-solid fa-person-digging" v-centered scrollable>
             <!-- O conteúdo será carregado via AJAX -->
             <div id="modalContentFinishService"></div>
             <x-slot name="footerSlot">
-                <x-adminlte-button type="submit" label="Finalizar" theme="info" icon="fa-solid fa-circle-stop"/>
-                <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                <x-adminlte-button class="btn-nexus" type="submit" label="Finalizar" theme="" icon="fa-solid fa-circle-stop"/>
+                <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
             </x-slot>
         </x-adminlte-modal>
     </form>
@@ -317,12 +295,12 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
     <form method="post" action="" id="cancelServiceForm" novalidate="novalidate">
         @csrf 
         @method('post')
-        <x-adminlte-modal id="modalCancelService" title="Cancelar Serviço" size="xl" theme="navy" icon="fa-solid fa-person-digging" v-centered scrollable>
+        <x-adminlte-modal id="modalCancelService" title="Cancelar Serviço" size="xl" theme="modal-nexus" icon="fa-solid fa-person-digging" v-centered scrollable>
             <!-- O conteúdo será carregado via AJAX -->
             <div id="modalContentCancelService"></div>
             <x-slot name="footerSlot">
-                <x-adminlte-button type="submit" label="Cancelar" theme="info" icon="fa-solid fa-ban"/>
-                <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                <x-adminlte-button class="btn-nexus" type="submit" label="Cancelar" theme="" icon="fa-solid fa-ban"/>
+                <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
             </x-slot>
         </x-adminlte-modal>
     </form>
@@ -331,12 +309,12 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
     <form method="post" action="" id="suspendServiceForm" novalidate="novalidate">
         @csrf 
         @method('post')
-        <x-adminlte-modal id="modalSuspendService" title="Suspender Serviço" size="xl" theme="navy" icon="fa-solid fa-person-digging" v-centered scrollable>
+        <x-adminlte-modal id="modalSuspendService" title="Suspender Serviço" size="xl" theme="modal-nexus" icon="fa-solid fa-person-digging" v-centered scrollable>
             <!-- O conteúdo será carregado via AJAX -->
             <div id="modalContentSuspendService"></div>
             <x-slot name="footerSlot">
-                <x-adminlte-button type="submit" label="Suspender" theme="info" icon="fa-solid fa-triangle-exclamation"/>
-                <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                <x-adminlte-button class="btn-nexus" type="submit" label="Suspender" theme="" icon="fa-solid fa-triangle-exclamation"/>
+                <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
             </x-slot>
         </x-adminlte-modal>
     </form>
@@ -345,12 +323,12 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
     <form method="post" action="" id="reopenServiceForm" novalidate="novalidate">
         @csrf 
         @method('post')
-        <x-adminlte-modal id="modalReopenService" title="Reabrir Serviço" size="xl" theme="navy" icon="fa-solid fa-person-digging" v-centered scrollable>
+        <x-adminlte-modal id="modalReopenService" title="Reabrir Serviço" size="xl" theme="modal-nexus" icon="fa-solid fa-person-digging" v-centered scrollable>
             <!-- O conteúdo será carregado via AJAX -->
             <div id="modalContentReopenService"></div>
             <x-slot name="footerSlot">
-                <x-adminlte-button type="submit" label="Reabrir" theme="info" icon="fa-regular fa-folder-open"/>
-                <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                <x-adminlte-button class="btn-nexus" type="submit" label="Reabrir" theme="" icon="fa-regular fa-folder-open"/>
+                <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
             </x-slot>
         </x-adminlte-modal>
     </form>
@@ -359,12 +337,12 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
     <form method="post" action="" id="finishRequisicaoForm" novalidate="novalidate">
         @csrf 
         @method('post')
-        <x-adminlte-modal id="modalFinishRequisicao" title="Finalizar Requisição" size="xl" theme="navy" icon="fa-solid fa-clipboard-check" v-centered scrollable>
+        <x-adminlte-modal id="modalFinishRequisicao" title="Finalizar Requisição" size="xl" theme="modal-nexus" icon="fa-solid fa-clipboard-check" v-centered scrollable>
             <!-- O conteúdo será carregado via AJAX -->
             <div id="modalContentFinishRequisicao"></div>
             <x-slot name="footerSlot">
-                <x-adminlte-button type="submit" label="Finalizar" theme="info" icon="fa-solid fa-check"/>
-                <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                <x-adminlte-button class="btn-nexus" type="submit" label="Finalizar" theme="" icon="fa-solid fa-check"/>
+                <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
             </x-slot>
         </x-adminlte-modal>
     </form>
@@ -373,12 +351,12 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
     <form method="post" action="" id="reopenRequisicaoForm" novalidate="novalidate">
         @csrf 
         @method('post')
-        <x-adminlte-modal id="modalReopenRequisicao" title="Reabertura da Requisição" size="xl" theme="navy" icon="fa-solid fa-clipboard-list" v-centered scrollable>
+        <x-adminlte-modal id="modalReopenRequisicao" title="Reabertura da Requisição" size="xl" theme="modal-nexus" icon="fa-solid fa-clipboard-list" v-centered scrollable>
             <!-- O conteúdo será carregado via AJAX -->
             <div id="modalContentReopenRequisicao"></div>
             <x-slot name="footerSlot">
-                <x-adminlte-button type="submit" label="Reabrir" theme="info" icon="fa-regular fa-folder-open"/>
-                <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                <x-adminlte-button class="btn-nexus" type="submit" label="Reabrir" theme="" icon="fa-regular fa-folder-open"/>
+                <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
             </x-slot>
         </x-adminlte-modal>
     </form>

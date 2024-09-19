@@ -80,7 +80,7 @@
                     <tr>
                         <td>
                             <nobr class="d-flex justify-content-center">
-                                <x-adminlte-modal id="modalCustom_{{$prestador->prestador_codigo}}" title="Detalhes do Prestador" size="xl" theme="navy" icon="fa-solid fa-clipboard-user" v-centered scrollable>
+                                <x-adminlte-modal id="modalCustom_{{$prestador->prestador_codigo}}" title="Detalhes do Prestador" size="xl" theme="modal-nexus" icon="fa-solid fa-clipboard-user" v-centered scrollable>
                                     <div class="row" style="height:auto;">
                                         <!-- Conteudo da esquerda do modal -->
                                         <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
@@ -151,7 +151,9 @@
                                                     }else{
                                                         $dataDem = '';
                                                     }
-                                                @endphp
+
+                                                    $dataTur = DB::table('parametros_ger_turnos')->where('partur_emp', $prestador->prestador_empresa)->where('partur_cod', $prestador->prestador_tur_cod)->first();
+                                                @endphp   
                                                 <div class="text-muted">
                                                     <div class="row">
                                                         <p class="text-sm col-md-4">Situação
@@ -165,26 +167,29 @@
                                                         </p>
                                                     </div>
                                                     <div class="row">
-                                                        <p class="text-sm col-md-6">Área
+                                                        <p class="text-sm col-md-4">Área
                                                             <b class="d-block">{{ $dadosSet[0]->setor_area.' - '.$dadosArea[0]->area_desc }}</b>
                                                         </p>
-                                                        <p class="text-sm col-md-6">Setor
+                                                        <p class="text-sm col-md-4">Setor
                                                             <b class="d-block">{{ $prestador->prestador_set.' - '.$dadosSet[0]->setor_desc }}</b>
+                                                        </p>
+                                                        <p class="text-sm col-md-4">Turno
+                                                            <b class="d-block">{{ $prestador->prestador_tur_cod.' - '.$dataTur->partur_desc }}</b>
                                                         </p>
                                                     </div>
                                                     <div class="row">
-                                                        <p class="text-sm col-md-6">Acessa Sistema
+                                                        <p class="text-sm col-md-4">Acessa Sistema
                                                             <b class="d-block">{{ $acessoSis }}</b>
                                                         </p>
                                                         @if($acessoSis == "Sim")
                                                         @php 
                                                             $dadosUsu = DB::table('users')->where('usuario_codigo', $prestador->prestador_usuario_cod)->where('usuario_empresa', $prestador->prestador_empresa)->get();
                                                         @endphp
-                                                        <p class="text-sm col-md-6">Usuario Sistema
+                                                        <p class="text-sm col-md-4">Usuario Sistema
                                                             <b class="d-block">{{ $prestador->prestador_usuario_cod.' - '.$dadosUsu[0]->name }}</b>
                                                         </p>
                                                         @else
-                                                        <p class="text-sm col-md-6">Usuario Sistema
+                                                        <p class="text-sm col-md-4">Usuario Sistema
                                                             <b class="d-block">Não Cadastrado</b>
                                                         </p>
                                                         @endif
@@ -251,7 +256,7 @@
                                                 <!-- Se tiver endereço monta os dados -->
                                                 <address>
                                                     @if(!empty($cep))
-                                                        <strong>Principal</strong><br>
+                                                        <strong class="text-muted">Principal</strong><br>
                                                         {{$logradouro}}, {{$numero}}<br>
                                                         @if(!empty($complemento)){{$complemento}}<br>@endif
                                                         {{$cep}}<br>
@@ -259,7 +264,7 @@
                                                         {{$cidade}} - {{$uf}}<br>
                                                         {{$pais}}
                                                     @else
-                                                        <strong>Endereço não cadastrado</strong><br>
+                                                        <strong class="text-muted">Endereço não cadastrado</strong><br>
                                                     @endif
                                                 </address>
                                             </div>

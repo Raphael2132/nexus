@@ -30,7 +30,7 @@
     <div class="col-md-3">
         <div class="sticky-top mb-3">
 
-            <x-adminlte-card title="Dados do Prestador" theme="lightblue" theme-mode="outline" icon="fa-solid fa-user" header-class="text-uppercase rounded-bottom border-info" collapsible removable>
+            <x-adminlte-card title="Dados do Prestador" theme="" theme-mode="outline" header-class="card-outline-nexus text-uppercase" icon="fa-solid fa-user" collapsible removable>
                 <div class="text-muted">
                     <div class="row">
                         <p class="text-sm col-md-6">Empresa
@@ -56,7 +56,7 @@
                 </div>
             </x-adminlte-card>
             
-            <x-adminlte-card title="TMO Alocadas ao Prestador" theme="lightblue" theme-mode="outline" icon="fa-solid fa-people-carry-box" header-class="text-uppercase rounded-bottom border-info" collapsible removable>
+            <x-adminlte-card title="TMO Alocadas ao Prestador" theme="" theme-mode="outline" header-class="card-outline-nexus text-uppercase" icon="fa-solid fa-people-carry-box" collapsible removable>
                 <!-- the events -->
                 <div id="external-events-prt">
                     @php
@@ -94,7 +94,7 @@
                             $complemento = $tmo->exetrf_cmp;
                         }
                     @endphp
-                    <div class="external-event bg-olive" 
+                    <div class="external-event bg-gradient-olive" 
                         data-empresa="{{ $tmo->exetrf_emp }}" 
                         data-os="{{ $tmo->exetrf_nos }}" 
                         data-req="{{ $tmo->exetrf_req }}" 
@@ -117,7 +117,7 @@
                 </div>
             </x-adminlte-card>
 
-            <x-adminlte-card title="TMO sem Prestador Alocado" theme="lightblue" theme-mode="outline" icon="fa-solid fa-user-slash" header-class="text-uppercase rounded-bottom border-info" collapsible removable>
+            <x-adminlte-card title="TMO sem Prestador Alocado" theme="" theme-mode="outline" header-class="card-outline-nexus text-uppercase" icon="fa-solid fa-user-slash" collapsible removable>
                 <!-- the events -->
                 <div id="external-events-sem-prt">
                     @php
@@ -157,7 +157,7 @@
                             $complemento = $tmo->exetrf_cmp;
                         }
                     @endphp
-                    <div class="external-event bg-purple" 
+                    <div class="external-event bg-gradient-lightblue" 
                         data-empresa="{{ $tmo->exetrf_emp }}" 
                         data-os="{{ $tmo->exetrf_nos }}" 
                         data-req="{{ $tmo->exetrf_req }}" 
@@ -180,14 +180,14 @@
                 </div>
             </x-adminlte-card>
 
-            <x-adminlte-card title="Legenda" theme="lightblue" theme-mode="outline" icon="fa-solid fa-closed-captioning" header-class="text-uppercase rounded-bottom border-info" removable>
+            <x-adminlte-card title="Legenda" theme="" theme-mode="outline" header-class="card-outline-nexus text-uppercase" icon="fa-solid fa-closed-captioning" collapsible removable>
                 <div class="">
                     <h6 class="text-secondary font-weight-bold">TMO Agendadas</h6>
                 </div>
                 <div class="btn-group d-flex justify-content-center" style="width: 100%; margin-bottom: 10px;">
                     <ul class="fc-color-picker" id="color-chooser" style="list-style: none; padding: 0;">
                         <li style="display: inline-block; margin-right: 10px; text-align: center;">
-                            <a class="text-primary" href="#"><i class="fas fa-square"></i></a>
+                            <a class="text-secondary" href="#"><i class="fas fa-square"></i></a>
                             <div style="font-size: 12px;">TMO Em espera</div>
                         </li>
                         <li style="display: inline-block; margin-right: 10px; text-align: center;">
@@ -239,12 +239,12 @@
             <!-- /.card-body -->
         </x-adminlte-card>
 
-        <x-adminlte-modal id="eventModal" title="Detalhes da TMO Agendada" icon="fas fa-calendar-alt"  size="xl" theme="navy" v-centered scrollable>
+        <x-adminlte-modal id="eventModal" title="Detalhes da TMO Agendada" icon="fas fa-calendar-alt"  size="xl" theme="modal-nexus" v-centered scrollable>
             <div id="modalContent">
                 <!-- Conteúdo do modal será carregado aqui -->
             </div>
             <x-slot name="footerSlot">
-                <x-adminlte-button theme="info" label="Voltar" data-dismiss="modal"/>
+                <x-adminlte-button class="btn-nexus" theme="" label="Voltar" data-dismiss="modal"/>
             </x-slot>
         </x-adminlte-modal>
 
@@ -272,6 +272,21 @@
         line-height: 2em;
         font-size: 14pt;
         font-weight: bold;
+    }
+
+    /* muda a cor dos botões do FullCalendar */
+    .btn-primary {
+        background-color: #00abab !important; /* Cor de fundo dos botões */
+        color: white !important; /* Cor do texto */
+        border-color: #00abab !important; /* Cor da borda */
+    }
+
+    .btn-primary:hover {
+        background-color: #008f8f !important; /* Cor de fundo quando o botão está em hover */
+    }
+
+    .btn-primary:not(:disabled):not(.disabled).active {
+        background-color: #008f8f !important; /* Cor de fundo quando o botão está em hover */
     }
 </style>
 @stop
@@ -500,8 +515,8 @@ $(function () {
             return {
                 title: eventEl.innerText,
                 duration: eventEl.getAttribute('data-duration'), // Define the duration of the event
-                backgroundColor: '#007bff',
-                borderColor: '#007bff',
+                backgroundColor: '#6c757d',
+                borderColor: '#6c757d',
                 textColor: window.getComputedStyle(eventEl, null).getPropertyValue('color'),
                 empresa: eventEl.getAttribute('data-empresa'), // Recupera a empresa
                 os: eventEl.getAttribute('data-os'), // Recupera o número da OS
@@ -526,8 +541,8 @@ $(function () {
             return {
                 title: eventEl.innerText,
                 duration: eventEl.getAttribute('data-duration') + 'm', // Define the duration of the event
-                backgroundColor: '#007bff',
-                borderColor: '#007bff',
+                backgroundColor: '#6c757d',
+                borderColor: '#6c757d',
                 textColor: window.getComputedStyle(eventEl, null).getPropertyValue('color'),
                 empresa: eventEl.getAttribute('data-empresa'), // Recupera a empresa
                 os: eventEl.getAttribute('data-os'), // Recupera o número da OS

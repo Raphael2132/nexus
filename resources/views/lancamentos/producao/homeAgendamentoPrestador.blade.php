@@ -4,15 +4,15 @@
 
 @section('content_header')
 <div class="row mb-2">
-        <div class="col-sm-6">
-            <h4 style="margin-bottom: 0px !important;">Painel de Agendamento</h4>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item active">Filtro Agendamento</li>
-            </ol>
-        </div>
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Painel de Agendamento</h4>
     </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">Filtro Agendamento</li>
+        </ol>
+    </div>
+</div>
 @stop
 
 @section('content')
@@ -21,7 +21,7 @@
         <form method="post" action="{{route('agenda.calendarioPrt')}}" id="quickForm" novalidate="novalidate">
             @csrf 
             @method('post')
-            <x-adminlte-card title="Filtro Agendamento Serviços do Prestador" theme="navy" collapsible maximizable>
+            <x-adminlte-card title="Filtro de Agendamento dos Serviços do Prestador" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 @php
                     $data = DB::table('cadastro_empresas')->select('empresa_codigo', 'empresa_nome')->orderBy('empresa_codigo', 'asc')->get();
 
@@ -64,18 +64,7 @@
                 </div>
                 <div class="row">
                     @php
-                        $config = [
-                            "singleDatePicker" => true,
-                            "showDropdowns" => true,
-                            "startDate" => "js:moment()",
-                            "minYear" => 1900,
-                            "maxYear" => "js:parseInt(moment().format('YYYY'),10)",
-                            "timePicker" => false,
-                            "timePicker24Hour" => false,
-                            "timePickerSeconds" => false,
-                            "cancelButtonClasses" => "btn-danger",
-                            "locale" => ["format" => "DD/MM/YYYY"],
-                        ];
+                        $config = Helper::dtRangeDataPtBR();
                     @endphp
                     <!-- Data de Pedido / OS -->
                     <x-adminlte-date-range name="dtIniAge" :config="$config" placeholder="de dia/mês/ano" fgroup-class="col-md-6">
@@ -83,7 +72,7 @@
                             Data Inicial <span style="color:red;">*</span>
                         </x-slot>
                         <x-slot name="prependSlot">
-                        <div class="input-group-text">
+                            <div class="input-group-text x-slot-nexus">
                                 <i class="far fa-lg fa-calendar-alt"></i>
                             </div>
                         </x-slot>
@@ -93,14 +82,14 @@
                             Data Final <span style="color:red;">*</span>
                         </x-slot>
                         <x-slot name="prependSlot">
-                        <div class="input-group-text">
+                            <div class="input-group-text x-slot-nexus">
                                 <i class="far fa-lg fa-calendar-alt"></i>
                             </div>
                         </x-slot>
                     </x-adminlte-date-range>
                 </div>
                 <x-slot name="footerSlot">
-                    <x-adminlte-button class="btn-flat" type="submit" label="Pesquisar" theme="info" icon="fa-solid fa-magnifying-glass"/>
+                    <x-adminlte-button class="btn-nexus" type="submit" label="Pesquisar" theme="info" icon="fa-solid fa-magnifying-glass"/>
                 </x-slot>
             </x-adminlte-card>
         </form>

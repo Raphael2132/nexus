@@ -277,7 +277,7 @@ class PainelAgendamentoController extends Controller
                 $color = '#17a2b8';
                 $sts = 'Em Andamento';
             }else{
-                $color = '#007bff';
+                $color = '#6c757d';
                 $sts = 'Em Espera';
             }
             
@@ -341,7 +341,7 @@ class PainelAgendamentoController extends Controller
                 $color = '#17a2b8';
                 $sts = 'Em Andamento';
             }else{
-                $color = '#007bff';
+                $color = '#6c757d';
                 $sts = 'Em Espera';
             }
             
