@@ -144,9 +144,11 @@
 
             $("#cpfCnpj").hide();
             $('label[for="cpfCnpj"]').css("display","none");
+            $("#cpfCnpj").closest('.input-group').find('.x-slot-nexus').hide();
 
             $("#nome").hide();
             $('label[for="nome"]').css("display","none");
+            $("#nome").closest('.input-group').find('.x-slot-nexus').hide();
 
             $("#dadosPessoal").hide();
             $("#dadosJuridicos").hide();
@@ -170,9 +172,11 @@
 
                 $("#cpfCnpj").show();
                 $('label[for="cpfCnpj"]').show();
+                $("#cpfCnpj").closest('.input-group').find('.x-slot-nexus').show();
                 
                 $("#nome").show();
                 $('label[for="nome"]').show();
+                $("#nome").closest('.input-group').find('.x-slot-nexus').show();
 
                 $('#cpfCnpj').inputmask({
                     "mask": " 99.999.999/9999-99",
@@ -194,9 +198,11 @@
 
                 $("#cpfCnpj").hide();
                 $('label[for="cpfCnpj"]').css("display","none");
+                $("#cpfCnpj").closest('.input-group').find('.x-slot-nexus').hide();
 
                 $("#nome").hide();
                 $('label[for="nome"]').css("display","none");
+                $("#nome").closest('.input-group').find('.x-slot-nexus').hide();
             }
         });
     });
@@ -217,9 +223,11 @@
 
             $("#cpfCnpj").show();
             $('label[for="cpfCnpj"]').show();
+            $("#cpfCnpj").closest('.input-group').find('.x-slot-nexus').show();
 
             $("#nome").show();
             $('label[for="nome"]').show();
+            $("#nome").closest('.input-group').find('.x-slot-nexus').show();
 
             $('#cpfCnpj').inputmask({
                 "mask": "999.999.999-99",
@@ -240,9 +248,11 @@
 
             $("#cpfCnpj").show();
             $('label[for="cpfCnpj"]').show();
+            $("#cpfCnpj").closest('.input-group').find('.x-slot-nexus').show();
             
             $("#nome").show();
             $('label[for="nome"]').show();
+            $("#nome").closest('.input-group').find('.x-slot-nexus').show();
 
             $('#cpfCnpj').inputmask({
                 "mask": " 99.999.999/9999-99",
@@ -263,9 +273,11 @@
 
             $("#cpfCnpj").hide();
             $('label[for="cpfCnpj"]').css("display","none");
+            $("#cpfCnpj").closest('.input-group').find('.x-slot-nexus').hide();
 
             $("#nome").hide();
             $('label[for="nome"]').css("display","none");
+            $("#nome").closest('.input-group').find('.x-slot-nexus').hide();
         }
     });
 </script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use stdClass;
+use App\Http\Helpers\Helper;
 
 class PainelOperadorController extends Controller
 {

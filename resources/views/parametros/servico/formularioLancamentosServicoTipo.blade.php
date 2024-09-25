@@ -120,7 +120,7 @@
                             $cat_sel = '';
                         }
 
-                        $data_are = DB::table('parametros_sis_areas')->select('area_codigo', 'area_desc')->orderBy('area_codigo', 'asc')->get();
+                        $data_are = DB::table('parametros_sis_areas')->orderBy('area_codigo', 'asc')->get();
 
                         $new_array1_are =[];
                         $new_array2_are =[];
