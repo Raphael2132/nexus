@@ -227,7 +227,7 @@ class HomeController extends Controller
             $diferencaDias = $dataHoje->diffInDays($dataValidade, false);
         
             if ($diferencaDias > 0 && $diferencaDias <= 5) {
-                $menssagem = "Faltam ".$diferencaDias." dias para a sua licença expirar!</br>Data de Validade da Licença: ".Carbon::parse($dataValidade)->format('d/m/Y')."</br>Fique atento para não perder o acesso ao sistema.";
+                $menssagem = "Falta ".$diferencaDias." dias para a sua licença expirar!</br>Data de Validade da Licença: ".Carbon::parse($dataValidade)->format('d/m/Y')."</br>Fique atento para não perder o acesso ao sistema.";
                 session()->flash('warning', $menssagem);  // Salva a mensagem na sessão
             } elseif ($diferencaDias == 0) {
                 $menssagem = "A sua licença expira hoje!</br>Fique atento para não perder o acesso ao sistema.";
