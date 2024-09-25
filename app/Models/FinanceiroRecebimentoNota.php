@@ -12,8 +12,9 @@ class FinanceiroRecebimentoNota extends Model
     protected $primaryKey = 'recnf_id';
     
     protected $fillable = [
-        'recnf_id_rec',
         'recnf_emp',
+        'recnf_cod_rec',
+        'recnf_seq',
         'recnf_num',
         'recnf_num_ped',
         'recnf_num_nf',

@@ -16,8 +16,6 @@ return new class extends Migration
             $table->integer('servico_grupo')->unsigned();
             $table->integer('servico_codigo');
             $table->string('servico_desc',800);
-            $table->decimal('servico_aliquota_iss',5,2)->nullable();
-            $table->string('servico_codigo_ibpt',15)->nullable();
             $table->timestamps();
             $table->unique(['servico_grupo','servico_codigo'], 'ak_parametros_sistema_servicos');
             $table->foreign('servico_grupo', 'fk_parametros_sistema_servicos')->references('grupo_codigo')->on('parametros_sistema_servico_grupos')->onDelete('cascade');

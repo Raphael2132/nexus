@@ -24,8 +24,11 @@ class FinanceiroRecebimentoHeaderController extends Controller
         $usuario = Auth::user()->usuario_codigo;
         $data = date('Y-m-d');
 
+        $nextval = DB::select("SELECT nextval('sq_financeiro_recebimento_num')")[0]->nextval;
+
         $dados = [
             'rechdr_emp' => $empresa,
+            'rechdr_cod_rec' => $nextval,
             'rechdr_sts' => 'A',
             'rechdr_ori' => $origem,
             'rechdr_dti' => $data,
@@ -36,6 +39,6 @@ class FinanceiroRecebimentoHeaderController extends Controller
         $header = FinanceiroRecebimentoHeader::create($dados);
         
         // Retorna o ID do registro criado
-        return $header->rechdr_id;
+        return $header->rechdr_cod_rec;
     }
 }

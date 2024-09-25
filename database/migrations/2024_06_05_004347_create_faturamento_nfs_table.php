@@ -49,7 +49,6 @@ return new class extends Migration
             $table->string('nfs_tel_cel_tom',11)->nullable();//telefone celular tomador
             $table->string('nfs_tel_com_tom',10)->nullable();//telefone comercial tomador
             $table->integer('nfs_qtd_itm')->default(0);// Qtd de items
-            $table->decimal('nfs_nro_nfe',9,0)->default(0);// Numero da Nota Fiscal Eletronica
             $table->string('nfs_cod_ver',8)->nullable();// Codigo Verificacao Nota Fiscal Eletronica
             $table->decimal('nfs_vlr_des_iss_inc',15,2)->default(0);// Valor do desconto iss incentivado
             $table->string('nfs_obs',255)->nullable(); // Observacões da NF

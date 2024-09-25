@@ -27,18 +27,10 @@ class ParametrosSistemaServicoController extends Controller
     //Realiza a atualização dos dados do grupo do serviço
     public function update(Request $request, $grupo, $servico){
 
-        if(!empty($request->aliquotaIss)){
-            $iss = str_replace(",",".",$request->aliquotaIss);
-        }else{
-            $iss = null;
-        }
-
         $atualizausuario = DB::table('parametros_sistema_servicos')
             ->where('servico_grupo', $grupo)
             ->where('servico_codigo', $servico)
-            ->update(['servico_desc' => $request->descricao,
-                'servico_aliquota_iss' => $iss,
-                'servico_codigo_ibpt' => $request->codigoIBPT]);
+            ->update(['servico_desc' => $request->descricao]);
         
         return redirect(route('parametrosSistemaServico.editarCadastro', ['grupo' => $grupo, 'servico' => $servico]))->with('success', 'Serviço atualizado com sucesso!');
     }
@@ -59,18 +51,10 @@ class ParametrosSistemaServicoController extends Controller
             return redirect()->back()->with('error', 'Serviço '.$request->codigo.' do Grupo '.$request->grupo.' já foi cadastrado!');
         }
 
-        if(!empty($request->aliquotaIss)){
-            $iss = str_replace(",",".",$request->aliquotaIss);
-        }else{
-            $iss = null;
-        }
-
         $dados = [
             'servico_grupo' => $request->grupo,
             'servico_codigo' => $request->codigo,
-            'servico_desc' => $request->descricao,
-            'servico_aliquota_iss' => $iss,
-            'servico_codigo_ibpt' => $request->codigoIBPT  
+            'servico_desc' => $request->descricao 
         ];
         
         $novoServico = ParametrosSistemaServico::create($dados);

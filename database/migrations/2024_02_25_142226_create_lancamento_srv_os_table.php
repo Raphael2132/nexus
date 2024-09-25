@@ -21,9 +21,6 @@ return new class extends Migration
             $table->string('os_res_abr', 6);//responsavel abertura da os -> tabela users.usuario_codigo
             $table->dateTime('os_dhf')->nullable();//data e hora do fechamento da os
             $table->string('os_res_fec', 6)->nullable();//responsavel fechamento da os -> tabela users.usuario_codigo
-            $table->enum('os_apr', ['S', 'N'])->default('N');//flag os aprovada
-            $table->date('os_dt_apr')->nullable();//data aprovação da os
-            $table->string('os_res_apr', 6)->nullable();//responsavel aprovação da os -> tabela users.usuario_codigo
             $table->date('os_dt_orc')->nullable();//data orcamento
             $table->integer('os_num_orc')->default(0);//numero orcamento
             $table->date('os_dtc')->nullable();//data camcelamento os

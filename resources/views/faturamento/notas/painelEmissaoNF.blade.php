@@ -126,7 +126,7 @@
                                 }
 
                                 //Verifica se a nota para o recebimento já foi selecionada
-                                $notaReceb = DB::table('financeiro_recebimento_notas')->where('recnf_id_rec', $glo_id_recebimento)->where('recnf_emp', $empresaNF)->where('recnf_num', $header->nfhdr_num)->count();
+                                $notaReceb = DB::table('financeiro_recebimento_notas')->where('recnf_cod_rec', $glo_id_recebimento)->where('recnf_emp', $empresaNF)->where('recnf_num', $header->nfhdr_num)->count();
                             @endphp
                             <tr>
                                 <td>

@@ -17,7 +17,6 @@ class LancamentoSrvTipoServico extends Model
         'tipsrv_nom',
         'tipsrv_are',
         'tipsrv_cat',
-        'tipsrv_res',
         'tipsrv_pmt_des',
         'tipsrv_pmd',
         'tipsrv_vmd',

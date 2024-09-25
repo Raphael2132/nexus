@@ -60,13 +60,6 @@
                     </x-adminlte-textarea>
                 </div>
 
-                <div class="row">
-                    <!-- Aliquota ISS -->
-                    <x-adminlte-input name="aliquotaIss" label="Alíquota ISS" type="text" value="{{$dadosServico[0]->servico_aliquota_iss}}" placeholder="0,00" fgroup-class="col-md-6"/>
-                    <!-- Código IBPT -->
-                    <x-adminlte-input name="codigoIBPT" label="Código IBPT" type="text" value="{{$dadosServico[0]->servico_codigo_ibpt}}" fgroup-class="col-md-6"/>
-                </div>
-
                 <!-- /.card -->
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
@@ -89,29 +82,16 @@
 @section('plugins.jqueryValidation', true)
 
 @section('js')
-<script src="https://igorescobar.github.io/jQuery-Mask-Plugin/js/jquery.mask.min.js"></script> 
-<script>
-    $(document).ready(function() {
-        $('#aliquotaIss').mask('#.##0,00', {reverse: true});
-    });
-</script>
 
 <script>
 $(function () {
-    jQuery.validator.addMethod("maxpercent", function(value, element) {
-        return this.optional(element) || /^(\d{1,2}|\d{1,2}\,\d{1,2}|100\,[0]{1,2}|100)$/i.test(value);
-    }, "Porcentagem máxima de 100,00 %");
 
     $('#quickForm').validate({
         rules: {
             descricao: {
                 required: true,
                 maxlength: 800
-            },       
-            aliquotaIss: {
-                maxpercent: true
-
-            }     
+            },   
         },
         messages: {
             descricao: {

@@ -31,10 +31,7 @@ return new class extends Migration
             $table->string('nfcli_bai',60)->nullable();// Bairro
             $table->string('nfcli_cid',80)->nullable();// Nome da cidade 
             $table->string('nfcli_uf',2)->nullable(); // UF
-            $table->integer('nfcli_cod_mun_ibge')->default(0); // Cod. Municipio IBGE              
-            $table->decimal('nfcli_vlr_bc_sbt',15,2)->default(0);// base de substituicao tributaria 
-            $table->decimal('nfcli_vlr_alq_sbt',5,2)->default(0);// aliquota de substituicao tributaria 
-            $table->decimal('nfcli_bc_iss',15,2)->default(0); // base do ISS 
+            $table->integer('nfcli_cod_mun_ibge')->default(0); // Cod. Municipio IBGE  
             $table->string('nfcli_ins_est',14)->nullable();// Inscr. Estadual 
             $table->string('nfcli_ins_mun',15)->nullable();// Inscr. Municipal 
             $table->string('nfcli_email',80)->nullable();// Email

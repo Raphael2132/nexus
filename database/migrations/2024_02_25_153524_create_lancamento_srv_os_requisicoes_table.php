@@ -24,9 +24,6 @@ return new class extends Migration
             $table->integer('req_eat');//etapa do atendimento -> table lancamento_srv_etapa_atendimentos.eat_cod
             $table->dateTime('req_dhi');//data e hora da inclusão
             $table->dateTime('req_dhf')->nullable();//data e hora fechamento
-            $table->dateTime('req_dhc')->nullable();//data e hora do cancelamento
-            $table->date('req_dt_apr')->nullable();//data aprovação requisição
-            $table->string('req_res_apr',6)->nullable();//responsavel da aprovação -> tabela users.usuario_codigo
             $table->decimal('req_qtd_hr',5,2)->default(0);//tempo da requisição
             $table->decimal('req_vlr',15,2)->default(0);//valor bruto
             $table->decimal('req_vls',15,2)->default(0);//valor servico
@@ -38,6 +35,7 @@ return new class extends Migration
             $table->enum('req_aut_desc', ['S', 'N'])->default('N');/* Desconto autorizado (Desativado) */
             $table->string('req_aut_user', 6)->nullable();//Usuario que liberou o desconto
             $table->decimal('req_val_des_srv', 15,2)->default(0);/* valor desconto de serviços */
+            $table->decimal('req_val_des_pro', 15,2)->default(0);/* valor desconto de produtos */
             $table->timestamps();
             $table->unique(['req_emp','req_nos','req_seq'], 'ak_lancamento_srv_os_requisicoes');
         });

@@ -197,57 +197,8 @@
                     <x-adminlte-input name="complemento" label="Complemento" type="text" value="{{$cmp_sel}}" fgroup-class="col-md-6"/>
                 </div>
 
-                <!-- Não vamos mais informar aqui o grupo e codigo de atividade do serviço
-                <div class="row"> 
-                    @php
-                        $data_grp = DB::table('parametros_sistema_servico_grupos')->selectRaw('grupo_codigo, grupo_desc')->orderBy('grupo_codigo', 'asc')->get();
-
-                        $new_array_grp1 =[];
-                        $new_array_grp2 =[];
-
-                        foreach ($data_grp as $grupo_srv) {
-                            $new_array_grp1[] = $grupo_srv->grupo_codigo;
-                            $new_array_grp2[] = $grupo_srv->grupo_codigo.' - '.$grupo_srv->grupo_desc;
-                        }
-                        $array_opt_grp_srv = array_combine($new_array_grp1, $new_array_grp2);
-
-                        if(!empty($dadosTMO[0]['tmo_srv_grp'])){
-                            $grp_srv_sel = $dadosTMO[0]['tmo_srv_grp'];
-                        }else{
-                            $grp_srv_sel = '';
-                        }
-
-                        if(!empty($dadosTMO[0]['tmo_srv_grp'])){
-
-                            $data_srv = DB::table('parametros_sistema_servicos')->select('servico_codigo', 'servico_desc')->where('servico_grupo', $dadosTMO[0]['tmo_srv_grp'])->orderby('servico_codigo', 'asc')->get();
-
-                            $new_array_srv1 =[];
-                            $new_array_srv2 =[];
-
-                            foreach ($data_srv as $servico) {
-                                $new_array_srv1[] = $servico->servico_codigo;
-                                $new_array_srv2[] = $servico->servico_codigo.' - '.$servico->servico_desc;
-                            }
-                            $array_opt_srv = array_combine($new_array_srv1, $new_array_srv2);
-
-                        
-                            $set_sel = $dadosTMO[0]['tmo_srv_cod'];
-                        }else{
-                            $set_sel = '';
-                            $array_opt_srv = null;
-                        }
-                    @endphp
-                    <x-adminlte-select name="grpSrv" label="Grupo do Serviço" fgroup-class="col-md-6">
-                        <x-adminlte-options :options="$array_opt_grp_srv" empty-option="Selecione..." selected="{{$grp_srv_sel}}"/>
-                    </x-adminlte-select>
-
-                    <x-adminlte-select name="codSrv" label="Código do Serviço" fgroup-class="col-md-6">
-                        <x-adminlte-options :options="$array_opt_srv" empty-option="Selecione..." selected="{{$set_sel}}"/>
-                    </x-adminlte-select>
-                </div>
-                -->
-                                    
                 </br>
+                
                 <div class="post">
                     <h4 class="text-secondary font-weight-bold">Valores</h4>
                 </div>

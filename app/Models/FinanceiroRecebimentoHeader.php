@@ -13,6 +13,7 @@ class FinanceiroRecebimentoHeader extends Model
     
     protected $fillable = [
         'rechdr_emp',
+        'rechdr_cod_rec',
         'rechdr_sts',
         'rechdr_ori',
         'rechdr_dti',

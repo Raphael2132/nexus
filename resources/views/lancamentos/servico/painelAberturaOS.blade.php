@@ -1351,7 +1351,6 @@ $locPrtSrv = '';
                                 if($glo_os_estagioAPP == "INCLUSAO_SERVICO"){
                                     $tipoTMO_sel = $glo_os_dadosTmoSelecionada[0]->tmo_tip;
 
-                                    //$prestadorTOS = DB::table('lancamento_srv_tipo_servicos')->select('tipsrv_res')->where('tipsrv_emp',$glo_os_empresa)->where('tipsrv_cod',$glo_os_dadosRequisicoes[0]['req_tos'])->get();
                                     if(!empty($glo_os_dadosTmoSelecionada[0]->tmo_res)){
                                         $prestadorTMO_sel = $glo_os_dadosTmoSelecionada[0]->tmo_res;
                                     }else{

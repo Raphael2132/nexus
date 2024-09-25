@@ -25,7 +25,7 @@ class FaturamentoGeracaoNfController extends Controller
             $where_reemissao = '';
 
             //Busca as notas do recebimento realizado
-            $notasReceb = DB::table('financeiro_recebimento_notas')->where('recnf_id_rec', $idRecebimento)->where('recnf_emp', $empresa)->orderby('recnf_num')->get();
+            $notasReceb = DB::table('financeiro_recebimento_notas')->where('recnf_cod_rec', $idRecebimento)->where('recnf_emp', $empresa)->orderby('recnf_num')->get();
 
             //Gera um array das NF para utilizar no controleGeracaoNF
             $where_hdr = [];
@@ -114,7 +114,7 @@ class FaturamentoGeracaoNfController extends Controller
                 ->first();
 
                 DB::table('financeiro_recebimento_notas')
-                ->where('recnf_id_rec', $idRecebimento)
+                ->where('recnf_cod_rec', $idRecebimento)
                 ->where('recnf_emp', $empresa)
                 ->where('recnf_num', $nota->nfhdr_num)
                 ->update(['recnf_num_nf' => $notaHDR->nfhdr_num_nf,

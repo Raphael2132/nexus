@@ -28,9 +28,18 @@ class FinanceiroRecebimentoNotaController extends Controller
         $dadosNF = DB::table('faturamento_nf_headers')->where('nfhdr_emp', $empresa)->where('nfhdr_num', $numNF)->first();
         $idRecebimento = session('glo_id_recebimento');
 
+        $maxSeq = DB::table('financeiro_recebimento_notas')->where('recnf_emp', $empresa)->where('recnf_cod_rec', $idRecebimento)->max('recnf_seq');
+
+        if(empty($maxSeq)){
+            $seq = 1;
+        }else{
+            $seq = $maxSeq + 1;
+        }
+
         $dados = [
-            'recnf_id_rec' => $idRecebimento,
             'recnf_emp' => $empresa,
+            'recnf_cod_rec' => $idRecebimento,
+            'recnf_seq' => $seq,
             'recnf_num' => $numNF,
             'recnf_num_ped' => $dadosNF->nfhdr_num_ped,
             'recnf_num_nf' => $dadosNF->nfhdr_num_nf,

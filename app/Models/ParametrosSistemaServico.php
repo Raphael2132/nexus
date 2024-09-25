@@ -15,7 +15,5 @@ class ParametrosSistemaServico extends Model
         'servico_grupo',
         'servico_codigo',
         'servico_desc',
-        'servico_aliquota_iss',
-        'servico_codigo_ibpt'
     ];
 }

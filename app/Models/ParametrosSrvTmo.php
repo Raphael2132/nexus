@@ -23,8 +23,6 @@ class ParametrosSrvTmo extends Model
         'tmo_val_hr',
         'tmo_val_tot',
         'tmo_for_cgt',
-        'tmo_srv_grp',
-        'tmo_srv_cod',
         'tmo_tip_val_cgt',
         'tmo_val_cgt',
         'tmo_per_cgt',

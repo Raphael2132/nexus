@@ -102,17 +102,6 @@
                     }else{
                         $complemento = '';
                     }
-
-                    if(!empty($tarefa->tmo_srv_grp)){
-                        $data_grp = DB::table('parametros_sistema_servico_grupos')->where('grupo_codigo',$tarefa->tmo_srv_grp)->get();
-                        $srv_grp_tmo = $tarefa->tmo_srv_grp.' - '.$data_grp[0]->grupo_desc;
-
-                        $data_srv = DB::table('parametros_sistema_servicos')->where('servico_grupo',$tarefa->tmo_srv_grp)->where('servico_codigo',$tarefa->tmo_srv_cod)->get();
-                        $srv_cod_tmo = $tarefa->tmo_srv_cod.' - '.$data_srv[0]->servico_desc;
-                    }else{
-                        $srv_grp_tmo = '';
-                        $srv_cod_tmo = '';
-                    }
                 @endphp
                 <tr>
                     <td>
@@ -139,14 +128,6 @@
                                                     </p>
                                                     <p class="text-sm col-md-6">Complemento
                                                         <b class="d-block">{{ $complemento }}</b>
-                                                    </p>
-                                                </div>
-                                                <div class="row quebra-linha">
-                                                    <p class="text-sm col-md-6">Grupo do Serviço
-                                                        <b class="d-block">{{ $srv_grp_tmo }}</b>
-                                                    </p>
-                                                    <p class="text-sm col-md-6">Código do Serviço
-                                                        <b class="d-block">{{ $srv_cod_tmo }}</b>
                                                     </p>
                                                 </div>
                                             </div>

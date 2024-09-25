@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('financeiro_recebimento_notas', function (Blueprint $table) {
             $table->id('recnf_id');
-            $table->integer('recnf_id_rec');// ID do recebimento -> financeiro_recebimento_headers.rechdr_id
             $table->string('recnf_emp',6);//Empresa
+            $table->integer('recnf_cod_rec');// Codigo do recebimento -> financeiro_recebimento_headers.rechdr_id
+            $table->integer('recnf_seq');// Sequencia da nota na tabela
             $table->integer('recnf_num');// Numero de Controle -> faturamento_nf_headers.nfhdr_num
             $table->integer('recnf_num_ped')->default(0);// Numero do Pedido / OS / Emissão Simplificada -> faturamento_nf_headers.nfhdr_num_ped
             $table->decimal('recnf_num_nf',9,0)->default(0);// Numero da NF / Cupom 
@@ -27,7 +28,7 @@ return new class extends Migration
             $table->string('recnf_ori',2);//Origem da NF 
             $table->decimal('recnf_vlr_tot',15,2)->default(0);// Valor Total da NF
             $table->timestamps();
-            $table->unique(['recnf_id_rec','recnf_emp','recnf_num'], 'ak_financeiro_recebimento_notas');
+            $table->unique(['recnf_emp','recnf_cod_rec','recnf_seq'], 'ak_financeiro_recebimento_notas');
         });
     }
 

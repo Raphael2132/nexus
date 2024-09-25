@@ -114,7 +114,7 @@ class PainelEmissaoNfController extends Controller
         $this->limpaRecebimentoAberto();
 
         //Insere o Header da tabela de recebimentos
-        $idRecebimento = FinanceiroRecebimentoHeaderController::insert($empresa,'NFV');
+        $idRecebimento = FinanceiroRecebimentoHeaderController::insert($empresa, 'NFV');
 
         $dados = DB::select("select * from faturamento_nf_headers where nfhdr_sts = 'A' and nfhdr_ori in('01') ".$where_semi." and nfhdr_emp = '".$empresa."' and nfhdr_cli = '".$cliente."' order by nfhdr_num_ped asc");
         //$dados = $this->headerNF->where('nfhdr_emp', $empresa)->where('nfhdr_cli', $cliente)->where('nfhdr_sts', 'A')->where('nfhdr_ori',['01'])->orderby('nfhdr_num_ped', 'asc')->get();
@@ -139,7 +139,7 @@ class PainelEmissaoNfController extends Controller
         $idRecebimento = session('glo_id_recebimento');
 
         if($estagio_app == 'GERACAO_NF'){
-            $notaReceb = DB::table('financeiro_recebimento_notas')->where('recnf_id_rec', $idRecebimento)->where('recnf_emp', $empresa)->count();
+            $notaReceb = DB::table('financeiro_recebimento_notas')->where('recnf_cod_rec', $idRecebimento)->where('recnf_emp', $empresa)->count();
 
             if($notaReceb == 0){
                 return redirect()->back()->with('error', 'Nenhuma nota foi selecionada para ser faturada!');
