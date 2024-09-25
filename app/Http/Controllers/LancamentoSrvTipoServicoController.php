@@ -36,7 +36,7 @@ class LancamentoSrvTipoServicoController extends Controller
         $codigo = strtoupper($request->codigo);
 
         //Verifica se o tipo do serviço ja foi cadastrado
-        $tip_cnt = $this->tipoServico->where('tipsrv_cod','=',$request->empresa)->where('tipsrv_emp','=',$codigo)->count();
+        $tip_cnt = $this->tipoServico->where('tipsrv_cod',$codigo)->where('tipsrv_emp',$request->empresa)->count();
 
         if($tip_cnt > 0){
             return redirect()->back()->with('error', 'Para a empresa '.$request->empresa.' o Tipo de Serviço '.$codigo.' já foi cadastrado!');
