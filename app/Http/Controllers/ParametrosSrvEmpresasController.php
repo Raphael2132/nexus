@@ -46,7 +46,7 @@ class ParametrosSrvEmpresasController extends Controller
     //Redireciona a home depois da exclusão do registro via ajax
     public function carregaCodSrvAjax($codigo)
     {  
-        $servicos = DB::table('parametros_sistema_servicos')->select('servico_codigo', 'servico_desc')->where('servico_grupo', $codigo)->orderby('servico_codigo', 'asc')->get();
+        $servicos = DB::table('parametros_sis_servicos')->select('servico_codigo', 'servico_desc')->where('servico_grupo', $codigo)->orderby('servico_codigo', 'asc')->get();
        
         foreach($servicos as $servico) {
             

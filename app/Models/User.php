@@ -68,6 +68,6 @@ class User extends Authenticatable
 
     public function modulos()
     {
-        return $this->belongsTo(ParametrosSistemaModulo::class, 'usuario_empresa', 'modulo_empresa_codigo');
+        return $this->belongsTo(ParametrosSisModulo::class, 'usuario_empresa', 'modulo_empresa_codigo');
     }
 }

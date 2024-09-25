@@ -174,7 +174,7 @@ class PainelOperadorController extends Controller
         $dadosCli = DB::table('cadastro_clientes')->where('cliente_codigo', $dadosOS->os_cli)->first();
         $dadosUsu = DB::table('users')->where('usuario_codigo', $dadosOS->os_res_abr)->first();
         $dadosPrtTMO = DB::table('cadastro_prestadores')->where('prestador_codigo', $dadosSrv->exetrf_prt)->first();
-        $dadosSetor = DB::table('parametros_srv_setores')->where('setor_codigo', $dadosSrv->exetrf_set)->where('setor_empresa', $dadosSrv->exetrf_emp)->where('setor_area', $dadosSrv->exetrf_are)->first();
+        $dadosSetor = DB::table('parametros_sis_setores')->where('setor_codigo', $dadosSrv->exetrf_set)->where('setor_empresa', $dadosSrv->exetrf_emp)->where('setor_area', $dadosSrv->exetrf_are)->first();
         
         return view('/lancamentos/producao/modalPainelOperadorStartService', ['dadosOS' => $dadosOS, 'dadosSrv' => $dadosSrv, 'dadosCli' => $dadosCli, 'dadosUsu' => $dadosUsu, 'dadosPrtTMO' => $dadosPrtTMO, 'dadosSetor' => $dadosSetor])->render();
     }
@@ -187,7 +187,7 @@ class PainelOperadorController extends Controller
         $dadosCli = DB::table('cadastro_clientes')->where('cliente_codigo', $dadosOS->os_cli)->first();
         $dadosUsu = DB::table('users')->where('usuario_codigo', $dadosOS->os_res_abr)->first();
         $dadosPrtTMO = DB::table('cadastro_prestadores')->where('prestador_codigo', $dadosSrv->exetrf_prt)->first();
-        $dadosSetor = DB::table('parametros_srv_setores')->where('setor_codigo', $dadosSrv->exetrf_set)->where('setor_empresa', $dadosSrv->exetrf_emp)->where('setor_area', $dadosSrv->exetrf_are)->first();
+        $dadosSetor = DB::table('parametros_sis_setores')->where('setor_codigo', $dadosSrv->exetrf_set)->where('setor_empresa', $dadosSrv->exetrf_emp)->where('setor_area', $dadosSrv->exetrf_are)->first();
         
         return view('/lancamentos/producao/modalPainelOperadorFinishService', ['dadosOS' => $dadosOS, 'dadosSrv' => $dadosSrv, 'dadosCli' => $dadosCli, 'dadosUsu' => $dadosUsu, 'dadosPrtTMO' => $dadosPrtTMO, 'dadosSetor' => $dadosSetor])->render();
     }
@@ -200,7 +200,7 @@ class PainelOperadorController extends Controller
         $dadosCli = DB::table('cadastro_clientes')->where('cliente_codigo', $dadosOS->os_cli)->first();
         $dadosUsu = DB::table('users')->where('usuario_codigo', $dadosOS->os_res_abr)->first();
         $dadosPrtTMO = DB::table('cadastro_prestadores')->where('prestador_codigo', $dadosSrv->exetrf_prt)->first();
-        $dadosSetor = DB::table('parametros_srv_setores')->where('setor_codigo', $dadosSrv->exetrf_set)->where('setor_empresa', $dadosSrv->exetrf_emp)->where('setor_area', $dadosSrv->exetrf_are)->first();
+        $dadosSetor = DB::table('parametros_sis_setores')->where('setor_codigo', $dadosSrv->exetrf_set)->where('setor_empresa', $dadosSrv->exetrf_emp)->where('setor_area', $dadosSrv->exetrf_are)->first();
         
         return view('/lancamentos/producao/modalPainelOperadorCancelService', ['dadosOS' => $dadosOS, 'dadosSrv' => $dadosSrv, 'dadosCli' => $dadosCli, 'dadosUsu' => $dadosUsu, 'dadosPrtTMO' => $dadosPrtTMO, 'dadosSetor' => $dadosSetor])->render();
     }
@@ -213,7 +213,7 @@ class PainelOperadorController extends Controller
         $dadosCli = DB::table('cadastro_clientes')->where('cliente_codigo', $dadosOS->os_cli)->first();
         $dadosUsu = DB::table('users')->where('usuario_codigo', $dadosOS->os_res_abr)->first();
         $dadosPrtTMO = DB::table('cadastro_prestadores')->where('prestador_codigo', $dadosSrv->exetrf_prt)->first();
-        $dadosSetor = DB::table('parametros_srv_setores')->where('setor_codigo', $dadosSrv->exetrf_set)->where('setor_empresa', $dadosSrv->exetrf_emp)->where('setor_area', $dadosSrv->exetrf_are)->first();
+        $dadosSetor = DB::table('parametros_sis_setores')->where('setor_codigo', $dadosSrv->exetrf_set)->where('setor_empresa', $dadosSrv->exetrf_emp)->where('setor_area', $dadosSrv->exetrf_are)->first();
         
         return view('/lancamentos/producao/modalPainelOperadorSuspendService', ['dadosOS' => $dadosOS, 'dadosSrv' => $dadosSrv, 'dadosCli' => $dadosCli, 'dadosUsu' => $dadosUsu, 'dadosPrtTMO' => $dadosPrtTMO, 'dadosSetor' => $dadosSetor])->render();
     }
@@ -226,7 +226,7 @@ class PainelOperadorController extends Controller
         $dadosCli = DB::table('cadastro_clientes')->where('cliente_codigo', $dadosOS->os_cli)->first();
         $dadosUsu = DB::table('users')->where('usuario_codigo', $dadosOS->os_res_abr)->first();
         $dadosPrtTMO = DB::table('cadastro_prestadores')->where('prestador_codigo', $dadosSrv->exetrf_prt)->first();
-        $dadosSetor = DB::table('parametros_srv_setores')->where('setor_codigo', $dadosSrv->exetrf_set)->where('setor_empresa', $dadosSrv->exetrf_emp)->where('setor_area', $dadosSrv->exetrf_are)->first();
+        $dadosSetor = DB::table('parametros_sis_setores')->where('setor_codigo', $dadosSrv->exetrf_set)->where('setor_empresa', $dadosSrv->exetrf_emp)->where('setor_area', $dadosSrv->exetrf_are)->first();
         
         return view('/lancamentos/producao/modalPainelOperadorReopenService', ['dadosOS' => $dadosOS, 'dadosSrv' => $dadosSrv, 'dadosCli' => $dadosCli, 'dadosUsu' => $dadosUsu, 'dadosPrtTMO' => $dadosPrtTMO, 'dadosSetor' => $dadosSetor])->render();
     }

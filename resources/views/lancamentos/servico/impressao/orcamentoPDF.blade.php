@@ -295,10 +295,10 @@
                                     $dataEtapa = DB::table('lancamento_srv_etapa_atendimentos')->select('eat_nom')->where('eat_emp',$glo_os_empresa)->where('eat_cod',$requisicao->req_eat)->get();
                                     $etapa = $requisicao->req_eat.' - '.$dataEtapa[0]->eat_nom;
 
-                                    $dataArea = DB::table('parametros_sistema_areas')->select('area_desc')->where('area_codigo',$requisicao->req_are)->get();
+                                    $dataArea = DB::table('parametros_sis_areas')->select('area_desc')->where('area_codigo',$requisicao->req_are)->get();
                                     $area = $requisicao->req_are.' - '.$dataArea[0]->area_desc;
 
-                                    $dataSet = DB::table('parametros_srv_setores')->select('setor_desc')->where('setor_empresa',$glo_os_empresa)->where('setor_codigo',$requisicao->req_set)->where('setor_area',$requisicao->req_are)->get();
+                                    $dataSet = DB::table('parametros_sis_setores')->select('setor_desc')->where('setor_empresa',$glo_os_empresa)->where('setor_codigo',$requisicao->req_set)->where('setor_area',$requisicao->req_are)->get();
                                     $setor = $requisicao->req_set.' - '.$dataSet[0]->setor_desc;
 
                                     $dataTOS = DB::table('lancamento_srv_tipo_servicos')->select('tipsrv_nom')->where('tipsrv_emp', $glo_os_empresa)->where('tipsrv_are', $requisicao->req_are)->where('tipsrv_cod', $requisicao->req_tos)->get();

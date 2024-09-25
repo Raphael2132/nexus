@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('parametros_sistema_servico_grupos', function (Blueprint $table) {
-            $table->id('grupo_id');
-            $table->integer('grupo_codigo')->unique();
-            $table->string('grupo_desc',800);
+        Schema::create('parametros_sis_areas', function (Blueprint $table) {
+            $table->id('area_id');
+            $table->string('area_codigo',3)->unique();
+            $table->string('area_desc',40);
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('parametros_sistema_servico_grupos');
+        Schema::dropIfExists('parametros_sis_areas');
     }
 };

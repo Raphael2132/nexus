@@ -126,33 +126,33 @@ Route::get('/icone/{cnpj}/{filename}', function ($cnpj, $filename) {
 
 /* ********** Rotas ligadas a parte de módulos do sistema ********** */
 Route::get('/parametros/sistema/homeParametrosSistemaModulos', [App\Http\Controllers\HomeController::class, 'homeParSisModulo'])->name('home.parSisModulo');
-Route::get('/parametros/sistema/homeParametrosSistemaModulos/{dadosModulo}', [App\Http\Controllers\ParametrosSistemaModuloController::class, 'editar'])->name('parametrosSistemaModulos.editarCadastro');
-Route::post('/parametros/sistema/editarParametrosSistemaModulos/{empresa}', [App\Http\Controllers\ParametrosSistemaModuloController::class, 'update'])->name('parametrosSistemaModulos.atualizar');
+Route::get('/parametros/sistema/homeParametrosSistemaModulos/{dadosModulo}', [App\Http\Controllers\ParametrosSisModuloController::class, 'editar'])->name('parametrosSistemaModulos.editarCadastro');
+Route::post('/parametros/sistema/editarParametrosSistemaModulos/{empresa}', [App\Http\Controllers\ParametrosSisModuloController::class, 'update'])->name('parametrosSistemaModulos.atualizar');
 
 /* ********** Rotas ligadas a parte de áreas do sistema ********** */
 Route::get('/parametros/sistema/homeParametrosSistemaAreas', [App\Http\Controllers\HomeController::class, 'homeParSisArea'])->name('home.parSisArea');
-Route::get('/parametros/sistema/cadastroParametrosSistemaAreas', [App\Http\Controllers\ParametrosSistemaAreaController::class, 'cadastro'])->name('parametrosSistemaAreas.cadastro');
-Route::get('/parametros/sistema/editarParametrosSistemaAreas/{area}', [App\Http\Controllers\ParametrosSistemaAreaController::class, 'editar'])->name('parametrosSistemaAreas.editarCadastro');
-Route::post('/parametros/sistema/editarParametrosSistemaAreas/{area}', [App\Http\Controllers\ParametrosSistemaAreaController::class, 'update'])->name('parametrosSistemaAreas.atualizar');
-Route::post('/parametros/sistema/editarParametrosSistemaAreas', [App\Http\Controllers\ParametrosSistemaAreaController::class, 'inserir'])->name('parametrosSistemaAreas.inserir');
-Route::delete('/parametros/sistema/{area}/destroy', [App\Http\Controllers\ParametrosSistemaAreaController::class, 'destroy'])->name('parametrosSistemaAreas.destroy');
+Route::get('/parametros/sistema/cadastroParametrosSistemaAreas', [App\Http\Controllers\ParametrosSisAreaController::class, 'cadastro'])->name('parametrosSistemaAreas.cadastro');
+Route::get('/parametros/sistema/editarParametrosSistemaAreas/{area}', [App\Http\Controllers\ParametrosSisAreaController::class, 'editar'])->name('parametrosSistemaAreas.editarCadastro');
+Route::post('/parametros/sistema/editarParametrosSistemaAreas/{area}', [App\Http\Controllers\ParametrosSisAreaController::class, 'update'])->name('parametrosSistemaAreas.atualizar');
+Route::post('/parametros/sistema/editarParametrosSistemaAreas', [App\Http\Controllers\ParametrosSisAreaController::class, 'inserir'])->name('parametrosSistemaAreas.inserir');
+Route::delete('/parametros/sistema/{area}/destroy', [App\Http\Controllers\ParametrosSisAreaController::class, 'destroy'])->name('parametrosSistemaAreas.destroy');
 
 /* ********** Rotas ligadas a parte de grupos e serviços da nfs-e ********** */
 Route::get('/parametros/sistema/homeParametrosSistemaServicos', [App\Http\Controllers\HomeController::class, 'homeParSisServico'])->name('home.parSisServico');
 
 /* Grupo do Serviço */
-Route::get('/parametros/sistema/editarParametrosSistemaGrpServicos/{dadosGrupo}', [App\Http\Controllers\ParametrosSistemaServicoGrupoController::class, 'editar'])->name('parametrosSistemaGrpServico.editarCadastro');
-Route::get('/parametros/sistema/cadastroGrpServicos', [App\Http\Controllers\ParametrosSistemaServicoGrupoController::class, 'cadastro'])->name('parametrosSistemaGrpServico.cadastro');
-Route::post('/parametros/sistema/editarParametrosSistemaGrpServicos/{grupo}', [App\Http\Controllers\ParametrosSistemaServicoGrupoController::class, 'update'])->name('parametrosSistemaGrpServico.atualizar');
-Route::post('/parametros/sistema/editarParametrosSistemaGrpServicos', [App\Http\Controllers\ParametrosSistemaServicoGrupoController::class, 'inserir'])->name('parametrosSistemaGrpServico.inserir');
-Route::delete('/parametros/sistema/servicoGrupo/{grupo}/destroy', [App\Http\Controllers\ParametrosSistemaServicoGrupoController::class, 'destroy'])->name('parametrosSistemaGrpServico.destroy');
+Route::get('/parametros/sistema/editarParametrosSistemaGrpServicos/{dadosGrupo}', [App\Http\Controllers\ParametrosSisServicoGrupoController::class, 'editar'])->name('parametrosSistemaGrpServico.editarCadastro');
+Route::get('/parametros/sistema/cadastroGrpServicos', [App\Http\Controllers\ParametrosSisServicoGrupoController::class, 'cadastro'])->name('parametrosSistemaGrpServico.cadastro');
+Route::post('/parametros/sistema/editarParametrosSistemaGrpServicos/{grupo}', [App\Http\Controllers\ParametrosSisServicoGrupoController::class, 'update'])->name('parametrosSistemaGrpServico.atualizar');
+Route::post('/parametros/sistema/editarParametrosSistemaGrpServicos', [App\Http\Controllers\ParametrosSisServicoGrupoController::class, 'inserir'])->name('parametrosSistemaGrpServico.inserir');
+Route::delete('/parametros/sistema/servicoGrupo/{grupo}/destroy', [App\Http\Controllers\ParametrosSisServicoGrupoController::class, 'destroy'])->name('parametrosSistemaGrpServico.destroy');
 
 /* Serviço */
-Route::get('/parametros/sistema/editarParametrosSistemaServicos/{grupo}/{servico}', [App\Http\Controllers\ParametrosSistemaServicoController::class, 'editar'])->name('parametrosSistemaServico.editarCadastro');
-Route::get('/parametros/sistema/cadastroServicos', [App\Http\Controllers\ParametrosSistemaServicoController::class, 'cadastro'])->name('parametrosSistemaServico.cadastro');
-Route::post('/parametros/sistema/editarParametrosSistemaServicos/{grupo}/{servico}', [App\Http\Controllers\ParametrosSistemaServicoController::class, 'update'])->name('parametrosSistemaServico.atualizar');
-Route::post('/parametros/sistema/editarParametrosSistemaServicos', [App\Http\Controllers\ParametrosSistemaServicoController::class, 'inserir'])->name('parametrosSistemaServico.inserir');
-Route::delete('/parametros/sistema/servico/{servico}/destroy', [App\Http\Controllers\ParametrosSistemaServicoController::class, 'destroy'])->name('parametrosSistemaServico.destroy');
+Route::get('/parametros/sistema/editarParametrosSistemaServicos/{grupo}/{servico}', [App\Http\Controllers\ParametrosSisServicoController::class, 'editar'])->name('parametrosSistemaServico.editarCadastro');
+Route::get('/parametros/sistema/cadastroServicos', [App\Http\Controllers\ParametrosSisServicoController::class, 'cadastro'])->name('parametrosSistemaServico.cadastro');
+Route::post('/parametros/sistema/editarParametrosSistemaServicos/{grupo}/{servico}', [App\Http\Controllers\ParametrosSisServicoController::class, 'update'])->name('parametrosSistemaServico.atualizar');
+Route::post('/parametros/sistema/editarParametrosSistemaServicos', [App\Http\Controllers\ParametrosSisServicoController::class, 'inserir'])->name('parametrosSistemaServico.inserir');
+Route::delete('/parametros/sistema/servico/{servico}/destroy', [App\Http\Controllers\ParametrosSisServicoController::class, 'destroy'])->name('parametrosSistemaServico.destroy');
 
 /*
 |--------------------------------------------------------------------------
@@ -175,16 +175,16 @@ Route::delete('/parametros/gerencial/formularioParametrosGerEmpresa/turno/{turno
 
 /* Setor */
 Route::get('/parametros/servico/homeParametrosServicoSetor', [App\Http\Controllers\HomeController::class, 'homeParSrvSetor'])->name('home.parSrvSetor');
-Route::get('/parametros/servico/homeParametrosServicoSetor/ajax', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'homeAjax'])->name('parametrosSrvSetor.homeAjax');
+Route::get('/parametros/servico/homeParametrosServicoSetor/ajax', [App\Http\Controllers\ParametrosSisSetoresController::class, 'homeAjax'])->name('parametrosSrvSetor.homeAjax');
 
 /* Motivo de Cancelamento */
 Route::get('/parametros/sistema/homeParametrosSistemaMotivosCancelamento', [App\Http\Controllers\HomeController::class, 'homeParMotCan'])->name('home.parMotCan');
-Route::get('/parametros/servico/formularioParametrosSisMotCancelamento/ajax', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'homeAjax'])->name('parametrosSisMotCan.homeAjax');
-Route::get('/parametros/sistema/formularioParametrosSisMotCancelamento/{acao}/{dadosMotCan}', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'cadastroMotCan'])->name('parametrosSisMotCan.cadastroMotCan');
+Route::get('/parametros/servico/formularioParametrosSisMotCancelamento/ajax', [App\Http\Controllers\ParametrosSisCanMotivosController::class, 'homeAjax'])->name('parametrosSisMotCan.homeAjax');
+Route::get('/parametros/sistema/formularioParametrosSisMotCancelamento/{acao}/{dadosMotCan}', [App\Http\Controllers\ParametrosSisCanMotivosController::class, 'cadastroMotCan'])->name('parametrosSisMotCan.cadastroMotCan');
 
-Route::post('/parametros/sistema/formularioParametrosSisMotCancelamento/insert', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'insert'])->name('parametrosSisMotCan.insert');
-Route::post('/parametros/sistema/formularioParametrosSisMotCancelamento/update', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'update'])->name('parametrosSisMotCan.update');
-Route::delete('/parametros/sistema/motivoCancelamento/{motivo}/{origem}/destroy', [App\Http\Controllers\ParametrosSistemaCanMotivosController::class, 'destroy'])->name('parametrosSisMotCan.destroy');
+Route::post('/parametros/sistema/formularioParametrosSisMotCancelamento/insert', [App\Http\Controllers\ParametrosSisCanMotivosController::class, 'insert'])->name('parametrosSisMotCan.insert');
+Route::post('/parametros/sistema/formularioParametrosSisMotCancelamento/update', [App\Http\Controllers\ParametrosSisCanMotivosController::class, 'update'])->name('parametrosSisMotCan.update');
+Route::delete('/parametros/sistema/motivoCancelamento/{motivo}/{origem}/destroy', [App\Http\Controllers\ParametrosSisCanMotivosController::class, 'destroy'])->name('parametrosSisMotCan.destroy');
 
 /* Motivo de Suspensão */
 Route::get('/parametros/sistema/homeParametrosSistemaMotivosSuspensao', [App\Http\Controllers\HomeController::class, 'homeParMotSus'])->name('home.parMotSus');
@@ -263,11 +263,11 @@ Route::post('/parametros/servico/formularioLancamentosServicoTipo/insert', [App\
 Route::post('/parametros/servico/formularioLancamentosServicoTipo/update', [App\Http\Controllers\LancamentoSrvTipoServicoController::class, 'update'])->name('lancamentosSrvTipo.update');
 Route::delete('/parametros/servico/tipo/{tipo}/{origem}/destroy', [App\Http\Controllers\LancamentoSrvTipoServicoController::class, 'destroy'])->name('lancamentosSrvTipo.destroy');
 
-Route::get('/parametros/servico/formularioParametrosServicoSetor', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'cadastro'])->name('parametrosSrvSetor.cadastro');
-Route::get('/parametros/servico/formularioParametrosServicoSetor/{codigo}/{empresa}/{area}', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'editar'])->name('parametrosSrvSetor.editarCadastro');
-Route::post('/parametros/servico/formularioParametrosServicoSetor/insert', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'insert'])->name('parametrosSrvSetor.insert');
-Route::post('/parametros/servico/formularioParametrosServicoSetor/update', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'update'])->name('parametrosSrvSetor.update');
-Route::delete('/parametros/servico/setor/{setor}/{origem}/destroy', [App\Http\Controllers\ParametrosSrvSetoresController::class, 'destroy'])->name('parametrosSrvSetor.destroy');
+Route::get('/parametros/servico/formularioParametrosServicoSetor', [App\Http\Controllers\ParametrosSisSetoresController::class, 'cadastro'])->name('parametrosSrvSetor.cadastro');
+Route::get('/parametros/servico/formularioParametrosServicoSetor/{codigo}/{empresa}/{area}', [App\Http\Controllers\ParametrosSisSetoresController::class, 'editar'])->name('parametrosSrvSetor.editarCadastro');
+Route::post('/parametros/servico/formularioParametrosServicoSetor/insert', [App\Http\Controllers\ParametrosSisSetoresController::class, 'insert'])->name('parametrosSrvSetor.insert');
+Route::post('/parametros/servico/formularioParametrosServicoSetor/update', [App\Http\Controllers\ParametrosSisSetoresController::class, 'update'])->name('parametrosSrvSetor.update');
+Route::delete('/parametros/servico/setor/{setor}/{origem}/destroy', [App\Http\Controllers\ParametrosSisSetoresController::class, 'destroy'])->name('parametrosSrvSetor.destroy');
 
 /* Tarefas de mão de obra */
 Route::get('/parametros/servico/homeParametrosServicoTMO', [App\Http\Controllers\HomeController::class, 'homeParSrvTMO'])->name('home.parSrvTMO');

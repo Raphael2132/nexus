@@ -63,7 +63,7 @@
 
                 <div class="row">
                     @php
-                        $areas = DB::table('parametros_sistema_areas')->selectRaw('area_codigo, area_desc')->orderBy('area_codigo', 'asc')->get();
+                        $areas = DB::table('parametros_sis_areas')->selectRaw('area_codigo, area_desc')->orderBy('area_codigo', 'asc')->get();
 
                         $new_array1 =[];
                         $new_array2 =[];

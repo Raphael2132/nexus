@@ -26,7 +26,7 @@
             <x-adminlte-card title="Cadastro de Novo Grupo de Serviço" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 <div class="row">
                     @php
-                        $data = DB::table('parametros_sistema_servico_grupos')->orderBy('grupo_codigo', 'asc')->get();
+                        $data = DB::table('parametros_sis_servico_grupos')->orderBy('grupo_codigo', 'asc')->get();
 
                         $new_array1 =[];
                         $new_array2 =[];

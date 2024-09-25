@@ -45,7 +45,7 @@ class CadastroPrestadoresController extends Controller
     //Redireciona a home depois da exclusão do registro via ajax
     public function carregaSetAjax($area, $empresa)
     {  
-        $setores = DB::table('parametros_srv_setores')->select('setor_codigo', 'setor_desc')->where('setor_area', $area)->where('setor_empresa', $empresa)->orderby('setor_codigo', 'asc')->get();
+        $setores = DB::table('parametros_sis_setores')->select('setor_codigo', 'setor_desc')->where('setor_area', $area)->where('setor_empresa', $empresa)->orderby('setor_codigo', 'asc')->get();
 
         foreach($setores as $setor) {
             $setores_ajax[] = array(

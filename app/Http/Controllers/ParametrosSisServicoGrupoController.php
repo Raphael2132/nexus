@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\ParametrosSistemaServicoGrupo;
+use App\Models\ParametrosSisServicoGrupo;
 use stdClass;
 
-class ParametrosSistemaServicoGrupoController extends Controller
+class ParametrosSisServicoGrupoController extends Controller
 {
     protected $grupo;
     
-    public function __construct(ParametrosSistemaServicoGrupo $grupo)
+    public function __construct(ParametrosSisServicoGrupo $grupo)
     {
         $this->grupo = $grupo;
     }
@@ -27,7 +27,7 @@ class ParametrosSistemaServicoGrupoController extends Controller
     //Realiza a atualização dos dados do grupo do serviço
     public function update(Request $request, $grupo){
 
-        $atualizausuario = DB::table('parametros_sistema_servico_grupos')
+        $atualizausuario = DB::table('parametros_sis_servico_grupos')
             ->where('grupo_codigo', $grupo)
             ->update(['grupo_desc' => $request->descricao]);
         
@@ -55,13 +55,13 @@ class ParametrosSistemaServicoGrupoController extends Controller
             'grupo_desc' => $request->descricao,    
         ];
         
-        $novoGrupo = ParametrosSistemaServicoGrupo::create($dados);
+        $novoGrupo = ParametrosSisServicoGrupo::create($dados);
         
         return redirect(route('parametrosSistemaGrpServico.editarCadastro', ['dadosGrupo' => $request->codigo]))->with('success', 'Grupo de Serviço cadastrado com sucesso!');
     }
 
     //Exclui os dados de um grupo
-    public function destroy(ParametrosSistemaServicoGrupo $grupo){
+    public function destroy(ParametrosSisServicoGrupo $grupo){
 
         $grupo->delete();
         

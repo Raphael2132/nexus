@@ -91,7 +91,7 @@ class EmissaoSimplificadaNFSController extends Controller
     //Retorna os códigos de serviço do grupo selecionado
     public function carregaCodSrvAjax($codigo)
     {  
-        $servicos = DB::table('parametros_sistema_servicos')->select('servico_codigo', 'servico_desc')->where('servico_grupo', $codigo)->orderby('servico_codigo', 'asc')->get();
+        $servicos = DB::table('parametros_sis_servicos')->select('servico_codigo', 'servico_desc')->where('servico_grupo', $codigo)->orderby('servico_codigo', 'asc')->get();
        
         foreach($servicos as $servico) {
             

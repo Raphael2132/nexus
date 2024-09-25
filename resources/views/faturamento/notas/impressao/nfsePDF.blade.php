@@ -359,7 +359,7 @@
     $dadosXmlNfsEnv = DB::table('faturamento_nfs_xml_envios')->where('nfsenv_emp',$empresa)->where('nfsenv_num',$dadosNFS[0]->nfs_nrps)->get();
     $dadosEmp = DB::table('cadastro_empresas')->where('empresa_codigo',$empresa)->get();
     $dadosEmpEnd = DB::table('cadastro_empresa_enderecos')->where('endereco_empresa_codigo',$empresa)->get();
-    $dadosCodSrv = DB::table('parametros_sistema_servicos')->where('servico_codigo',$dadosNFS[0]->nfs_cod_srv)->get();
+    $dadosCodSrv = DB::table('parametros_sis_servicos')->where('servico_codigo',$dadosNFS[0]->nfs_cod_srv)->get();
     $dadosConexao = DB::table('parametros_fat_nfs')->where('parnfs_empresa',$empresa)->get();
     $dadosParSrvEmp = DB::table('parametros_srv_empresas')->where('parsrv_emp',$empresa)->get();
 

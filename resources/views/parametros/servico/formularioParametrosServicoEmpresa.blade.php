@@ -99,7 +99,7 @@
                 </div>  
 
                 @php
-                    $dadosGrupoSrv = DB::table('parametros_sistema_servico_grupos')->orderBy('grupo_codigo', 'asc')->get();
+                    $dadosGrupoSrv = DB::table('parametros_sis_servico_grupos')->orderBy('grupo_codigo', 'asc')->get();
 
                     $new_array1_grp =[];
                     $new_array2_grp =[];
@@ -111,7 +111,7 @@
                     $array_opt_grp = array_combine($new_array1_grp, $new_array2_grp);
 
                     if(!empty($parametrosEmp[0]->parsrv_grp_srv)){
-                        $dadosCodSrv = DB::table('parametros_sistema_servicos')->where('servico_grupo', $parametrosEmp[0]->parsrv_grp_srv)->orderBy('servico_codigo', 'asc')->get();
+                        $dadosCodSrv = DB::table('parametros_sis_servicos')->where('servico_grupo', $parametrosEmp[0]->parsrv_grp_srv)->orderBy('servico_codigo', 'asc')->get();
 
                         $new_array1_srv =[];
                         $new_array2_srv =[];

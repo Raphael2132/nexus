@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\ParametrosSistemaArea;
+use App\Models\ParametrosSisArea;
 use stdClass;
 
-class ParametrosSistemaAreaController extends Controller
+class ParametrosSisAreaController extends Controller
 {
     protected $area;
     
-    public function __construct(ParametrosSistemaArea $area)
+    public function __construct(ParametrosSisArea $area)
     {
         $this->area = $area;
     }
@@ -27,7 +27,7 @@ class ParametrosSistemaAreaController extends Controller
     //Realiza a atualização dos dados da área
     public function update(Request $request, $area){
 
-        $atualizausuario = DB::table('parametros_sistema_areas')
+        $atualizausuario = DB::table('parametros_sis_areas')
             ->where('area_codigo', $area)
             ->update(['area_desc' => $request->descricao]);
         
@@ -58,13 +58,13 @@ class ParametrosSistemaAreaController extends Controller
             'area_desc' => $request->descricao
         ];
         
-        $novaArea = ParametrosSistemaArea::create($dados);
+        $novaArea = ParametrosSisArea::create($dados);
         
         return redirect(route('parametrosSistemaAreas.editarCadastro', ['area' => $codSist]))->with('success', 'Área cadastrada com sucesso!');
     }
 
     //Exclui os dados da area
-    public function destroy(ParametrosSistemaArea $area){
+    public function destroy(ParametrosSisArea $area){
 
         $area->delete();
         

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ParametrosSistemaModulo extends Model
+class ParametrosSisModulo extends Model
 {
     use HasFactory;
 
@@ -22,7 +22,7 @@ class ParametrosSistemaModulo extends Model
         'modulo_dt_validade',
     ];
 
-    protected $table = 'parametros_sistema_modulos';
+    protected $table = 'parametros_sis_modulos';
 
     public function usuarios()
     {

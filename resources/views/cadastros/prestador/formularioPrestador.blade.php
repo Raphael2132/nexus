@@ -88,7 +88,7 @@
 
                 <div class="row">
                     @php 
-                        $data_are = DB::table('parametros_sistema_areas')->select('area_codigo', 'area_desc')->orderBy('area_codigo', 'asc')->get();
+                        $data_are = DB::table('parametros_sis_areas')->select('area_codigo', 'area_desc')->orderBy('area_codigo', 'asc')->get();
 
                         $new_array1_are =[];
                         $new_array2_are =[];
@@ -481,7 +481,7 @@
 
                         <div class="row">
                             @php 
-                                $data_are = DB::table('parametros_sistema_areas')->select('area_codigo', 'area_desc')->orderBy('area_codigo', 'asc')->get();
+                                $data_are = DB::table('parametros_sis_areas')->select('area_codigo', 'area_desc')->orderBy('area_codigo', 'asc')->get();
 
                                 $new_array1_are =[];
                                 $new_array2_are =[];
@@ -492,7 +492,7 @@
                                 }
                                 $array_opt_are = array_combine($new_array1_are, $new_array2_are);
 
-                                $data_set = DB::table('parametros_srv_setores')->select('setor_codigo', 'setor_desc')->where('setor_area', $dadosPrestador[0]['prestador_are'])->where('setor_empresa', $dadosPrestador[0]['prestador_empresa'])->orderby('setor_codigo', 'asc')->get();
+                                $data_set = DB::table('parametros_sis_setores')->select('setor_codigo', 'setor_desc')->where('setor_area', $dadosPrestador[0]['prestador_are'])->where('setor_empresa', $dadosPrestador[0]['prestador_empresa'])->orderby('setor_codigo', 'asc')->get();
 
                                 $new_array1_set =[];
                                 $new_array2_set =[];

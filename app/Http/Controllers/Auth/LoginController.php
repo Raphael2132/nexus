@@ -59,7 +59,7 @@ class LoginController extends Controller
         // Verificar se a licença da empresa associada ao usuário está válida
         if ($user) {
             // Buscar a data de validade da empresa associada ao usuário
-            $empresaValidade = DB::table('parametros_sistema_modulos')
+            $empresaValidade = DB::table('parametros_sis_modulos')
                 ->where('modulo_empresa_codigo', $user->usuario_empresa)
                 ->value('modulo_dt_validade');
 
@@ -90,7 +90,7 @@ class LoginController extends Controller
 
         // Verificar se a licença da empresa está expirada
         if ($user) {
-            $empresaValidade = DB::table('parametros_sistema_modulos')
+            $empresaValidade = DB::table('parametros_sis_modulos')
                 ->where('modulo_empresa_codigo', $user->usuario_empresa)
                 ->value('modulo_dt_validade');
 

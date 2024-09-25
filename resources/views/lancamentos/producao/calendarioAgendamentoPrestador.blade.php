@@ -21,8 +21,8 @@
 
 @section('content')
 @php 
-    $dadosArea = DB::table('parametros_sistema_areas')->where('area_codigo',$dadosPrestador[0]->prestador_are)->get();
-    $dadosSetor = DB::table('parametros_srv_setores')->where('setor_empresa',$empresa)->where('setor_area',$dadosPrestador[0]->prestador_are)->where('setor_codigo',$dadosPrestador[0]->prestador_set)->get();
+    $dadosArea = DB::table('parametros_sis_areas')->where('area_codigo',$dadosPrestador[0]->prestador_are)->get();
+    $dadosSetor = DB::table('parametros_sis_setores')->where('setor_empresa',$empresa)->where('setor_area',$dadosPrestador[0]->prestador_are)->where('setor_codigo',$dadosPrestador[0]->prestador_set)->get();
     $empresaNome = $dadosEmpresa[0]->empresa_nome;
     $prestadorNome = $dadosPrestador[0]->prestador_nome;
 @endphp

@@ -77,8 +77,8 @@ class PainelProducaoController extends Controller
             //Busca dados Gerais da App
             $dadosEmpEnd = DB::table('cadastro_empresa_enderecos')->where('endereco_empresa_codigo', $request->empresa)->where('endereco_principal', 'S')->first();
             $dadosPrt = DB::table('cadastro_prestadores')->where('prestador_empresa', $request->empresa)->where('prestador_set', $request->setor)->where('prestador_status', 'A')->orderby('prestador_codigo')->get();
-            $dadosSet = DB::table('parametros_srv_setores')->where('setor_empresa', $request->empresa)->where('setor_codigo', $request->setor)->first();
-            $dadosAre = DB::table('parametros_sistema_areas')->where('area_codigo', $dadosSet->setor_area)->first();
+            $dadosSet = DB::table('parametros_sis_setores')->where('setor_empresa', $request->empresa)->where('setor_codigo', $request->setor)->first();
+            $dadosAre = DB::table('parametros_sis_areas')->where('area_codigo', $dadosSet->setor_area)->first();
 
             $expedienteInicio = new \DateTime($horaIniEx); // Hora de início do expediente
             $expedienteFim = new \DateTime($horaFinEx); // Hora de fim do expediente
@@ -126,7 +126,7 @@ class PainelProducaoController extends Controller
     //Carrega o setor por AJAX do Painel de Prestador
     public function carregaSetAjax($empresa)
     {  
-        $setores = DB::table('parametros_srv_setores')->select('setor_codigo', 'setor_desc')->where('setor_empresa', $empresa)->orderby('setor_codigo', 'asc')->get();
+        $setores = DB::table('parametros_sis_setores')->select('setor_codigo', 'setor_desc')->where('setor_empresa', $empresa)->orderby('setor_codigo', 'asc')->get();
 
         if(!empty($setores[0])){
 

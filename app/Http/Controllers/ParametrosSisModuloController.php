@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Helpers\Helper;
-use App\Models\ParametrosSistemaModulo;
+use App\Models\ParametrosSisModulo;
 use stdClass;
 
-class ParametrosSistemaModuloController extends Controller
+class ParametrosSisModuloController extends Controller
 {
-    public function __construct(ParametrosSistemaModulo $modulo)
+    public function __construct(ParametrosSisModulo $modulo)
     {
         $this->modulo = $modulo;
     }
@@ -28,7 +28,7 @@ class ParametrosSistemaModuloController extends Controller
 
         $dataValidade = Helper::limpaData($request->dataValidade);
 
-        $atualizaEmi = DB::table('parametros_sistema_modulos')
+        $atualizaEmi = DB::table('parametros_sis_modulos')
             ->where('modulo_empresa_codigo', $empresa)
             ->update(['modulo_emissao_nfs' => $request->emiNfs,
             'modulo_emissao_nfs_simp' => $request->emiNfsSimp,

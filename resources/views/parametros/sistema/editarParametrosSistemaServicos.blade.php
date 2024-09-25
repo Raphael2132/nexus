@@ -28,7 +28,7 @@
 
                 <div class="row">
                     @php
-                        $grupo_desc = DB::table('parametros_sistema_servico_grupos')->select('grupo_desc')->where('grupo_codigo','=',$dadosServico[0]->servico_grupo)->get();
+                        $grupo_desc = DB::table('parametros_sis_servico_grupos')->select('grupo_desc')->where('grupo_codigo','=',$dadosServico[0]->servico_grupo)->get();
                         $desc_drupo = $dadosServico[0]->servico_grupo.' - '.$grupo_desc[0]->grupo_desc;
                     @endphp
                     <!-- Grupo do serviço -->

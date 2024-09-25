@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Auth;
-use App\Models\ParametrosSistemaModulo;
+use App\Models\ParametrosSisModulo;
 
 class ModulosService
 {

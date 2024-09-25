@@ -5,15 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ParametrosSistemaServico extends Model
+class ParametrosSisArea extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'servico_id';
+    protected $primaryKey = 'area_id';
     
     protected $fillable = [
-        'servico_grupo',
-        'servico_codigo',
-        'servico_desc',
+        'area_codigo',
+        'area_desc'
     ];
 }

@@ -11,7 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement('CREATE SEQUENCE sq_parametros_srv_setores');
+        Schema::create('parametros_sis_servico_grupos', function (Blueprint $table) {
+            $table->id('grupo_id');
+            $table->integer('grupo_codigo')->unique();
+            $table->string('grupo_desc',800);
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement('DROP SEQUENCE sq_parametros_srv_setores');
+        Schema::dropIfExists('parametros_sis_servico_grupos');
     }
 };

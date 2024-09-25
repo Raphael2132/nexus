@@ -45,7 +45,7 @@
                     $data_emp = DB::table('cadastro_empresas')->where('empresa_codigo','=',$setor->setor_empresa)->get();
                     $empresa = $setor->setor_empresa.' - '.$data_emp[0]->empresa_nome;
 
-                    $data_area = DB::table('parametros_sistema_areas')->where('area_codigo','=',$setor->setor_area)->get();
+                    $data_area = DB::table('parametros_sis_areas')->where('area_codigo','=',$setor->setor_area)->get();
                     $area = $setor->setor_area.' - '.$data_area[0]->area_desc;
                 @endphp
                 <tr>

@@ -84,7 +84,7 @@
                 <div class="row"> 
                     @php
 
-                        $data_are = DB::table('parametros_sistema_areas')->selectRaw('area_codigo, area_desc')->orderBy('area_codigo', 'asc')->get();
+                        $data_are = DB::table('parametros_sis_areas')->selectRaw('area_codigo, area_desc')->orderBy('area_codigo', 'asc')->get();
 
                         $new_array_are1 =[];
                         $new_array_are2 =[];
@@ -103,7 +103,7 @@
 
                         if(!empty($dadosTMO[0]['tmo_set'])){
 
-                            $data_set = DB::table('parametros_srv_setores')->selectRaw('setor_codigo, setor_desc')->orderBy('setor_codigo', 'asc')->get();
+                            $data_set = DB::table('parametros_sis_setores')->selectRaw('setor_codigo, setor_desc')->orderBy('setor_codigo', 'asc')->get();
 
                             $new_array_set1 =[];
                             $new_array_set2 =[];

@@ -53,7 +53,7 @@
                 $data_cli = DB::table('cadastro_clientes')->where('cliente_codigo', $header->nfhdr_cli)->get();
                 $dadosXmlNfsEnv = DB::table('faturamento_nfs_xml_envios')->where('nfsenv_emp',$header->nfhdr_emp)->where('nfsenv_num',$header->nfhdr_num_nf)->get();
                 
-                $moduloRPS = DB::table('parametros_sistema_modulos')->where('modulo_empresa_codigo', $header->nfhdr_emp)->first();
+                $moduloRPS = DB::table('parametros_sis_modulos')->where('modulo_empresa_codigo', $header->nfhdr_emp)->first();
                 $geraRPS = DB::table('parametros_fat_nfs')->where('parnfs_empresa', $header->nfhdr_emp)->first();
 
                 if(!empty($header->nfhdr_dt_nf)){

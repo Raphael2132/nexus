@@ -48,7 +48,7 @@
                     $data_emp = DB::table('cadastro_empresas')->where('empresa_codigo','=',$tarefa->tmo_emp)->get();
                     $empresa = $tarefa->tmo_emp.' - '.$data_emp[0]->empresa_nome;
 
-                    $data_set = DB::table('parametros_srv_setores')->where('setor_codigo','=',$tarefa->tmo_set)->get();
+                    $data_set = DB::table('parametros_sis_setores')->where('setor_codigo','=',$tarefa->tmo_set)->get();
                     $setor = $tarefa->tmo_set.' - '.$data_set[0]->setor_desc;
 
                     $tarefa_tmo = $tarefa->tmo_cod.' - '.$tarefa->tmo_dsc;

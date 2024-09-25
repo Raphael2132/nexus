@@ -138,7 +138,7 @@
                                         @if($dataNfsXML->nfsenv_sts == 1 || $dataNfsXML->nfsenv_sts == 2)
                                             <!-- Verifica se a empresa emite RPS -->
                                             @php 
-                                                $moduloRPS = DB::table('parametros_sistema_modulos')->where('modulo_empresa_codigo', $empresa)->first();
+                                                $moduloRPS = DB::table('parametros_sis_modulos')->where('modulo_empresa_codigo', $empresa)->first();
                                                 $geraRPS = DB::table('parametros_fat_nfs')->where('parnfs_empresa', $empresa)->first();
                                             @endphp
                                             @if($moduloRPS->modulo_emissao_rps == "S" && $geraRPS->parnfs_impressao_rps == "S")

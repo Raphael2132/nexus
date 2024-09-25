@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('parametros_sistema_can_motivos', function (Blueprint $table) {
+        Schema::create('parametros_sis_can_motivos', function (Blueprint $table) {
             $table->id('canmot_id');
             $table->integer('canmot_codigo');
             $table->string('canmot_desc',80)->nullable();
             $table->timestamps();
-            $table->unique('canmot_codigo', 'ak_parametros_sistema_can_motivos');
+            $table->unique('canmot_codigo', 'ak_parametros_sis_can_motivos');
         });
     }
 
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('parametros_sistema_can_motivos');
+        Schema::dropIfExists('parametros_sis_can_motivos');
     }
 };

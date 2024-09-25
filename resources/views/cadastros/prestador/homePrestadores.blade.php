@@ -61,8 +61,8 @@
             <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
                 @foreach ($prestadores as $prestador)
                     @php 
-                        $dadosSet = DB::table('parametros_srv_setores')->where('setor_codigo', $prestador->prestador_set)->where('setor_empresa', $prestador->prestador_empresa)->get();
-                        $dadosArea = DB::table('parametros_sistema_areas')->where('area_codigo', $dadosSet[0]->setor_area)->get();
+                        $dadosSet = DB::table('parametros_sis_setores')->where('setor_codigo', $prestador->prestador_set)->where('setor_empresa', $prestador->prestador_empresa)->get();
+                        $dadosArea = DB::table('parametros_sis_areas')->where('area_codigo', $dadosSet[0]->setor_area)->get();
                         $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $prestador->prestador_empresa)->first();
 
                         if($prestador->prestador_acesso_sis == 'N'){

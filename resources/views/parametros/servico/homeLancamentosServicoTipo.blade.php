@@ -51,7 +51,7 @@
 
                     $categoria = $tipo->tipsrv_cat.' - '.$data_cat[0]->categoria_desc;
 
-                    $data_are = DB::table('parametros_sistema_areas')->select('area_codigo', 'area_desc')->where('area_codigo', $tipo->tipsrv_are)->get();
+                    $data_are = DB::table('parametros_sis_areas')->select('area_codigo', 'area_desc')->where('area_codigo', $tipo->tipsrv_are)->get();
 
                     $area = $tipo->tipsrv_are.' - '.$data_are[0]->area_desc;
 

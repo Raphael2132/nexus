@@ -23,7 +23,7 @@ return new class extends Migration
         Schema::create('parametros_srv_tmos', function (Blueprint $table) {
             $table->id('tmo_id');
             $table->string('tmo_emp',6)->unsigned();//empresa
-            $table->string('tmo_are',3);//area FK tabela areas - parametros_sistema_areas
+            $table->string('tmo_are',3);//area FK tabela areas - parametros_sis_areas
             $table->string('tmo_set',6);//Setor FK tabela setores - parametros_srv_sets
             $table->string('tmo_cod',15);//codigo tarefa
             $table->string('tmo_dsc',40);//descriçao

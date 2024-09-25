@@ -5,14 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ParametrosSistemaCanMotivos extends Model
+class ParametrosSisSetores extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'canmot_id';
+    protected $primaryKey = 'setor_id';
     
     protected $fillable = [
-        'canmot_codigo',
-        'canmot_desc'
+        'setor_empresa',
+        'setor_codigo',
+        'setor_area',
+        'setor_desc'
     ];
 }

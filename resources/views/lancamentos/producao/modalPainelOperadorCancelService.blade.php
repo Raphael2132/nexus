@@ -127,7 +127,7 @@
     <div class="row col-md-6">
         @php
 
-            $dataMotCan = DB::table('parametros_sistema_can_motivos')->orderBy('canmot_codigo', 'asc')->get();
+            $dataMotCan = DB::table('parametros_sis_can_motivos')->orderBy('canmot_codigo', 'asc')->get();
 
             $new_array_mot1 =[];
             $new_array_mot2 =[];

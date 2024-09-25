@@ -18,8 +18,8 @@ return new class extends Migration
             $table->integer('srv_req')->unsigned();//codigo da requisição da os -> tabela lancamento_srv_os_requisicoes.req_seq
             $table->integer('srv_seq');//sequencia do serviço dentro da requisição
             $table->string('srv_prt',6)->nullable();//prestrador do serviço da empresa -> tabela cadastro_prestadores.prestador_cod
-            $table->string('srv_set',6);//setor da empresa que presta o serviço -> tabela parametros_srv_setores.setor_codigo
-            $table->string('srv_are',3);//areA do setor da empresa -> tabela parametros_sistema_areas.area_codigo
+            $table->string('srv_set',6);//setor da empresa que presta o serviço -> tabela parametros_sis_setores.setor_codigo
+            $table->string('srv_are',3);//areA do setor da empresa -> tabela parametros_sis_areas.area_codigo
             $table->enum('srv_sts', ['S', 'C', 'F', 'A', 'E'])->default('E');//status da tarefa do serviço - suspenso, finalizado, cancelado, andamento, espera
             $table->string('srv_tmo', 15);//codigo da tarefa de mão de Obra -> tabela parametros_srv_tmos.tmo_cod
             $table->string('srv_dsc', 40);//descricao da tarefa de mão de obra

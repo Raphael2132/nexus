@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('req_dsc', 80);//descrisão da requisição
             $table->string('req_tos', 2);//tipo de serviço da requisição -> tabela lancamento_srv_tipo_servicos.tipsrv_cod
             $table->string('req_cat', 1);//catregoria do atendimento -> table lancamento_srv_categorias.categoria_codigo
-            $table->string('req_set', 6);//catregoria do atendimento -> table parametros_srv_setores.setor_codigo
+            $table->string('req_set', 6);//catregoria do atendimento -> table parametros_sis_setores.setor_codigo
             $table->string('req_are', 3);//area
             $table->integer('req_eat');//etapa do atendimento -> table lancamento_srv_etapa_atendimentos.eat_cod
             $table->dateTime('req_dhi');//data e hora da inclusão

@@ -284,7 +284,7 @@ $locPrtSrv = '';
                                 @else
                                 @php 
                                     $usu_can = DB::table('users')->where('usuario_codigo', $glo_os_dadosOS[0]->os_res_abr)->get();
-                                    $mot_can = DB::table('parametros_sistema_can_motivos')->where('canmot_codigo', $glo_os_dadosOS[0]->os_mot_can)->get();
+                                    $mot_can = DB::table('parametros_sis_can_motivos')->where('canmot_codigo', $glo_os_dadosOS[0]->os_mot_can)->get();
                                 @endphp
                                 <td colspan="2">
                                     <p class="text-sm">Responsável do Cancelamento OS
@@ -383,7 +383,7 @@ $locPrtSrv = '';
                     <x-adminlte-datatable id="tabelaGeral" :heads="$heads" :config="$config" theme="light" striped hoverable>
                         @foreach($glo_os_dadosRequisicoes as $requisicao)
                             @php
-                                $data_set = DB::table('parametros_srv_setores')->where('setor_empresa', $glo_os_empresa)->where('setor_codigo', $requisicao->req_set)->where('setor_area', $requisicao->req_are)->get();
+                                $data_set = DB::table('parametros_sis_setores')->where('setor_empresa', $glo_os_empresa)->where('setor_codigo', $requisicao->req_set)->where('setor_area', $requisicao->req_are)->get();
 
                                 $data_tos = DB::table('lancamento_srv_tipo_servicos')->where('tipsrv_emp', $glo_os_empresa)->where('tipsrv_cod', $requisicao->req_tos)->get();
 
@@ -434,7 +434,7 @@ $locPrtSrv = '';
                             <div class="col-md-12" style="height:auto;">
                                 <div class="row">
                                     @php 
-                                        $data = DB::table('parametros_sistema_can_motivos')->orderby('canmot_codigo', 'asc')->get();
+                                        $data = DB::table('parametros_sis_can_motivos')->orderby('canmot_codigo', 'asc')->get();
 
                                         $new_array1 =[];
                                         $new_array2 =[];
@@ -518,8 +518,8 @@ $locPrtSrv = '';
                                 $eat_cat_sel = $glo_os_req_eat_cat;
 
                                 //Areas
-                                $whrIn = DB::table('parametros_srv_setores')->select('setor_area')->where('setor_empresa', $glo_os_empresa);
-                                $data_are = DB::table('parametros_sistema_areas')->select('area_codigo', 'area_desc')->wherein('area_codigo', $whrIn)->orderBy('area_codigo', 'asc')->get();
+                                $whrIn = DB::table('parametros_sis_setores')->select('setor_area')->where('setor_empresa', $glo_os_empresa);
+                                $data_are = DB::table('parametros_sis_areas')->select('area_codigo', 'area_desc')->wherein('area_codigo', $whrIn)->orderBy('area_codigo', 'asc')->get();
 
                                 $new_array1_are =[];
                                 $new_array2_are =[];
@@ -618,11 +618,11 @@ $locPrtSrv = '';
                                 @php
                                     $nom_cat = DB::table('lancamento_srv_categorias')->select('categoria_desc')->where('categoria_codigo', $glo_os_dadosRequisicoes[0]['req_cat'])->get();
 
-                                    $nom_are = DB::table('parametros_sistema_areas')->select('area_desc')->where('area_codigo', $glo_os_dadosRequisicoes[0]['req_are'])->get();
+                                    $nom_are = DB::table('parametros_sis_areas')->select('area_desc')->where('area_codigo', $glo_os_dadosRequisicoes[0]['req_are'])->get();
 
                                     $nom_tos = DB::table('lancamento_srv_tipo_servicos')->select('tipsrv_nom')->where('tipsrv_emp', $glo_os_empresa)->where('tipsrv_cod', $glo_os_dadosRequisicoes[0]['req_tos'])->get();
 
-                                    $nom_set = DB::table('parametros_srv_setores')->select('setor_desc')->where('setor_empresa', $glo_os_empresa)->where('setor_codigo', $glo_os_dadosRequisicoes[0]['req_set'])->get();
+                                    $nom_set = DB::table('parametros_sis_setores')->select('setor_desc')->where('setor_empresa', $glo_os_empresa)->where('setor_codigo', $glo_os_dadosRequisicoes[0]['req_set'])->get();
                                 @endphp
                                 <tr>
                                     <td>
@@ -1137,11 +1137,11 @@ $locPrtSrv = '';
                                 @php
                                     $nom_cat = DB::table('lancamento_srv_categorias')->select('categoria_desc')->where('categoria_codigo', $glo_os_dadosRequisicoes[0]['req_cat'])->get();
 
-                                    $nom_are = DB::table('parametros_sistema_areas')->select('area_desc')->where('area_codigo', $glo_os_dadosRequisicoes[0]['req_are'])->get();
+                                    $nom_are = DB::table('parametros_sis_areas')->select('area_desc')->where('area_codigo', $glo_os_dadosRequisicoes[0]['req_are'])->get();
 
                                     $nom_tos = DB::table('lancamento_srv_tipo_servicos')->select('tipsrv_nom', 'tipsrv_ahs', 'tipsrv_avs')->where('tipsrv_emp', $glo_os_empresa)->where('tipsrv_cod', $glo_os_dadosRequisicoes[0]['req_tos'])->get();
 
-                                    $nom_set = DB::table('parametros_srv_setores')->select('setor_desc')->where('setor_empresa', $glo_os_empresa)->where('setor_codigo', $glo_os_dadosRequisicoes[0]['req_set'])->get();
+                                    $nom_set = DB::table('parametros_sis_setores')->select('setor_desc')->where('setor_empresa', $glo_os_empresa)->where('setor_codigo', $glo_os_dadosRequisicoes[0]['req_set'])->get();
 
                                     //Cria variaveis que serão utilizadas no JS inicial
                                     $altValorTOS = $nom_tos[0]->tipsrv_avs;
@@ -1600,7 +1600,7 @@ $locPrtSrv = '';
                                 <div class="col-md-12" style="height:auto;">
                                     <div class="row">
                                         @php 
-                                            $data = DB::table('parametros_sistema_can_motivos')->orderby('canmot_codigo', 'asc')->get();
+                                            $data = DB::table('parametros_sis_can_motivos')->orderby('canmot_codigo', 'asc')->get();
 
                                             $new_array1 =[];
                                             $new_array2 =[];
@@ -2131,10 +2131,10 @@ $locPrtSrv = '';
                                                             $dataEtapa = DB::table('lancamento_srv_etapa_atendimentos')->select('eat_nom')->where('eat_emp',$glo_os_empresa)->where('eat_cod',$requisicao->req_eat)->get();
                                                             $etapa = $requisicao->req_eat.' - '.$dataEtapa[0]->eat_nom;
 
-                                                            $dataArea = DB::table('parametros_sistema_areas')->select('area_desc')->where('area_codigo',$requisicao->req_are)->get();
+                                                            $dataArea = DB::table('parametros_sis_areas')->select('area_desc')->where('area_codigo',$requisicao->req_are)->get();
                                                             $area = $requisicao->req_are.' - '.$dataArea[0]->area_desc;
 
-                                                            $dataSet = DB::table('parametros_srv_setores')->select('setor_desc')->where('setor_empresa',$glo_os_empresa)->where('setor_codigo',$requisicao->req_set)->where('setor_area',$requisicao->req_are)->get();
+                                                            $dataSet = DB::table('parametros_sis_setores')->select('setor_desc')->where('setor_empresa',$glo_os_empresa)->where('setor_codigo',$requisicao->req_set)->where('setor_area',$requisicao->req_are)->get();
                                                             $setor = $requisicao->req_set.' - '.$dataSet[0]->setor_desc;
 
                                                             $dataTOS = DB::table('lancamento_srv_tipo_servicos')->select('tipsrv_nom')->where('tipsrv_emp', $glo_os_empresa)->where('tipsrv_are', $requisicao->req_are)->where('tipsrv_cod', $requisicao->req_tos)->get();
@@ -2319,9 +2319,9 @@ $locPrtSrv = '';
                         <x-adminlte-datatable id="table3" :heads="$heads" :config="$config" theme="light" striped hoverable>
                             @foreach($glo_os_dadosRequisicoes as $requisicao)
                                 @php 
-                                    $data_set = DB::table('parametros_srv_setores')->where('setor_empresa', $glo_os_empresa)->where('setor_codigo', $requisicao->req_set)->where('setor_area', $requisicao->req_are)->get();
+                                    $data_set = DB::table('parametros_sis_setores')->where('setor_empresa', $glo_os_empresa)->where('setor_codigo', $requisicao->req_set)->where('setor_area', $requisicao->req_are)->get();
                                     $data_tos = DB::table('lancamento_srv_tipo_servicos')->where('tipsrv_emp', $glo_os_empresa)->where('tipsrv_cod', $requisicao->req_tos)->get();
-                                    $data_are = DB::table('parametros_sistema_areas')->where('area_codigo', $requisicao->req_are)->get();
+                                    $data_are = DB::table('parametros_sis_areas')->where('area_codigo', $requisicao->req_are)->get();
 
                                     $setor = $requisicao->req_set.' - '.$data_set[0]->setor_desc;
                                     $tipo_servico = $requisicao->req_tos.' - '.$data_tos[0]->tipsrv_nom;
@@ -2742,7 +2742,7 @@ $locPrtSrv = '';
                 @if($glo_os_estagioAPP == "TOTAIS_OS")
                     <!-- Verifica se a empresa emite RPS -->
                     @php 
-                        $moduloRPS = DB::table('parametros_sistema_modulos')->where('modulo_empresa_codigo', $glo_os_empresa)->first();
+                        $moduloRPS = DB::table('parametros_sis_modulos')->where('modulo_empresa_codigo', $glo_os_empresa)->first();
                         $geraRPS = DB::table('parametros_fat_nfs')->where('parnfs_empresa', $glo_os_empresa)->first();
                     @endphp
                     @if($moduloRPS->modulo_emissao_rps == "S" && $geraRPS->parnfs_impressao_rps == "S")

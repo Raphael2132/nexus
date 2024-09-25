@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('exetrf_tmo', 15);//codigo da tarefa de mão de Obra -> tabela parametros_srv_tmos.tmo_cod
             $table->string('exetrf_desc', 40);//descricao da tarefa de mão de obra
             $table->string('exetrf_cmp',80)->nullable();//complemento
-            $table->string('exetrf_are',3);//areA do setor da empresa -> tabela parametros_sistema_areas.area_codigo
-            $table->string('exetrf_set',6);//setor da empresa que presta o serviço -> tabela parametros_srv_setores.setor_codigo
+            $table->string('exetrf_are',3);//areA do setor da empresa -> tabela parametros_sis_areas.area_codigo
+            $table->string('exetrf_set',6);//setor da empresa que presta o serviço -> tabela parametros_sis_setores.setor_codigo
             $table->string('exetrf_ths',1);//tipo da hora servico
             $table->decimal('exetrf_qhr', 5,2)->default(0);//quantidade de horas da tarefa
             $table->string('exetrf_prt',6)->nullable();//prestrador do serviço da empresa -> tabela cadastro_prestadores.prestador_cod

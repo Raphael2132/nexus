@@ -11,12 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('parametros_sistema_areas', function (Blueprint $table) {
-            $table->id('area_id');
-            $table->string('area_codigo',3)->unique();
-            $table->string('area_desc',40);
-            $table->timestamps();
-        });
+        DB::statement('CREATE SEQUENCE sq_parametros_sis_setores');
     }
 
     /**
@@ -24,6 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('parametros_sistema_areas');
+        DB::statement('DROP SEQUENCE sq_parametros_sis_setores');
     }
 };

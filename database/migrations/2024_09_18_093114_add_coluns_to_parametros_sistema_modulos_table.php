@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('parametros_sistema_modulos', function (Blueprint $table) {
+        Schema::table('parametros_sis_modulos', function (Blueprint $table) {
             $table->integer('modulo_qtd_usuarios')->default(1);//Quantidade de Usuários do Sistema
             $table->date('modulo_dt_validade')->default(DB::raw('NOW()'));//Data de validade da licença da empresa
         });
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('parametros_sistema_modulos', function (Blueprint $table) {
+        Schema::table('parametros_sis_modulos', function (Blueprint $table) {
             $table->dropColumn('modulo_qtd_usuarios');
             $table->dropColumn('modulo_dt_validade');
         });

@@ -79,13 +79,13 @@
                 </p>
                 <p class="text-sm col-md-3">Área
                     @php 
-                        $dadosAre = DB::table('parametros_sistema_areas')->where('area_codigo', $dadosReq->req_are)->first();
+                        $dadosAre = DB::table('parametros_sis_areas')->where('area_codigo', $dadosReq->req_are)->first();
                     @endphp
                     <b class="d-block">{{ $dadosReq->req_are.' - '.$dadosAre->area_desc }}</b>
                 </p>
                 <p class="text-sm col-md-3">Setor
                     @php 
-                        $dadosSet = DB::table('parametros_srv_setores')->where('setor_codigo', $dadosReq->req_set)->where('setor_empresa', $dadosReq->req_emp)->where('setor_area', $dadosReq->req_are)->first();
+                        $dadosSet = DB::table('parametros_sis_setores')->where('setor_codigo', $dadosReq->req_set)->where('setor_empresa', $dadosReq->req_emp)->where('setor_area', $dadosReq->req_are)->first();
                     @endphp
                     <b class="d-block">{{ $dadosReq->req_set.' - '.$dadosSet->setor_desc }}</b>
                 </p>

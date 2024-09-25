@@ -95,7 +95,7 @@
                                                 <h4 class="text-primary">Módulos de Acesso</h4>
                                                 <div class="text-muted">
                                                     @php 
-                                                        $modulo = DB::table('parametros_sistema_modulos')->where('modulo_empresa_codigo', $empresa->empresa_codigo)->first();
+                                                        $modulo = DB::table('parametros_sis_modulos')->where('modulo_empresa_codigo', $empresa->empresa_codigo)->first();
                                                     @endphp
                                                     <div class="row">
                                                         <p class="text-sm col-md-6">Data de Expiração 

@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('parametros_sistema_servicos', function (Blueprint $table) {
+        Schema::create('parametros_sis_servicos', function (Blueprint $table) {
             $table->id('servico_id');
             $table->integer('servico_grupo')->unsigned();
             $table->integer('servico_codigo');
             $table->string('servico_desc',800);
             $table->timestamps();
-            $table->unique(['servico_grupo','servico_codigo'], 'ak_parametros_sistema_servicos');
-            $table->foreign('servico_grupo', 'fk_parametros_sistema_servicos')->references('grupo_codigo')->on('parametros_sistema_servico_grupos')->onDelete('cascade');
+            $table->unique(['servico_grupo','servico_codigo'], 'ak_parametros_sis_servicos');
+            $table->foreign('servico_grupo', 'fk_parametros_sis_servicos')->references('grupo_codigo')->on('parametros_sis_servico_grupos')->onDelete('cascade');
         });
     }
 
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('parametros_sistema_servicos');
+        Schema::dropIfExists('parametros_sis_servicos');
     }
 };

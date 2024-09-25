@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\ParametrosSistemaCanMotivos;
+use App\Models\ParametrosSisCanMotivos;
 use stdClass;
 
-class ParametrosSistemaCanMotivosController extends Controller
+class ParametrosSisCanMotivosController extends Controller
 {
     protected $motivo;
     
-    public function __construct(ParametrosSistemaCanMotivos $motivo)
+    public function __construct(ParametrosSisCanMotivos $motivo)
     {
         $this->motivo = $motivo;
     }
@@ -20,7 +20,7 @@ class ParametrosSistemaCanMotivosController extends Controller
     public function cadastroMotCan($acao, $dadosMotCan)
     {
         if(!empty(trim($dadosMotCan))){
-            $dadosMotCan = DB::table('parametros_sistema_can_motivos')->where('canmot_codigo', $dadosMotCan)->get();
+            $dadosMotCan = DB::table('parametros_sis_can_motivos')->where('canmot_codigo', $dadosMotCan)->get();
         }else{
             $dadosMotCan = ' ';
         }
@@ -32,7 +32,7 @@ class ParametrosSistemaCanMotivosController extends Controller
     public function insert(Request $request){
 
         //Verifica se já existe motivo cadastrado com o mesmo codigo
-        $motivos = DB::table('parametros_sistema_can_motivos')->where('canmot_codigo', $request->codigo)->count();
+        $motivos = DB::table('parametros_sis_can_motivos')->where('canmot_codigo', $request->codigo)->count();
 
         if($motivos > 0){
             return redirect()->back()->with('error', 'Já existe motivo cadstrado com o código '.$request->codigo.'!');
@@ -43,7 +43,7 @@ class ParametrosSistemaCanMotivosController extends Controller
             'canmot_desc' => $request->descricao,    
         ];
         
-        ParametrosSistemaCanMotivos::create($dados);
+        ParametrosSisCanMotivos::create($dados);
         
         return redirect(route('home.parMotCan'))->with('success', 'Motivo de Cancelamento cadastrado com sucesso!');
     }
@@ -51,7 +51,7 @@ class ParametrosSistemaCanMotivosController extends Controller
     //Altera o motivo
     public function update(Request $request){
 
-        $atualizausuario = DB::table('parametros_sistema_can_motivos')
+        $atualizausuario = DB::table('parametros_sis_can_motivos')
         ->where('canmot_codigo', $request->codigo)
         ->update(['canmot_desc' => $request->descricao]);
     
@@ -59,7 +59,7 @@ class ParametrosSistemaCanMotivosController extends Controller
     }
 
     //Exclui os dados do motivo
-    public function destroy(ParametrosSistemaCanMotivos $motivo, $origem){
+    public function destroy(ParametrosSisCanMotivos $motivo, $origem){
 
         $motivo->delete();
 

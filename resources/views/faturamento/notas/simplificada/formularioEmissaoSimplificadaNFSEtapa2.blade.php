@@ -321,7 +321,7 @@
                 <x-adminlte-card title="Dados do Serviço" icon="fa-solid fa-file-invoice-dollar fa-lg" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     @php
                         $dataParSrvEmp = DB::table('parametros_srv_empresas')->where('parsrv_emp', $empresa)->get();
-                        $dadosGrupoSrv = DB::table('parametros_sistema_servico_grupos')->orderBy('grupo_codigo', 'asc')->get();
+                        $dadosGrupoSrv = DB::table('parametros_sis_servico_grupos')->orderBy('grupo_codigo', 'asc')->get();
 
                         $new_array1 =[];
                         $new_array2 =[];
@@ -334,7 +334,7 @@
 
                         if(!empty($dataParSrvEmp[0]->parsrv_cod_srv) && $dataParSrvEmp[0]->parsrv_cod_srv != 0){
                             
-                            $dadosCodSrv = DB::table('parametros_sistema_servicos')->where('servico_grupo', $dataParSrvEmp[0]->parsrv_grp_srv)->orderBy('servico_codigo', 'asc')->get();
+                            $dadosCodSrv = DB::table('parametros_sis_servicos')->where('servico_grupo', $dataParSrvEmp[0]->parsrv_grp_srv)->orderBy('servico_codigo', 'asc')->get();
 
                             $new_array1 =[];
                             $new_array2 =[];

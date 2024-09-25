@@ -9,7 +9,7 @@
         </p>
         <p class="text-sm col-md-3">Setor
             @php 
-                $dadosSet = DB::table('parametros_srv_setores')->where('setor_codigo', $dadosSrv->exetrf_set)->where('setor_area', $dadosSrv->exetrf_are)->where('setor_empresa', $dadosSrv->exetrf_emp)->first();
+                $dadosSet = DB::table('parametros_sis_setores')->where('setor_codigo', $dadosSrv->exetrf_set)->where('setor_area', $dadosSrv->exetrf_are)->where('setor_empresa', $dadosSrv->exetrf_emp)->first();
             @endphp
             <b class="d-block">{{ $dadosSrv->exetrf_set.' - '.$dadosSet->setor_desc }}</b>
         </p>

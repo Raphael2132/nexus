@@ -15,7 +15,7 @@ return new class extends Migration
         RETURNS trigger
         AS $$
         begin
-            INSERT INTO parametros_sistema_modulos (modulo_empresa_codigo,created_at,updated_at) VALUES (NEW.empresa_codigo,current_timestamp,current_timestamp);
+            INSERT INTO parametros_sis_modulos (modulo_empresa_codigo,created_at,updated_at) VALUES (NEW.empresa_codigo,current_timestamp,current_timestamp);
             return NEW;
         end;
         $$ LANGUAGE plpgsql;');

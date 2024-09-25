@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\ParametrosSrvSetores;
+use App\Models\ParametrosSisSetores;
 use stdClass;
 
-class ParametrosSrvSetoresController extends Controller
+class ParametrosSisSetoresController extends Controller
 {
     protected $setor;
     
-    public function __construct(ParametrosSrvSetores $setor)
+    public function __construct(ParametrosSisSetores $setor)
     {
         $this->setor = $setor;
     }
@@ -41,7 +41,7 @@ class ParametrosSrvSetoresController extends Controller
             return redirect()->back()->with('error', 'Setor da empresa '.$request->empresa.' e da Área '.$request->area.' já foi cadastrado!');
         }*/
 
-        $nextval=DB::select("SELECT nextval('sq_parametros_srv_setores')")[0]->nextval;
+        $nextval=DB::select("SELECT nextval('sq_parametros_sis_setores')")[0]->nextval;
         $codigo = $request->area.str_pad($nextval,3,'0',STR_PAD_LEFT);
 
         $dados = [
@@ -51,7 +51,7 @@ class ParametrosSrvSetoresController extends Controller
             'setor_desc' => $request->descricao 
         ];
         
-        $novoSetor = ParametrosSrvSetores::create($dados);
+        $novoSetor = ParametrosSisSetores::create($dados);
         
         return redirect(route('parametrosSrvSetor.editarCadastro', ['codigo' => $codigo, 'empresa' => $request->empresa, 'area' => $request->area]))->with('success', 'Setor cadastrado com sucesso!');
     }
@@ -59,7 +59,7 @@ class ParametrosSrvSetoresController extends Controller
     //Realiza a atualização dos dados do setor
     public function update(Request $request){
 
-        $atualizausuario = DB::table('parametros_srv_setores')
+        $atualizausuario = DB::table('parametros_sis_setores')
             ->where('setor_codigo', $request->codigo)
             ->where('setor_empresa', $request->empresa)
             ->where('setor_area', $request->area)
@@ -69,7 +69,7 @@ class ParametrosSrvSetoresController extends Controller
     }
 
     //Exclui os dados do setor
-    public function destroy(ParametrosSrvSetores $setor, $origem){
+    public function destroy(ParametrosSisSetores $setor, $origem){
 
         $setor->delete();
 

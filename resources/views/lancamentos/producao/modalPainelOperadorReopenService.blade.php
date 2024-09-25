@@ -143,7 +143,7 @@
                 </p>
                 <p class="text-sm col-md-3">Motivo de Cancelamento
                     @php 
-                        $dadosMotCan = DB::table('parametros_sistema_can_motivos')->where('canmot_codigo', $dadosSrv->exetrf_mot_can_srv)->first();
+                        $dadosMotCan = DB::table('parametros_sis_can_motivos')->where('canmot_codigo', $dadosSrv->exetrf_mot_can_srv)->first();
                     @endphp
                     <b class="d-block">{{ $dadosSrv->exetrf_mot_can_srv.' - '.$dadosMotCan->canmot_desc }}</b>
                 </p>

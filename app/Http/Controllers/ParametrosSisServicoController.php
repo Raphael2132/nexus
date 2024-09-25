@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\ParametrosSistemaServico;
+use App\Models\ParametrosSisServico;
 use stdClass;
 
-class ParametrosSistemaServicoController extends Controller
+class ParametrosSisServicoController extends Controller
 {
     protected $servico;
     
-    public function __construct(ParametrosSistemaServico $servico)
+    public function __construct(ParametrosSisServico $servico)
     {
         $this->servico = $servico;
     }
@@ -27,7 +27,7 @@ class ParametrosSistemaServicoController extends Controller
     //Realiza a atualização dos dados do grupo do serviço
     public function update(Request $request, $grupo, $servico){
 
-        $atualizausuario = DB::table('parametros_sistema_servicos')
+        $atualizausuario = DB::table('parametros_sis_servicos')
             ->where('servico_grupo', $grupo)
             ->where('servico_codigo', $servico)
             ->update(['servico_desc' => $request->descricao]);
@@ -57,13 +57,13 @@ class ParametrosSistemaServicoController extends Controller
             'servico_desc' => $request->descricao 
         ];
         
-        $novoServico = ParametrosSistemaServico::create($dados);
+        $novoServico = ParametrosSisServico::create($dados);
         
         return redirect(route('parametrosSistemaServico.editarCadastro', ['grupo' => $request->grupo, 'servico' => $request->codigo]))->with('success', 'Serviço cadastrado com sucesso!');
     }
 
     //Exclui os dados de um serviço
-    public function destroy(ParametrosSistemaServico $servico){
+    public function destroy(ParametrosSisServico $servico){
 
         $servico->delete();
         

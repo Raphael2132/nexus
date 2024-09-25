@@ -91,7 +91,7 @@
             <x-adminlte-datatable id="table2" :heads="$heads2" :config="$config2" theme="light" striped hoverable with-buttons>
                 @foreach ($servicos as $servico)
                     @php
-                        $data_dsc = DB::table('parametros_sistema_servico_grupos')->where('grupo_codigo','=',$servico->servico_grupo)->get();
+                        $data_dsc = DB::table('parametros_sis_servico_grupos')->where('grupo_codigo','=',$servico->servico_grupo)->get();
                         $grupo_completo = $servico->servico_grupo.' - '.$data_dsc[0]->grupo_desc;
                     @endphp
                     <tr>

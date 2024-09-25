@@ -36,7 +36,7 @@ class ParametrosFatNfsController extends Controller
     public function update(Request $request, $empresa){
 
         if($request->imprimeNFS == 'S'){
-            $modulos = DB::table('parametros_sistema_modulos')->where('modulo_empresa_codigo', $empresa)->first();
+            $modulos = DB::table('parametros_sis_modulos')->where('modulo_empresa_codigo', $empresa)->first();
 
             if($modulos->modulo_emissao_nfs == 'N' && $modulos->modulo_emissao_nfs_simp == 'N'){
                 return redirect()->back()->with('error', 'Empresa não utiliza o módulo de NFS-e!');
@@ -44,7 +44,7 @@ class ParametrosFatNfsController extends Controller
         }
 
         if($request->imprimeRPS == 'S'){
-            $modulos = DB::table('parametros_sistema_modulos')->where('modulo_empresa_codigo', $empresa)->first();
+            $modulos = DB::table('parametros_sis_modulos')->where('modulo_empresa_codigo', $empresa)->first();
 
             if($modulos->modulo_emissao_rps == 'N'){
                 return redirect()->back()->with('error', 'Empresa não utiliza o módulo de RPS!');

@@ -16,15 +16,15 @@ return new class extends Migration
     */
     public function up(): void
     {
-        Schema::create('parametros_srv_setores', function (Blueprint $table) {
+        Schema::create('parametros_sis_setores', function (Blueprint $table) {
             $table->id('setor_id');
             $table->string('setor_codigo', 6);
             $table->string('setor_empresa',6)->unsigned();
             $table->string('setor_area', 3);
             $table->string('setor_desc',40);
             $table->timestamps();
-            $table->unique(['setor_codigo','setor_empresa','setor_area'], 'ak_parametros_srv_setores');
-            $table->foreign('setor_empresa', 'fk_parametros_srv_setores')->references('empresa_codigo')->on('cadastro_empresas')->onDelete('cascade');
+            $table->unique(['setor_codigo','setor_empresa','setor_area'], 'ak_parametros_sis_setores');
+            $table->foreign('setor_empresa', 'fk_parametros_sis_setores')->references('empresa_codigo')->on('cadastro_empresas')->onDelete('cascade');
         });
     }
 
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('parametros_srv_setores');
+        Schema::dropIfExists('parametros_sis_setores');
     }
 };

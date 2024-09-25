@@ -7,18 +7,18 @@ use App\Models\User;
 use App\Models\CadastroEmpresa;
 use App\Models\ParametrosFatNfs;
 use App\Models\ParametrosFatNfsConexoes;
-use App\Models\ParametrosSistemaModulo;
-use App\Models\ParametrosSistemaServicoGrupo;
-use App\Models\ParametrosSistemaServico;
-use App\Models\ParametrosSistemaArea;
-use App\Models\ParametrosSrvSetores;
+use App\Models\ParametrosSisModulo;
+use App\Models\ParametrosSisServicoGrupo;
+use App\Models\ParametrosSisServico;
+use App\Models\ParametrosSisArea;
+use App\Models\ParametrosSisSetores;
 use App\Models\ParametrosSrvTmo;
 use App\Models\LancamentoSrvOs;
 use App\Models\LancamentoSrvCategorias;
 use App\Models\LancamentoSrvTipoServico;
 use App\Models\LancamentoSrvEtapaAtendimento;
 use App\Models\CadastroPrestadores;
-use App\Models\ParametrosSistemaCanMotivos;
+use App\Models\ParametrosSisCanMotivos;
 use App\Models\ParametrosSisSusMotivo;
 use App\Models\ParametrosSrvEmpresas;
 use App\Models\ParametrosFatEmpresas;
@@ -43,18 +43,18 @@ class HomeController extends Controller
                                 CadastroEmpresa $empresa, 
                                 ParametrosFatNfs $parametrosNfs, 
                                 ParametrosFatNfsConexoes $parametrosNfsConexao,
-                                ParametrosSistemaModulo $parametrosSistemaModulo, 
-                                ParametrosSistemaServicoGrupo $parametrosGrpServico, 
-                                ParametrosSistemaServico $parametrosServico, 
-                                ParametrosSistemaArea $parametrosSistemaArea, 
-                                ParametrosSrvSetores $parametrosServicoSetor,
+                                ParametrosSisModulo $parametrosSistemaModulo, 
+                                ParametrosSisServicoGrupo $parametrosGrpServico, 
+                                ParametrosSisServico $parametrosServico, 
+                                ParametrosSisArea $parametrosSistemaArea, 
+                                ParametrosSisSetores $parametrosServicoSetor,
                                 ParametrosSrvTmo $parametrosServicoTMO,
                                 LancamentoSrvOs $lancamentosOS, 
                                 LancamentoSrvCategorias $lancamentosServicoCategoria,
                                 LancamentoSrvTipoServico $lancamentoSrvTipoServico,
                                 LancamentoSrvEtapaAtendimento  $lancamentosServicoEtapas,
                                 CadastroPrestadores $prestador,
-                                ParametrosSistemaCanMotivos $motCan,
+                                ParametrosSisCanMotivos $motCan,
                                 ParametrosSisSusMotivo $motSus,
                                 ParametrosSrvEmpresas $parSrvEmp,
                                 ParametrosFatEmpresas $parFatEmp,

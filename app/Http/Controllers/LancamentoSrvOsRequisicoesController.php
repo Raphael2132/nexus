@@ -168,7 +168,7 @@ class LancamentoSrvOsRequisicoesController extends Controller
     //Retorna os setores via ajax
     public function carregaSetAjax($area, $empresa)
     {  
-        $setores = DB::table('parametros_srv_setores')->select('setor_codigo', 'setor_desc')->where('setor_empresa', $empresa)->where('setor_area', $area)->orderby('setor_codigo', 'asc')->get();
+        $setores = DB::table('parametros_sis_setores')->select('setor_codigo', 'setor_desc')->where('setor_empresa', $empresa)->where('setor_area', $area)->orderby('setor_codigo', 'asc')->get();
 
         if(!empty($setores[0])){
 
