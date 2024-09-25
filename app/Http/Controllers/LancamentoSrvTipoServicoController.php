@@ -33,7 +33,7 @@ class LancamentoSrvTipoServicoController extends Controller
     //Insere o tipo do serviço
     public function insert(Request $request){
 
-        $codigo = strtoupper($codigo);
+        $codigo = strtoupper($request->codigo);
 
         //Verifica se o tipo do serviço ja foi cadastrado
         $tip_cnt = $this->tipoServico->where('tipsrv_cod','=',$request->empresa)->where('tipsrv_emp','=',$codigo)->count();
