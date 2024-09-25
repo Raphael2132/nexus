@@ -62,9 +62,11 @@ class LancamentoSrvTipoServicoController extends Controller
             $valor = '0.00';
         }
 
+        $codigo = strtoupper($request->codigo);
+
         $dados = [
             'tipsrv_emp' => $request->empresa,
-            'tipsrv_cod' => $request->codigo,
+            'tipsrv_cod' => $codigo,
             'tipsrv_nom' => $request->descricao,
             'tipsrv_are' => $request->area,
             'tipsrv_cat' => $request->categoria,
