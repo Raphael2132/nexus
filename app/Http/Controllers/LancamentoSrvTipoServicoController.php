@@ -33,11 +33,13 @@ class LancamentoSrvTipoServicoController extends Controller
     //Insere o tipo do serviço
     public function insert(Request $request){
 
+        $codigo = strtoupper($codigo);
+
         //Verifica se o tipo do serviço ja foi cadastrado
-        $tip_cnt = $this->tipoServico->where('tipsrv_cod','=',$request->empresa)->where('tipsrv_emp','=',$request->codigo)->count();
+        $tip_cnt = $this->tipoServico->where('tipsrv_cod','=',$request->empresa)->where('tipsrv_emp','=',$codigo)->count();
 
         if($tip_cnt > 0){
-            return redirect()->back()->with('error', 'Para a empresa '.$request->empresa.' o Tipo de Serviço '.$request->codigo.' já foi cadastrado!');
+            return redirect()->back()->with('error', 'Para a empresa '.$request->empresa.' o Tipo de Serviço '.$codigo.' já foi cadastrado!');
         }
 
         //Verifica se permite descon se os valores foram informados
@@ -61,8 +63,6 @@ class LancamentoSrvTipoServicoController extends Controller
         }else{
             $valor = '0.00';
         }
-
-        $codigo = strtoupper($request->codigo);
 
         $dados = [
             'tipsrv_emp' => $request->empresa,
