@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,11 +38,11 @@ Auth::routes();
 
 Auth::routes(['verify' => true]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'home'])->name('home');
 
 /*
 |--------------------------------------------------------------------------
-| Contatp
+| Contato
 |--------------------------------------------------------------------------
 |
 | Área destina as rotas envolvidas no contato e evio do email de contato.
@@ -49,6 +50,45 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 */
 Route::get('/contato', [App\Http\Controllers\HomeController::class, 'contato'])->name('contato');
 Route::post('/contato/email', [App\Http\Controllers\ContatoController::class, 'enviarEmailContato'])->name('contato.email');
+
+/*
+|--------------------------------------------------------------------------
+| Parametros de Sessão do Control Sidebar
+|--------------------------------------------------------------------------
+|
+| Área destina as rotas envolvidas nos parametros do Control Sidebar do sistema.
+|
+*/
+// Rota para armazenar a empresa de visualização das Homes
+Route::post('/empresaVisualizacao', function (Illuminate\Http\Request $request) {
+    
+    //Vamos definir qual a Home Inicial que o usuário vai usar de acordo com o plano da empresa
+    $empresaPlano = DB::table('parametros_sis_modulos')
+    ->where('modulo_empresa_codigo', $request->empresaHome)
+    ->value('modulo_plano');
+
+    if ($empresaPlano == 'BS01') {
+        $home = 'homeNFSeSimplificada';
+    } elseif ($empresaPlano == 'BE02') {
+        $home = 'homeNFSe';
+    }else{
+        $home = 'home'; 
+    }
+
+    session([
+        'glo_empresa_exibicao_home' => $request->empresaHome,  // Loja selecionada
+        'glo_tipo_home' => $home  // Tipo de home selecionado
+    ]);
+    return response()->json(['success' => true]);
+});
+
+// Rota para armazenar seleção
+Route::post('/tipoHome', function (Illuminate\Http\Request $request) {
+    session([
+        'glo_tipo_home' => $request->tipoHome  // Tipo de home selecionado
+    ]);
+    return response()->json(['success' => true]);
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -508,7 +548,7 @@ Route::post('/faturamento/notas/simplificada/formularioEmissaoSimplificadaNFSE/e
 /* ********** Rotas de Reemissao simplificada de NFS-e ********** */
 Route::get('/faturamento/notas/simplificada/controleReemissaoSimpNF', [App\Http\Controllers\HomeController::class, 'reemissaoSimpNF'])->name('home.reemissaoSimpNF');
 
-Route::get('/faturamento/notas/simplificada/consultaReemissaoSimpNF', [App\Http\Controllers\FaturamentoNfsSimplificadaController::class, 'consultaReemissaoSimpNF'])->name('reemissaoSimpNF.consultaReemissaoSimpNF');
+Route::get('/faturamento/notas/simplificada/consultaReemissaoSimpNF/{appOrigem}', [App\Http\Controllers\FaturamentoNfsSimplificadaController::class, 'consultaReemissaoSimpNF'])->name('reemissaoSimpNF.consultaReemissaoSimpNF');
 Route::get('/faturamento/notas/simplificada/consultaReemissaoSimpNF/redir', [App\Http\Controllers\FaturamentoNfsSimplificadaController::class, 'redirConsultaReemissaoSimpNF'])->name('reemissaoSimpNF.redirConsultaReemissaoSimpNF');
 
 /* ********** Rotas de Impressão de NFS-e ********** */
@@ -532,10 +572,10 @@ Route::get('/faturamento/notas/painelEmissaoNF/aberto/{empresa}/{cliente}/{estag
 Route::get('/faturamento/notas/painelEmissaoNF/notas/insert/{empresa}/{numNF}/{cliente}', [App\Http\Controllers\FinanceiroRecebimentoNotaController::class, 'insert'])->name('emissaoNF.inserirNotas');
 Route::get('/faturamento/notas/painelEmissaoNF/notas/delete/{empresa}/{numNF}/{cliente}', [App\Http\Controllers\FinanceiroRecebimentoNotaController::class, 'delete'])->name('emissaoNF.desmarcarNotas');
 
-Route::get('/faturamento/notas/controleGeracaoNF/{empresa}/{nfReemissao}/{origem}', [App\Http\Controllers\FaturamentoGeracaoNfController::class, 'gerarNF'])->name('emissaoNF.gerarNF');
+Route::get('/faturamento/notas/controleGeracaoNF/{origem}/{empresa}/{nfReemissao}', [App\Http\Controllers\FaturamentoGeracaoNfController::class, 'gerarNF'])->name('emissaoNF.gerarNF');
 
 /* ********** Rotas de Reemissao de NF ********** */
 Route::get('/faturamento/notas/controleReemissaoNF', [App\Http\Controllers\HomeController::class, 'reemissaoNF'])->name('home.reemissaoNF');
 
-Route::get('/faturamento/notas/consultaReemissaoNF', [App\Http\Controllers\PainelEmissaoNfController::class, 'consultaReemissaoNF'])->name('reemissaoNF.consultaReemissaoNF');
+Route::get('/faturamento/notas/consultaReemissaoNF/{appOrigem}', [App\Http\Controllers\PainelEmissaoNfController::class, 'consultaReemissaoNF'])->name('reemissaoNF.consultaReemissaoNF');
 Route::get('/faturamento/notas/consultaReemissaoNF/redir', [App\Http\Controllers\PainelEmissaoNfController::class, 'redirConsultaReemissaoNF'])->name('reemissaoNF.redirConsultaReemissaoNF');

@@ -179,7 +179,7 @@
                 @if($estagio_app == 'GERACAO_NF')
                 <x-adminlte-card title="Gerar Nota Fiscal" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
                     <div style="text-align: center">
-                        <a class="btn btn-nexus" title="Gerar NF-e / NFS-e" href="{{route('emissaoNF.gerarNF',['empresa' => $header->nfhdr_emp, 'nfReemissao' => ' ', 'origem' => 'EMISSAO'])}}">Gerar NF-e / NFS-e</a>
+                        <a class="btn btn-nexus" title="Gerar NF-e / NFS-e" href="{{route('emissaoNF.gerarNF',['origem' => 'EMISSAO', 'empresa' => $header->nfhdr_emp, 'nfReemissao' => ' '])}}">Gerar NF-e / NFS-e</a>
                     </div>
                 </x-adminlte-card>
                 @endif

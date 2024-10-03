@@ -22,12 +22,10 @@
         @php
             $heads = [
                 'Empresa',
-                'Data de Expiração',
+                'Plano Contratado',
+                'Data de Vencimento da Licença',
                 'Qtd. de Usuários',
-                'Módulo de Serviços',
-                'Módulo Emissão de RPS',
-                'Módulo Emissão de NFS-e',
-                'Módulo Emissão Simplificada de NFS-e',
+                'Qtd. de Usuários Extra',
                 ['label' => 'Opção', 'no-export' => true, 'width' => 5],
             ];
             
@@ -36,7 +34,7 @@
                 'pageLength' => 5,
                 'language' => Helper::dataTableLangPtBR(),
                 'order' => [[0, 'asc']],
-                'columns' => [null, null, null, null, null, null, null, ['orderable' => false]],
+                'columns' => [null, null, null, null, null, ['orderable' => false]],
             ];
         @endphp
 
@@ -46,20 +44,16 @@
                     @php
                         $data_emp = DB::table('cadastro_empresas')->where('empresa_codigo','=',$modulo->modulo_empresa_codigo)->get();
                         $empresa = $modulo->modulo_empresa_codigo.' - '.$data_emp[0]->empresa_nome;
-                        
-                        $emiNFS = Helper::formataSimNao($modulo->modulo_emissao_nfs);
-                        $emiRPS = Helper::formataSimNao($modulo->modulo_emissao_rps);
-                        $modSrv = Helper::formataSimNao($modulo->modulo_servico);
-                        $emiSimpNFS = Helper::formataSimNao($modulo->modulo_emissao_nfs_simp);
+
+                        $dataPla = DB::table('parametros_sis_planos')->where('plano_codigo','=',$modulo->modulo_plano)->first();
+                        $plano = $modulo->modulo_plano.' - '.$dataPla->plano_nome;
                     @endphp
                     <tr>   
                         <td>{{ $empresa }}</td>
+                        <td>{{ $plano }}</td>
                         <td>{{ Helper::formataData($modulo->modulo_dt_validade) }}</td>
                         <td>{{ $modulo->modulo_qtd_usuarios }}</td>
-                        <td>{{ $modSrv }}</td>
-                        <td>{{ $emiRPS }}</td>
-                        <td>{{ $emiNFS }}</td>
-                        <td>{{ $emiSimpNFS }}</td>
+                        <td>{{ $modulo->modulo_qtd_usuarios_ext }}</td>
                         <td>
                             <nobr class="d-flex justify-content-center">
                                 <form method="get" action="{{ route('parametrosSistemaModulos.editarCadastro', ['dadosModulo' => $modulo->modulo_empresa_codigo]) }}" style="float: left;">

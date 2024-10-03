@@ -22,6 +22,9 @@ class CadastroClienteController extends Controller
             $clientes = $this->cliente->where('cliente_tipo_pessoa','=','J')->get();
         }elseif($tipo == 'F'){
             $clientes = $this->cliente->where('cliente_tipo_pessoa','=','F')->get();
+        }elseif($tipo == 'M'){
+            $data = date('Y-m-01');
+            $clientes = $this->cliente->where('cliente_dt_inc','>=',$data)->get();
         }else{
             $clientes = $this->cliente->all();
         }

@@ -58,7 +58,7 @@
                         <x-slot name="label">
                             Tipo de Usuário <span style="color:red;">*</span>
                         </x-slot>
-                        <x-adminlte-options :options="['A' => 'Administrador', 'P' => 'Padrão']" empty-option="Selecione..."/>
+                        <x-adminlte-options :options="['ADM' => 'Administrador',  'CX' => 'Caixa', 'CO' => 'Consultor', 'PR' => 'Prestador']" empty-option="Selecione..."/>
                     </x-adminlte-select>
 
                     <!-- Status do Usuario -->
@@ -288,7 +288,7 @@ $(function () {
         Swal.fire({
             confirmButtonColor: "#007bff",
             title: "Aviso!",
-            text: "{{ session('info') }}",
+            html: "{!! session('info') !!}",
             icon: "info",
             customClass: {
                 icon: "no-before-icon",

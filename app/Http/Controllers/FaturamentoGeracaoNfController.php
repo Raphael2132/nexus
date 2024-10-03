@@ -14,7 +14,7 @@ class FaturamentoGeracaoNfController extends Controller
 {
     //private $nfsxml;
 
-    public function gerarNF($empresa, $nfReemissao, $origem)
+    public function gerarNF($origem, $empresa, $nfReemissao)
     {
 
         if($origem == 'EMISSAO'){//Gera dados da Emissão de Notas

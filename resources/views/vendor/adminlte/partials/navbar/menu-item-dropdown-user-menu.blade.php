@@ -24,7 +24,7 @@
         @endif
         <span @if(config('adminlte.usermenu_image')) class="d-none d-md-inline" @endif>
             <!-- {{ Auth::user()->name }} -->
-            <i class="fa-solid fa-door-open"></i>
+            <i class="fa-solid fa-power-off"></i>
         </span>
     </a>
 

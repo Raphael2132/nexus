@@ -43,6 +43,8 @@ if($tipo == 'J'){
     $titulo = 'Clientes Jurídicos Cadastrados';
 }elseif($tipo == 'F'){
     $titulo = 'Clientes Físicos Cadastrados';
+}elseif($tipo == 'M'){
+    $titulo = 'Clientes Cadastrados no Mês';
 }else{
     $titulo = 'Clientes Cadastrados';
 }

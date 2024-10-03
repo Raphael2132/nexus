@@ -19,6 +19,15 @@
 @stop
 
 @section('content')
+@php 
+    //Monta variaveis para o Script Ini
+    $dadosPlano = DB::table('parametros_sis_planos')->where('plano_codigo',$dadosModulo[0]['modulo_plano'])->first();
+    $mod_srv = $dadosPlano->plano_mod_srv; 
+    $mod_srv_cp = $dadosPlano->plano_mod_srv_cp; 
+    $mod_nfs = $dadosPlano->plano_mod_nfs; 
+    $mod_nfs_simp = $dadosPlano->plano_mod_nfs_simp; 
+    $planoCliente = $dadosModulo[0]['modulo_plano'];
+@endphp
 <div class="d-flex justify-content-center">
     <div class="col-md-10">
         <form method="post" action="{{route('parametrosSistemaModulos.atualizar', [ 'empresa' => $dadosModulo[0]['modulo_empresa_codigo'] ] )}}" id="quickForm" novalidate="novalidate">
@@ -48,9 +57,31 @@
                         }else{
                             $dataValidade = '';
                         }
+
+                        $data = DB::table('parametros_sis_planos')->orderBy('plano_codigo', 'asc')->get();
+
+                        $new_array1 =[];
+                        $new_array2 =[];
+
+                        foreach ($data as $plano) {
+                            $new_array1[] = $plano->plano_codigo;
+                            $new_array2[] = $plano->plano_codigo.' - '.$plano->plano_nome;
+                        }
+                        $array_opt = array_combine($new_array1, $new_array2);
                     @endphp
+                    <!-- Plano Contratado -->
+                    <x-adminlte-select name="plano" fgroup-class="col-md-3">
+                        <x-slot name="label">
+                            Plano Contratado <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$dadosModulo[0]->modulo_plano}}"/>
+                    </x-adminlte-select>
+
                     <!-- Data de Expiração -->
-                    <x-adminlte-date-range name="dataValidade" label="Data de Expiração" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-3">
+                    <x-adminlte-date-range name="dataValidade" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-3">
+                        <x-slot name="label">
+                            Data de Validade da Licença <span style="color:red;">*</span>
+                        </x-slot>
                         <x-slot name="prependSlot">
                             <div class="input-group-text x-slot-nexus">
                                 <i class="far fa-lg fa-calendar-alt"></i>
@@ -65,39 +96,56 @@
                             Qtd. de Usuários <span style="color:red;">*</span>
                         </x-slot>
                     </x-adminlte-input>
+
+                    <!-- Quantidade de Usuários Extras -->
+                    <x-adminlte-input name="qtdUsuEx" type="number" value="{{$dadosModulo[0]->modulo_qtd_usuarios_ext}}" fgroup-class="col-md-3">
+                        <x-slot name="label">
+                            Qtd. de Usuários Extras <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
                 </div>
 
                 <div class="row">
                     <!-- Utiliza Módulo Serviços -->
-                    <x-adminlte-select name="modSrv" fgroup-class="col-md-3">
+                    <x-adminlte-select name="modSrv" fgroup-class="col-md-4">
                         <x-slot name="label">
                             Módulo de Serviços <span style="color:red;">*</span>
                         </x-slot>
-                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosModulo[0]['modulo_servico']}}"/>
+                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$dadosModulo[0]['modulo_servico']}}"/>
                     </x-adminlte-select>
 
                     <!-- Utiliza Módulo Emissão RPS -->
-                    <x-adminlte-select name="emiRps" fgroup-class="col-md-3">
+                    <x-adminlte-select name="contProd" fgroup-class="col-md-4">
+                        <x-slot name="label">
+                            Módulo de Controle de Produção <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$dadosModulo[0]['modulo_controle_producao']}}"/>
+                    </x-adminlte-select>
+
+                    <!-- Utiliza Módulo Emissão RPS -->
+                    <x-adminlte-select name="emiRps" fgroup-class="col-md-4">
                         <x-slot name="label">
                             Módulo de Emissão RPS <span style="color:red;">*</span>
                         </x-slot>
-                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosModulo[0]['modulo_emissao_rps']}}"/>
+                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$dadosModulo[0]['modulo_emissao_rps']}}"/>
                     </x-adminlte-select>
+                </div>
 
+                <div class="row">
                     <!-- Utiliza Módulo Emissão NF-e -->
-                    <x-adminlte-select name="emiNfs" fgroup-class="col-md-3">
+                    <x-adminlte-select name="emiNfs" fgroup-class="col-md-4">
                         <x-slot name="label">
                             Módulo de Emissão NFS-e <span style="color:red;">*</span>
                         </x-slot>
-                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosModulo[0]['modulo_emissao_nfs']}}"/>
+                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$dadosModulo[0]['modulo_emissao_nfs']}}"/>
                     </x-adminlte-select>
 
                     <!-- Utiliza Módulo Emissão Simplificada NFS-e -->
-                    <x-adminlte-select name="emiNfsSimp" fgroup-class="col-md-3">
+                    <x-adminlte-select name="emiNfsSimp" fgroup-class="col-md-4">
                         <x-slot name="label">
                             Módulo de Emissão Simplificada NFS-e <span style="color:red;">*</span>
                         </x-slot>
-                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosModulo[0]['modulo_emissao_nfs_simp']}}"/>
+                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$dadosModulo[0]['modulo_emissao_nfs_simp']}}"/>
                     </x-adminlte-select>
                 </div>
 
@@ -131,6 +179,194 @@
 <script>
     $(document).ready(function() {
         $('#empresa').prop('disabled', true);
+        $('#qtdUsu').prop('disabled', true);
+
+        //Ao iniciar app bloqueia os campos caso não usar o Módulo de Serviços
+        if($("#modSrv").val() == 'N'){
+            $("#contProd").prop('disabled', true);
+            $("#emiNfs").prop('disabled', true);
+        }
+
+        //Ao iniciar a app bloqueia os campos caso não usar Emissão de NFS-e e a Emissão Simplificada de NFS-e
+        if($("#emiNfsSimp").val() == 'N' && $("#emiNfs").val() == 'N'){
+            $("#emiRps").prop('disabled', true);
+        }
+
+        var planoCliente = {!! json_encode($planoCliente) !!};
+
+        if(planoCliente == 'BS01'){
+
+            $("#modSrv").prop('disabled', true);
+            $("#contProd").prop('disabled', true);
+            $("#emiNfs").prop('disabled', true);
+
+        }else if(this.value == 'BE02'){
+
+            $("#contProd").prop('disabled', true);
+            $("#emiNfsSimp").prop('disabled', true);
+
+        }else if(this.value == 'BP03'){
+
+            $("#contProd").prop('disabled', true);
+
+        }else if(this.value == 'BP04'){
+            //Não bloqueia nada
+        }else{
+
+            $("#modSrv").prop('disabled', true);
+            $("#contProd").prop('disabled', true);
+            $("#emiRps").prop('disabled', true);
+            $("#emiNfs").prop('disabled', true);
+            $("#emiNfsSimp").prop('disabled', true);
+
+        }
+    });
+</script>
+
+<!--
+|--------------------------------------------------------------------------
+| Eventos onChange da app
+|--------------------------------------------------------------------------
+-->
+<script>
+    $(document).ready(function() {
+
+        /* ***** Verifica se o Modulo de Serviço for Alterado Fazer Validação ***** */
+        $("#plano").change(function(){
+
+            //Se Não usar o Módulo de Serviços Bloquear os campos de Controle de Produção e Emissão de NFS-e deixando com valor = N
+            if(this.value == 'BS01'){
+
+                $("#modSrv").prop('disabled', true);
+                $("#contProd").prop('disabled', true);
+                $("#emiRps").prop('disabled', false);
+                $("#emiNfs").prop('disabled', true);
+                $("#emiNfsSimp").prop('disabled', false);
+
+                $("#modSrv").val('N');
+                $("#contProd").val('N');
+                $("#emiRps").val('S');
+                $("#emiNfs").val('N');
+                $("#emiNfsSimp").val('S');
+
+                $('#qtdUsu').val('2');
+
+            }else if(this.value == 'BE02'){
+
+                $("#modSrv").prop('disabled', false);
+                $("#contProd").prop('disabled', true);
+                $("#emiRps").prop('disabled', false);
+                $("#emiNfs").prop('disabled', false);
+                $("#emiNfsSimp").prop('disabled', true);
+
+                $("#modSrv").val('S');
+                $("#contProd").val('N');
+                $("#emiRps").val('S');
+                $("#emiNfs").val('S');
+                $("#emiNfsSimp").val('N');
+
+                $('#qtdUsu').val('5');
+
+            }else if(this.value == 'BP03'){
+
+                $("#modSrv").prop('disabled', false);
+                $("#contProd").prop('disabled', true);
+                $("#emiRps").prop('disabled', false);
+                $("#emiNfs").prop('disabled', false);
+                $("#emiNfsSimp").prop('disabled', false);
+
+                $("#modSrv").val('S');
+                $("#contProd").val('N');
+                $("#emiRps").val('S');
+                $("#emiNfs").val('S');
+                $("#emiNfsSimp").val('S');
+
+                $('#qtdUsu').val('5');
+
+            }else if(this.value == 'BP04'){
+
+                $("#modSrv").prop('disabled', false);
+                $("#contProd").prop('disabled', false);
+                $("#emiRps").prop('disabled', false);
+                $("#emiNfs").prop('disabled', false);
+                $("#emiNfsSimp").prop('disabled', false);
+
+                $("#modSrv").val('S');
+                $("#contProd").val('S');
+                $("#emiRps").val('S');
+                $("#emiNfs").val('S');
+                $("#emiNfsSimp").val('S');
+
+                $('#qtdUsu').val('10');
+
+            }else{
+
+                $("#modSrv").prop('disabled', true);
+                $("#contProd").prop('disabled', true);
+                $("#emiRps").prop('disabled', true);
+                $("#emiNfs").prop('disabled', true);
+                $("#emiNfsSimp").prop('disabled', true);
+
+                $("#modSrv").val('N');
+                $("#contProd").val('N');
+                $("#emiRps").val('N');
+                $("#emiNfs").val('N');
+                $("#emiNfsSimp").val('N');
+
+                $('#qtdUsu').val('1');
+
+            }
+        });
+        
+        /* ***** Verifica se o Modulo de Serviço for Alterado Fazer Validação ***** */
+        $("#modSrv").change(function(){
+
+            //Se Não usar o Módulo de Serviços Bloquear os campos de Controle de Produção e Emissão de NFS-e deixando com valor = N
+            if(this.value == 'N'){
+                $("#contProd").val('N');
+                $("#emiNfs").val('N');
+                $("#contProd").prop('disabled', true);
+                $("#emiNfs").prop('disabled', true);
+
+                //Se também não estiver usando a Emissão Simplificada Bloquear a Emissão de RPS e deixar valor = N
+                if($("#emiNfsSimp").val() == 'N'){
+                    $("#emiRps").val('N');
+                    $("#emiRps").prop('disabled', true);
+                }
+            }else{
+                $("#contProd").prop('disabled', false);
+                $("#emiNfs").prop('disabled', false);
+            }
+        });
+
+        /* ***** Verifica se o Modulo de Emissão de NFS-e for Alterado Fazer Validação ***** */
+        $("#emiNfs").change(function(){
+
+            //Se também não estiver usando a Emissão Simplificada Bloquear a Emissão de RPS e deixar valor = N
+            //Caso Ativar a Emissão de NFS-e garantir o desbloqueio do campo de RPS e com valor = S
+            if(this.value == 'N' && $("#emiNfsSimp").val() == 'N'){
+                $("#emiRps").val('N');
+                $("#emiRps").prop('disabled', true);
+            }else{
+                $("#emiRps").val('S');
+                $("#emiRps").prop('disabled', false);
+            }
+        });
+
+        /* ***** Verifica se o Modulo de Emissão Simplificada de NFS-e for Alterado Fazer Validação ***** */
+        $("#emiNfsSimp").change(function(){
+
+            //Se também não estiver usando a Emissão de NFS-e Bloquear a Emissão de RPS e deixar valor = N
+            //Caso Ativar a Emissão Simplificada de NFS-e garantir o desbloqueio do campo de RPS e com valor = S
+            if(this.value == 'N' && $("#emiNfs").val() == 'N'){
+                $("#emiRps").val('N');
+                $("#emiRps").prop('disabled', true);
+            }else{
+                $("#emiRps").val('S');
+                $("#emiRps").prop('disabled', false);
+            }
+        });
+
     });
 </script>
 
@@ -156,6 +392,15 @@ $(function () {
             qtdUsu: {
                 required: true
             },
+            contProd: {
+                required: true
+            },
+            qtdUsuEx: {
+                required: true
+            },
+            plano: {
+                required: true
+            },
         },
         messages: {
             modSrv: {
@@ -171,10 +416,19 @@ $(function () {
                 required: "Por Favor informe se utiliza o Módulo de Emissão Simplificada NFS-e"
             },
             dataValidade: {
-                required: "Por Favor informe a Data de Expiração da licença"
+                required: "Por Favor informe a Data de Vencimento da Licença"
             },
             qtdUsu: {
                 required: "Por Favor informe a Qtd. de Usuários permitida"
+            },
+            contProd: {
+                required: "Por Favor informe se utiliza o Módulo de Controle de Produção"
+            },
+            qtdUsuEx: {
+                required: "Por Favor informe a Qtd. de Usuários Extras"
+            },
+            plano: {
+                required: "Por Favor informe o Plano Contratado"
             },
         },
         errorElement: 'span',
@@ -232,7 +486,7 @@ $(function () {
         Swal.fire({
             confirmButtonColor: "#007bff",
             title: "Aviso!",
-            text: "{{ session('info') }}",
+            html: "{!! session('info') !!}",
             icon: "info",
             customClass: {
                 icon: "no-before-icon",

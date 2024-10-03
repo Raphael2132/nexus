@@ -20,6 +20,9 @@ class ParametrosSisModulo extends Model
         'modulo_emissao_rps',
         'modulo_qtd_usuarios',
         'modulo_dt_validade',
+        'modulo_controle_producao',
+        'modulo_plano',
+        'modulo_qtd_usuarios_ext',
     ];
 
     protected $table = 'parametros_sis_modulos';

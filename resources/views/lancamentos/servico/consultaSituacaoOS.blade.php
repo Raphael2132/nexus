@@ -35,7 +35,7 @@ $config = [
     'lengthMenu' => [ 5, 10, 25, 50, 100],
     'pageLength' => 10,
     'language' => Helper::dataTableLangPtBR(),
-    'order' => [[1, 'asc'],[0, 'desc']],
+    'order' => [[0, 'desc']],
     'columns' => [
         ['orderable' => false, 'visible' => false], // Esconder primeira coluna
         null,

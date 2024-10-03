@@ -9,6 +9,7 @@ use stdClass;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Facades\Modulos;
+use App\Http\Helpers\Helper;
 
 class CadastroUsuarioController extends Controller
 {
@@ -19,76 +20,109 @@ class CadastroUsuarioController extends Controller
         $this->usuario = $usuario;
     }
 
-    //Chama a app de consulta com o pré filtro
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Consulta de Usuários vindas das Small Box de Filtro
+    |----------------------------------------------------------------------------------------------------
+    */
     public function usuarios($tipo)
     {
-        //Se não for usuário MASTER o logado no sistema não exibe ele
-        if(Auth::user()->usuario_codigo != 'MASTER'){
+        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
+        $empresa = session('glo_empresa_exibicao_home');
+
+        //O usuário MASTER é exibido apenas para ele
+        if(Auth::user()->usuario_tipo != 'M'){
 
             if($tipo == 'T'){
-                $usuarios = $this->usuario->where('usuario_codigo','<>','MASTER')->get();
+                $usuarios = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo','<>','M')->get();
             }elseif($tipo == 'A'){
-                $usuarios = $this->usuario->where('usuario_status','=','A')->where('usuario_codigo','<>','MASTER')->get();
+                $usuarios = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_status','A')->where('usuario_tipo','<>','M')->get();
             }elseif($tipo == 'D'){
-                $usuarios = $this->usuario->where('usuario_status','=','D')->where('usuario_codigo','<>','MASTER')->get();
+                $usuarios = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_status','D')->where('usuario_tipo','<>','M')->get();
             }elseif($tipo == 'ADM'){
-                $usuarios = $this->usuario->where('usuario_tipo','=','A')->where('usuario_codigo','<>','MASTER')->get();
+                $usuarios = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo','ADM')->get();
+            }elseif($tipo == 'PR'){
+                $usuarios = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo','PR')->get();
             }else{
-                $usuarios = $this->usuario->where('usuario_tipo','=','P')->where('usuario_codigo','<>','MASTER')->get();
+                $usuarios = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo','CO')->get();
             }
 
         }else{
 
             if($tipo == 'T'){
-                $usuarios = $this->usuario->all();
+                $usuarios = $this->usuario->where('usuario_empresa', $empresa)->get();
             }elseif($tipo == 'A'){
-                $usuarios = $this->usuario->where('usuario_status','=','A')->get();
+                $usuarios = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_status','A')->get();
             }elseif($tipo == 'D'){
-                $usuarios = $this->usuario->where('usuario_status','=','D')->get();
+                $usuarios = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_status','D')->get();
             }elseif($tipo == 'ADM'){
-                $usuarios = $this->usuario->where('usuario_tipo','=','A')->get();
+                $usuarios = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo','ADM')->get();
+            }elseif($tipo == 'PR'){
+                $usuarios = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo','PR')->get();
             }else{
-                $usuarios = $this->usuario->where('usuario_tipo','=','P')->get();
+                $usuarios = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo','CO')->get();
             }
         }
 
         return view('/cadastros/usuario/usuarios',['usuarios'=>$usuarios,'tipo'=>$tipo]);
     }
 
-    //Chama a app de cadastro de novo usuario
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Executa a Aplicação de Cadastro de Usuário
+    |----------------------------------------------------------------------------------------------------
+    */
     public function cadastro($tipo)
     {
         return view('/cadastros/usuario/cadastroUsuarios',['tipo' => $tipo]);
     }
 
-    //Chama a app home do cadastro de usuarios
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Executa a APP de Home do Cadastro de Usuários
+    |----------------------------------------------------------------------------------------------------
+    */
     public function create(){
         return view('home.usuarios');
     }
 
-    //Chama a app de edição dos dadosdo usuario
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Executa a APP de Manutenção do Cadastro do Usuário
+    |----------------------------------------------------------------------------------------------------
+    */
     public function editar($dadosUsuario, $tipo)
     {
-        //Apenas o Usuario Master pode editar o usuario master
+        //Apenas o Usuario MASTER pode editar o usuario MASTER
         if(Auth::user()->usuario_codigo != 'MASTER' && $dadosUsuario == 'MASTER'){
             return redirect()->back()->with('error', 'Apenas o usuário MASTER tem permição de acessar os dados do Usuário Master do sistema!');
         }
 
-        $resultadoUsuario = $this->usuario->where('usuario_codigo','=',$dadosUsuario)->get();
+        $resultadoUsuario = $this->usuario->where('usuario_codigo',$dadosUsuario)->get();
 
         return view('/cadastros/usuario/editarCadastroUsuario',['dadosUsuario'=>$resultadoUsuario, 'tipo' => $tipo]);
     }
 
-    //Insere os dados de um novo usuario
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Insere os Dados do Novo Usuário
+    |----------------------------------------------------------------------------------------------------
+    */
     public function inserir(Request $request, $tipo){
 
-        $modulos = Modulos::getModulos();
+        //Inicio do tratamento da quantidade de Usuários permitida para a Empresa
+        //$modulos = Modulos::getModulos();
+        $modulos = DB::table('parametros_sis_modulos')->where('modulo_empresa_codigo', $request->empresa)->first();
+        $qtdTotUsu = $modulos->modulo_qtd_usuarios + $modulos->modulo_qtd_usuarios_ext;
 
-        $qtdUser = DB::table('users')->where('usuario_codigo', '<>', 'MASTER')->where('usuario_status', 'A')->where('usuario_empresa', $request->empresa)->count();
+        $qtdUser = DB::table('users')->where('usuario_tipo', '<>', 'M')->where('usuario_status', 'A')->where('usuario_empresa', $request->empresa)->count();
+        
+        //Não podemos permitir cadastrar um novo usuário se o limite da empresa já estiver atingida
+        if($qtdUser >= $qtdTotUsu){
 
-        //Não permitir cadastrar usuario se ja tiver cadastrado a quantidade limite da empresa
-        if($qtdUser >= $modulos->modulo_qtd_usuarios){
-            return redirect()->back()->with('info', 'A quantidade máxima de Usuários ativos permitida para a empresa '.$request->empresa.' já foi atingida! A quantidade permitida é de até '.$qtdUser.' usuários, para adquirir mais usuários entre em contato com o nosso atendimento!');
+            $dadosEmp = Helper::buscaDadosEmpresa($request->empresa);
+
+            return redirect()->back()->with('info', 'A quantidade máxima de Usuários ativos permitida para a empresa '.$request->empresa.' - '.$dadosEmp->empresa_nome.' já foi atingida! </br></br>A quantidade permitida é de até '.$qtdTotUsu.' usuários ativos, para adquirir mais usuários entre em contato com o nosso atendimento!');
         }
 
         //Verifica se existe o email cadastrado por que não pode repetir
@@ -98,10 +132,28 @@ class CadastroUsuarioController extends Controller
             return redirect()->back()->with('error', 'O Email informado já foi cadastrado em outro usuário!');
         }
 
-        //$nextval=DB::select("SELECT last_value FROM users_id_seq")[0]->last_value+1;
-        $nextval=DB::select("SELECT nextval('sq_cad_usuarios')")[0]->nextval;
+        //Verifica o Tipo de Usuário para montagem do código
+        if($request->tipoUsuario == 'ADM'){
 
-        $codigo = 'U'.str_pad($nextval,5,'0',STR_PAD_LEFT);
+            $nextval=DB::select("SELECT nextval('sq_cad_usuarios')")[0]->nextval;
+            $codigo = 'ADM'.str_pad($nextval,3,'0',STR_PAD_LEFT);
+
+        }elseif($request->tipoUsuario == 'PR'){
+
+            $nextval=DB::select("SELECT nextval('sq_cad_usuarios_pr')")[0]->nextval;
+            $codigo = 'PR'.str_pad($nextval,4,'0',STR_PAD_LEFT);
+
+        }elseif($request->tipoUsuario == 'CO'){
+
+            $nextval=DB::select("SELECT nextval('sq_cad_usuarios_co')")[0]->nextval;
+            $codigo = 'CO'.str_pad($nextval,4,'0',STR_PAD_LEFT);
+
+        }else{
+
+            $nextval=DB::select("SELECT nextval('sq_cad_usuarios_cx')")[0]->nextval;
+            $codigo = 'CX'.str_pad($nextval,4,'0',STR_PAD_LEFT);
+
+        }
 
         $dados = [
             'name' => $request->nome,
@@ -114,15 +166,20 @@ class CadastroUsuarioController extends Controller
             'usuario_empresa' => $request->empresa
         ];
         
-        $novoUsuario = User::create($dados);
+        User::create($dados);
         
         return redirect(route('usuario.editarCadastro', ['dadosUsuario' => $codigo, 'tipo' => $tipo]))->with('success', 'Usuário cadastrado com sucesso!');
     }
 
-    //Exclui os dados de um usuário
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Exclui os Dados do Usuário
+    |----------------------------------------------------------------------------------------------------
+    */
     public function destroy(User $usuario){
 
-        if($usuario->usuario_codigo == 'MASTER'){
+        //Não podemos permitir a exclusão de um usuário Master
+        if($usuario->usuario_tipo == 'M'){
             return redirect()->back()->with('error', 'Usuário MASTER não pode ser excluído!');
         }
 
@@ -131,26 +188,36 @@ class CadastroUsuarioController extends Controller
         return redirect(route('home.usuarios'))->with('success', 'Usuário excluído com sucesso!');
     }
 
-    //Realiza a atualização dos dadosdo usuario
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Atualização dos Dados do Usuário
+    |----------------------------------------------------------------------------------------------------
+    */
     public function update(Request $request, $usuario, $usuario_cod, $atualiza, $tipo){
 
-        //Verifica qual parte das informações estão sendo atualizados
+        //Verifica a Aba de Dados Atualizada
         if($atualiza == 'dados'){
 
-            //Não podemos permitir que um usuario desativado seja ativado novamente se o limite já foi atingido
+            //Não podemos permitir a ativação de um usuário se o limite da empresa foi atingido
             if($request->statusUsuario == 'A'){
 
+                //Verificamos o antigo status do usuário para confirmar se ele estava desativado
                 $stsUsu = DB::table('users')->where('usuario_codigo', $usuario_cod)->where('usuario_empresa', $request->empUsuario)->first();
 
                 if($stsUsu->usuario_status == "D"){
 
-                    $modulos = Modulos::getModulos();
+                    //$modulos = Modulos::getModulos();
+                    $modulos = DB::table('parametros_sis_modulos')->where('modulo_empresa_codigo', $request->empUsuario)->first();
+                    $qtdTotUsu = $modulos->modulo_qtd_usuarios + $modulos->modulo_qtd_usuarios_ext;
 
-                    $qtdUser = DB::table('users')->where('usuario_codigo', '<>', 'MASTER')->where('usuario_status', 'A')->where('usuario_empresa', $request->empUsuario)->count();
+                    $qtdUser = DB::table('users')->where('usuario_tipo', '<>', 'M')->where('usuario_status', 'A')->where('usuario_empresa', $request->empUsuario)->count();
                     
                     //Não permitir cadastrar usuario se ja tiver cadastrado a quantidade limite da empresa
-                    if($qtdUser >= $modulos->modulo_qtd_usuarios){
-                        return redirect()->back()->with('info', 'A quantidade máxima de Usuários ativos permitida para a empresa '.$request->empUsuario.' já foi atingida! A quantidade permitida é de até '.$qtdUser.' usuários, para adquirir mais usuários entre em contato com o nosso atendimento!');
+                    if($qtdUser >= $qtdTotUsu){
+
+                        $dadosEmp = Helper::buscaDadosEmpresa($request->empUsuario);
+
+                        return redirect()->back()->with('info', 'A quantidade máxima de Usuários ativos permitida para a empresa '.$request->empUsuario.' - '.$dadosEmp->empresa_nome.' já foi atingida! </br></br>A quantidade permitida é de até '.$qtdTotUsu.' usuários ativos, para adquirir mais usuários entre em contato com o nosso atendimento!');
                     }
                 }
             }
@@ -272,12 +339,17 @@ class CadastroUsuarioController extends Controller
         
         }elseif($atualiza == 'permissao'){
 
-            if($request->altPerAcesso == 'S'){
-                //Verifica o tipo do usuario
-                $dadosUsu = DB::table('users')->where('usuario_codigo', $usuario_cod)->get();
+            //Garantimos que apenas usuários Administradores e Master podem alterar permissões no sistema
+            if(Auth::user()->usuario_tipo != 'ADM' && Auth::user()->usuario_tipo != 'M'){
 
-                if($dadosUsu[0]->usuario_tipo != 'A'){
-                    return redirect()->back()->with('error', 'Apenas usuários do tipo administrador podem alterar permissões no sistema!');
+                return redirect()->back()->with('error', 'Apenas usuários do tipo administrador podem alterar permissões no sistema!');
+
+            }else{
+
+                //Se o usuario for ADM ou M confirmamos se ele pode fazer essa alteração
+                if(Auth::user()->usuario_altera_permissoes_acesso == 'N'){
+
+                    return redirect()->back()->with('error', 'Seu usuário não pode alterar permissões no sistema!');
                 }
             }
 
@@ -289,10 +361,13 @@ class CadastroUsuarioController extends Controller
                 'usuario_acesso_cadastros' => $request->acessoCadastros,
                 'usuario_aut_desc' => $request->autorizaDesconto,
                 'usuario_acesso_mod_servicos' => $request->acessoModSrv,
-                'usuario_acesso_mod_nf' => $request->acessoModNf]);
+                'usuario_acesso_mod_nf' => $request->acessoModNf,
+                'usuario_acesso_mod_nf_simp' => $request->acessoModNfSimp,
+                'usuario_acesso_mod_cont_prod' => $request->acessoModConProd]);
         
         }elseif($atualiza == 'senha'){
 
+            //Faz a máscara na senha para inserção no banco de dados
             $senha = Hash::make($request->novaSenha);
 
             $atualizausuario = DB::table('users')

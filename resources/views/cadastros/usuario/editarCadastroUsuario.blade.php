@@ -25,8 +25,16 @@
 
 @section('content')
 @php
+    //Monta variaveis utilizadas no JS para verificações e validações dos campos de Permissão de Acesso
     $altera_permissoes_acesso = Auth::user()->usuario_altera_permissoes_acesso;
     $tipo_usuario = Auth::user()->usuario_tipo;
+
+    $dadosModulo = DB::table('parametros_sis_modulos')->where('modulo_empresa_codigo',$dadosUsuario[0]['usuario_empresa'])->first();
+
+    $moduloServico = $dadosModulo->modulo_servico;
+    $moduloConProd = $dadosModulo->modulo_controle_producao;
+    $moduloEmiNFS = $dadosModulo->modulo_emissao_nfs;
+    $moduloEmiNFSSimp = $dadosModulo->modulo_emissao_nfs_simp;
 @endphp
 <div class="col-12 col-sm-12">
     
@@ -94,7 +102,7 @@
                                 <x-slot name="label">
                                     Tipo de Usuário <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['A' => 'Administrador', 'M' => 'Master', 'P' => 'Padrão']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_tipo']}}"/>
+                                <x-adminlte-options :options="['ADM' => 'Administrador', 'M' => 'Master', 'PR' => 'Prestador', 'CO' => 'Consultor', 'VE' => 'Vendedor', 'CX' => 'Caixa', 'TE' => 'Tesouraria']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_tipo']}}"/>
                             </x-adminlte-select>
 
                             <!-- Status do Usuario -->
@@ -537,11 +545,29 @@
                             </x-adminlte-select>
 
                             <!-- Usuario tem acesso ao modulo de emissão de NF -->
+                            <x-adminlte-select name="acessoModConProd" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Acessa o Módulo de Controle de Produção <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_mod_cont_prod']}}"/>
+                            </x-adminlte-select>
+                        </div>
+
+                        <div class="row">
+                            <!-- Usuario tem acesso ao modulo de emissão de NF -->
                             <x-adminlte-select name="acessoModNf" fgroup-class="col-md-6">
                                 <x-slot name="label">
                                     Acessa o Módulo de Emissão de NFS-e <span style="color:red;">*</span>
                                 </x-slot>
                                 <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_mod_nf']}}"/>
+                            </x-adminlte-select>
+
+                            <!-- Usuario tem acesso ao modulo de emissão simplificada de NF -->
+                            <x-adminlte-select name="acessoModNfSimp" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Acessa o Módulo de Emissão Simplificada de NFS-e <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_mod_nf_simp']}}"/>
                             </x-adminlte-select>
                         </div>
 
@@ -653,7 +679,7 @@
         var altera_permissoes_acesso = {!! json_encode($altera_permissoes_acesso) !!};
         var tipo_usuario = {!! json_encode($tipo_usuario) !!};
 
-        if(altera_permissoes_acesso == 'N' || (tipo_usuario != 'A' && tipo_usuario != 'M')){
+        if(altera_permissoes_acesso == 'N' || (tipo_usuario != 'ADM' && tipo_usuario != 'M')){
             $("#btn-submit-permissao").hide();
             $("#acessoCadastros").attr("disabled", true);
             $("#altPerAcesso").attr("disabled", true);
@@ -661,11 +687,35 @@
             $("#acessoModSrv").attr("disabled", true);
             $("#acessoModNf").attr("disabled", true);
             $("#autorizaDesconto").attr("disabled", true);
+            $("#acessoModNfSimp").attr("disabled", true);
+            $("#acessoModConProd").attr("disabled", true);
         }else{
+            //Caso a permissão e alterar existir verifica se o usuario editado acessa e caso não tenha trava a opção de altera permissao de acesso
             if($("#acessoCadastros").val() == 'N'){
                 $("#altPerAcesso").val('N');
                 $("#altPerAcesso").attr("disabled", true);
             }
+        }
+
+        var moduloServico = {!! json_encode($moduloServico) !!};
+        var moduloConProd = {!! json_encode($moduloConProd) !!};
+        var moduloEmiNFS = {!! json_encode($moduloEmiNFS) !!};
+        var moduloEmiNFSSimp = {!! json_encode($moduloEmiNFSSimp) !!};
+
+        if(moduloServico == 'N'){
+            $("#acessoModSrv").attr("disabled", true);
+        }
+
+        if(moduloConProd == 'N'){
+            $("#acessoModConProd").attr("disabled", true);
+        }
+
+        if(moduloEmiNFS == 'N'){
+            $("#acessoModNf").attr("disabled", true);
+        }
+
+        if(moduloEmiNFSSimp == 'N'){
+            $("#acessoModNfSimp").attr("disabled", true);
         }
 
         // Busca os dados do CEP informado
@@ -1046,7 +1096,7 @@ $(function () {
         Swal.fire({
             confirmButtonColor: "#007bff",
             title: "Aviso!",
-            text: "{{ session('info') }}",
+            html: "{!! session('info') !!}",
             icon: "info",
             customClass: {
                 icon: "no-before-icon",

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CadastroCliente;
 use App\Models\User;
+use App\Http\Helpers\Helper;
 use App\Models\CadastroEmpresa;
 use App\Models\ParametrosFatNfs;
 use App\Models\ParametrosFatNfsConexoes;
@@ -89,148 +90,86 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Home Principal do Sistema
+    |----------------------------------------------------------------------------------------------------
+    */
+    public function home()
     {
-        $dadosOS = $this->lancamentosOS->orderby('os_dha', 'desc')->limit(5)->get();
-        $dadosNFS = DB::table('faturamento_nfs')->limit(5)->orderby('nfs_dt_emi', 'desc')->orderby('nfs_nnfs', 'desc')->get();
+        //Vamos definir a empresa da visualização da Home
+        $empresa = session('glo_empresa_exibicao_home');
 
-        //Data da semana atual
-        $dt1 = date('Y-m-d');
-        $dt2 = date('Y-m-d', strtotime('-6 days'));
+        /*
+        |--------------------------------------------------------------------------
+        | Small Box
+        |--------------------------------------------------------------------------
+        |
+        | Variaveis destinadas as Small Box.
+        |
+        */
 
-        //Data da semana passada
-        $dt3 = date('Y-m-d', strtotime('-7 days'));
-        $dt4 = date('Y-m-d', strtotime('-14 days'));
+        $data = date('Y-m-01');
 
-        $qtdNFSfin = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->whereBetween('nfs_dt_emi', [$dt2, $dt1])->count();
-        $qtdNFSini = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->whereBetween('nfs_dt_emi', [$dt4, $dt3])->count();
+        /* ***** Quantidade de Clientes incluidos no Mês Atual ***** */
+        $cliMes = DB::table('cadastro_clientes')->where('cliente_dt_inc','>=',$data)->count();
 
-        if($qtdNFSini > $qtdNFSfin){
-            if(!empty($qtdNFSfin)){
-                $perNfsSemana = (($qtdNFSfin - $qtdNFSini) / $qtdNFSfin) * 100;
-            }else{
-                $perNfsSemana = -100;
-            }
-        }else{
-            if(!empty($qtdNFSini)){
-                $perNfsSemana = (($qtdNFSfin - $qtdNFSini) / $qtdNFSini) * 100;
-            }else{
-                $perNfsSemana = 0;
-            }
-        }
+        /* ***** Quantidade de OS Finalizadas no Mês Atual ***** */
+        $osMes = DB::table('lancamento_srv_os')->where('os_emp', $empresa)->whereDate('os_dhf','>=',$data)->where('os_sts','F')->count();
 
-        //Seta a data para português
-        setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese'); 
-        //date_default_timezone_set('America/Sao_Paulo');
+        /* ***** Quantidade de NFS-e de OS emitidas com sucesso no Mês Atual ***** */
+        $nfsMes = DB::table('faturamento_nfs')->where('nfs_emp', $empresa)->whereDate('nfs_dt_emi','>=',$data)->where('nfs_sts','G')->where('nfs_origem','OS')->count();
 
-        $diasSemana = "[";
-        $qtdSemAtu = "[";
-        $qtdSemPas = "[";
+        /* ***** Quantidade de NFS-e de ES emitidas com sucesso no Mês Atual ***** */
+        $nfsSimpMes = DB::table('faturamento_nfs')->where('nfs_emp', $empresa)->whereDate('nfs_dt_emi','>=',$data)->where('nfs_sts','G')->where('nfs_origem','ES')->count();
 
-        $semAtual = 6;
-        $semPassada = 13;
+        /*
+        |--------------------------------------------------------------------------
+        | Datatable
+        |--------------------------------------------------------------------------
+        |
+        | Variaveis destinadas aos Datatables.
+        |
+        */
 
-        for($i = 1; $i < 8; $i++){
+        /* ***** Dados das OS emitidas no Mês Atual *****/
+        $dadosOS = $this->lancamentosOS->where('os_emp', $empresa)->orderby('os_dha', 'desc')->limit(5)->get();
 
-            $dtAtu = date('Y-m-d', strtotime('-'.$semAtual.' days'));
-            $dtPas = date('Y-m-d', strtotime('-'.$semPassada.' days'));
+        /* ***** Dados das de NFS-e emitidas no Mês Atual *****/
+        $dadosNFS = DB::table('faturamento_nfs')->where('nfs_emp', $empresa)->where('nfs_origem','OS')->orderby('nfs_dt_emi', 'desc')->orderby('nfs_hr_emi', 'desc')->limit(5)->get();
 
-            //$diaSem = utf8_encode(ucfirst(strftime("%A", strtotime($dtAtu))));
-            $diaSem = ucfirst(strftime("%A", strtotime($dtAtu)));
+        /* ***** Dados das de NFS-e Simplificadas Emitidas no Mês Atual *****/
+        $dadosNFSSimp = DB::table('faturamento_nfs')->where('nfs_emp', $empresa)->where('nfs_origem','ES')->orderby('nfs_dt_emi', 'desc')->orderby('nfs_hr_emi', 'desc')->limit(5)->get();
 
-            $nfsSemAtu = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->where('nfs_dt_emi', $dtAtu)->count();
-            $nfsSemPas = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->where('nfs_dt_emi', $dtPas)->count();
+        /*
+        |--------------------------------------------------------------------------
+        | Validação da Licença da Empresa
+        |--------------------------------------------------------------------------
+        |
+        | Validações e menssagens do Vencimento da Liçença.
+        |
+        */
 
-            if($semAtual == 0){
-                $diasSemana .= "'".$diaSem."'";
-                $qtdSemAtu .= "'".$nfsSemAtu."'";
-                $qtdSemPas .= "'".$nfsSemPas."'";
-            }else{
-                $diasSemana .= "'".$diaSem."',";
-                $qtdSemAtu .= "'".$nfsSemAtu."',";
-                $qtdSemPas .= "'".$nfsSemPas."',";
-            }
-
-            $semAtual -= 1;
-            $semPassada -= 1;
-        }
-
-        $diasSemana .= "]";
-        $qtdSemAtu .= "]";
-        $qtdSemPas .= "]";
-
+        //As menssagens vão aparecer apenas para Usuários Master e Administradores
+        if (Auth::user()->usuario_tipo == 'ADM' || Auth::user()->usuario_tipo == 'M') {
+            
+            //$modulos = Modulos::getModulos();
+            
+            //Vamos buscar a data da licença da empresa da exibição da Home
+            $validade = DB::table('parametros_sis_modulos')->where('modulo_empresa_codigo', $empresa)->value('modulo_dt_validade');
+            $dadosEmpresa = Helper::buscaDadosEmpresa($empresa);
         
-        //Resumo Geral da Empresa no Mês 
-        $dtAtuFin = date('Y-m-d');
-        $dtAtuIni = date('Y-m-01');
-
-        $dtPasIni = date('Y-m-01', strtotime("-1 month"));
-        $dtPasFin = date("Y-m-t", strtotime("-1 month"));
-
-        $vlrNfsAtu = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->whereBetween('nfs_dt_emi', [$dtAtuIni, $dtAtuFin])->sum('nfs_vlr_tot');
-        $vlrNfsPas = DB::table('faturamento_nfs')->where('nfs_sts', 'G')->whereBetween('nfs_dt_emi', [$dtPasIni, $dtPasFin])->sum('nfs_vlr_tot');
-
-        if($vlrNfsPas > $vlrNfsAtu){
-            if(!empty($vlrNfsAtu)){
-                $perVlrNfsMes = (($vlrNfsAtu - $vlrNfsPas) / $vlrNfsAtu) * 100;
-            }else{
-                $perVlrNfsMes = -100;
-            }
-        }else{
-            if(!empty($vlrNfsPas)){
-                $perVlrNfsMes = (($vlrNfsAtu - $vlrNfsPas) / $vlrNfsPas) * 100;
-            }else{
-                $perVlrNfsMes = 0;
-            }
-        }
-
-        $qtdOsAtu = DB::table('lancamento_srv_os')->where('os_sts', 'F')->whereBetween('os_dha', [$dtAtuIni.' 00:00:00', $dtAtuFin.' 23:59:59'])->count();
-        $qtdOsPas = DB::table('lancamento_srv_os')->where('os_sts', 'F')->whereBetween('os_dha', [$dtPasIni.' 00:00:00', $dtPasFin.' 23:59:59'])->count();
-
-        if($qtdOsPas > $qtdOsAtu){
-            if(!empty($qtdOsAtu)){
-                $qtdOsMes = (($qtdOsAtu - $qtdOsPas) / $qtdOsAtu) * 100;
-            }else{
-                $qtdOsMes = -100;
-            }
-        }else{
-            if(!empty($qtdOsPas)){
-                $qtdOsMes = (($qtdOsAtu - $qtdOsPas) / $qtdOsPas) * 100;
-            }else{
-                $qtdOsMes = 0;
-            }
-        }
-
-        $qtdCliAtu = DB::table('cadastro_clientes')->whereBetween('cliente_dt_inc', [$dtAtuIni, $dtAtuFin])->count();
-        $qtdCliPas = DB::table('cadastro_clientes')->whereBetween('cliente_dt_inc', [$dtPasIni, $dtPasFin])->count();
-
-        if($qtdCliPas > $qtdCliAtu){
-            if(!empty($qtdCliAtu)){
-                $qtdCliMes = (($qtdCliAtu - $qtdCliPas) / $qtdCliAtu) * 100;
-            }else{
-                $qtdCliMes = -100;
-            }
-        }else{
-            if(!empty($qtdCliPas)){
-                $qtdCliMes = (($qtdCliAtu - $qtdCliPas) / $qtdCliPas) * 100;
-            }else{
-                $qtdCliMes = 0;
-            }
-        }
-
-        if (Auth::user()->usuario_tipo == 'A' || Auth::user()->usuario_tipo == 'M') {
-            $modulos = Modulos::getModulos();
-        
-            $dataValidade = Carbon::parse($modulos->modulo_dt_validade);
+            $dataValidade = Carbon::parse($validade);
             $dataHoje = Carbon::today();
         
             $diferencaDias = $dataHoje->diffInDays($dataValidade, false);
         
             if ($diferencaDias > 0 && $diferencaDias <= 5) {
-                $menssagem = "Falta ".$diferencaDias." dias para a sua licença expirar!</br>Data de Validade da Licença: ".Carbon::parse($dataValidade)->format('d/m/Y')."</br>Fique atento para não perder o acesso ao sistema.";
+                $menssagem = "Faltam ".$diferencaDias." dias para a licença da empresa ".$empresa." - ".$dadosEmpresa->empresa_nome." expirar!</br></br>Data de Validade da Licença: ".Carbon::parse($dataValidade)->format('d/m/Y')."</br></br>Fique atento para não perder o acesso ao sistema.";
                 session()->flash('warning', $menssagem);  // Salva a mensagem na sessão
             } elseif ($diferencaDias == 0) {
-                $menssagem = "A sua licença expira hoje!</br>Fique atento para não perder o acesso ao sistema.";
+                $menssagem = "A licença da empresa ".$empresa." - ".$dadosEmpresa->empresa_nome." expira hoje!</br>Fique atento para não perder o acesso ao sistema.";
                 session()->flash('warning', $menssagem);  // Salva a mensagem na sessão
             }
         }
@@ -238,14 +177,12 @@ class HomeController extends Controller
         return view('home',[
             'dadosOS' => $dadosOS, 
             'dadosNFS' => $dadosNFS, 
-            'qtdNFS' => $qtdNFSfin, 
-            'perNfsSemana' => $perNfsSemana, 
-            'diasSemana' => $diasSemana, 
-            'qtdSemAtu' => $qtdSemAtu, 
-            'qtdSemPas' => $qtdSemPas,
-            'perVlrNfsMes' => $perVlrNfsMes,
-            'qtdOsMes' => $qtdOsMes,
-            'qtdCliMes' => $qtdCliMes]);
+            'cliMes' => $cliMes,
+            'osMes' => $osMes,
+            'nfsMes' => $nfsMes,
+            'nfsSimpMes' => $nfsSimpMes,
+            'dadosNFSSimp' => $dadosNFSSimp 
+        ]);
     }
 
     public function contato()
@@ -299,30 +236,54 @@ class HomeController extends Controller
         return view('/cadastros/cliente/homeClientes',['cliJuridico'=>$cliJuridico,'cliFisico'=>$cliFisico,'cliTot'=>$cliTot,'meses'=>$meses,'grafJ'=>$grafJ,'grafF'=>$grafF]);
     }
 
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Home do Cadstro de Usuários
+    |----------------------------------------------------------------------------------------------------
+    */
     public function homeUsuarios()
     {      
-        //Se não for usuário MASTER o logado no sistema não exibe ele
+        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
+        $empresa = session('glo_empresa_exibicao_home');
+
+        //O usuário MASTER é exibido apenas para ele
         if(Auth::user()->usuario_codigo == "MASTER"){
-            //Monta variaveis dos cards
-            $usuAtivo = $this->usuario->where('usuario_status','=','A')->count();
-            $usuDesat = $this->usuario->where('usuario_status','=','D')->count();
-            $usuTot = $this->usuario->count();
-            $usuAdm = $this->usuario->where('usuario_tipo','=','A')->count();
-            $usuPdr = $this->usuario->where('usuario_tipo','=','P')->count();
 
-            $usuarios = $this->usuario->reorder('usuario_codigo', 'asc')->get();
+            //Monta variaveis dos cards
+            $usuAtivo = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_status', 'A')->count();
+            $usuDesat = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_status', 'D')->count();
+            $usuTot = $this->usuario->where('usuario_empresa', $empresa)->count();
+            $usuAdm = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'ADM')->count();
+            $usuPrt = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'PR')->count();
+            $usuCon = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'CO')->count();
+            $usuCaixa = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'CX')->count();
+
+            $usuarios = $this->usuario->where('usuario_empresa', $empresa)->reorder('usuario_codigo', 'asc')->get();
+
         }else{
-            //Monta variaveis dos cards
-            $usuAtivo = $this->usuario->where('usuario_status','=','A')->where('usuario_codigo','<>','MASTER')->count();
-            $usuDesat = $this->usuario->where('usuario_status','=','D')->where('usuario_codigo','<>','MASTER')->count();
-            $usuTot = $this->usuario->where('usuario_codigo','<>','MASTER')->count();
-            $usuAdm = $this->usuario->where('usuario_tipo','=','A')->where('usuario_codigo','<>','MASTER')->count();
-            $usuPdr = $this->usuario->where('usuario_tipo','=','P')->where('usuario_codigo','<>','MASTER')->count();
 
-            $usuarios = $this->usuario->where('usuario_codigo','<>','MASTER')->reorder('usuario_codigo', 'asc')->get();
+            //Monta variaveis dos cards
+            $usuAtivo = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_status', 'A')->where('usuario_tipo','<>','M')->count();
+            $usuDesat = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_status', 'D')->where('usuario_tipo','<>','M')->count();
+            $usuTot = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo','<>','M')->count();
+            $usuAdm = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'ADM')->count();
+            $usuPrt = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'PR')->count();
+            $usuCon = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'CO')->count();
+            $usuCaixa = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'CX')->count();
+
+            $usuarios = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_codigo','<>','MASTER')->reorder('usuario_codigo', 'asc')->get();
         }
 
-        return view('/cadastros/usuario/homeUsuarios',['usuarios'=>$usuarios,'usuAtivo'=>$usuAtivo,'usuDesat'=>$usuDesat,'usuTot'=>$usuTot,'usuAdm'=>$usuAdm,'usuPdr'=>$usuPdr]);
+        return view('/cadastros/usuario/homeUsuarios',[
+            'usuarios'=>$usuarios,
+            'usuAtivo'=>$usuAtivo,
+            'usuDesat'=>$usuDesat,
+            'usuTot'=>$usuTot,
+            'usuAdm'=>$usuAdm,
+            'usuPrt'=>$usuPrt,
+            'usuCon'=>$usuCon,
+            'usuCaixa'=>$usuCaixa
+        ]);
     }
 
     public function homePrestadores()
@@ -379,18 +340,32 @@ class HomeController extends Controller
         return view('/parametros/sistema/homeParametrosSistemaAreas', ['areas'=>$areas]);
     }
 
-    //Redireciona a app para a parametrização dos setores sistema
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Home da Parametrização dos Setores das Empresas
+    |----------------------------------------------------------------------------------------------------
+    */
     public function homeParSrvSetor()
     {    
-        $setores = $this->parametrosServicoSetor->reorder('setor_area', 'asc')->get();
+        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
+        $empresa = session('glo_empresa_exibicao_home');
+
+        $setores = $this->parametrosServicoSetor->where('setor_empresa', $empresa)->reorder('setor_area', 'asc')->get();
 
         return view('/parametros/servico/homeParametrosServicoSetor', ['setores'=>$setores]);
     }
 
-    //Redireciona a app para a parametrização das TMO do serviço
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Home da Parametrização das TMO
+    |----------------------------------------------------------------------------------------------------
+    */
     public function homeParSrvTMO()
     {    
-        $tarefas = $this->parametrosServicoTMO->reorder('tmo_cod', 'asc')->get();
+        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
+        $empresa = session('glo_empresa_exibicao_home');
+
+        $tarefas = $this->parametrosServicoTMO->where('tmo_emp', $empresa)->reorder('tmo_cod', 'asc')->get();
 
         return view('/parametros/servico/homeParametrosServicoTMO', ['tarefas'=>$tarefas]);
     }
@@ -407,13 +382,21 @@ class HomeController extends Controller
         return view('/faturamento/notas/simplificada/homeEmissaoSimplificadaNFS');
     }
 
-    //Redireciona a app para a lançamento de os
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Home da Consulta de Situação das OS
+    |----------------------------------------------------------------------------------------------------
+    */
     public function homeSituacaoOS()
     {    
-        $osTot = $this->lancamentosOS->count();
-        $osAberta = $this->lancamentosOS->where('os_sts', 'A')->count();
-        $osFinalizada = $this->lancamentosOS->where('os_sts', 'F')->count();
-        $osCancelada = $this->lancamentosOS->where('os_sts', 'C')->count();
+        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
+        $empresa = session('glo_empresa_exibicao_home');
+
+        //Gera os dados das Small Box da Home
+        $osTot = $this->lancamentosOS->where('os_emp', $empresa)->count();
+        $osAberta = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts', 'A')->count();
+        $osFinalizada = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts', 'F')->count();
+        $osCancelada = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts', 'C')->count();
 
         //Seta a data para português
         setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese'); 
@@ -446,7 +429,7 @@ class HomeController extends Controller
             $meses .= "'".$mes_nom."',";
 
             //Pega o valor total das os do mes
-            $cntTot = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vlt');
+            $cntTot = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vlt');
             if(!empty($cntTot)){
                 $linTot .= "'".$cntTot."',";
 
@@ -459,7 +442,7 @@ class HomeController extends Controller
             }
 
             //Pega o valor total dos serviços da os do mes
-            $cntSer = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vls');
+            $cntSer = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vls');
             if(!empty($cntSer)){
                 $linSer .= "'".$cntSer."',";
 
@@ -472,7 +455,7 @@ class HomeController extends Controller
             }
 
             //Pega o valor total de os finalizadas
-            $cntFin = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->count();
+            $cntFin = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->count();
             if(!empty($cntFin)){
                 $barFin .= $cntFin.",";
 
@@ -485,7 +468,7 @@ class HomeController extends Controller
             }
 
             //Pega o valor total de os canceladas
-            $cntCan = $this->lancamentosOS->where('os_sts','C')->whereBetween('os_dtc', [$dt_ini, $dt_fin])->count();
+            $cntCan = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts','C')->whereBetween('os_dtc', [$dt_ini, $dt_fin])->count();
             if(!empty($cntCan)){
                 $barCan .= $cntCan.",";
 
@@ -506,7 +489,7 @@ class HomeController extends Controller
         $meses .= "'".$mes_nom."']";
 
         //Soma o valor total das os no mes atual
-        $cntTot = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vlt');
+        $cntTot = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vlt');
         if(!empty($cntTot)){
             $linTot .= "'".$cntTot."']";
 
@@ -517,7 +500,7 @@ class HomeController extends Controller
             $valTotMesNovo = 0;
         }
         //Soma o valor total das os durante todo o periodo
-        $sumTot = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_inicial_mes6.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vlt');
+        $sumTot = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts','F')->whereBetween('os_dhf', [$dt_inicial_mes6.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vlt');
         if(!empty($sumTot)){
             $valSumTot = $sumTot;
         }else{
@@ -525,7 +508,7 @@ class HomeController extends Controller
         }
 
         //Soma o valor total dos servicos da os no mes atual
-        $cntSer = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vls');
+        $cntSer = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vls');
         if(!empty($cntSer)){
             $linSer .= "'".$cntSer."']";
 
@@ -536,7 +519,7 @@ class HomeController extends Controller
             $valServMesNovo = 0;
         }
         //Soma o valor total dos servicos das os durante todo o periodo
-        $sumServ = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_inicial_mes6.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vls');
+        $sumServ = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts','F')->whereBetween('os_dhf', [$dt_inicial_mes6.' 00:00:00', $dt_fin.' 23:59:59'])->sum('os_vls');
         if(!empty($sumServ)){
             $valSumServ = $sumServ;
         }else{
@@ -558,7 +541,7 @@ class HomeController extends Controller
         }
 
         //Soma o total de os finalizadas no mes atual
-        $cntFin = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->count();
+        $cntFin = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts','F')->whereBetween('os_dhf', [$dt_ini.' 00:00:00', $dt_fin.' 23:59:59'])->count();
         if(!empty($cntFin)){
             $barFin .= $cntFin."]";
 
@@ -569,7 +552,7 @@ class HomeController extends Controller
             $qtdFinMesNovo = 0;
         }
         //Soma o total de os finalizadas durante todo o periodo
-        $sumFin = $this->lancamentosOS->where('os_sts','F')->whereBetween('os_dhf', [$dt_inicial_mes6.' 00:00:00', $dt_fin.' 23:59:59'])->count();
+        $sumFin = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts','F')->whereBetween('os_dhf', [$dt_inicial_mes6.' 00:00:00', $dt_fin.' 23:59:59'])->count();
         if(!empty($sumFin)){
             $valSumFin = $sumFin;
         }else{
@@ -577,7 +560,7 @@ class HomeController extends Controller
         }
 
         //Soma o total de os canceladas no mes atual
-        $cntCan = $this->lancamentosOS->where('os_sts','C')->whereBetween('os_dtc', [$dt_ini, $dt_fin])->count();
+        $cntCan = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts','C')->whereBetween('os_dtc', [$dt_ini, $dt_fin])->count();
         if(!empty($cntCan)){
             $barCan .= $cntCan."]";
 
@@ -588,7 +571,7 @@ class HomeController extends Controller
             $qtdCanMesNovo = 0;
         }
         //Soma o total de os canceladas durante todo o periodo
-        $sumCan = $this->lancamentosOS->where('os_sts','C')->whereBetween('os_dhf', [$dt_inicial_mes6.' 00:00:00', $dt_fin.' 23:59:59'])->count();
+        $sumCan = $this->lancamentosOS->where('os_emp', $empresa)->where('os_sts','C')->whereBetween('os_dhf', [$dt_inicial_mes6.' 00:00:00', $dt_fin.' 23:59:59'])->count();
         if(!empty($sumCan)){
             $valSumCan = $sumCan;
         }else{
@@ -609,23 +592,25 @@ class HomeController extends Controller
             $perQtdCan = 0;
         }
 
-        return view('/lancamentos/servico/homeSituacaoOS', ['osTot'=>$osTot, 
-                                                            'osAberta'=>$osAberta, 
-                                                            'osFinalizada'=>$osFinalizada, 
-                                                            'osCancelada'=>$osCancelada, 
-                                                            'meses'=>$meses,
-                                                            'linTot'=>$linTot,
-                                                            'linSer'=>$linSer,
-                                                            'barFin'=>$barFin,
-                                                            'barCan'=>$barCan, 
-                                                            'perTot'=>$perTot,
-                                                            'perServ'=>$perServ,
-                                                            'valSumTot'=>$valSumTot,
-                                                            'valSumServ'=>$valSumServ,
-                                                            'valSumFin'=>$valSumFin,
-                                                            'valSumCan'=>$valSumCan,
-                                                            'perQtdFin'=>$perQtdFin,
-                                                            'perQtdCan'=>$perQtdCan]);
+        return view('/lancamentos/servico/homeSituacaoOS', [
+            'osTot'=>$osTot, 
+            'osAberta'=>$osAberta, 
+            'osFinalizada'=>$osFinalizada, 
+            'osCancelada'=>$osCancelada, 
+            'meses'=>$meses,
+            'linTot'=>$linTot,
+            'linSer'=>$linSer,
+            'barFin'=>$barFin,
+            'barCan'=>$barCan, 
+            'perTot'=>$perTot,
+            'perServ'=>$perServ,
+            'valSumTot'=>$valSumTot,
+            'valSumServ'=>$valSumServ,
+            'valSumFin'=>$valSumFin,
+            'valSumCan'=>$valSumCan,
+            'perQtdFin'=>$perQtdFin,
+            'perQtdCan'=>$perQtdCan
+        ]);
     }
 
     //Redireciona a app para a parametrização das categorias de atendimento do lançamento de serviços
@@ -636,18 +621,32 @@ class HomeController extends Controller
         return view('/parametros/servico/homeLancamentosServicoCategoria', ['categorias'=>$categorias]);
     }
 
-    //Redireciona a app para a parametrização de tipo de serviço do lançamento de serviços
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Home da Parametrização dos Tipos de Serviço
+    |----------------------------------------------------------------------------------------------------
+    */
     public function homeLancSrvTipo()
-    {    
-        $tipos = $this->lancamentoSrvTipoServico->reorder('tipsrv_emp', 'asc')->reorder('tipsrv_cod', 'asc')->get();
+    {
+        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
+        $empresa = session('glo_empresa_exibicao_home');
+
+        $tipos = $this->lancamentoSrvTipoServico->where('tipsrv_emp', $empresa)->reorder('tipsrv_emp', 'asc')->reorder('tipsrv_cod', 'asc')->get();
 
         return view('/parametros/servico/homeLancamentosServicoTipo', ['tipos'=>$tipos]);
     }
 
-    //Redireciona a app para a parametrização das etapas de atendimento do lançamento de serviços
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Home da Parametrização das Etapas de Atendimento
+    |----------------------------------------------------------------------------------------------------
+    */
     public function homeLancSrvEtapas()
     {    
-        $etapas = $this->lancamentosServicoEtapas->reorder('eat_cod', 'asc')->reorder('eat_ord', 'asc')->get();
+        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
+        $empresa = session('glo_empresa_exibicao_home');
+
+        $etapas = $this->lancamentosServicoEtapas->where('eat_emp', $empresa)->reorder('eat_cod', 'asc')->reorder('eat_ord', 'asc')->get();
 
         return view('/parametros/servico/homeLancamentosServicoEtapas', ['etapas'=>$etapas]);
     }

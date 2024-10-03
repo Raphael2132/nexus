@@ -113,74 +113,88 @@ class FaturamentoNfsSimplificadaController extends Controller
         return $numNfsSimp;
     }
 
-    public function consultaReemissaoSimpNF(Request $request)
+    public function consultaReemissaoSimpNF(Request $request, $appOrigem)
     { 
         $where = "";
 
-        //Empresa
-        if(!empty($request->empresa)){
-            $where = " and nfhdr_emp = '".$request->empresa."' ";
-        }
-
-        //Cliente
-        if(!empty($request->cliente)){
-            $cliente = substr($request->cliente, 0, 10);
-
-            if(strlen($cliente) < 10){
-                return redirect()->back()->with('error', 'Código do cliente '.$cliente.' é inválido!');
+        if($appOrigem == 'REEMISSAO'){
+            //Empresa
+            if(!empty($request->empresa)){
+                $where = " and nfhdr_emp = '".$request->empresa."' ";
             }
 
-            $cnt_cli = DB::table('cadastro_clientes')->where('cliente_codigo', $cliente)->count();
-        
-            if($cnt_cli == 0){
-                return redirect()->back()->with('error', 'Código do cliente '.$cliente.' não existe!');
-            }else{
-                $where .= " and nfhdr_cli = '".$cliente."' ";
-            }
-        }
+            //Cliente
+            if(!empty($request->cliente)){
+                $cliente = substr($request->cliente, 0, 10);
 
-        //Numero da OS / Pedido
-        if(!empty($request->numES)){
-            $where .= " and nfhdr_num_ped = '".$request->numES."' ";
-        }
+                if(strlen($cliente) < 10){
+                    return redirect()->back()->with('error', 'Código do cliente '.$cliente.' é inválido!');
+                }
 
-        //Data de Inicio / Final
-        if(!empty($request->dtIniOS) && !empty($request->dtFinOS)){
-
-            $dt_ini = Helper::limpaData($request->dtIniOS);
-            $dt_fin = Helper::limpaData($request->dtFinOS);
-
-            if($dt_ini > $dt_fin){
-                return redirect()->back()->with('error', 'A Data Inicial não pode ser maior que a Data Final!');
+                $cnt_cli = DB::table('cadastro_clientes')->where('cliente_codigo', $cliente)->count();
+            
+                if($cnt_cli == 0){
+                    return redirect()->back()->with('error', 'Código do cliente '.$cliente.' não existe!');
+                }else{
+                    $where .= " and nfhdr_cli = '".$cliente."' ";
+                }
             }
 
-            $where .= " and nfhdr_dt_nf between '".$dt_ini."' and '".$dt_fin."' ";
-        }elseif(empty($request->dtIniOS) && !empty($request->dtFinOS)){
-            $dt_fin = Helper::limpaData($request->dtFinOS);
-            $where .= " and nfhdr_dt_nf <= '".$dt_fin."' ";
-        }elseif(!empty($request->dtIniOS) && empty($request->dtFinOS)){
-            $dt_ini = Helper::limpaData($request->dtIniOS);
-            $where .= " and nfhdr_dt_nf >= '".$dt_ini."' ";
-        }
-
-        //Valor de Inicio / Final
-        if(!empty($request->vlrIniOS) && !empty($request->vlrFinOS)){
-            $vlr_ini = Helper::limpaValorMonetario($request->vlrIniOS);
-            $vlr_fin = Helper::limpaValorMonetario($request->vlrFinOS);
-            if($vlr_ini > $vlr_fin){
-                return redirect()->back()->with('error', 'O Valor Inicial não pode ser maior que o Valor Final!');
+            //Numero da OS / Pedido
+            if(!empty($request->numES)){
+                $where .= " and nfhdr_num_ped = '".$request->numES."' ";
             }
-            $where .= " and nfhdr_vlr_tot_nf between ".$vlr_ini." and ".$vlr_fin;
-        }elseif(empty($request->vlrIniOS) && !empty($request->vlrFinOS)){
-            $vlr_fin = Helper::limpaValorMonetario($request->vlrFinOS);
-            $where .= " and nfhdr_vlr_tot_nf <= ".$vlr_fin;
-        }elseif(!empty($request->vlrIniOS) && empty($request->vlrFinOS)){
-            $vlr_ini = Helper::limpaValorMonetario($request->vlrIniOS);
-            $where .= " and nfhdr_vlr_tot_nf >= ".$vlr_ini;
+
+            //Data de Inicio / Final
+            if(!empty($request->dtIniOS) && !empty($request->dtFinOS)){
+
+                $dt_ini = Helper::limpaData($request->dtIniOS);
+                $dt_fin = Helper::limpaData($request->dtFinOS);
+
+                if($dt_ini > $dt_fin){
+                    return redirect()->back()->with('error', 'A Data Inicial não pode ser maior que a Data Final!');
+                }
+
+                $where .= " and nfhdr_dt_nf between '".$dt_ini."' and '".$dt_fin."' ";
+            }elseif(empty($request->dtIniOS) && !empty($request->dtFinOS)){
+                $dt_fin = Helper::limpaData($request->dtFinOS);
+                $where .= " and nfhdr_dt_nf <= '".$dt_fin."' ";
+            }elseif(!empty($request->dtIniOS) && empty($request->dtFinOS)){
+                $dt_ini = Helper::limpaData($request->dtIniOS);
+                $where .= " and nfhdr_dt_nf >= '".$dt_ini."' ";
+            }
+
+            //Valor de Inicio / Final
+            if(!empty($request->vlrIniOS) && !empty($request->vlrFinOS)){
+                $vlr_ini = Helper::limpaValorMonetario($request->vlrIniOS);
+                $vlr_fin = Helper::limpaValorMonetario($request->vlrFinOS);
+                if($vlr_ini > $vlr_fin){
+                    return redirect()->back()->with('error', 'O Valor Inicial não pode ser maior que o Valor Final!');
+                }
+                $where .= " and nfhdr_vlr_tot_nf between ".$vlr_ini." and ".$vlr_fin;
+            }elseif(empty($request->vlrIniOS) && !empty($request->vlrFinOS)){
+                $vlr_fin = Helper::limpaValorMonetario($request->vlrFinOS);
+                $where .= " and nfhdr_vlr_tot_nf <= ".$vlr_fin;
+            }elseif(!empty($request->vlrIniOS) && empty($request->vlrFinOS)){
+                $vlr_ini = Helper::limpaValorMonetario($request->vlrIniOS);
+                $where .= " and nfhdr_vlr_tot_nf >= ".$vlr_ini;
+            }
+
+        }else if($appOrigem == 'HOME_MES'){
+
+            //Vamos definir a empresa da visualização da Home
+            $empresa = session('glo_empresa_exibicao_home');
+            $data = date('Y-m-01');
+            $where .= " and nfhdr_emp = '".$empresa."' and nfhdr_sts = 'G' and nfhdr_dt_nf >= '".$data."' ";
+
+        }else{
+            
+            //Vamos definir a empresa da visualização da Home
+            $empresa = session('glo_empresa_exibicao_home');
+            $where .= " and nfhdr_emp = '".$empresa."' ";
         }
 
         $dados = DB::select("select * from faturamento_nf_headers where nfhdr_sts not in('C') and nfhdr_ori in('02') ".$where." order by nfhdr_dt_nf desc, nfhdr_num_nf desc");
-
 
         return view('/faturamento/notas/simplificada/consultaReemissaoSimpNF',['dadosHeader'=>$dados, 'glo_where_reemissao_nf' => $where]);
     }

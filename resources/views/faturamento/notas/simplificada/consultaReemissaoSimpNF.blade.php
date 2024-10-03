@@ -26,6 +26,7 @@
     session(['glo_where_reemissao_nf' => $glo_where_reemissao_nf]);
 
     $heads = [
+        'Nota Oculta',
         'Empresa',
         'Cliente',
         'Data Emissao',
@@ -40,8 +41,19 @@
         'lengthMenu' => [5, 10, 25, 50, 100],
         'pageLength' => 10,
         'language' => Helper::dataTableLangPtBR(),
-        'order' => [[0, 'asc'],[3, 'desc']],
-        'columns' => [null, null, null, null, null, null, null, null, ['orderable' => false]],
+        'order' => [[0, 'desc']],
+        'columns' => [
+            ['orderable' => false, 'visible' => false], // Esconder primeira coluna
+            null, 
+            null, 
+            null, 
+            null,
+            null, 
+            null, 
+            null, 
+            null, 
+            ['orderable' => false]
+        ],
     ];
 @endphp
 
@@ -73,6 +85,7 @@
                 }
             @endphp
             <tr>
+                <td>{{$header->nfhdr_num_nf}}</td>
                 <td>{{$header->nfhdr_emp.' - '.$data[0]->empresa_nome}}</td>
                 <td>{{$header->nfhdr_cli.' - '.$data_cli[0]->cliente_nome}}</td>
                 <td>{{$dataNF}}</td>
@@ -81,13 +94,13 @@
                 <td>{{Helper::formataValorMonetario($header->nfhdr_vlr_tot_nf)}}</td>
                 <td>NFS-e</td>
                 @if($stsNF == 1)
-                <td class="max-width-sts"><span class="badge badge-danger">NFS-e Não Enviada: {{$dadosXmlNfsEnv[0]->nfsenv_obs}}</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'nfReemissao' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
+                <td class="max-width-sts"><span class="badge badge-danger">NFS-e Não Enviada: {{$dadosXmlNfsEnv[0]->nfsenv_obs}}</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['origem' => 'REEMISSAO_SIMP', 'empresa' => $header->nfhdr_emp, 'nfReemissao' => $header->nfhdr_num])}}">Reenviar</a></td>
                 @elseif($stsNF == 2)
-                <td class="max-width-sts"><span class="badge badge-danger">NFS-e Rejeitada: Erro {{$dadosXmlNfsEnv[0]->nfsenv_sts_emi.' - '.$dadosXmlNfsEnv[0]->nfsenv_obs}}</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'nfReemissao' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
+                <td class="max-width-sts"><span class="badge badge-danger">NFS-e Rejeitada: Erro {{$dadosXmlNfsEnv[0]->nfsenv_sts_emi.' - '.$dadosXmlNfsEnv[0]->nfsenv_obs}}</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['origem' => 'REEMISSAO_SIMP', 'empresa' => $header->nfhdr_emp, 'nfReemissao' => $header->nfhdr_num])}}">Reenviar</a></td>
                 @elseif($stsNF == 3)
                 <td class="max-width-sts"><span class="badge badge-success">{{$dadosXmlNfsEnv[0]->nfsenv_obs}}</span></td>
                 @else
-                <td class="max-width-sts"><span class="badge badge-info">Geração Iniciada</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['empresa' => $header->nfhdr_emp, 'nfReemissao' => $header->nfhdr_num, 'origem' => 'REEMISSAO_SIMP'])}}">Reenviar</a></td>
+                <td class="max-width-sts"><span class="badge badge-info">Geração Iniciada</span> <a class="btn btn-outline-nexus btn-sm" href="{{route('emissaoNF.gerarNF', ['origem' => 'REEMISSAO_SIMP', 'empresa' => $header->nfhdr_emp, 'nfReemissao' => $header->nfhdr_num])}}">Reenviar</a></td>
                 @endif
                 @if($stsNF == 3)
                 <td class="d-flex justify-content-center"><a class="btn btn-outline-nexus btn-sm mr-2" href="{{route('impresaoNF.nfsePDF',['empresa' => $header->nfhdr_emp, 'numControle' => $header->nfhdr_num, 'appOrigem' => 'IMPRESSAO'])}}" target="_blank">Abrir NFS-e</a>

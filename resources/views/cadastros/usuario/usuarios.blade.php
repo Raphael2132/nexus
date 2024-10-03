@@ -34,7 +34,12 @@ $config = [
     'lengthMenu' => [ 5, 10, 25, 50],
     'pageLength' => 10,
     'language' => Helper::dataTableLangPtBR(),
-    'order' => [[0, 'asc'],[1, 'asc']],
+    'order' => [
+        [0, 'asc'],
+        [5, 'asc'],
+        [3, 'asc'],
+        [1, 'asc'],
+    ],
     'columns' => [null, null, null, null, null, null, ['orderable' => false]],
 ];
 
@@ -45,9 +50,13 @@ if($tipo == 'T'){
 }elseif($tipo == 'D'){
     $titulo = 'Usuários Desativados Cadastrados';
 }elseif($tipo == 'ADM'){
-    $titulo = 'Usuários Administrador Cadastrados';
+    $titulo = 'Usuários Administradores Cadastrados';
+}elseif($tipo == 'PR'){
+    $titulo = 'Usuários Prestadores Cadastrados';
+}elseif($tipo == 'CX'){
+    $titulo = 'Usuários Caixa Cadastrados';
 }else{
-    $titulo = 'Usuários Padrão Cadastrados';
+    $titulo = 'Usuários Consultores Cadastrados';
 }
 @endphp
 
@@ -55,13 +64,8 @@ if($tipo == 'T'){
     <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
         @foreach ($usuarios as $usuario)
             @php
-                if($usuario->usuario_tipo == 'A'){
-                    $tip_usu = 'Administrador';
-                }elseif($usuario->usuario_tipo == 'M'){
-                    $tip_usu = 'Master';
-                }else{
-                    $tip_usu = 'Padrão';
-                }
+                $tip_usu = Helper::formataTipoUsuario($usuario->usuario_tipo);
+                
                 if($usuario->usuario_status == 'A'){
                     $sts_usu = 'Ativo';
                 }else{

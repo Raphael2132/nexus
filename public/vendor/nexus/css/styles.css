@@ -93,6 +93,21 @@
     border-bottom: 2px solid #008f8f;
 }
 
+/* ***** Tema do Navbar ***** */
+.navbar-light .navbar-nav .nav-link.active {
+    color: #00abab;
+}
+
+.navbar-light .navbar-nav .nav-link:hover {
+    color: #00abab;
+}
+
+/* ***** Tema do Control Sidebar (Sidebar Direito) ***** */
+.control-sidebar-nexus {
+    background: #00abab;
+    color: #fff;
+}
+
 /* ***** Tema do User Menu (Botão de Sair do Sistema) ***** */
 .user-bg-nexus {
     background: #020017 linear-gradient(180deg, #06023e, #020017) repeat-x !important;

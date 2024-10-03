@@ -37,7 +37,9 @@
             {{-- Configured right links --}}
             @each('adminlte::partials.navbar.menu-item', $adminlte->menu('navbar-right'), 'item')
 
+            <!-- Aqui Removemos a opção de Logout original do projeto e caso voltar a usar remover comentátio -->
             {{-- User menu link --}}
+            {{--
             @if(Auth::user())
                 @if(config('adminlte.usermenu_enabled'))
                     @include('adminlte::partials.navbar.menu-item-dropdown-user-menu')
@@ -45,6 +47,7 @@
                     @include('adminlte::partials.navbar.menu-item-logout-link')
                 @endif
             @endif
+            --}}
 
             {{-- Right sidebar toggler link --}}
             @if(config('adminlte.right_sidebar'))

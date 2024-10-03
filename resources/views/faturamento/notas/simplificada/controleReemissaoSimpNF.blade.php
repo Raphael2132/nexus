@@ -18,7 +18,7 @@
 @section('content')
 <div class="d-flex justify-content-center">
     <div class="col-md-8">
-        <form method="get" action="{{route('reemissaoSimpNF.consultaReemissaoSimpNF')}}" id="quickForm" novalidate="novalidate">
+        <form method="get" action="{{route('reemissaoSimpNF.consultaReemissaoSimpNF',['appOrigem' => 'REEMISSAO'])}}" id="quickForm" novalidate="novalidate">
         @csrf 
         @method('get')
             <x-adminlte-card title="Filtro de Reemissão Simplificada de NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>

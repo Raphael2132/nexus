@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nfe>
+  <notaFiscal/>
+  <dadosPrestador>
+    <dataEmissao>01/10/2024</dataEmissao>
+    <im>24207507057</im>
+    <numeroRps>000000001</numeroRps>
+  </dadosPrestador>
+  <dadosServico>
+    <bairro>VILA ZANETTI</bairro>
+    <cep>13870-600</cep>
+    <cidade>SAO JOAO DA BOA VISTA</cidade>
+    <complemento/>
+    <logradouro>RUA SEVERO AUGUSTO PEREIRA</logradouro>
+    <numero>452</numero>
+    <pais>BRASIL</pais>
+    <uf>SP</uf>
+  </dadosServico>
+  <dadosTomador>
+    <bairro>VILA CONCEICAO</bairro>
+    <cep>13872-000</cep>
+    <cidade>SAO JOAO DA BOA VISTA</cidade>
+    <complemento/>
+    <documento>32130464064</documento>
+    <email>betinha@email.com.br</email>
+    <ie/>
+    <logradouro>RUA CESARIO TRAVASSOS</logradouro>
+    <nomeTomador>ELIZABET DO CARMO</nomeTomador>
+    <numero>3636</numero>
+    <pais>BRASIL</pais>
+    <tipoDoc>F</tipoDoc>
+    <uf>SP</uf>
+  </dadosTomador>
+  <detalheServico>
+    <cofins>0.00</cofins>
+    <csll>0.00</csll>
+    <deducaoMaterial>0.00</deducaoMaterial>
+    <descontoIncondicional>0.00</descontoIncondicional>
+    <inss>0.00</inss>
+    <ir>0.00</ir>
+    <issRetido>0</issRetido>
+    <item>
+      <aliquota>4.53</aliquota>
+      <codigo>1701</codigo>
+      <descricao>ADENDO DA PROCURACAO</descricao>
+      <valor>500.00</valor>
+    </item>
+    <obs/>
+    <pisPasep>0.00</pisPasep>
+  </detalheServico>
+</nfe>

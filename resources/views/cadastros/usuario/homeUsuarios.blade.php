@@ -49,7 +49,12 @@
             'lengthMenu' => [ 5, 10, 25, 50],
             'pageLength' => 5,
             'language' => Helper::dataTableLangPtBR(),
-            'order' => [[1, 'asc'],[2, 'asc']],
+            'order' => [
+                [1, 'asc'],
+                [4, 'asc'],
+                [3, 'asc'],
+                [2, 'asc']
+            ],
             'columns' => [['orderable' => false], null, null, null, null, ['orderable' => false]],
         ];
         @endphp
@@ -58,13 +63,8 @@
             <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
                 @foreach ($usuarios as $usuario)
                     @php
-                        if($usuario->usuario_tipo == 'A'){
-                            $tip_usu = 'Administrador';
-                        }elseif($usuario->usuario_tipo == 'M'){
-                            $tip_usu = 'Master';
-                        }else{
-                            $tip_usu = 'Padrão';
-                        }
+                        $tip_usu = Helper::formataTipoUsuario($usuario->usuario_tipo);
+
                         if($usuario->usuario_status == 'A'){
                             $sts_usu = 'Ativo';
                         }else{
@@ -112,13 +112,7 @@
                                                         $sexo = "Não Cadastrado";
                                                     }
 
-                                                    if($usuario->usuario_tipo == 'A'){
-                                                        $tipo = "Administrador";
-                                                    }elseif($usuario->usuario_tipo == 'M'){
-                                                        $tipo = "Master";
-                                                    }else{
-                                                        $tipo = "Padrão";
-                                                    }
+                                                    $tipo = Helper::formataTipoUsuario($usuario->usuario_tipo);
 
                                                     if($usuario->usuario_status == 'A'){
                                                         $status = "Ativo";
@@ -318,8 +312,10 @@
     </div>
 
     <div class="col-md-3"> 
-        <x-adminlte-info-box title="Administrador" :text="$usuAdm" icon="fa-solid fa-user-shield text-dark" url="{{ route('usuarios',['tipo' => 'ADM']) }}" theme="warning"/>
-        <x-adminlte-info-box title="Usuario Padrão" :text="$usuPdr" icon="fa-solid fa-circle-user text-dark" url="{{ route('usuarios',['tipo' => 'P']) }}" theme="gradient-teal"/>
+        <x-adminlte-info-box title="Administrador" :text="$usuAdm" icon="fa-solid fa-user-shield text-dark" url="{{ route('usuarios',['tipo' => 'ADM']) }}" theme="gradient-warning"/>
+        <x-adminlte-info-box title="Caixa" :text="$usuCaixa" icon="fa-solid fa-user-tag" url="{{ route('usuarios',['tipo' => 'CX']) }}" theme="gradient-teal"/>
+        <x-adminlte-info-box title="Consultor" :text="$usuCon" icon="fa-solid fa-user-tie" url="{{ route('usuarios',['tipo' => 'CO']) }}" theme="gradient-secondary"/>
+        <x-adminlte-info-box title="Prestador" :text="$usuPrt" icon="fa-solid fa-user" url="{{ route('usuarios',['tipo' => 'PR']) }}" theme="gradient-maroon"/>
     </div>
 </div>
 @stop

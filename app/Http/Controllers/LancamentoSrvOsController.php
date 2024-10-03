@@ -46,21 +46,31 @@ class LancamentoSrvOsController extends Controller
         return view('/lancamentos/servico/controleAberturaOS',['empresa'=>$request->empresa,'cliente'=>$cliente]);
     }
 
-    //Chama a app de controle de pré abertura de OS
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Executa APP de Consulta da Situação de OS
+    |----------------------------------------------------------------------------------------------------
+    */
     public function consultaSituacaoOS($statusOS)
     {
+        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
+        $empresa = session('glo_empresa_exibicao_home');
+
         if($statusOS == 'T'){
             //$dadosOS = $this->lancamentoOS->reorder('os_nos', 'desc')->all();
-            $dadosOS = DB::table('lancamento_srv_os')->orderby('os_nos', 'desc')->get();
+            $dadosOS = DB::table('lancamento_srv_os')->where('os_emp', $empresa)->orderby('os_nos', 'desc')->get();
         }elseif($statusOS == 'A'){
             //$dadosOS = $this->lancamentoOS->where('os_sts','A')->reorder('os_nos', 'desc')->get();
-            $dadosOS = DB::table('lancamento_srv_os')->where('os_sts','A')->orderby('os_nos', 'desc')->get();
+            $dadosOS = DB::table('lancamento_srv_os')->where('os_emp', $empresa)->where('os_sts','A')->orderby('os_nos', 'desc')->get();
         }elseif($statusOS == 'F'){
             //$dadosOS = $this->lancamentoOS->where('os_sts','F')->reorder('os_nos', 'desc')->get();
-            $dadosOS = DB::table('lancamento_srv_os')->where('os_sts','F')->orderby('os_nos', 'desc')->get();
+            $dadosOS = DB::table('lancamento_srv_os')->where('os_emp', $empresa)->where('os_sts','F')->orderby('os_nos', 'desc')->get();
+        }elseif($statusOS == 'M'){
+            $data = date('Y-m-01');
+            $dadosOS = DB::table('lancamento_srv_os')->where('os_emp', $empresa)->whereDate('os_dha','>=',$data)->where('os_sts','<>','C')->orderby('os_nos', 'desc')->get();
         }else{
             //$dadosOS = $this->lancamentoOS->where('os_sts','C')->reorder('os_nos', 'desc')->get();
-            $dadosOS = DB::table('lancamento_srv_os')->where('os_sts','C')->orderby('os_nos', 'desc')->get();
+            $dadosOS = DB::table('lancamento_srv_os')->where('os_emp', $empresa)->where('os_sts','C')->orderby('os_nos', 'desc')->get();
         }
 
         return view('/lancamentos/servico/consultaSituacaoOS',['dadosOS'=>$dadosOS,'statusOS'=>$statusOS]);

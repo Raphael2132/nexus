@@ -568,4 +568,34 @@ class Helper
 
         return $configHR;
     }
+
+    //Gera o array com a tradução de um campo data com DateRangePicker em pt-BR
+    public static function formataTipoUsuario($tipo)
+    {
+        if($tipo == 'M'){
+            $usuario = "Master";
+        }elseif($tipo == 'ADM'){
+            $usuario = "Administrador";
+        }elseif($tipo == 'PR'){
+            $usuario = "Prestador";
+        }elseif($tipo == 'CO'){
+            $usuario = "Consultor";
+        }elseif($tipo == 'VE'){
+            $usuario = "Vendedor";
+        }elseif($tipo == 'CX'){
+            $usuario = "Caixa";
+        }else{
+            $usuario = "Tesouraria";
+        }                
+
+        return $usuario;
+    }
+
+    //Gera o array com a tradução de um campo data com DateRangePicker em pt-BR
+    public static function buscaDadosEmpresa($empresa)
+    {
+        $dadosEmpresa = DB::table('cadastro_empresas')->where('empresa_codigo',$empresa)->first();          
+
+        return $dadosEmpresa;
+    }
 }
