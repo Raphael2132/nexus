@@ -10,6 +10,10 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">Usuarios</li>
+            @php   
+                $dadosEmp = Helper::buscaDadosEmpresa(session('glo_empresa_exibicao_home'));
+            @endphp
+            <li class="breadcrumb-item active">{{ $dadosEmp->empresa_codigo.' - '.$dadosEmp->empresa_nome}}</li>
         </ol>
     </div>
 </div>

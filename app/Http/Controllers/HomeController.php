@@ -286,14 +286,22 @@ class HomeController extends Controller
         ]);
     }
 
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Home do Cadstro de Prestadores
+    |----------------------------------------------------------------------------------------------------
+    */
     public function homePrestadores()
     {      
 
-        $totalPrestadores = $this->prestador->count();
-        $prestadoresAtivos = $this->prestador->where('prestador_status','=','A')->count();
-        $prestadoresDemitidos = $this->prestador->where('prestador_status','=','D')->count();
+        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
+        $empresa = session('glo_empresa_exibicao_home');
 
-        $prestadores = $this->prestador->where('prestador_status', 'A')->reorder('prestador_codigo', 'asc')->get();
+        $totalPrestadores = $this->prestador->where('prestador_empresa', $empresa)->count();
+        $prestadoresAtivos = $this->prestador->where('prestador_empresa', $empresa)->where('prestador_status','=','A')->count();
+        $prestadoresDemitidos = $this->prestador->where('prestador_empresa', $empresa)->where('prestador_status','=','D')->count();
+
+        $prestadores = $this->prestador->where('prestador_empresa', $empresa)->where('prestador_status', 'A')->reorder('prestador_codigo', 'asc')->get();
 
         return view('/cadastros/prestador/homePrestadores',['prestadores'=>$prestadores,'totalPrestadores'=>$totalPrestadores,'prestadoresAtivos'=>$prestadoresAtivos,'prestadoresDemitidos'=>$prestadoresDemitidos]);
     }

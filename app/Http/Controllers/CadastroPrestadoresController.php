@@ -17,14 +17,22 @@ class CadastroPrestadoresController extends Controller
         $this->prestador = $prestador;
     }
 
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Executa a Consulta de Prestadores
+    |----------------------------------------------------------------------------------------------------
+    */
     public function prestadorConsulta($tipo)
     {
+        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
+        $empresa = session('glo_empresa_exibicao_home');
+
         if($tipo == 'A'){
-            $prestadores = $this->prestador->where('prestador_status','A')->get();
+            $prestadores = $this->prestador->where('prestador_empresa', $empresa)->where('prestador_status','A')->get();
         }elseif($tipo == 'D'){
-            $prestadores = $this->prestador->where('prestador_status','D')->get();
+            $prestadores = $this->prestador->where('prestador_empresa', $empresa)->where('prestador_status','D')->get();
         }else{
-            $prestadores = $this->prestador->all();
+            $prestadores = $this->prestador->where('prestador_empresa', $empresa)->get();
         }
 
         return view('/cadastros/prestador/consultaPrestador',['prestadores'=>$prestadores,'tipo'=>$tipo]);

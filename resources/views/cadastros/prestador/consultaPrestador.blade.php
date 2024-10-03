@@ -13,6 +13,10 @@
                 <a href="{{route('home.prestadores')}}">Prestadores</a>
             </li>
             <li class="breadcrumb-item active">Prestadores Cadastrados</li>
+            @php   
+                $dadosEmp = Helper::buscaDadosEmpresa(session('glo_empresa_exibicao_home'));
+            @endphp
+            <li class="breadcrumb-item active">{{ $dadosEmp->empresa_codigo.' - '.$dadosEmp->empresa_nome}}</li>
         </ol>
     </div>
 </div>

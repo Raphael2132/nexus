@@ -27,8 +27,6 @@ class UsuariosNexusModeloMfTableSeeder extends Seeder
             'usuario_acesso_cadastros' => 'S',
             'usuario_aut_desc' => 'S',
             'usuario_empresa' => 'E00001',
-            'usuario_acesso_mod_servicos' => 'S',
-            'usuario_acesso_mod_nf' => 'S',
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s')]
         );
