@@ -16,11 +16,13 @@
 @stop
 
 @section('content')
+@if(Auth::user()->usuario_tipo == 'M')
 <div class="row">
     <div class="col-md-4">
         <x-adminlte-small-box title="Cadastro" text="Empresa" icon="fas fa-building-circle-check" theme="primary" url="{{ route('empresa.cadastro') }}" url-text="Cadastrar Empresa"/>
     </div>
 </div>
+@endif
 <div class="row">
     <div class="col-md-12"> 
         {{-- Setup data for datatables --}}
@@ -233,6 +235,7 @@
                                         <i class="fa fa-lg fa-fw fa-pen"></i>
                                     </button>
                                 </form>
+                                @if(Auth::user()->usuario_tipo == 'M')
                                 <form method="post" action="{{route('empresa.destroy', ['empresa' => $empresa])}}" style="float: left;">
                                     @csrf
                                     @method('delete')
@@ -240,6 +243,7 @@
                                         <i class="fa fa-lg fa-fw fa-trash"></i>
                                     </button>
                                 </form>
+                                @endif
                             </nobr>
                         </td>                
                     </tr>

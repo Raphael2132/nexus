@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\CadastroCliente;
 use stdClass;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Helpers\Helper;
 
 class CadastroClienteController extends Controller
 {
@@ -50,9 +52,9 @@ class CadastroClienteController extends Controller
 
     public function inserir(Request $request){
 
-        if($request->tipoCadastro == 'F' && $request->tipoPessoa == 'F'){
+        /*if($request->tipoCadastro == 'F' && $request->tipoPessoa == 'F'){
             return redirect()->back()->with('error', 'Fornecedor precisa ser do tipo Jurídico!');
-        }
+        }*/
 
         if(!empty($request->dataNascimento)){
             $data_nas = substr($request->dataNascimento,-4).'-'.substr($request->dataNascimento,3,2).'-'.substr($request->dataNascimento,0,2);
@@ -106,6 +108,27 @@ class CadastroClienteController extends Controller
             $rg = null;
         }
 
+        if($request->tipoCadastro == 'F'){
+
+            if(empty($request->insEstadual)){
+                $insEstadual = "ISENTO";
+                $consumidorFin = 'S';
+            }else{
+                $insEstadual = $request->insEstadual;
+                $consumidorFin = 'N';
+            }
+
+        }else{
+
+            $insEstadual = $request->insEstadual;
+
+            if($request->tipoPessoa == 'F'){
+                $consumidorFin = 'S';  
+            }else{
+                $consumidorFin = 'N';
+            }
+        }
+
         if($request->tipoCadastro == 'C'){
 
             //$nextval=DB::select("SELECT last_value FROM clientes_cliente_id_seq")[0]->last_value+1;
@@ -129,10 +152,12 @@ class CadastroClienteController extends Controller
             'cliente_sexo' => $request->sexo,
             'cliente_tipo_cadastro' => $request->tipoCadastro,
             'cliente_rg' => $rg,
-            'cliente_insc_estadual' => $request->insEstadual,
+            'cliente_insc_estadual' => $insEstadual,
             'cliente_insc_municipal' => $request->insMunicipal,    
             'cliente_data_nascimento' => $data_nas,  
-            'cliente_dt_inc' => $dataInc        
+            'cliente_dt_inc' => $dataInc,
+            'cliente_usu_alt' => Auth::user()->usuario_codigo,
+            'cliente_con_final' => $consumidorFin        
         ];
         
         $novoCliente = CadastroCliente::create($dados);
@@ -189,14 +214,16 @@ class CadastroClienteController extends Controller
                 return redirect()->back()->with('error', 'Informe ao menos um dos Telefones');
             }
 
-            $atualizaCliente = DB::table('cadastro_clientes')
-                ->where('cliente_id', $cliente)
-                ->where('cliente_codigo', $cliente_cod)
-                ->update(['cliente_email' => $request->email,
+            DB::table('cadastro_clientes')
+            ->where('cliente_id', $cliente)
+            ->where('cliente_codigo', $cliente_cod)
+            ->update(['cliente_email' => $request->email,
                 'cliente_tel_residencial' => $telefoneResidencial,
                 'cliente_tel_celular' => $telefoneCelular,
                 'cliente_tel_comercial' => $telefoneComercial,
-                'cliente_tipo_email' => $request->tipoEmail]);
+                'cliente_tipo_email' => $request->tipoEmail,
+                'cliente_pref_contato' => $request->prefContato,
+            ]);
         }elseif($atualiza == 'dados'){
 
             if(!empty($request->cpfCnpj)){
@@ -243,19 +270,69 @@ class CadastroClienteController extends Controller
                 $data_nas = null;
             }
 
-            $atualizaCliente = DB::table('cadastro_clientes')
-                ->where('cliente_id', $cliente)
-                ->where('cliente_codigo', $cliente_cod)
-                ->update(['cliente_nome' => $request->nome,
+            if(!empty($request->dataFundacao)){
+                $dataFundacao = Helper::limpaData($request->dataFundacao);
+            }else{
+                $dataFundacao = null;
+            }
+
+            DB::table('cadastro_clientes')
+            ->where('cliente_id', $cliente)
+            ->where('cliente_codigo', $cliente_cod)
+            ->update(['cliente_nome' => $request->nome,
                 'cliente_cpf_cnpj' => $cpfCnpj,
                 'cliente_rg' => $rg,
                 'cliente_data_nascimento' => $data_nas,
                 'cliente_sexo' => $request->sexo,
                 'cliente_insc_estadual' => $request->insEstadual,
-                'cliente_insc_municipal' => $request->insMunicipal]);
+                'cliente_insc_municipal' => $request->insMunicipal,
+                'cliente_cnae' => $request->cnaeCod,
+                'cliente_dt_fundacao' => $dataFundacao,
+                'cliente_micro_emp' => $request->microEmp,
+                'cliente_ramo_atividade' => $request->ramoAtiv,
+                'cliente_org_publico' => $request->orgPub
+            ]);
+        }   
         
-        }        
+        DB::table('cadastro_clientes')
+        ->where('cliente_id', $cliente)
+        ->where('cliente_codigo', $cliente_cod)
+        ->update(['cliente_dt_alt' => date('Y-m-d'),
+            'cliente_usu_alt' => Auth::user()->usuario_codigo
+        ]);
         
         return redirect(route('cliente.editarCadastro', ['dadosCliente' => $cliente_cod, 'tipo' => $tipo]))->with('success', 'Cliente atualizado com sucesso!');
+    }
+
+    //Busca o codigo do grupo do cnae por AJAX
+    public function carregaCnaeGrp($codigo)
+    {  
+        $cnaeGrp = DB::table('cnae_grupos')->where('cnaegrp_div', $codigo)->orderby('cnaegrp_grp', 'asc')->get();
+       
+        foreach($cnaeGrp as $grupo) {
+            
+            $grupos_ajax[] = array(
+                'id'	=> $grupo->cnaegrp_grp,
+                'cod_grupo' => $grupo->cnaegrp_grp.' - '.$grupo->cnaegrp_desc,
+            );
+        }  
+
+        return response()->json(['success' => true, 'grupos_ajax' => $grupos_ajax]);
+    }
+
+    //Busca os codigos do cnae por AJAX
+    public function carregaCnaeCod($divisao,$grupo)
+    {  
+        $cnaeCod = DB::table('cnae_codigos')->where('cnaesub_div', $divisao)->where('cnaesub_grp', $grupo)->orderby('cnaesub_cod', 'asc')->get();
+       
+        foreach($cnaeCod as $codigo) {
+            
+            $codigos_ajax[] = array(
+                'id'	=> $codigo->cnaesub_cod,
+                'cod_cnae' => $codigo->cnaesub_cod.' - '.$codigo->cnaesub_desc,
+            );
+        }  
+
+        return response()->json(['success' => true, 'codigos_ajax' => $codigos_ajax]);
     }
 }

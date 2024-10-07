@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\CadastroEmpresa;
 use stdClass;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Helpers\Helper;
 
 class CadastroEmpresaController extends Controller
 {
@@ -70,7 +72,9 @@ class CadastroEmpresaController extends Controller
             'empresa_nome' => $request->nome,
             'empresa_cnpj' => $cnpjNew,
             'empresa_insc_estadual' => $request->insEstadual,
-            'empresa_insc_municipal' => $request->insMunicipal       
+            'empresa_insc_municipal' => $request->insMunicipal,
+            'empresa_dt_inc' => date('Y-m-d'),
+            'empresa_usu_alt' => Auth::user()->usuario_codigo       
         ];
         
         $novaEmpresa = CadastroEmpresa::create($dados);
@@ -111,12 +115,14 @@ class CadastroEmpresaController extends Controller
                 return redirect()->back()->with('error', 'Informe ao menos um dos Telefones');
             }
 
-            $atualizaempresa = DB::table('cadastro_empresas')
-                ->where('empresa_id', $empresa)
-                ->where('empresa_codigo', $empresa_cod)
-                ->update(['empresa_email' => $request->email,
+            DB::table('cadastro_empresas')
+            ->where('empresa_id', $empresa)
+            ->where('empresa_codigo', $empresa_cod)
+            ->update(['empresa_email' => $request->email,
                 'empresa_tel_celular' => $telefoneCelular,
-                'empresa_tel_comercial' => $telefoneComercial]);
+                'empresa_tel_comercial' => $telefoneComercial,
+                'empresa_pref_contato' => $request->prefContato,
+            ]);
 
         }elseif($atualiza == 'dados'){//Aba de dados gerais da empresa
 
@@ -142,27 +148,56 @@ class CadastroEmpresaController extends Controller
                 }
             }
 
-            $atualizaempresa = DB::table('cadastro_empresas')
-                ->where('empresa_id', $empresa)
-                ->where('empresa_codigo', $empresa_cod)
-                ->update(['empresa_nome' => $request->nome,
+            if(!empty($request->dataFundacao)){
+                $dataFundacao = Helper::limpaData($request->dataFundacao);
+            }else{
+                $dataFundacao = null;
+            }
+
+            if(empty($request->insEstadual)){
+                $insEstadual = "ISENTO";
+                $consumidorFin = 'S';
+            }else{
+                $insEstadual = $request->insEstadual;
+                $consumidorFin = 'N';
+            }
+
+            DB::table('cadastro_empresas')
+            ->where('empresa_id', $empresa)
+            ->where('empresa_codigo', $empresa_cod)
+            ->update(['empresa_nome' => $request->nome,
                 'empresa_cnpj' => $cnpjNew,
-                'empresa_insc_estadual' => $request->insEstadual,
+                'empresa_insc_estadual' => $insEstadual,
                 'empresa_insc_municipal' => $request->insMunicipal,
-                'empresa_nome_logo' => $request->nomeLogo]);
+                'empresa_nome_logo' => $request->nomeLogo,
+                'empresa_cnae' => $request->cnaeCod,
+                'empresa_dt_fundacao' => $dataFundacao,
+                'empresa_micro_emp' => $request->microEmp,
+                'empresa_ramo_atividade' => $request->ramoAtiv,
+                'empresa_org_publico' => $request->orgPub,
+                'empresa_con_final' => $consumidorFin
+            ]);
 
         }elseif($atualiza == 'smtp'){//Aba de dados do email smtp
 
-            $atualizaempresa = DB::table('cadastro_empresas')
-                ->where('empresa_id', $empresa)
-                ->where('empresa_codigo', $empresa_cod)
-                ->update(['empresa_smtp_host' => $request->hostSMTP,
+            DB::table('cadastro_empresas')
+            ->where('empresa_id', $empresa)
+            ->where('empresa_codigo', $empresa_cod)
+            ->update(['empresa_smtp_host' => $request->hostSMTP,
                 'empresa_smtp_port' => $request->portaSMTP,
                 'empresa_smtp_username' => $request->userSMTP,
                 'empresa_smtp_password' => $request->senhaSMTP,
                 'empresa_smtp_encryption' => $request->criptSMTP,
-                'empresa_smtp_from_address' => $request->emailSMTP]);
-        }            
+                'empresa_smtp_from_address' => $request->emailSMTP
+            ]);
+        }         
+        
+        DB::table('cadastro_empresas')
+        ->where('empresa_id', $empresa)
+        ->where('empresa_codigo', $empresa_cod)
+        ->update(['empresa_dt_alt' => date('Y-m-d'),
+            'empresa_usu_alt' => Auth::user()->usuario_codigo
+        ]);
         
         return redirect(route('empresa.editarCadastro', ['dadosEmpresa' => $empresa_cod]))->with('success', 'Dados atualizados com sucesso!');
     }
@@ -173,5 +208,37 @@ class CadastroEmpresaController extends Controller
         $empresa->delete();
         
         return redirect(route('home.empresa'))->with('success', 'Empresa excluída com sucesso!');
+    }
+
+    //Busca o codigo do grupo do cnae por AJAX
+    public function carregaCnaeGrp($codigo)
+    {  
+        $cnaeGrp = DB::table('cnae_grupos')->where('cnaegrp_div', $codigo)->orderby('cnaegrp_grp', 'asc')->get();
+       
+        foreach($cnaeGrp as $grupo) {
+            
+            $grupos_ajax[] = array(
+                'id'	=> $grupo->cnaegrp_grp,
+                'cod_grupo' => $grupo->cnaegrp_grp.' - '.$grupo->cnaegrp_desc,
+            );
+        }  
+
+        return response()->json(['success' => true, 'grupos_ajax' => $grupos_ajax]);
+    }
+
+    //Busca os codigos do cnae por AJAX
+    public function carregaCnaeCod($divisao,$grupo)
+    {  
+        $cnaeCod = DB::table('cnae_codigos')->where('cnaesub_div', $divisao)->where('cnaesub_grp', $grupo)->orderby('cnaesub_cod', 'asc')->get();
+       
+        foreach($cnaeCod as $codigo) {
+            
+            $codigos_ajax[] = array(
+                'id'	=> $codigo->cnaesub_cod,
+                'cod_cnae' => $codigo->cnaesub_cod.' - '.$codigo->cnaesub_desc,
+            );
+        }  
+
+        return response()->json(['success' => true, 'codigos_ajax' => $codigos_ajax]);
     }
 }

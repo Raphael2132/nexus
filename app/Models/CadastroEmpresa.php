@@ -26,7 +26,17 @@ class CadastroEmpresa extends Model
         'empresa_smtp_username',
         'empresa_smtp_password',
         'empresa_smtp_encryption',
-        'empresa_smtp_from_address'
+        'empresa_smtp_from_address',
+        'empresa_dt_fundacao',
+        'empresa_micro_emp',
+        'empresa_cnae',
+        'empresa_pref_contato',
+        'empresa_dt_inc',
+        'empresa_dt_alt',
+        'empresa_usu_alt',
+        'empresa_ramo_atividade',
+        'empresa_org_publico',
+        'empresa_con_final',
     ];
 
     protected $table = 'cadastro_empresas';

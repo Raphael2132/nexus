@@ -336,6 +336,8 @@ Route::get('/cadastros/cliente/homeClientes', [App\Http\Controllers\HomeControll
 Route::get('/cadastros/cliente/clientes/{tipo}', [App\Http\Controllers\CadastroClienteController::class, 'clientes'])->name('clientes');
 Route::get('/cadastros/cliente/cadastroCliente', [App\Http\Controllers\CadastroClienteController::class, 'cadastro'])->name('cliente.cadastro');
 Route::get('/cadastros/cliente/editarCadastroCliente/{dadosCliente}/{tipo}', [App\Http\Controllers\CadastroClienteController::class, 'editar'])->name('cliente.editarCadastro');
+Route::get('/cadastros/cliente/editarCadastroCliente/ajax/grupo/{codigo}', [App\Http\Controllers\CadastroClienteController::class, 'carregaCnaeGrp'])->name('cliente.carregaCnaeGrpAjax');
+Route::get('/cadastros/cliente/editarCadastroCliente/ajax/cnae/{divisao}/{grupo}', [App\Http\Controllers\CadastroClienteController::class, 'carregaCnaeCod'])->name('cliente.carregaCnaeCodAjax');
 Route::get('/cadastros/cliente/editarCadastroCliente/{endereco}/{cliente_cod}/{tipo}', [App\Http\Controllers\CadastroClienteEnderecoController::class, 'principal'])->name('enderecoCliente.principal');
 
 Route::post('/cadastros/cliente/cadastroCliente', [App\Http\Controllers\CadastroClienteController::class, 'inserir'])->name('cliente.inserir');
@@ -364,6 +366,8 @@ Route::get('/cadastros/empresa/homeEmpresa', [App\Http\Controllers\HomeControlle
 Route::get('/cadastros/empresa/cadastroEmpresa', [App\Http\Controllers\CadastroEmpresaController::class, 'cadastro'])->name('empresa.cadastro');
 Route::get('/cadastros/empresa/editarCadastroEmpresa/{dadosEmpresa}', [App\Http\Controllers\CadastroEmpresaController::class, 'editar'])->name('empresa.editarCadastro');
 Route::get('/cadastros/empresa/editarCadastroEmpresa/{endereco}/{empresa_cod}', [App\Http\Controllers\CadastroEmpresaEnderecoController::class, 'principal'])->name('enderecoEmpresa.principal');
+Route::get('/cadastros/empresa/editarCadastroEmpresa/ajax/grupo/{codigo}', [App\Http\Controllers\CadastroEmpresaController::class, 'carregaCnaeGrp'])->name('empresa.carregaCnaeGrpAjax');
+Route::get('/cadastros/empresa/editarCadastroEmpresa/ajax/cnae/{divisao}/{grupo}', [App\Http\Controllers\CadastroEmpresaController::class, 'carregaCnaeCod'])->name('empresa.carregaCnaeCodAjax');
 
 Route::post('/cadastros/empresa/cadastroEmpresa', [App\Http\Controllers\CadastroEmpresaController::class, 'inserir'])->name('empresa.inserir');
 Route::post('/cadastros/empresa/editarCadastroEmpresa/{empresa}/{empresa_cod}/{atualiza}', [App\Http\Controllers\CadastroEmpresaController::class, 'update'])->name('empresa.atualizar');

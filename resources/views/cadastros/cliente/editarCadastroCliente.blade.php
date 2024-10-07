@@ -150,10 +150,112 @@
                         <div id="dadosJuridicos">
                             <div class="row">
                                 <!-- Inscrição Estadual -->
-                                <x-adminlte-input name="insEstadual" type="number" label="Inscrição Estadual" fgroup-class="col-md-6" value="{{$dadosCliente[0]['cliente_insc_estadual'] }}"></x-adminlte-input>
+                                <x-adminlte-input name="insEstadual" type="text" label="Inscrição Estadual" fgroup-class="col-md-6" value="{{$dadosCliente[0]['cliente_insc_estadual'] }}"></x-adminlte-input>
 
                                 <!-- Inscrição Municipal -->
                                 <x-adminlte-input name="insMunicipal" type="number" label="Inscrição Municipal" fgroup-class="col-md-6" value="{{$dadosCliente[0]['cliente_insc_municipal'] }}"></x-adminlte-input>
+                            </div>
+
+                            <div class="row">
+                                @php
+                                    $config = Helper::dtRangeDataPtBR();
+                                    
+                                    if(!empty($dadosCliente[0]['cliente_dt_fundacao'])){
+                                        $data_fundacao = date('d/m/Y', strtotime($dadosCliente[0]['cliente_dt_fundacao']));
+                                    }else{
+                                        $data_fundacao = '';
+                                    }
+                                @endphp
+                                <!-- Data de Fundação da Empresa -->
+                                <x-adminlte-date-range name="dataFundacao" label="Data de Fundação" :config="$config" placeholder="Formato dia/mês/ano" fgroup-class="col-md-3">
+                                    <x-slot name="prependSlot">
+                                        <div class="input-group-text x-slot-nexus">
+                                            <i class="far fa-lg fa-calendar-alt"></i>
+                                        </div>
+                                    </x-slot>
+                                </x-adminlte-date-range>
+                                @push('js')<script>$(() => $("#dataFundacao").val('{{ $data_fundacao }}'))</script>@endpush
+
+                                <x-adminlte-select name="microEmp" label="Micro Empresa" fgroup-class="col-md-3">
+                                    <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_micro_emp'] }}" />
+                                </x-adminlte-select>
+
+                                <x-adminlte-select name="ramoAtiv" label="Ramo de Atividade" fgroup-class="col-md-3">
+                                    <x-adminlte-options :options="['C' => 'Comércio', 'I' => 'Indústria', 'S' => 'Serviços', 'O' => 'Outros']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_ramo_atividade'] }}" />
+                                </x-adminlte-select>
+
+                                <x-adminlte-select name="orgPub" label="Órgão Público" fgroup-class="col-md-3">
+                                    <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_org_publico'] }}" />
+                                </x-adminlte-select>
+                            </div>
+                            <div class="row">
+                                @php 
+                                    $cnaeDiv = DB::table('cnae_divisoes')->orderby('cnaediv_div', 'asc')->get();
+
+                                    $new_array1 =[];
+                                    $new_array2 =[];
+
+                                    foreach ($cnaeDiv as $div) {
+                                        $new_array1[] = $div->cnaediv_div;
+                                        $new_array2[] = $div->cnaediv_div.' - '.$div->cnaediv_desc;
+                                    }
+                                    $array_div = array_combine($new_array1, $new_array2);
+
+
+                                    if(!empty($dadosCliente[0]['cliente_cnae'])){
+
+                                        $dados_cnaeCod = DB::table('cnae_codigos')->where('cnaesub_cod', $dadosCliente[0]['cliente_cnae'])->first();
+                                        
+                                        $dados_cnaeGrp = DB::table('cnae_grupos')->where('cnaegrp_div', $dados_cnaeCod->cnaesub_div)->orderby('cnaegrp_grp', 'asc')->get();
+                                        $new_array1_grp =[];
+                                        $new_array2_grp =[];
+
+                                        foreach ($dados_cnaeGrp as $grp) {
+                                            $new_array1_grp[] = $grp->cnaegrp_grp;
+                                            $new_array2_grp[] = $grp->cnaegrp_grp.' - '.$grp->cnaegrp_desc;
+                                        }
+                                        $array_grp = array_combine($new_array1_grp, $new_array2_grp);
+
+                                        $divCNAE = $dados_cnaeCod->cnaesub_div;
+                                        $grpCNAE = $dados_cnaeCod->cnaesub_grp;
+
+                                        $dados_cnaeCod = DB::table('cnae_codigos')->where('cnaesub_div', $divCNAE)->where('cnaesub_grp', $grpCNAE)->orderby('cnaesub_cod', 'asc')->get();
+                                        $new_array1_cod =[];
+                                        $new_array2_cod =[];
+
+                                        foreach ($dados_cnaeCod as $sub) {
+                                            $new_array1_cod[] = $sub->cnaesub_cod;
+                                            $new_array2_cod[] = $sub->cnaesub_cod.' - '.$sub->cnaesub_desc;
+                                        }
+                                        $array_cod = array_combine($new_array1_cod, $new_array2_cod);
+
+                                    }else{
+                                        $array_cod = null;
+                                        $array_grp = null;
+                                        $divCNAE = null;
+                                        $grpCNAE = null;
+                                    }
+                                @endphp
+                                <x-adminlte-select name="cnaeDiv" fgroup-class="col-md-4">
+                                    <x-slot name="label">
+                                        CNAE Divisão
+                                    </x-slot>
+                                    <x-adminlte-options :options="$array_div" empty-option="Selecione..." selected="{{ $divCNAE }}"/>
+                                </x-adminlte-select>
+
+                                <x-adminlte-select name="cnaeGrp" fgroup-class="col-md-4">
+                                    <x-slot name="label">
+                                        CNAE Grupo
+                                    </x-slot>
+                                    <x-adminlte-options :options="$array_grp" empty-option="Selecione..." selected="{{ $grpCNAE }}"/>
+                                </x-adminlte-select>
+
+                                <x-adminlte-select name="cnaeCod" fgroup-class="col-md-4">
+                                    <x-slot name="label">
+                                        CNAE Código
+                                    </x-slot>
+                                    <x-adminlte-options :options="$array_cod" empty-option="Selecione..." selected="{{ $dadosCliente[0]['cliente_cnae'] }}"/>
+                                </x-adminlte-select>
                             </div>
                         </div>
                         <div class="d-flex justify-content-center">
@@ -168,6 +270,13 @@
                     @csrf 
                     @method('post')
                         <div class="row">
+                            <x-adminlte-select name="prefContato" fgroup-class="col-md-4">
+                                <x-slot name="label">
+                                    Preferência de Contato <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-adminlte-options :options="['EMA' => 'Email', 'TCO' => 'Telefone Comercial', 'TCE' => 'Telefone Celular', 'TRE' => 'Telefone Residencial', 'WTA' => 'WhatsApp']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_pref_contato']}}"/>
+                            </x-adminlte-select>
+
                             <!-- Tipo do Email -->
                             <x-adminlte-select name="tipoEmail" fgroup-class="col-md-4">
                                 <x-slot name="label">
@@ -177,7 +286,7 @@
                             </x-adminlte-select>
 
                             <!-- Email -->
-                            <x-adminlte-input name="email" type="email" placeholder="email@exemplo.com" fgroup-class="col-md-8" value="{{$dadosCliente[0]['cliente_email'] }}">
+                            <x-adminlte-input name="email" type="email" placeholder="email@exemplo.com" fgroup-class="col-md-4" value="{{$dadosCliente[0]['cliente_email'] }}">
                                 <x-slot name="label">
                                     Email <span style="color:red;">*</span>
                                 </x-slot>
@@ -566,6 +675,89 @@
 
 </script>
 
+<!--
+|--------------------------------------------------------------------------
+| Eventos onChange da app
+|--------------------------------------------------------------------------
+-->
+<script>
+    $(document).ready(function() {
+
+        //Evento de carregamento ajax dos dados dos grupos CNAE
+        $('#cnaeDiv').change(function(){
+
+            if( $(this).val() ) {
+                var cod = $(this).val();
+
+                var url = "{{ route('cliente.carregaCnaeGrpAjax', [':cod']) }}";
+                url = url.replace(':cod', cod);
+
+                $.ajax({
+                    url: url,
+                    dataType: "JSON",
+                    type: 'GET',
+                    data: {
+                        '_token': $('meta[name=csrf-token]').attr("content"),
+                        '_method': 'GET',
+                        "cod": cod
+                    },
+                    success: function (data)
+                    {
+                        var options = '<option value="">Selecione...</option>';	
+
+						for (var i = 0; i < data.grupos_ajax.length; i++) {
+
+							options += '<option value="' + data.grupos_ajax[i].id + '">' + data.grupos_ajax[i].cod_grupo + '</option>';
+						}	
+						$('#cnaeGrp').html(options);
+                        $('#cnaeCod').html('<option value="">Selecione...</option>');
+                    }
+                });
+            } else {
+				$('#cnaeGrp').html('<option value="">Selecione...</option>');
+                $('#cnaeCod').html('<option value="">Selecione...</option>');
+			}
+        });
+
+        //Evento de carregamento ajax dos dados dos grupos CNAE
+        $('#cnaeGrp').change(function(){
+
+            if( $(this).val() ) {
+                var grp = $(this).val();
+                var div = $('#cnaeDiv').val();
+
+                var url = "{{ route('cliente.carregaCnaeCodAjax', [':div', ':grp']) }}";
+                url = url.replace(':grp', grp);
+                url = url.replace(':div', div);
+
+                $.ajax({
+                    url: url,
+                    dataType: "JSON",
+                    type: 'GET',
+                    data: {
+                        '_token': $('meta[name=csrf-token]').attr("content"),
+                        '_method': 'GET',
+                        "div": div,
+                        "grp": grp
+                    },
+                    success: function (data)
+                    {
+                        var options = '<option value="">Selecione...</option>';	
+
+                        for (var i = 0; i < data.codigos_ajax.length; i++) {
+
+                            options += '<option value="' + data.codigos_ajax[i].id + '">' + data.codigos_ajax[i].cod_cnae + '</option>';
+                        }	
+                        $('#cnaeCod').html(options);
+                    }
+                });
+            } else {
+                $('#cnaeCod').html('<option value="">Selecione...</option>');
+            }
+        });
+    });
+</script>
+
 <script>
 $(function () {
     $('#formulario-dados').validate({
@@ -642,6 +834,9 @@ $(function () {
             tipoEmail: {
                 required: true,
             },
+            prefContato: {
+                required: true,
+            },
         },
         messages: {
             email: {
@@ -651,6 +846,9 @@ $(function () {
             },
             tipoEmail: {
                 required: "Por Favor informe o Tipo do Email"
+            },
+            prefContato: {
+                required: "Por Favor informe a Preferência de Contato"
             },
         },
         errorElement: 'span',

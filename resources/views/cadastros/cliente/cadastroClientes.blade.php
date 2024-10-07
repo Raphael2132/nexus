@@ -102,7 +102,7 @@
         <div id="dadosJuridicos">
             <div class="row">
                 <!-- Inscrição Estadual -->
-                <x-adminlte-input name="insEstadual" type="number" label="Inscrição Estadual" fgroup-class="col-md-6"></x-adminlte-input>
+                <x-adminlte-input name="insEstadual" type="text" label="Inscrição Estadual" fgroup-class="col-md-6"></x-adminlte-input>
 
                 <!-- Inscrição Municipal -->
                 <x-adminlte-input name="insMunicipal" type="number" label="Inscrição Municipal" fgroup-class="col-md-6"></x-adminlte-input>
@@ -157,8 +157,8 @@
         $("#tipoCadastro").change(function(){
         
             if(this.value == 'F'){
-                $("#tipoPessoa").prop('disabled', true);
-                $("#tipoPessoa").val('J');
+                /*$("#tipoPessoa").prop('disabled', true);
+                $("#tipoPessoa").val('J');*/
                 $("#rg").val('');
                 $("#nome").val('');
                 $("#cpfCnpj").val('');
@@ -167,7 +167,7 @@
                 $("#insEstadual").val('');
                 $("#insMunicipal").val('');
 
-                $("#dadosPessoal").hide();
+                /*$("#dadosPessoal").hide();
                 $("#dadosJuridicos").show();
 
                 $("#cpfCnpj").show();
@@ -181,7 +181,18 @@
                 $('#cpfCnpj').inputmask({
                     "mask": " 99.999.999/9999-99",
                     // Specify other options...
-                });
+                });*/
+
+                $("#dadosPessoal").hide();
+                $("#dadosJuridicos").hide();
+
+                $("#cpfCnpj").hide();
+                $('label[for="cpfCnpj"]').css("display","none");
+                $("#cpfCnpj").closest('.input-group').find('.x-slot-nexus').hide();
+
+                $("#nome").hide();
+                $('label[for="nome"]').css("display","none");
+                $("#nome").closest('.input-group').find('.x-slot-nexus').hide();
             }else{
                 $("#tipoPessoa").val('');
                 $("#tipoPessoa").prop('disabled', false);

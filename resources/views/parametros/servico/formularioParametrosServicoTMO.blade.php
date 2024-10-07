@@ -84,7 +84,7 @@
                 <div class="row"> 
                     @php
 
-                        $data_are = DB::table('parametros_sis_areas')->selectRaw('area_codigo, area_desc')->orderBy('area_codigo', 'asc')->get();
+                        $data_are = DB::table('parametros_sis_areas')->join('parametros_sis_setores', 'area_codigo', '=', 'setor_area')->orderBy('area_codigo', 'asc')->get();
 
                         $new_array_are1 =[];
                         $new_array_are2 =[];

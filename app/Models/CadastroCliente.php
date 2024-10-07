@@ -32,6 +32,15 @@ class CadastroCliente extends Model
         'cliente_insc_estadual',
         'cliente_insc_municipal',
         'cliente_tipo_email',
-        'cliente_dt_inc'
+        'cliente_dt_inc',
+        'cliente_dt_fundacao',
+        'cliente_micro_emp',
+        'cliente_cnae',
+        'cliente_pref_contato',
+        'cliente_dt_alt',
+        'cliente_usu_alt',
+        'cliente_ramo_atividade',
+        'cliente_org_publico',
+        'cliente_con_final',
     ];
 }

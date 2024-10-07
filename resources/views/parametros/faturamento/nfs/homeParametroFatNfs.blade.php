@@ -134,7 +134,9 @@
     <div class="direito col-md-3">
         <x-adminlte-small-box title="NFS-e" text="Emissão" icon="fas fa-file-export" theme="primary" url="{{ route('parametrosNfsEmissao') }}" url-text="Detalhes"/>
         <x-adminlte-small-box title="NFS-e" text="Conexão" icon="fas fa-wifi" theme="success" url="{{ route('parametrosNfsConexao') }}" url-text="Detalhes"/>
+        @if(Auth::user()->usuario_tipo == 'M')
         <x-adminlte-small-box title="NFS-e" text="Provedor" icon="fas fa-server" theme="danger" url="{{ route('parametrosNfsProvedor') }}" url-text="Cadastrar"/>
+        @endif
     </div>
 </div>
 @stop

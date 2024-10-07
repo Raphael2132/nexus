@@ -196,8 +196,10 @@ class EmissaoSimplificadaNFSController extends Controller
 
         if($stsEnvio[0]->nfsenv_sts == 3){
             $status = 'G';
+            $statusSimp = 'F';
         }else{
             $status = 'E';
+            $statusSimp = 'G';
         }
 
         //Atualiza os dados da NF
@@ -214,8 +216,13 @@ class EmissaoSimplificadaNFSController extends Controller
         ->update(['nfs_sts' => $status,
             'nfs_dt_emi' => $dataGeracaoNF,
             'nfs_hr_emi' => $horaGeracaoNF]);
+
+        DB::table('faturamento_nfs_simplificadas')
+        ->where('nfssim_emp', $empresa)
+        ->where('nfssim_num', $numeroNFSimp)
+        ->update(['nfssim_sts' => $statusSimp]);
         
-            //Faz o envio automático do email da NFS-e
+        //Faz o envio automático do email da NFS-e
         if($stsEnvio[0]->nfsenv_sts == 3){
 
             //Verifica se envia a NFS-e no email do cliente
