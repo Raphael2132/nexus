@@ -55,7 +55,6 @@ $configPrincipal = [
     'order' => [
         [0, 'desc']
     ],
-    'processing' => true,
     'pagingType' => 'full_numbers', // Adiciona os botões de "Primeiro" e "Último"
     'columns' => [
         ['orderable' => false, 'visible' => false], // Esconder primeira coluna

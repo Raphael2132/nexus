@@ -32,6 +32,7 @@
             'lengthChange' => false,
             'pageLength' => 5,
             'language' => Helper::dataTableLangPtBR(),
+            'pagingType' => 'full_numbers',
             'order' => [[0, 'asc']],
             'columns' => [null, null, null, ['orderable' => false]],
         ];
@@ -89,6 +90,7 @@
             'lengthChange' => false,
             'pageLength' => 5,
             'language' => Helper::dataTableLangPtBR(),
+            'pagingType' => 'full_numbers',
             'order' => [[0, 'asc']],
             'columns' => [null, null, null, ['orderable' => false]],
         ];

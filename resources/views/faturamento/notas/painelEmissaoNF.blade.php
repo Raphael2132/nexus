@@ -77,6 +77,7 @@
                             'lengthChange' => false,
                             'pageLength' => 10,
                             'language' => Helper::dataTableLangPtBR(),
+                            'pagingType' => 'full_numbers',
                             'order' => [
                                 [1, 'asc']
                             ],

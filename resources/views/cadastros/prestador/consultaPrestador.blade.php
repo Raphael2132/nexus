@@ -38,6 +38,7 @@ $config = [
     'lengthMenu' => [ 5, 10, 25, 50],
     'pageLength' => 10,
     'language' => Helper::dataTableLangPtBR(),
+    'pagingType' => 'full_numbers',
     'order' => [[1, 'asc']],
     'columns' => [['orderable' => false], null, null, null, null, ['orderable' => false]],
 ];

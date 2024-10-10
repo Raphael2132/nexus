@@ -33,6 +33,7 @@
         'pageLength' => 10,
         'language' => Helper::dataTableLangPtBR(),
         'order' => [[0, 'asc']],
+        'pagingType' => 'full_numbers',
         'columns' => [null, null, ['orderable' => false]],
     ];
     @endphp

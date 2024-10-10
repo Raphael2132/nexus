@@ -41,6 +41,7 @@
         'lengthMenu' => [5, 10, 25, 50, 100],
         'pageLength' => 10,
         'language' => Helper::dataTableLangPtBR(),
+        'pagingType' => 'full_numbers',
         'order' => [[0, 'desc']],
         'columns' => [
             ['orderable' => false, 'visible' => false], // Esconder primeira coluna

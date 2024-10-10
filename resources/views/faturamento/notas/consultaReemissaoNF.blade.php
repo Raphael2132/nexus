@@ -42,6 +42,7 @@
         'pageLength' => 10,
         'language' => Helper::dataTableLangPtBR(),
         'order' => [[0, 'desc']],
+        'pagingType' => 'full_numbers',
         'columns' => [
             ['orderable' => false, 'visible' => false], // Esconder primeira coluna
             null, 

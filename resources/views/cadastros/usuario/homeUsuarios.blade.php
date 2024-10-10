@@ -53,6 +53,7 @@
             'lengthMenu' => [ 5, 10, 25, 50],
             'pageLength' => 5,
             'language' => Helper::dataTableLangPtBR(),
+            'pagingType' => 'full_numbers',
             'order' => [
                 [1, 'asc'],
                 [4, 'asc'],

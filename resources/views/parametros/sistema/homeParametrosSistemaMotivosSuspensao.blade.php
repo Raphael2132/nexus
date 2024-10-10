@@ -32,6 +32,7 @@
         'lengthMenu' => [ 5, 10, 25, 50],
         'pageLength' => 10,
         'language' => Helper::dataTableLangPtBR(),
+        'pagingType' => 'full_numbers',
         'columns' => [null, null, ['orderable' => false]],
     ];
     @endphp

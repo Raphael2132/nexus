@@ -39,6 +39,7 @@
         'pageLength' => 10,
         'language' => Helper::dataTableLangPtBR(),
         'order' => [[0, 'asc'],[1, 'asc'],[2, 'asc']],
+        'pagingType' => 'full_numbers',
         'columns' => [null, null, null, null, ['orderable' => false]],
     ];
     @endphp
@@ -83,6 +84,8 @@
 
 <!-- Chamada dos Plugins usados na app -->
 @section('plugins.Sweetalert2', true)
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 @stop
