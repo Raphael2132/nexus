@@ -497,6 +497,7 @@ Route::get('/lancamentos/producao/modalPainelOperadorSuspendService/{empresa}/{n
 Route::get('/lancamentos/producao/modalPainelOperadorReopenService/{empresa}/{numOS}/{requisicao}/{servico}', [App\Http\Controllers\PainelOperadorController::class, 'carregarDadosModalReopenService'])->name('painelOperacao.carregarDadosModalReopenService');
 Route::get('/lancamentos/producao/modalPainelOperadorFinishRequisicao/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\PainelOperadorController::class, 'carregarDadosModalFinishRequisicao'])->name('painelOperacao.carregarDadosModalFinishRequisicao');
 Route::get('/lancamentos/producao/modalPainelOperadorReopenRequisicao/{empresa}/{numOS}/{requisicao}', [App\Http\Controllers\PainelOperadorController::class, 'carregarDadosModalReopenRequisicao'])->name('painelOperacao.carregarDadosModalReopenRequisicao');
+Route::get('/lancamentos/producao/subConsultaPainelOperacao/{empresa}/{numOS}', [App\Http\Controllers\PainelOperadorController::class, 'carregarDadosSubConsultaPainelOperador'])->name('painelOperacao.carregarDadosSubConsultaPainelOperador');
 
 Route::post('/lancamentos/producao/consultaPainelOperacao', [App\Http\Controllers\PainelOperadorController::class, 'consultaPainelOperacao'])->name('painelOperacao.consultaPainel');
 Route::get('/lancamentos/producao/consultaPainelOperacao/{empresa}/{where}', [App\Http\Controllers\PainelOperadorController::class, 'consultaPainelOperacaoGET'])->name('painelOperacao.consultaPainelGET');

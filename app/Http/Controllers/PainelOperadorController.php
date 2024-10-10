@@ -253,4 +253,18 @@ class PainelOperadorController extends Controller
         
         return view('/lancamentos/producao/modalPainelOperadorReopenRequisicao', ['dadosOS' => $dadosOS, 'dadosCli' => $dadosCli, 'dadosUsu' => $dadosUsu, 'dadosReq' => $dadosReq])->render();
     }
+
+    //Carrega os dados do Modal de Adição de Auxiliar na TMO
+    public function carregarDadosSubConsultaPainelOperador($empresa, $numOS)
+    {
+        //Busca os dados dos Serviços relacionados a OS
+        $dadosTMO = DB::table('lancamento_srv_exe_tarefas')
+        ->where('exetrf_emp', $empresa)
+        ->where('exetrf_nos', $numOS)
+        ->orderby('exetrf_req', 'asc')
+        ->orderby('exetrf_seq', 'asc')
+        ->get();
+
+        return view('/lancamentos/producao/subConsultaPainelOperacao', ['dadosTMO' => $dadosTMO])->render();
+    }
 }

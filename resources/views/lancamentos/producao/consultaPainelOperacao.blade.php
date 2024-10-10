@@ -37,6 +37,40 @@ $config = [
     'columns' => [['orderable' => false],['orderable' => false],['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false]],
 ];
 
+$headsPrincipal = [
+    'OS',
+    ['label' => '', 'no-export' => true, 'width' => '5'],
+    ['label' => '', 'no-export' => true, 'width' => '5'],
+    'Agenda',
+    'OS',
+    'Data',
+    'Cliente',
+    'Consultor',
+    'Previsão Entrega'
+];
+$configPrincipal = [
+    'lengthMenu' => [5, 10, 25, 50, 100],
+    'pageLength' => 10,
+    'language' => Helper::dataTableLangPtBR(),
+    'order' => [
+        [0, 'desc']
+    ],
+    'processing' => true,
+    'pagingType' => 'full_numbers', // Adiciona os botões de "Primeiro" e "Último"
+    'columns' => [
+        ['orderable' => false, 'visible' => false], // Esconder primeira coluna
+        ['orderable' => false],
+        ['orderable' => false],
+        ['orderable' => false],
+        ['orderable' => false], 
+        ['orderable' => false], 
+        ['orderable' => false], 
+        ['orderable' => false], 
+        ['orderable' => false]
+    ],
+];
+
+
 //Define as variaveis de sessão aqui na view por que depois de 2 redirect elas são destruidas
 $_SESSION['where_consulta_painelOperador'] = $empresa_os;
 $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
@@ -44,182 +78,70 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
 
 <x-adminlte-card title="Painel de Operações da Produção" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
     <!-- Tabela Principal da OS -->
-    <x-adminlte-datatable class="main-table" id="table1" :heads="$heads" :config="$config" head-theme="dark" theme="light" striped hoverable bordered compressed beautify with-buttons>
+    <x-adminlte-datatable id="tabela-principal" :heads="$headsPrincipal" :config="$configPrincipal" theme="light" striped hoverable beautify compressed with-buttons>
         @foreach ($dadosOS as $os)
             @php 
-                //Busca os dados dos Serviços relacionados a OS
-                $dadosTMO = DB::table('lancamento_srv_exe_tarefas')
-                ->where('exetrf_emp', $empresa_os)
-                ->where('exetrf_nos', $os->os_nos)
-                ->orderby('exetrf_req', 'asc')
-                ->orderby('exetrf_seq', 'asc')
-                ->get();
-
                 //Gera os Dados Sobre o Cliente e o Usuário da OS
                 $dadosCli =  DB::table('cadastro_clientes')->where('cliente_codigo', $os->os_cli)->get();
                 $dadosUsu =  DB::table('users')->where('usuario_codigo', $os->os_res_abr)->get();
             @endphp
-            <tr>
+            <tr id="row_{{$os->os_id}}" data-os="{{ $os->os_nos }}" data-empresa="{{ $os->os_emp }}">
+                <td>{{ $os->os_nos }}</td>
+                <td class='icone-row-sub'>
+                    <i class="fas fa-chevron-right fa-lg"></i>
+                </td>
                 <td>
                     <!-- Link para o Painel da OS -->
                     <a href="{{route('situacaoOS.carregaOS', ['empresa' => $os->os_emp, 'cliente' => $os->os_cli, 'nos' => $os->os_nos, 'estagioAPP' => 'PRINCIPAL'])}}" class="text-muted" title="Visualisar OS">
-                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <i class="fa-solid fa-magnifying-glass fa-lg" style="color: #74C0FC;"></i>
                     </a>
                 </td>
-                <td>{{ $os->os_cli.' - '.$dadosCli[0]->cliente_nome }}</td>
-                <td>
-                    <!-- Gera o Icone do Status da OS -->
-                    @if($os->os_sts == 'A')
-                    <i class="fa-solid fa-screwdriver-wrench fa-lg text-info mx-2"></i>
-                    @elseif($os->os_sts == 'F')
-                    <i class="fa-solid fa-thumbs-up fa-lg text-success mx-2"></i>
-                    @else
-                    <i class="fa-solid fa-ban fa-lg text-danger mx-2"></i>
-                    @endif
-                    <span class="mx-2">{{ $os->os_nos }}</span>
-                </td>
-                <td>{{ $os->os_res_abr.' - '.$dadosUsu[0]->name }}</td>
                 <td>
                     <!-- Gera o botão que abre o Modal de Agenda dos Serviços da OS -->
                     <button type="button" class="btn btn-xl" title="Agenda da OS" 
                         onclick="openModalAgendaSrvOS('{{ $os->os_emp }}', '{{ $os->os_nos }}')">
-                        <i class="fa-solid fa-clipboard-list fa-xl" style="color: #6610f2;"></i>
+                        <i class="fa-solid fa-clipboard-list fa-xl" style="color: #39cccc;"></i>
                     </button>
                 </td>
                 <td>
-                    <!-- Se Existe Tarefas Aprovadas na OS gera a tabela dos serviços -->
-                    @if(!empty($dadosTMO[0]))
-                    <table class="table nested-table">
-                        <thead>
-                            <tr>
-                                <th>Req.</th>
-                                <th>Setor</th>
-                                <th>Auxiliar</th>
-                                <th>Prestador</th>
-                                <th>TMO</th>
-                                <th>Situação</th>
-                                <th>Tempo</th>
-                                <th>Hr Ini</th>
-                                <th>Hr Fin</th>
-                                <th>Hr Real</th>
-                                <th>Saldo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($dadosTMO as $tmo)
-                                @php 
-                                    if(!empty($tmo->exetrf_prt)){
-                                        $dadosPrest =  DB::table('cadastro_prestadores')->where('prestador_codigo', $tmo->exetrf_prt)->get();
-                                        $prestador = $tmo->exetrf_prt.' - '.$dadosPrest[0]->prestador_nome;
-                                    }else{
-                                        $prestador = 'Não Alocado';
-                                    }
-                                @endphp
-                                <tr>
-                                    <td>{{ $tmo->exetrf_req }}</td>
-                                    <td>{{ $tmo->exetrf_set }}</td>
-                                    <td>
-                                        @php 
-                                            $cntAux = DB::table('lancamento_srv_prt_auxiliares')->where('prtaux_emp', $tmo->exetrf_emp)->where('prtaux_nos', $tmo->exetrf_nos)->where('prtaux_req', $tmo->exetrf_req)->where('prtaux_srv', $tmo->exetrf_seq)->count('prtaux_prt');
-                                        @endphp
-                                        <button type="button" class="btn btn-xl" title="Adicionar Novo Auxiliar" 
-                                            onclick="openModalAddAux('{{ $tmo->exetrf_emp }}', '{{ $tmo->exetrf_nos }}', '{{ $tmo->exetrf_req }}', '{{ $tmo->exetrf_seq }}')">
-                                            @if($cntAux == 0)
-                                            <i class="fa-solid fa-users-slash fa-lg" style="color: #808080;"></i>
-                                            @else
-                                            <i class="fa-solid fa-users fa-lg" style="color: #74C0FC;"></i>
-                                            @endif
-                                        </button>
-                                    </td>
-                                    <td style="display: flex; align-items: center;">
-                                        <button type="button" class="btn btn-xl" title="Adicionar Novo Auxiliar"
-                                            onclick="openModalAddChangePrt('{{ $tmo->exetrf_emp }}', '{{ $tmo->exetrf_nos }}', '{{ $tmo->exetrf_req }}', '{{ $tmo->exetrf_seq }}')">
-                                            @if(!empty($tmo->exetrf_prt))
-                                            <i class="fa-solid fa-user-pen fa-lg" style="color: #39cccc;"></i>
-                                            @else
-                                            <i class="fa-solid fa-user-plus fa-lg" style="color: #007bff;"></i>
-                                            @endif
-                                        </button>
-                                        <span style="flex-grow: 1; text-align: center;">{{ $prestador }}</span>
-                                    </td>
-                                    <td>{{$tmo->exetrf_tmo.' - '.$tmo->exetrf_desc}}</td>
-                                    <td>
-                                        @if($tmo->exetrf_sts == 'F')
-                                        <div class="btn-group" style="width: 100%;"style="width: 100%;">
-                                            <button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Finalizada <span class="caret"></span>
-                                            </button>	
-                                            <ul class="dropdown-menu">
-                                                <li><a href="#" class="execucao-tarefa" onclick="openModalReopenService('{{ $tmo->exetrf_emp }}', '{{ $tmo->exetrf_nos }}', '{{ $tmo->exetrf_req }}', '{{ $tmo->exetrf_seq }}')">Reabrir</a></li>
-                                            </ul>		
-                                        </div>
-                                        @elseif($tmo->exetrf_sts == 'C')
-                                        <div class="btn-group" style="width: 100%;"style="width: 100%;">
-                                            <button type="button" class="btn btn-danger btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Cancelada <span class="caret"></span>
-                                            </button>	
-                                            <ul class="dropdown-menu">
-                                                <li><a href="#" class="execucao-tarefa" onclick="openModalReopenService('{{ $tmo->exetrf_emp }}', '{{ $tmo->exetrf_nos }}', '{{ $tmo->exetrf_req }}', '{{ $tmo->exetrf_seq }}')">Reabrir</a></li>
-                                            </ul>		
-                                        </div>
-                                        @elseif($tmo->exetrf_sts == 'S')
-                                        <div class="btn-group" style="width: 100%;"style="width: 100%;">
-                                            <button type="button" class="btn btn-warning btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Suspensa <span class="caret"></span>
-                                            </button>	
-                                            <ul class="dropdown-menu">
-                                                <li><a href="#" class="execucao-tarefa" onclick="openModalReopenService('{{ $tmo->exetrf_emp }}', '{{ $tmo->exetrf_nos }}', '{{ $tmo->exetrf_req }}', '{{ $tmo->exetrf_seq }}')">Reabrir</a></li>
-                                                <li><a href="#" class="execucao-tarefa" onclick="openModalCancelService('{{ $tmo->exetrf_emp }}', '{{ $tmo->exetrf_nos }}', '{{ $tmo->exetrf_req }}', '{{ $tmo->exetrf_seq }}')">Cancelar</a></li>
-                                            </ul>		
-                                        </div>
-                                        @elseif($tmo->exetrf_sts == 'A')
-                                        <div class="btn-group" style="width: 100%;"style="width: 100%;">
-                                            <button type="button" class="btn btn-info btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Em Andamento <span class="caret"></span>
-                                            </button>	
-                                            <ul class="dropdown-menu">
-                                                <li><a href="#" class="execucao-tarefa" onclick="openModalFinishService('{{ $tmo->exetrf_emp }}', '{{ $tmo->exetrf_nos }}', '{{ $tmo->exetrf_req }}', '{{ $tmo->exetrf_seq }}')">Finalizar</a></li>
-                                                <li><a href="#" class="execucao-tarefa" onclick="openModalCancelService('{{ $tmo->exetrf_emp }}', '{{ $tmo->exetrf_nos }}', '{{ $tmo->exetrf_req }}', '{{ $tmo->exetrf_seq }}')">Cancelar</a></li>
-                                                <li><a href="#" class="execucao-tarefa" onclick="openModalSuspendService('{{ $tmo->exetrf_emp }}', '{{ $tmo->exetrf_nos }}', '{{ $tmo->exetrf_req }}', '{{ $tmo->exetrf_seq }}')">Suspender</a></li>
-                                            </ul>		
-                                        </div>
-                                        @elseif($tmo->exetrf_sts == 'E')
-                                        <div class="btn-group" style="width: 100%;"style="width: 100%;">
-                                            <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                Em Espera <span class="caret"></span>
-                                            </button>	
-                                            <ul class="dropdown-menu">
-                                                <li><a href="#" class="execucao-tarefa" onclick="openModalStartService('{{ $tmo->exetrf_emp }}', '{{ $tmo->exetrf_nos }}', '{{ $tmo->exetrf_req }}', '{{ $tmo->exetrf_seq }}')">Iniciar</a></li>
-                                                <li><a href="#" class="execucao-tarefa" onclick="openModalCancelService('{{ $tmo->exetrf_emp }}', '{{ $tmo->exetrf_nos }}', '{{ $tmo->exetrf_req }}', '{{ $tmo->exetrf_seq }}')">Cancelar</a></li>
-                                                <li><a href="#" class="execucao-tarefa" onclick="openModalSuspendService('{{ $tmo->exetrf_emp }}', '{{ $tmo->exetrf_nos }}', '{{ $tmo->exetrf_req }}', '{{ $tmo->exetrf_seq }}')">Suspender</a></li>
-                                            </ul>		
-                                        </div>
-                                        @endif
-                                    </td>
-                                    <td>{{ $tmo->exetrf_qhr }}</td>
-                                    <td>{{ $tmo->exetrf_sts != 'E' && !empty($tmo->exetrf_dt_ini_srv) ? Helper::formataHoraMinuto($tmo->exetrf_hr_ini_srv) : '' }}</td>
-                                    <td>{{ $tmo->exetrf_sts == 'F' ? Helper::formataHoraMinuto($tmo->exetrf_hr_fin_srv) : '' }}</td>
-                                    <td>{{ $tmo->exetrf_sts == 'F' ? $tmo->exetrf_qhr_real : '' }}</td>
-                                    <td>
-                                        @if($tmo->exetrf_sts == 'F')
-                                            @if($tmo->exetrf_qhr_saldo > 0)
-                                                <span class="text-primary">{{ $tmo->exetrf_qhr_saldo }} <i class="fa-solid fa-angles-right"></i></span>
-                                            @elseif($tmo->exetrf_qhr_saldo < 0)
-                                                <span class="text-danger">{{ $tmo->exetrf_qhr_saldo }} <i class="fa-solid fa-angles-left"></i></span>
-                                            @else
-                                                <span class="text-success">{{ $tmo->exetrf_qhr_saldo }} <i class="fa-solid fa-stop"></i></span>
-                                            @endif
-                                        @endif
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <!-- Gera o Icone do Status da OS -->
+                    @if($os->os_sts == 'A')
+                    <i class="fa-solid fa-screwdriver-wrench fa-xl text-info mx-2"></i>
+                    @elseif($os->os_sts == 'F')
+                    <i class="fa-solid fa-thumbs-up fa-xl text-success mx-2"></i>
                     @else
-                    OS Sem TMO Aprovadas
+                    <i class="fa-solid fa-ban fa-xl text-danger mx-2"></i>
                     @endif
+                    <span class="mx-2">{{ $os->os_nos }}</span>
                 </td>
-                <td> {{ !empty($os->os_dpe) ? Helper::formataData($os->os_dpe) : '' }} {{ !empty($os->os_hpe) ? Helper::formataHoraMinuto($os->os_hpe) : '' }}</td>
+                <td>{{ Helper::formataDataHora($os->os_dha) }}</td>
+                <td>{{ $os->os_cli.' - '.$dadosCli[0]->cliente_nome }}</td>
+                <td>{{ $os->os_res_abr.' - '.$dadosUsu[0]->name }}</td>
+                @php 
+                    if(!empty($os->os_dpe)){
+                        $dataHora = date('Y-m-d H:i:s');
+                        $prevEnt = 'S';
+
+                        if($os->os_sts == 'F' && $os->os_dpe.' '.Helper::formataHoraMinuto($os->os_hpe).':00' < $os->os_dhf){
+                            $cor = "danger";
+                        }elseif($os->os_sts == 'F' && $os->os_dpe.' '.Helper::formataHoraMinuto($os->os_hpe).':00' >= $os->os_dhf){
+                            $cor = "success";
+                        }elseif($os->os_sts == 'A' && $os->os_dpe.' '.Helper::formataHoraMinuto($os->os_hpe).':00' < $dataHora){
+                            $cor = "danger";
+                        }elseif($os->os_sts == 'A' && $os->os_dpe.' '.Helper::formataHoraMinuto($os->os_hpe).':00' >= $dataHora){
+                            $cor = "success";
+                        }else{
+                            $cor = "danger";
+                        }
+                    }else{
+                        $prevEnt = 'N';
+                    }
+                @endphp
+                @if($prevEnt == 'S')
+                <td><span class="badge badge-pill badge-{{$cor}} badge-custom">{{Helper::formataData($os->os_dpe).' '.Helper::formataHoraMinuto($os->os_hpe)}}</span></td>
+                @else 
+                <td></td>
+                @endif
             </tr>
         @endforeach
     </x-adminlte-datatable>
@@ -422,16 +344,113 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
 @stop
 
 @section('js')
-
 <!--
-|--------------------------------------------------------------------------
+|----------------------------------------------------------------------------------------------------
 | Eventos Iniciais da app
-|--------------------------------------------------------------------------
+|----------------------------------------------------------------------------------------------------
 -->
 <script>
     $(document).ready(function() { 
 
-        /* ******************** Evento de seleção dos Prestadores para Inclusão/Alteração ******************** */
+        /* *****
+        |----------------------------------------------------------------------------------------------------
+        | Eventos da Sub Consulta
+        |----------------------------------------------------------------------------------------------------
+        ***** */
+
+        // Função para buscar a view via AJAX
+        function format(tr) {
+
+            // Obtendo os parâmetros da OS e da empresa a partir do 'tr' (linha da tabela)
+            let os = $(tr).data('os');
+            let empresa = $(tr).data('empresa');
+
+            //Gerando a URL da rota da Sub Consulta
+            var url = "{{ route('painelOperacao.carregarDadosSubConsultaPainelOperador', [':emp',':os']) }}";
+            url = url.replace(':os', os);
+            url = url.replace(':emp', empresa);
+
+
+            // Evento AJAX para buscar o conteúdo da view através da rota
+            return $.ajax({
+                url: url, 
+                type: 'GET',
+                data: {
+                    empresa: empresa,
+                    os: os
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Adiciona o token CSRF
+                },
+                success: function(response) {
+                    
+                    return response;
+                },
+                error: function(xhr) {
+
+                    return 'Erro ao buscar detalhes da OS.';
+                }
+            });
+        }
+
+        //Array com os dados da linha
+        const detailRows = [];
+
+        // Assumindo que a tabela já está inicializada
+        var table = $('#tabela-principal').DataTable();
+
+        // Event listener para expandir/recolher as linhas
+        $('#tabela-principal').on('click', 'tbody td.icone-row-sub', function (event) {
+            
+            let tr = $(this).closest('tr'); // Use jQuery para selecionar o 'tr'
+            let row = table.row(tr);
+            let icon = $(this).find('i'); // Buscando o ícone
+
+            if (row.child.isShown()) {
+
+                // Ocultar a linha filha
+                tr.removeClass('details');
+                row.child.hide();
+                icon.removeClass('fa-chevron-down').addClass('fa-chevron-right'); // Ícone de "fechado"
+
+                // Remover do array 'detailRows'
+                detailRows.splice(detailRows.indexOf(tr.attr('id')), 1);
+
+            } else {
+
+                // Mostrar a linha filha com o conteúdo da view via AJAX
+                format(tr).done(function(response) {
+
+                    tr.addClass('details');
+                    row.child(response).show();
+                    icon.removeClass('fa-chevron-right').addClass('fa-chevron-down'); // Ícone de "aberto"
+                });
+
+                // Adicionar ao array 'detailRows'
+                if (detailRows.indexOf(tr.attr('id')) === -1) {
+
+                    detailRows.push(tr.attr('id'));
+                }
+            }
+        });
+
+        // Em cada 'draw', mostre novamente as linhas filhas que estavam abertas
+        $('#tabela-principal').on('draw', () => {
+
+            detailRows.forEach((id) => {
+                let el = document.querySelector('#' + id + ' td.icone-row-sub');
+                if (el) {
+                    el.dispatchEvent(new Event('click', { bubbles: true }));
+                }
+            });
+        });
+        /* ------------------------------ Final dos Eventos da Sub Consulta ------------------------------ */
+
+        /* *****
+        |----------------------------------------------------------------------------------------------------
+        | Evento de seleção dos Prestadores para Inclusão/Alteração
+        |----------------------------------------------------------------------------------------------------
+        ***** */
 
         // Gera o submit enviando os dados do prestador selecionado
         document.getElementById('addChangePrtForm').addEventListener('submit', function (e) {
@@ -458,7 +477,11 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
             this.submit();
         });
 
-        /* ******************** Evento de seleção dos Prestadores Auxiliares da TMO ******************** */
+        /* *****
+        |----------------------------------------------------------------------------------------------------
+        | Evento de seleção dos Prestadores Auxiliares da TMO
+        |----------------------------------------------------------------------------------------------------
+        ***** */
 
         // Gera o submit enviando os dados dos serviços que serão aprovados
         document.getElementById('addAuxForm').addEventListener('submit', function (e) {
@@ -483,17 +506,16 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
 
             this.submit();
         });
-
     });
 </script>
 
 <!--
-|--------------------------------------------------------------------------
-| Eventos De Abertura de Modal da app
-|--------------------------------------------------------------------------
+|----------------------------------------------------------------------------------------------------
+| Eventos das Aberturas dos Modais da app
+|----------------------------------------------------------------------------------------------------
 -->
 <script>
-    //Fazer requisição AJAX para carregar os dados do modal de Adição de Prestador Auxiliar na TMO
+    /* ******************** Fazer requisição AJAX para carregar os dados do modal de Adição de Prestador Auxiliar na TMO ******************** */
     function openModalAddAux(emp, nos, req, seq) {
 
         var url = "{{ route('painelOperacao.carregarDadosModalAddAxuTMO', [':emp',':nos',':req', ':seq']) }}";
@@ -575,7 +597,7 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
         });
     }
 
-    //Fazer requisição AJAX para carregar os dados do modal de agenda de serviços da OS
+    /* ******************** Fazer requisição AJAX para carregar os dados do modal de agenda de serviços da OS ******************** */
     function openModalAgendaSrvOS(emp, nos) {
 
         var url = "{{ route('painelOperacao.carregarDadosModalAgendaSrvOS', [':emp',':nos']) }}";
@@ -654,7 +676,7 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
         });
     }
 
-    //Fazer requisição AJAX para carregar os dados do modal de inicio da TMO
+    /* ******************** Fazer requisição AJAX para carregar os dados do modal de inicio da TMO ******************** */
     function openModalStartService(emp, nos, req, seq) {
 
         var url = "{{ route('painelOperacao.carregarDadosModalStartService', [':emp',':nos',':req', ':seq']) }}";
@@ -713,7 +735,7 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
         });
     }
 
-    //Fazer requisição AJAX para carregar os dados do modal de inicio da TMO
+    /* ******************** Fazer requisição AJAX para carregar os dados do modal de inicio da TMO ******************** */
     function openModalFinishService(emp, nos, req, seq) {
 
         var url = "{{ route('painelOperacao.carregarDadosModalFinishService', [':emp',':nos',':req', ':seq']) }}";
@@ -772,7 +794,7 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
         });
     }
 
-    //Fazer requisição AJAX para carregar os dados do modal de Adição/alteração de Prestador na TMO
+    /* ******************** Fazer requisição AJAX para carregar os dados do modal de Adição/alteração de Prestador na TMO ******************** */
     function openModalAddChangePrt(emp, nos, req, seq) {
 
         var url = "{{ route('painelOperacao.carregarDadosModalAddChangePrt', [':emp',':nos',':req', ':seq']) }}";
@@ -854,7 +876,7 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
         });
     }
 
-    //Fazer requisição AJAX para carregar os dados do modal de cancelar a TMO
+    /* ******************** Fazer requisição AJAX para carregar os dados do modal de cancelar a TMO ******************** */
     function openModalCancelService(emp, nos, req, seq) {
 
         var url = "{{ route('painelOperacao.carregarDadosModalCancelService', [':emp',':nos',':req', ':seq']) }}";
@@ -897,7 +919,7 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
         });
     }
 
-    //Fazer requisição AJAX para carregar os dados do modal de suspender a TMO
+    /* ******************** Fazer requisição AJAX para carregar os dados do modal de suspender a TMO ******************** */
     function openModalSuspendService(emp, nos, req, seq) {
 
         var url = "{{ route('painelOperacao.carregarDadosModalSuspendService', [':emp',':nos',':req', ':seq']) }}";
@@ -940,7 +962,7 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
         });
     }
 
-    //Fazer requisição AJAX para carregar os dados do modal de reabrir a TMO
+    /* ******************** Fazer requisição AJAX para carregar os dados do modal de reabrir a TMO ******************** */
     function openModalReopenService(emp, nos, req, seq) {
 
         var url = "{{ route('painelOperacao.carregarDadosModalReopenService', [':emp',':nos',':req', ':seq']) }}";
@@ -983,7 +1005,7 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
         });
     }
 
-    //Fazer requisição AJAX para carregar os dados do modal de finalizar a requisição
+    /* ******************** Fazer requisição AJAX para carregar os dados do modal de finalizar a requisição ******************** */
     function openModalFinishRequisicao(emp, nos, req) {
 
         var url = "{{ route('painelOperacao.carregarDadosModalFinishRequisicao', [':emp',':nos',':req']) }}";
@@ -1023,7 +1045,7 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
         });
     }
 
-    //Fazer requisição AJAX para carregar os dados do modal de finalizar a requisição
+    /* ******************** Fazer requisição AJAX para carregar os dados do modal de finalizar a requisição ******************** */
     function openModalReopenRequisicao(emp, nos, req) {
 
         var url = "{{ route('painelOperacao.carregarDadosModalReopenRequisicao', [':emp',':nos',':req']) }}";
@@ -1062,6 +1084,7 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
             }
         });
     }
+    /* ------------------------------ Final dos Eventos de Abertura dos Modais ------------------------------ */
 </script>
 
 <!--
@@ -1069,7 +1092,6 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
 | Eventos Validate da app
 |--------------------------------------------------------------------------
 -->
-
 <script>
 $(function () {
     $('#suspendServiceForm').validate({

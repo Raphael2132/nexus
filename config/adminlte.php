@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'Sistema Nexus',
+    'title' => 'Nexus ERP Cloud',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -65,7 +65,7 @@ return [
 
     'logo' => 'Nexus',
     'logo_img' => 'img/sistema/icone_nexus.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3 bg-white',
+    //'logo_img_class' => 'brand-image img-circle elevation-3 bg-white',
     'logo_img_class' => 'brand-image',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xl',
@@ -100,7 +100,10 @@ return [
     | Preloader Animation
     |--------------------------------------------------------------------------
     |
-    | Here you can change the preloader animation configuration.
+    | Here you can change the preloader animation configuration. Currently, two
+    | modes are supported: 'fullscreen' for a fullscreen preloader animation
+    | and 'cwrapper' to attach the preloader animation into the content-wrapper
+    | element and avoid overlapping it with the sidebars and the top navbar.
     |
     | For detailed instructions you can look the preloader section here:
     | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/Basic-Configuration
@@ -109,6 +112,7 @@ return [
 
     'preloader' => [
         'enabled' => true,
+        'mode' => 'fullscreen',
         'img' => [
             'path' => 'img/sistema/icone_nexus.png',
             'alt' => 'Nexus',
@@ -254,7 +258,6 @@ return [
     */
 
     'use_route_url' => false,
-    //'dashboard_url' => 'home', Por hora não vamos usar redirecionamento da Home pelo icone da empresa, se for usar tem que ser dinamico
     'dashboard_url' => 'home',
     'logout_url' => 'logout',
     'login_url' => 'login',
@@ -837,8 +840,9 @@ return [
             ],
         ],
         'Datatables' => [
-            'active' => true,
+            'active' => false,
             'files' => [
+                /*
                 [
                     'type' => 'js',
                     'asset' => true,
@@ -853,11 +857,31 @@ return [
                     'type' => 'css',
                     'asset' => true,
                     'location' => '//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css',
+                ],*/
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/datatables/js/jquery.dataTables.min.js',
                 ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/datatables/js/dataTables.bootstrap4.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/datatables/css/dataTables.bootstrap4.min.css',
+                ],/*
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '//cdn.datatables.net/2.1.8/css/dataTables.dataTables.css',
+                ],*/
             ],
         ],
         'DatatablesPlugins' => [
-            'active' => true,
+            'active' => false,
             'files' => [
                 [
                     'type' => 'js',

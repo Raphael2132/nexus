@@ -93,6 +93,9 @@ $config = [
 </x-adminlte-card>
 @stop
 
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
+
 @section('css')
 @stop
 
