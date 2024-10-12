@@ -218,8 +218,8 @@
                                     </x-slot>
                                 </x-adminlte-modal>
                                 <!-- Gera o icone da lupa que abre o modal -->
-                                <a class="text-muted" data-toggle="modal" title="Detalhes do Registro" data-target="#modalCustom_{{$empresa->empresa_codigo}}">
-                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                <a href="" class="text-muted" data-toggle="modal" title="Detalhes da Empresa" data-target="#modalCustom_{{$empresa->empresa_codigo}}">
+                                    <i class="fa-solid fa-magnifying-glass" style="color: #74C0FC;"></i>
                                 </a>
                             </nobr>
                         </td>

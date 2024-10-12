@@ -91,7 +91,7 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
                 </td>
                 <td>
                     <!-- Link para o Painel da OS -->
-                    <a href="{{route('situacaoOS.carregaOS', ['empresa' => $os->os_emp, 'cliente' => $os->os_cli, 'nos' => $os->os_nos, 'estagioAPP' => 'PRINCIPAL'])}}" class="text-muted" title="Visualisar OS">
+                    <a href="{{route('situacaoOS.carregaOS', ['empresa' => $os->os_emp, 'cliente' => $os->os_cli, 'nos' => $os->os_nos, 'estagioAPP' => 'PRINCIPAL'])}}" class="text-muted" title="Detalhes da OS">
                         <i class="fa-solid fa-magnifying-glass fa-lg" style="color: #74C0FC;"></i>
                     </a>
                 </td>

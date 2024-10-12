@@ -1,31 +1,209 @@
-/* ***** Tema do Card ***** */
+/*
+|--------------------------------------------------------------------------------
+| Sidebar Menu Ativo
+|--------------------------------------------------------------------------------
+|
+| Alterações no estilo original de menus ativos do Sidebar
+|
+*/
+
+/* ******************** Diminui o tamanho das setas do SubMenu ******************** */
+.nav-icon-chevron {
+    font-size: .75rem !important;
+}
+
+/* ******************** Centralizar o icone do Mini Sidebar - Bootstrap Icon ******************** */
+.bi-icon {
+    margin-left: .75rem !important;
+}
+
+/* ******************** Centralizar o icone do Mini Sidebar - Font Awesome Icon ******************** */
+.fa-icon {
+    margin-left: .45rem !important;
+}
+
+/* ******************** Alterações no eltilo dos Menus Ativos ******************** */
+.sidebar-nexus .nav-sidebar > .nav-item > .nav-link.active {
+    border-left: 3px solid #d7e0e9;
+}
+
+.sidebar-mini .main-sidebar .nav-link, .sidebar-mini-md .main-sidebar .nav-link, .sidebar-mini-xs .main-sidebar .nav-link {
+    width: auto !important;
+}
+
+.os-content {
+    padding: 0px !important;
+}
+
+.nav-pills .nav-link {
+    border-radius: 0rem !important;
+}
+
+[class*="sidebar-dark-"] .nav-sidebar > .nav-item > .nav-treeview {
+    border-left: 3px solid #d7e0e9;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.nav-sidebar .nav-item > .nav-link {
+    margin-bottom: 0rem !important;
+}
+
+[class*="sidebar-dark-"] .nav-treeview > .nav-item > .nav-link.active, [class*="sidebar-dark-"] .nav-treeview > .nav-item > .nav-link.active:hover, [class*="sidebar-dark-"] .nav-treeview > .nav-item > .nav-link.active:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #eaebef;
+}
+
+[class*="sidebar-dark-"] .nav-sidebar > .nav-item.menu-open > .nav-link, [class*="sidebar-dark-"] .nav-sidebar > .nav-item:hover > .nav-link, [class*="sidebar-dark-"] .nav-sidebar > .nav-item > .nav-link:focus {
+    border-left: 3px solid #d7e0e9;
+}
+
+.nav-sidebar .nav-header {
+    font-size: .8rem;
+    margin-top: 10px;
+}
+
+[class*="sidebar-dark-"] .nav-sidebar > .nav-item > .nav-link.active {
+    box-shadow: none !important;
+}
+
+/*
+|--------------------------------------------------------------------------------
+| Sidebar (Menu Vertical Esquerdo)
+|--------------------------------------------------------------------------------
+|
+| Alterações no estilo de tema das cores original do menu do administrador.
+|
+*/
+
+/* ******************** Ateração das cores do corpo do Tema (Sidebar) ******************** */
+.sidebar-nexus{
+    background: #1d2834 !important;
+    color: #fff !important;
+}
+
+.sidebar-nexus .nav-sidebar > .nav-item > .nav-link.active {
+    background-color: #008f8f !important;
+    color: #fff !important;
+}
+
+[class*="sidebar-dark"] .btn-sidebar, [class*="sidebar-dark"] .form-control-sidebar {
+    background: #1d2834 !important;
+    border: 1px solid #56606a !important;
+    color: #fff !important;
+}
+
+/* ******************** Alteração das cores do cabeçalho Tema do Cabeçalho (Sidebar) ******************** */
+.layout-navbar-fixed .wrapper .sidebar-nexus .brand-link:not([class*="navbar"]) {
+    background: #F8F8FF;
+    color: #008f8f;
+}
+
+[class*="sidebar-dark"] .brand-link {
+    border-bottom: 2px solid #008f8f;
+}
+
+/*
+|--------------------------------------------------------------------------------
+| Navbar (Menu Superior)
+|--------------------------------------------------------------------------------
+|
+| Alterações no estilo de tema das cores original do menu superior.
+|
+*/
+
+/* ******************** Ateração das cores dos icones (Navbar) ******************** */
+.navbar-light .navbar-nav .nav-link.active {
+    color: #00abab;
+}
+
+.navbar-light .navbar-nav .nav-link:hover {
+    color: #00abab;
+}
+
+/*
+|--------------------------------------------------------------------------------
+| Control Sidebar (Menu Vertical Direito)
+|--------------------------------------------------------------------------------
+|
+| Alterações no estilo de tema das cores original do menu direito.
+|
+*/
+
+/* ******************** Ateração das cores do Tema (Control Sidebar) ******************** */
+.control-sidebar-nexus {
+    background: #00abab;
+    color: #fff;
+}
+
+/*
+|--------------------------------------------------------------------------------
+| User Menu
+|--------------------------------------------------------------------------------
+|
+| Alteração das cores do tema do menu do usuário (Botão Sair Original).
+|
+*/
+
+/* ******************** Ateração das cores do Tema (User Menu) ******************** */
+.user-bg-nexus {
+    background: #020017 linear-gradient(180deg, #06023e, #020017) repeat-x !important;
+    color: #fff !important;
+}
+
+/*
+|--------------------------------------------------------------------------------
+| Card
+|--------------------------------------------------------------------------------
+|
+| Alterações no estilo de tema das cores dos cards.
+|
+*/
+
+/* ******************** Ateração das cores do Card Principal ******************** */
 .card-nexus {
     background-color: #06023e !important;
     color:#fff !important;
 }
 
+/* ******************** Ateração das cores do Card Outline ******************** */
 .card-outline-nexus {
     border-top: 3px solid #06023e !important;
     color: #06023e !important;
 }
 
-/* ***** Tema do Card com Tabs ***** */
+/* ******************** Ateração das cores do Card Tabs ******************** */
 .card-nexus .nav-tabs .nav-item .nav-link:not(.active) {
     color: #fff;
 }
 
-/* ***** Tema do Callout ***** */
+/*
+|--------------------------------------------------------------------------------
+| Callout
+|--------------------------------------------------------------------------------
+|
+| Alterações no estilo de tema das cores dos callouts.
+|
+*/
+
+/* ******************** Ateração das cores do Callout ******************** */
 .callout-nexus {
     border-left-color: #06023e;
 }
 
-.callout-nexus h5,
-.callout-nexus h5 i {
+.callout-nexus h5, .callout-nexus h5 i {
     color: #06023e;
 }
 
+/*
+|--------------------------------------------------------------------------------
+| Modal
+|--------------------------------------------------------------------------------
+|
+| Alterações no estilo de tema das cores dos modais.
+|
+*/
 
-/* ***** Tema do Modal ***** */
+/* ******************** Ateração das cores do Modal ******************** */
 .bg-modal-nexus {
     background-color: #06023e;
     color: #fff;
@@ -41,7 +219,16 @@
     border-color: #fff; /* Cor da borda do botão collapsible e maximizable no hover */
 }
 
-/* ***** Tema dos Botões ***** */
+/*
+|--------------------------------------------------------------------------------
+| Button
+|--------------------------------------------------------------------------------
+|
+| Alterações no estilo de tema das cores dos botões.
+|
+*/
+
+/* ******************** Ateração das cores dos Botões do sistema ******************** */
 .btn-nexus {
     color: #fff !important;
     background-color: #00abab !important;
@@ -66,55 +253,16 @@
     color: #fff !important;
 }
 
-/* ***** Tema do Sidebar (Barra Menu Vertical Esquerdo) ***** */
-.sidebar-nexus{
-    background: #020017 linear-gradient(180deg, #06023e, #020017) repeat-x !important;
-    color: #fff !important;
-}
+/*
+|--------------------------------------------------------------------------------
+| iCheck
+|--------------------------------------------------------------------------------
+|
+| Alterações no estilo de tema das cores dos botões iCheck.
+|
+*/
 
-.sidebar-nexus .nav-sidebar > .nav-item > .nav-link.active {
-    background-color: #008f8f !important;
-    color: #fff !important;
-}
-
-[class*="sidebar-dark"] .btn-sidebar, [class*="sidebar-dark"] .form-control-sidebar {
-    background: #020017 linear-gradient(180deg, #06023e, #020017) repeat-x !important;
-    border: 1px solid #56606a !important;
-    color: #fff !important;
-}
-
-/* ***** Tema do Sidebar (Cabeçalho) ***** */
-.layout-navbar-fixed .wrapper .sidebar-nexus .brand-link:not([class*="navbar"]) {
-    background: #F8F8FF;
-    color: #008f8f;
-}
-
-[class*="sidebar-dark"] .brand-link {
-    border-bottom: 2px solid #008f8f;
-}
-
-/* ***** Tema do Navbar ***** */
-.navbar-light .navbar-nav .nav-link.active {
-    color: #00abab;
-}
-
-.navbar-light .navbar-nav .nav-link:hover {
-    color: #00abab;
-}
-
-/* ***** Tema do Control Sidebar (Sidebar Direito) ***** */
-.control-sidebar-nexus {
-    background: #00abab;
-    color: #fff;
-}
-
-/* ***** Tema do User Menu (Botão de Sair do Sistema) ***** */
-.user-bg-nexus {
-    background: #020017 linear-gradient(180deg, #06023e, #020017) repeat-x !important;
-    color: #fff !important;
-}
-
-/* iCheck Customizando a cor do rádio e do rótulo */
+/* ******************** iCheck Customizando a cor do rádio e do rótulo ******************** */
 .icheck-nexus input[type="radio"]:checked + label::before {
     background-color: #00abab; /* Cor de fundo quando selecionado */
     border-color: #00abab; /* Cor da borda quando selecionado */
@@ -124,27 +272,46 @@
     border-color: #00abab; /* Cor da borda padrão */
 }
 
-/* ***** Tabelas customizadas ***** */
+/*
+|--------------------------------------------------------------------------------
+| Table
+|--------------------------------------------------------------------------------
+|
+| Alterações no estilo de tema das cores das tabelas.
+|
+*/
+
+/* ******************** Header de Tabelas customizadas ******************** */
 .tabela-custom-nexus th {
     background-color: #06023e;
     color: #fff;
 }
 
-/* ***** Background customizado ***** */
+/*
+|--------------------------------------------------------------------------------
+| Background
+|--------------------------------------------------------------------------------
+|
+| Tema de fundo custromizado para o sistema.
+|
+*/
+
+/* ******************** Background customizado ******************** */
 .bg-nexus {
     background-color: #06023e;
     color: #fff;
 }
 
-/* ***** Tema dos Botões ***** */
-.btn-nexus {
-    color: #fff !important;
-    background-color: #00abab !important;
-    border-color: #00abab !important;
-    box-shadow: none !important;
-}
+/*
+|--------------------------------------------------------------------------------
+| x-slot
+|--------------------------------------------------------------------------------
+|
+| Alterações do tema do x-slot de campos input.
+|
+*/
 
-/* ***** Tema dos x-slot (prependSlot, appendSlot etc...) dos campos input ***** */
+/* ******************** Tema dos x-slot (prependSlot, appendSlot etc...) dos campos input ******************** */
 .x-slot-nexus {
     color: #fff !important;
     background-color: #00abab !important;

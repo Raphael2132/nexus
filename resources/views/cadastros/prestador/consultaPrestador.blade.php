@@ -27,7 +27,6 @@
 
 @php
 $heads = [
-    ['label' => '', 'no-export' => true, 'width' => 5],
     'Código',
     'Nome',
     'CPF',
@@ -40,7 +39,7 @@ $config = [
     'language' => Helper::dataTableLangPtBR(),
     'pagingType' => 'full_numbers',
     'order' => [[1, 'asc']],
-    'columns' => [['orderable' => false], null, null, null, null, ['orderable' => false]],
+    'columns' => [null, null, null, null, ['orderable' => false]],
 ];
 
 if($tipo == 'A'){
@@ -57,14 +56,6 @@ if($tipo == 'A'){
     <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
         @foreach ($prestadores as $prestador)
             <tr>
-                <td>
-                    <nobr class="d-flex justify-content-center">
-                        <!-- Gera o icone da lupa que abre o modal -->
-                        <a class="text-muted" data-toggle="modal" title="Visualisar Detalhes" data-target="#modalCustom_{{$prestador->prestador_codigo}}">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </a>
-                    </nobr>
-                </td>
                 @php 
                     if($prestador->prestador_status == 'A'){
                         $status = 'Ativo';

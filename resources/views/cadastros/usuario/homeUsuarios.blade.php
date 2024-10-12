@@ -291,8 +291,8 @@
                                     </x-slot>
                                 </x-adminlte-modal>
                                 <!-- Gera o icone da lupa que abre o modal -->
-                                <a class="text-muted" data-toggle="modal" title="Visualisar Detalhes" data-target="#modalCustom_{{$usuario->usuario_codigo}}">
-                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                <a href="" class="text-muted" data-toggle="modal" title="Detalhes do Usuário" data-target="#modalCustom_{{$usuario->usuario_codigo}}">
+                                    <i class="fa-solid fa-magnifying-glass" style="color: #74C0FC;"></i>
                                 </a>
                             </nobr>
                         </td>   

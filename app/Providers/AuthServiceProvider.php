@@ -24,9 +24,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         //Verifica se é usuario MASTER
         Gate::define('is_master', function ($user) {
-            return $user->usuario_codigo == 'MASTER'
-                        ? true
-                        : false;
+            return $user->usuario_codigo == 'MASTER' ? true : false;
         });
 
         //Verifica se o usuario acessa os Parametros Gerais do Sistema
@@ -34,17 +32,28 @@ class AuthServiceProvider extends ServiceProvider
             if ($user->usuario_codigo == 'MASTER') {
                 return true;
             }else{
-                return $user->usuario_acesso_pararametros == 'S'
-                            ? true
-                            : false;
+                return $user->usuario_acesso_pararametros == 'S' ? true : false;
             }
         });
 
         //Verifica se o Usuario acessa os Cadastros do Sistema
         Gate::define('is_register', function ($user) {
-            return $user->usuario_acesso_cadastros == 'S'
-                        ? true
-                        : false;
+            return $user->usuario_acesso_cadastros == 'S' ? true : false;
+        });
+
+        //Verifica se a Empresa cadastra Prestadores
+        Gate::define('is_register_prestador', function ($user) {
+            if($user->can('is_register')){
+                $modulos = ParametrosSisModulo::where('modulo_empresa_codigo', $user->usuario_empresa)->first();
+
+                if($modulos->modulo_servico == 'S'){
+                    return true;
+                }else{
+                    return false;
+                }
+            }else{
+                return false;
+            }
         });
 
         //Verifica se a empresa vai acessar os Parâmetros de Faturamento

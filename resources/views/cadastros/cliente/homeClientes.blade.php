@@ -32,17 +32,87 @@
         </div>
     </div>
  
-    <x-adminlte-card title="Novos Clientes nos Últimos Seis Meses" icon="fa-solid fa-chart-column" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
-        <div class="chart">
-            <canvas id="stackedBarChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+    <div class="row">
+        <div class="col-md-6"> 
+            <x-adminlte-card title="Novos Clientes nos Últimos Seis Meses" icon="fa-solid fa-chart-column" theme="" theme-mode="outline" header-class="card-outline-nexus" collapsible maximizable>
+                <div class="chart">
+                    <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+            </x-adminlte-card>
         </div>
-    </x-adminlte-card>
+        <div class="col-md-6"> 
+            <x-adminlte-card title="Clientes dos Últimos Seis Meses" icon="" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
+                @php
+                    $heads = [
+                        'Data Cadastro',
+                        'Cliente',
+                        'Tipo',
+                        'CPF / CNPJ',
+                        'Email',
+                        ['label' => 'Opção', 'no-export' => true, 'width' => 5],
+                    ];
+                    
+                    $config = [
+                        'lengthMenu' => [ 5, 10, 25, 50],
+                        'pageLength' => 5,
+                        'language' => Helper::dataTableLangPtBR(),
+                        'pagingType' => 'full_numbers',
+                        'order' => [[0, 'desc'],[1, 'asc']],
+                        'columns' => [
+                            null, 
+                            null, 
+                            null, 
+                            null, 
+                            null, 
+                            ['orderable' => false]
+                        ],
+                    ];
+                @endphp
+                <x-adminlte-datatable id="tabela-principal" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
+                    @foreach ($clientes as $cliente)
+                        @php
+                            if($cliente->cliente_tipo_cadastro == 'F'){
+                                $tipo = "Fornecedor";
+                            }else{
+                                $tipo = "Cliente";
+                            }
+
+                            if($cliente->cliente_tipo_pessoa == 'F'){
+                                $cpfCnpj = Helper::mascaraCPF($cliente->cliente_cpf_cnpj);
+                            }else{
+                                $cpfCnpj = Helper::mascaraCNPJ($cliente->cliente_cpf_cnpj);
+                            }
+                        @endphp
+                        <tr>
+                            <td>{{Helper::formataData($cliente->cliente_dt_inc)}}</td>
+                            <td>{{$cliente->cliente_codigo.' - '.$cliente->cliente_nome}}</td>
+                            <td>{{$tipo}}</td>
+                            <td>{{$cpfCnpj}}</td>
+                            <td>{{$cliente->cliente_email}}</td>
+                            <td>
+                                <nobr class="d-flex justify-content-center">
+                                    <form method="get" action="" style="float: left;">
+                                        @csrf 
+                                        <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Editar Registro" value="Edit" type="submit">
+                                            <i class="fa fa-lg fa-fw fa-pen"></i>
+                                        </button>
+                                    </form>
+                                </nobr>
+                            </td>
+                        </tr>
+                    @endforeach
+                </x-adminlte-datatable>
+            </x-adminlte-card>
+        </div>
+    </div>
 
 @stop
 
 <!-- Chamada dos Plugins usados na app -->  
 @section('plugins.Chartjs', true)
 @section('plugins.Sweetalert2', true)
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 @stop
@@ -57,9 +127,9 @@
         */
 
         //---------------------
-        //- STACKED BAR CHART -
+        // BAR CHART -
         //---------------------
-        var stackedBarChartData = {
+        var barChartData = {
         labels  : {!! $meses !!},
         datasets: [
             {
@@ -86,25 +156,34 @@
             },
         ]}
 
-        var stackedBarChartCanvas = $('#stackedBarChart').get(0).getContext('2d')
+        var barChartCanvas = $('#barChart').get(0).getContext('2d')
 
-        var stackedBarChartOptions = {
+        var barChartOptions = {
         responsive              : true,
         maintainAspectRatio     : false,
         scales: {
             xAxes: [{
-            stacked: true,
+            stacked: false,
             }],
             yAxes: [{
-            stacked: true
+                stacked: false,
+                ticks: {
+                    beginAtZero: true, // Começar do zero
+                    //stepSize: 1,       // Define o incremento
+                    callback: function(value) {
+                        if (value % 1 === 0) {
+                            return value; // Exibir apenas números inteiros
+                        }
+                    }
+                }
             }]
         }
         }
 
-        new Chart(stackedBarChartCanvas, {
+        new Chart(barChartCanvas, {
         type: 'bar',
-        data: stackedBarChartData,
-        options: stackedBarChartOptions
+        data: barChartData,
+        options: barChartOptions
         })
     })
 </script>

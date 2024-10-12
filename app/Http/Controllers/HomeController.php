@@ -205,35 +205,55 @@ class HomeController extends Controller
         $grafJ = "[";
         $grafF = "[";
 
-        //Monta as variaveis para o JS dos ultimos seis meses do gráfico
-        for ($i = 6; $i > 1; $i--) {
+        // Monta as variáveis para o JS dos últimos seis meses do gráfico
+        for ($i = 5; $i >= 0; $i--) { // Ajustado para pegar 6 meses incluindo o mês atual
             $dt_ini = date('Y-m-01', strtotime("-$i month"));
             $dt_fin = date("Y-m-t", strtotime("-$i month"));
             $mes_nom = ucfirst(strftime("%B", strtotime($dt_ini)));
 
+            // Adiciona o nome do mês no array
             $meses .= "'".$mes_nom."',";
 
-            $cntJ = $this->cliente->where('cliente_tipo_pessoa','=','J')->whereBetween('cliente_dt_inc', [$dt_ini, $dt_fin])->count();
+            // Conta os clientes do tipo "J" para o mês
+            $cntJ = $this->cliente->where('cliente_tipo_pessoa', '=', 'J')
+                                ->whereBetween('cliente_dt_inc', [$dt_ini, $dt_fin])
+                                ->count();
             $grafJ .= $cntJ.",";
 
-            $cntF = $this->cliente->where('cliente_tipo_pessoa','=','F')->whereBetween('cliente_dt_inc', [$dt_ini, $dt_fin])->count();
+            // Conta os clientes do tipo "F" para o mês
+            $cntF = $this->cliente->where('cliente_tipo_pessoa', '=', 'F')
+                                ->whereBetween('cliente_dt_inc', [$dt_ini, $dt_fin])
+                                ->count();
             $grafF .= $cntF.",";
         }
 
-        //Pega o mês atual para o gráfico js
-        $dt_ini = date('Y-m-01');
-        $dt_fin = date("Y-m-t");
-        $mes_nom = ucfirst(strftime("%B", strtotime($dt_ini)));
+        // Fecha os arrays de meses e gráficos
+        $meses = rtrim($meses, ',') . "]"; // Remove a última vírgula e fecha o array
+        $grafJ = rtrim($grafJ, ',') . "]"; // Remove a última vírgula e fecha o array
+        $grafF = rtrim($grafF, ',') . "]"; // Remove a última vírgula e fecha o array
 
-        $meses .= "'".$mes_nom."']";
-        
-        $cntJ = $this->cliente->where('cliente_tipo_pessoa','=','J')->whereBetween('cliente_dt_inc', [$dt_ini, $dt_fin])->count();
-        $grafJ .= $cntJ."]";
+        //Monta a data do mês atual e dos ultimos 5 mês 
+        // Data atual
+        $dataIni = new \DateTime();
+        // Subtrair 6 meses
+        $dataIni->modify('-5 months');
+        // Definir o dia como 01
+        $dataIni->modify('first day of this month');
+        $dataFinal = date('Y-m-d');
+        // Formatar as datas no formato correto (Y-m-d)
+        $dataIni = $dataIni->format('Y-m-d');
 
-        $cntF = $this->cliente->where('cliente_tipo_pessoa','=','F')->whereBetween('cliente_dt_inc', [$dt_ini, $dt_fin])->count();
-        $grafF .= $cntF."]";
+        $clientes = $this->cliente->whereBetween('cliente_dt_inc', [$dataIni, $dataFinal])->get();
       
-        return view('/cadastros/cliente/homeClientes',['cliJuridico'=>$cliJuridico,'cliFisico'=>$cliFisico,'cliTot'=>$cliTot,'meses'=>$meses,'grafJ'=>$grafJ,'grafF'=>$grafF]);
+        return view('/cadastros/cliente/homeClientes',[
+            'cliJuridico'=>$cliJuridico,
+            'cliFisico'=>$cliFisico,
+            'cliTot'=>$cliTot,
+            'meses'=>$meses,
+            'grafJ'=>$grafJ,
+            'grafF'=>$grafF,
+            'clientes'=>$clientes
+        ]);
     }
 
     /*

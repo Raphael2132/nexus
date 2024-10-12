@@ -65,7 +65,7 @@
             <x-adminlte-options :options="$array_opt" selected="{{ session('glo_empresa_exibicao_home') }}"/>
         </x-adminlte-select>
 
-        <x-adminlte-select name="tipoHome" id="tipoHome" label="Tipo da Home" igroup-size="sm">
+        <x-adminlte-select name="tipoHome" id="tipoHome" label="Tipo da Página Inicial" igroup-size="sm">
             <x-adminlte-options :options="$array_plano" selected="{{ session('glo_tipo_home') }}"/>
         </x-adminlte-select>
     </div>

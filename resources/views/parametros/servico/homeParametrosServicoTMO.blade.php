@@ -199,8 +199,8 @@
                                 </x-slot>
                             </x-adminlte-modal>
                             <!-- Gera o icone da lupa que abre o modal -->
-                            <a class="text-muted" data-toggle="modal" title="Detalhes da TMO" data-target="#modalCustom_{{$tarefa->tmo_id}}">
-                                <i class="fa-solid fa-magnifying-glass"></i>
+                            <a href="" class="text-muted" data-toggle="modal" title="Detalhes da TMO" data-target="#modalCustom_{{$tarefa->tmo_id}}">
+                                <i class="fa-solid fa-magnifying-glass" style="color: #74C0FC;"></i>
                             </a>
                         </nobr>
                     </td>
