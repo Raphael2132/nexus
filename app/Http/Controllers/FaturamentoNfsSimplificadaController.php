@@ -30,6 +30,8 @@ class FaturamentoNfsSimplificadaController extends Controller
 
         if($dadosNfsSimp['enderecoLocSrv'] == 3){
 
+            $dadosPais = DB::table('ibge_paises')->where('ibge_pais_codigo', $dadosNfsSimp['pais'])->first();
+
             $enderecoLocSrv = 'O';
             $nfssim_loc_srv_cep = Helper::limpaCEP($dadosNfsSimp['cep']);
             $nfssim_loc_srv_logradouro = $dadosNfsSimp['logradouro'];
@@ -38,8 +40,9 @@ class FaturamentoNfsSimplificadaController extends Controller
             $nfssim_loc_srv_bairro = $dadosNfsSimp['bairro'];
             $nfssim_loc_srv_cidade = $dadosNfsSimp['cidade'];
             $nfssim_loc_srv_uf = $dadosNfsSimp['uf'];
-            $nfssim_loc_srv_pais = $dadosNfsSimp['pais'];
+            $nfssim_loc_srv_pais = $dadosPais->ibge_pais_nome;
             $nfssim_loc_srv_ibge_cod_mun = $dadosNfsSimp['ibgeCodMun'];
+            $nfssim_loc_srv_ibge_cod_pais = $dadosNfsSimp['pais'];
 
         }elseif($dadosNfsSimp['enderecoLocSrv'] == 2){
 
@@ -53,6 +56,7 @@ class FaturamentoNfsSimplificadaController extends Controller
             $nfssim_loc_srv_uf = null;
             $nfssim_loc_srv_pais = null;
             $nfssim_loc_srv_ibge_cod_mun = null;
+            $nfssim_loc_srv_ibge_cod_pais = null;
 
         }else{
 
@@ -66,6 +70,7 @@ class FaturamentoNfsSimplificadaController extends Controller
             $nfssim_loc_srv_uf = null;
             $nfssim_loc_srv_pais = null;
             $nfssim_loc_srv_ibge_cod_mun = null;
+            $nfssim_loc_srv_ibge_cod_pais = null;
         }
 
         $inssRet = empty($dadosNfsSimp['inssRet']) ? 0.00 : Helper::limpaValorMonetario($dadosNfsSimp['inssRet']);
@@ -104,6 +109,7 @@ class FaturamentoNfsSimplificadaController extends Controller
             'nfssim_loc_srv_uf' => $nfssim_loc_srv_uf,
             'nfssim_loc_srv_pais' => $nfssim_loc_srv_pais,
             'nfssim_loc_srv_ibge_cod_mun' => $nfssim_loc_srv_ibge_cod_mun,
+            'nfssim_loc_srv_ibge_cod_pais' => $nfssim_loc_srv_ibge_cod_pais,
             'nfssim_usu_emi' => $usuario,
             'nfssim_obs' => $dadosNfsSimp['obsNFS']  
         ];

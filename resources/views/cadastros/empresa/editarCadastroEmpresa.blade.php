@@ -417,6 +417,17 @@
                                                     $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
                                                 }
                                                 $array_opt = array_combine($new_array1, $new_array2);
+
+                                                $dadosPais = DB::table('ibge_paises')->orderby('ibge_pais_nome')->get();
+
+                                                $new_array_pais =[];
+                                                $new_array_pais2 =[];
+
+                                                foreach ($dadosPais as $pais) {
+                                                    $new_array_pais[] = $pais->ibge_pais_codigo;
+                                                    $new_array_pais2[] = $pais->ibge_pais_nome;
+                                                }
+                                                $array_opt_pais = array_combine($new_array_pais, $new_array_pais2);
                                             @endphp
 
                                             <!-- Estado -->
@@ -428,11 +439,12 @@
                                             </x-adminlte-select>
 
                                             <!-- Pais -->
-                                            <x-adminlte-input name="pais" type="text" fgroup-class="col-md-3">
+                                            <x-adminlte-select name="pais" fgroup-class="col-md-3">
                                                 <x-slot name="label">
-                                                    Pais <span style="color:red;">*</span>
+                                                    País <span style="color:red;">*</span>
                                                 </x-slot>
-                                            </x-adminlte-input>
+                                                <x-adminlte-options :options="$array_opt_pais" empty-option="Selecione..."/>
+                                            </x-adminlte-select>
                                         </div>
                                         <!-- Criação dos botões do Modal -->  
                                         <x-slot name="footerSlot">

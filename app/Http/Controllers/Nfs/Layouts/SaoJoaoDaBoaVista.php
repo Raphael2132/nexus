@@ -46,7 +46,9 @@ class SaoJoaoDaBoaVista{
         //TAG REFERENTE AO LOCAL DE PRESTAÇÃO DO SERVIÇO
         $xmlServico = $dom->createElement("dadosServico");
 
-        if(!empty($cabecalho->locServicoPais)){
+        $paisServico = $cabecalho->locServicoPais;
+
+        if(!empty($paisServico)){
             if(strtoupper($cabecalho->locServicoPais) == 'BRASIL'){
                 $cidadeSrv = $cabecalho->locServicoCidade;
                 $paisSrv = $cabecalho->locServicoPais;
@@ -61,7 +63,7 @@ class SaoJoaoDaBoaVista{
             $paisSrv = 'BRASIL';
             $ufSrv = $cabecalho->locServicoUF;
         }
-
+        
         $xmlServico->appendChild($dom->createElement("bairro", Helper::removerAcento($cabecalho->locServicoBairro,'S')));
         $xmlServico->appendChild($dom->createElement("cep", Helper::mascaraCEP($cabecalho->locServicoCep)));
         $xmlServico->appendChild($dom->createElement("cidade", Helper::removerAcento($cidadeSrv,'S')));
@@ -74,7 +76,9 @@ class SaoJoaoDaBoaVista{
         //TAG REFERENTE AOS DADOS DO TOMADOR
         $xmlTomador = $dom->createElement("dadosTomador");
 
-        if(!empty($tomador->pais)){
+        $paisTomador = $tomador->pais;
+
+        if(!empty($paisTomador)){
             if(strtoupper($tomador->pais) == 'BRASIL'){
                 $cidadeTom = $tomador->cidade;
                 $paisTom = $tomador->pais;

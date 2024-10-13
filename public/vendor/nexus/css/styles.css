@@ -66,6 +66,15 @@
     box-shadow: none !important;
 }
 
+/* Colocar borda baixa no Header
+.nav-header {
+    border-bottom: 1px solid #4f5962;
+    margin-bottom: 10px;
+    width: 90%;
+    margin-left: 10px;
+}
+*/
+
 /*
 |--------------------------------------------------------------------------------
 | Sidebar (Menu Vertical Esquerdo)

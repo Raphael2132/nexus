@@ -49,6 +49,7 @@ class LancamentoSrvOs extends Model
         'os_loc_srv_cidade',
         'os_loc_srv_uf',
         'os_loc_srv_pais',
-        'os_loc_srv_ibge_cod_mun'
+        'os_loc_srv_ibge_cod_mun',
+        'os_loc_srv_ibge_cod_pais'
     ];
 }

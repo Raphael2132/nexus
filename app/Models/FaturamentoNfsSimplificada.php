@@ -41,6 +41,7 @@ class FaturamentoNfsSimplificada extends Model
         'nfssim_loc_srv_uf',
         'nfssim_loc_srv_pais',
         'nfssim_loc_srv_ibge_cod_mun',
+        'nfssim_loc_srv_ibge_cod_pais',
         'nfssim_usu_emi',
         'nfssim_obs'
     ];

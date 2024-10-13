@@ -275,10 +275,10 @@ class Helper
             "zeroRecords" => "Nenhum registro encontrado",
             "search" => "Pesquisar",
             "paginate" => [
-                "next" => "Próximo",
-                "previous" => "Anterior",
-                "first" => "Primeiro",
-                "last" => "Último"
+                "first" => "<i class='fas fa-angle-double-left'></i>",
+                "previous" => "<i class='fas fa-angle-left'></i>",
+                "next" => "<i class='fas fa-angle-right'></i>",
+                "last" => "<i class='fas fa-angle-double-right'></i>"
             ],
             "aria" => [
                 "sortAscending" => " => Ordenar colunas de forma ascendente",

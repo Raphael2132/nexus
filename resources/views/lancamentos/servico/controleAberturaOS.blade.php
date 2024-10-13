@@ -326,7 +326,7 @@
                                 </div>
                                 <div class="row">
                                     <!-- Logradouro -->
-                                    <x-adminlte-input name="logradouro" type="text" label="Logradouro" fgroup-class="col-md-5">
+                                    <x-adminlte-input name="logradouro" type="text" label="Logradouro" fgroup-class="col-md-8">
                                         <x-slot name="prependSlot">
                                             <div class="input-group-text x-slot-nexus">
                                                 <i class="fa-solid fa-address-book"></i>
@@ -335,23 +335,24 @@
                                     </x-adminlte-input>
 
                                     <!-- Numero -->
-                                    <x-adminlte-input name="numero" type="text" label="Número" fgroup-class="col-md-2">
+                                    <x-adminlte-input name="numero" type="text" label="Número" fgroup-class="col-md-4">
                                         <x-slot name="prependSlot">
                                             <div class="input-group-text x-slot-nexus">
                                                 <i class="fa-solid fa-hashtag"></i>
                                             </div>
                                         </x-slot>
                                     </x-adminlte-input>
-
-                                    <!-- Complemento -->
-                                    <x-adminlte-input name="complemento" type="text" label="Complemento" fgroup-class="col-md-5"></x-adminlte-input>
                                 </div>
                                 <div class="row">
-                                    <!-- Bairro -->
-                                    <x-adminlte-input name="bairro" type="text" label="Bairro" fgroup-class="col-md-3"></x-adminlte-input>
+                                    <!-- Complemento -->
+                                    <x-adminlte-input name="complemento" type="text" label="Complemento" fgroup-class="col-md-6"></x-adminlte-input>
 
+                                    <!-- Bairro -->
+                                    <x-adminlte-input name="bairro" type="text" label="Bairro" fgroup-class="col-md-6"></x-adminlte-input>
+                                </div>
+                                <div class="row">
                                     <!-- Cidade -->
-                                    <x-adminlte-input name="cidade" type="text" label="Cidade" fgroup-class="col-md-4">
+                                    <x-adminlte-input name="cidade" type="text" label="Cidade" fgroup-class="col-md-6">
                                         <x-slot name="prependSlot">
                                             <div class="input-group-text x-slot-nexus">
                                                 <i class="fa-solid fa-city"></i>
@@ -370,6 +371,17 @@
                                             $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
                                         }
                                         $array_opt = array_combine($new_array1, $new_array2);
+
+                                        $dadosPais = DB::table('ibge_paises')->orderby('ibge_pais_nome')->get();
+
+                                        $new_array_pais =[];
+                                        $new_array_pais2 =[];
+
+                                        foreach ($dadosPais as $pais) {
+                                            $new_array_pais[] = $pais->ibge_pais_codigo;
+                                            $new_array_pais2[] = $pais->ibge_pais_nome;
+                                        }
+                                        $array_opt_pais = array_combine($new_array_pais, $new_array_pais2);
                                     @endphp
 
                                     <!-- Estado -->
@@ -378,7 +390,9 @@
                                     </x-adminlte-select>
 
                                     <!-- Pais -->
-                                    <x-adminlte-input name="pais" type="text" label="Pais" fgroup-class="col-md-2"></x-adminlte-input>
+                                    <x-adminlte-select name="pais" label="País" fgroup-class="col-md-3">
+                                        <x-adminlte-options :options="$array_opt_pais" empty-option="Selecione..."/>
+                                    </x-adminlte-select>
                                 </div>
                             </x-adminlte-callout>
                         </x-adminlte-callout>

@@ -96,6 +96,8 @@ class LancamentoSrvOsController extends Controller
 
         if($request->enderecoLocSrv == 3){
 
+            $dadosPais = DB::table('ibge_paises')->where('ibge_pais_codigo', $request->pais)->first();
+
             $enderecoLocSrv = 'O';
             $loc_srv_cep = Helper::limpaCEP($request->cep);
             $loc_srv_logradouro = $request->logradouro;
@@ -104,8 +106,9 @@ class LancamentoSrvOsController extends Controller
             $loc_srv_bairro = $request->bairro;
             $loc_srv_cidade = $request->cidade;
             $loc_srv_uf = $request->uf;
-            $loc_srv_pais = $request->pais;
+            $loc_srv_pais = $dadosPais->ibge_pais_nome;
             $loc_srv_ibge_cod_mun = $request->ibgeCodMun;
+            $loc_srv_ibge_cod_pais = $request->pais;
 
         }elseif($request->enderecoLocSrv == 2){
 
@@ -119,6 +122,7 @@ class LancamentoSrvOsController extends Controller
             $loc_srv_uf = null;
             $loc_srv_pais = null;
             $loc_srv_ibge_cod_mun = null;
+            $loc_srv_ibge_cod_pais = null;
 
         }else{
 
@@ -132,6 +136,7 @@ class LancamentoSrvOsController extends Controller
             $loc_srv_uf = null;
             $loc_srv_pais = null;
             $loc_srv_ibge_cod_mun = null;
+            $loc_srv_ibge_cod_pais = null;
         }
 
         $data_abertura = date('Y-m-d H:i:s');
@@ -183,7 +188,6 @@ class LancamentoSrvOsController extends Controller
         $numOS = $nextval;
 
         $dados = [
-
             'os_nos' => $numOS,
             'os_emp' => $empresa,
             'os_cli' => $cliente,
@@ -204,10 +208,11 @@ class LancamentoSrvOsController extends Controller
             'os_loc_srv_uf' => $loc_srv_uf,
             'os_loc_srv_pais' => $loc_srv_pais,
             'os_loc_srv_ibge_cod_mun' => $loc_srv_ibge_cod_mun,
+            'os_loc_srv_ibge_cod_pais' => $loc_srv_ibge_cod_pais,
             'os_cli_avs' => $parSrv->parsrv_enc_os_email,
         ];
         
-        $novaOS = LancamentoSrvOs::create($dados);
+        LancamentoSrvOs::create($dados);
 
         return redirect(route('situacaoOS.carregaOS', ['empresa' => $request->empresa, 'cliente' => $request->cliente, 'nos' => $numOS, 'estagioAPP' => 'PRINCIPAL']))->with('success', 'OS Aberta com sucesso!');
     }
@@ -401,6 +406,8 @@ class LancamentoSrvOsController extends Controller
 
         if($request->enderecoLocSrv == 3){
 
+            $dadosPais = DB::table('ibge_paises')->where('ibge_pais_codigo', $request->pais)->first();
+            
             $enderecoLocSrv = 'O';
             $loc_srv_cep = Helper::limpaCEP($request->cep);
             $loc_srv_logradouro = $request->logradouro;
@@ -409,8 +416,9 @@ class LancamentoSrvOsController extends Controller
             $loc_srv_bairro = $request->bairro;
             $loc_srv_cidade = $request->cidade;
             $loc_srv_uf = $request->uf;
-            $loc_srv_pais = $request->pais;
+            $loc_srv_pais = $dadosPais->ibge_pais_nome;
             $loc_srv_ibge_cod_mun = $request->ibgeCodMun;
+            $loc_srv_ibge_cod_pais = $request->pais;
 
         }elseif($request->enderecoLocSrv == 2){
 
@@ -424,6 +432,7 @@ class LancamentoSrvOsController extends Controller
             $loc_srv_uf = null;
             $loc_srv_pais = null;
             $loc_srv_ibge_cod_mun = null;
+            $loc_srv_ibge_cod_pais = null;
 
         }else{
 
@@ -437,6 +446,7 @@ class LancamentoSrvOsController extends Controller
             $loc_srv_uf = null;
             $loc_srv_pais = null;
             $loc_srv_ibge_cod_mun = null;
+            $loc_srv_ibge_cod_pais = null;
         }
 
         DB::table('lancamento_srv_os')
@@ -451,7 +461,8 @@ class LancamentoSrvOsController extends Controller
             'os_loc_srv_cidade' => $loc_srv_cidade,
             'os_loc_srv_uf' => $loc_srv_uf,
             'os_loc_srv_pais' => $loc_srv_pais,
-            'os_loc_srv_ibge_cod_mun' => $loc_srv_ibge_cod_mun
+            'os_loc_srv_ibge_cod_mun' => $loc_srv_ibge_cod_mun,
+            'os_loc_srv_ibge_cod_pais' => $loc_srv_ibge_cod_pais
         ]);  
 
         return redirect(route('situacaoOS.carregaOS', ['empresa' => $request->empresa, 'cliente' => $request->cliente, 'nos' => $numOS, 'estagioAPP' => 'PRINCIPAL']))->with('success', 'Local da Prestação do Serviço alterado com sucesso!');

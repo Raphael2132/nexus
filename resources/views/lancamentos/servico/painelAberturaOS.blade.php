@@ -2578,7 +2578,7 @@ $locPrtSrv = '';
                                     $bairro = $glo_os_dadosOS[0]->os_loc_srv_bairro;
                                     $cidade = $glo_os_dadosOS[0]->os_loc_srv_cidade;
                                     $uf = $glo_os_dadosOS[0]->os_loc_srv_uf;
-                                    $pais = $glo_os_dadosOS[0]->os_loc_srv_pais;
+                                    $paisCod = $glo_os_dadosOS[0]->os_loc_srv_ibge_cod_pais;
                                 }else{
                                     $ibge = '';
                                     $cep = '';
@@ -2588,7 +2588,7 @@ $locPrtSrv = '';
                                     $bairro = '';
                                     $cidade = '';
                                     $uf = '';
-                                    $pais = '';
+                                    $paisCod = '';
                                 }
                             @endphp
                             <div class="row">
@@ -2671,15 +2671,28 @@ $locPrtSrv = '';
                                             $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
                                         }
                                         $array_opt = array_combine($new_array1, $new_array2);
+
+                                        $dadosPais = DB::table('ibge_paises')->orderby('ibge_pais_nome')->get();
+
+                                        $new_array_pais =[];
+                                        $new_array_pais2 =[];
+
+                                        foreach ($dadosPais as $pais) {
+                                            $new_array_pais[] = $pais->ibge_pais_codigo;
+                                            $new_array_pais2[] = $pais->ibge_pais_nome;
+                                        }
+                                        $array_opt_pais = array_combine($new_array_pais, $new_array_pais2);
                                     @endphp
 
                                     <!-- Estado -->
-                                    <x-adminlte-select name="uf" label="UF" fgroup-class="col-md-3">
+                                    <x-adminlte-select name="uf" label="UF" fgroup-class="col-md-2">
                                         <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$uf}}"/>
                                     </x-adminlte-select>
 
                                     <!-- Pais -->
-                                    <x-adminlte-input name="pais" type="text" label="Pais" value="{{$pais}}" fgroup-class="col-md-2"></x-adminlte-input>
+                                    <x-adminlte-select name="pais" label="País" fgroup-class="col-md-3">
+                                        <x-adminlte-options :options="$array_opt_pais" empty-option="Selecione..." selected="{{$paisCod}}"/>
+                                    </x-adminlte-select>
                                 </div>
                             </x-adminlte-callout>
                             <x-adminlte-button class="btn_hide_salvar_loc_srv" type="submit" label="Salvar" value="Salvar" theme=""/>
@@ -4812,7 +4825,7 @@ $(function () {
         Swal.fire({
             confirmButtonColor: "#007bff",
             title: "Erro!!!",
-            text: "{{ session('error') }}",
+            html: '{!! session('error') !!}', // Interpreta o conteúdo HTML
             icon: "error"
         });
     @endif

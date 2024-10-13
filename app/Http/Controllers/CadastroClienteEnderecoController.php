@@ -35,6 +35,8 @@ class CadastroClienteEnderecoController extends Controller
             $cep = null;
         }
 
+        $dadosPais = DB::table('ibge_paises')->where('ibge_pais_codigo', $request->pais)->first();
+
         $dados = [
             'endereco_seq' => $seq,
             'endereco_cliente_codigo' => $request->cliente_codigo,
@@ -46,8 +48,9 @@ class CadastroClienteEnderecoController extends Controller
             'endereco_bairro' => $request->bairro,
             'endereco_cidade' => $request->cidade,
             'endereco_uf' => $request->uf,
-            'endereco_pais' => $request->pais,
+            'endereco_pais' => $dadosPais->ibge_pais_nome,
             'endereco_ibge_cod_mun' => $request->ibgeCodMun,
+            'endereco_ibge_cod_pais' => $request->pais
         ];
 
         $novoEndereco = CadastroClienteEndereco::create($dados);
