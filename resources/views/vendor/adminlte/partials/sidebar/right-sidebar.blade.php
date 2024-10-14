@@ -71,26 +71,6 @@
                 <x-adminlte-options :options="$array_plano" selected="{{ session('glo_tipo_home') }}"/>
             </x-adminlte-select>
         </div>
-    @else
-        <div class="p-3 text-center">
-            <!-- Nome do usuário centralizado -->
-            <h6><strong>Sair do Sitema</strong></h6>
-            <hr class="mb-2">
-
-            <!-- Botão de logout com fundo verde retangular e efeito hover -->
-            <a href="{{ route('logout') }}" 
-            onclick="event.preventDefault(); document.getElementById('logout-form').submit();" 
-            style="background-color: #008f8f; width: 90%; padding: 10px; margin: 0 auto; display: block; color: white; text-align: center; text-decoration: none; transition: background-color 0.3s; border-radius: 5px;"
-            onmouseover="this.style.backgroundColor='#007373'"
-            onmouseout="this.style.backgroundColor='#008f8f'">
-                <i class="fas fa-sign-out-alt fa-2x"></i> <!-- Ícone branco sobre fundo verde -->
-            </a>
-
-            <!-- Formulário para o logout -->
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                @csrf
-            </form>
-        </div>
     @endif
 </aside>
 

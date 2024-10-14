@@ -313,7 +313,7 @@ return [
         [
             'text' => '',
             'icon' => 'fa-solid fa-phone',
-            'url' => 'contatoo',
+            'url' => 'contato',
             'topnav' => true,
         ],
         // Caso voltar com a ideia de campo select no Navbar aqui é a label -> Campo: vendor/adminlte/partials/navbar/navbar.blade.php
