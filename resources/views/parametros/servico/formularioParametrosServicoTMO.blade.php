@@ -145,13 +145,17 @@
                             $codigo_sel = '';
                         }
 
-                        if(!empty($dadosTMO[0]['tmo_res'])){
+                        if(!empty($dadosTMO[0]['tmo_are']) && !empty($dadosTMO[0]['tmo_set'])){
 
-                            $prestador_nom = DB::table('cadastro_prestadores')->select('prestador_nome')->where('prestador_codigo', $dadosTMO[0]['tmo_res'])->get();
-                            $prestResp_sel = $dadosTMO[0]['tmo_res'].' - '.$prestador_nom[0]->prestador_nome;
+                            if(!empty($dadosTMO[0]['tmo_res'])){
+                                $prestador_nom = DB::table('cadastro_prestadores')->select('prestador_nome')->where('prestador_codigo', $dadosTMO[0]['tmo_res'])->get();
+                                $prestResp_sel = $dadosTMO[0]['tmo_res'].' - '.$prestador_nom[0]->prestador_nome;
+                            }else{
+                                $prestResp_sel = '';
+                            }
 
                             //Faz o lookup do campo de fornecedores 
-                            $data_pres = DB::table('cadastro_prestadores')->selectRaw('prestador_codigo, prestador_nome')->where('prestador_set',$dadosTMO[0]['tmo_set'])->where('prestador_are',$dadosTMO[0]['tmo_are'])->where('prestador_status','A')->orderBy('prestador_codigo', 'asc')->get();
+                            $data_pres = DB::table('cadastro_prestadores')->where('prestador_set',$dadosTMO[0]['tmo_set'])->where('prestador_are',$dadosTMO[0]['tmo_are'])->where('prestador_status','A')->orderBy('prestador_codigo', 'asc')->get();
                             $html = '<datalist id="prestadores">';
                             foreach($data_pres as $prestador){
                                 $html .= '<option value="'.$prestador->prestador_codigo.' - '.$prestador->prestador_nome.'">'.$prestador->prestador_codigo.' - '.$prestador->prestador_nome.'</option>';
@@ -170,7 +174,7 @@
                         </x-slot>
                     </x-adminlte-input>
                     <!-- Prestador responsavel da TMO -->
-                    <x-adminlte-input name="prestResp" label="Responsável da TMO" type="search" list="prestadores" value="{{$prestResp_sel}}" fgroup-class="col-md-6"/>
+                    <x-adminlte-input name="prestResp" label="Responsável da TMO" type="search" list="prestadores" autocomplete="off" value="{{$prestResp_sel}}" fgroup-class="col-md-6"/>
                 </div>
 
                 <div class="row">
@@ -303,7 +307,7 @@
                             echo $html;
                         @endphp
                         <!-- Fornecedor do serviço de terceiros -->
-                        <x-adminlte-input name="fornecedor" label="Fornecedor do Custo de Terceiros" type="search" list="fornecedores" value="{{$fornecedor_sel}}" fgroup-class="col-md-12"/>
+                        <x-adminlte-input name="fornecedor" label="Fornecedor do Custo de Terceiros" type="search" list="fornecedores" autocomplete="off" value="{{$fornecedor_sel}}" fgroup-class="col-md-12"/>
                     </div>
                 </div>
                                     

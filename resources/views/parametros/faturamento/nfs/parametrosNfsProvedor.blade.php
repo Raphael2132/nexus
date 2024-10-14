@@ -92,8 +92,8 @@ $config = [
                     <x-adminlte-options :options="$array_opt" empty-option="Selecione..."/>
                 </x-adminlte-select>
 
-                <!-- Nome do Provedor -->
-                <x-adminlte-input name="cidade" type="search" list="cidades" placeholder="Nome do Provedor" fgroup-class="col-md-12">
+                <!-- Cidade do Provedor -->
+                <x-adminlte-input name="cidade" type="search" list="cidades" autocomplete="off" placeholder="Nome do Provedor" autocomplete="off" fgroup-class="col-md-12">
                     <x-slot name="label">
                         Cidade <span style="color:red;">*</span>
                     </x-slot>

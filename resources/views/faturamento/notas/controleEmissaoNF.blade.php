@@ -53,7 +53,7 @@
                 </div>
                 <div class="row">
                     <!-- Cliente da NF -->
-                    <x-adminlte-input name="cliente" label="Cliente" type="search" list="clientes" value="" fgroup-class="col-md-12"/>
+                    <x-adminlte-input name="cliente" label="Cliente" type="search" list="clientes" autocomplete="off" value="" fgroup-class="col-md-12"/>
                 </div>
                 <div class="row">
                     <!-- Número pedido / OS -->

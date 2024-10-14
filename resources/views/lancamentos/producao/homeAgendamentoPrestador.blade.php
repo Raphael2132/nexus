@@ -56,7 +56,7 @@
                 </div>
                 <div class="row">
                     <!-- Prestador -->
-                    <x-adminlte-input name="prestador" type="search" list="prestadores" value="" fgroup-class="col-md-12">
+                    <x-adminlte-input name="prestador" type="search" list="prestadores" autocomplete="off" value="" fgroup-class="col-md-12">
                         <x-slot name="label">
                             Prestador <span style="color:red;">*</span>
                         </x-slot>

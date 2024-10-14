@@ -56,7 +56,7 @@
                 </div>
                 <div class="row">
                     <!-- Prestador responsavel da TMO -->
-                    <x-adminlte-input name="cliente" type="search" list="clientes" value="" fgroup-class="col-md-12">
+                    <x-adminlte-input name="cliente" type="search" list="clientes" value="" autocomplete="off" fgroup-class="col-md-12">
                         <x-slot name="label">
                             Cliente <span style="color:red;">*</span>
                         </x-slot>

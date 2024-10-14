@@ -1384,7 +1384,7 @@ $locPrtSrv = '';
                                 <x-adminlte-options :options="['P' => 'Padrão', 'I' => 'Hora Informada', 'R' => 'Hora Real', 'F' => 'Valor Fixo', 'T' => 'Terceiros']" selected="{{$tipoTMO_sel}}"/>
                             </x-adminlte-select>
                             <!-- Prestador responsavel da TMO -->
-                            <x-adminlte-input name="prestadorTMO" label="Prestador da Tarefa" type="search" list="prestadores" value="{{$prestadorTMO_sel}}" fgroup-class="col-md-8"/>
+                            <x-adminlte-input name="prestadorTMO" label="Prestador da Tarefa" type="search" list="prestadores" autocomplete="off" value="{{$prestadorTMO_sel}}" fgroup-class="col-md-8"/>
                         </div>
 
                         <div class="row">
@@ -1493,7 +1493,7 @@ $locPrtSrv = '';
                                     echo $html;
                                 @endphp
                                 <!-- Fornecedor do Serviço de Terceiros -->
-                                <x-adminlte-input name="forTerceiroTMO" label="Fornecedor Terceiro" type="search" list="fornecedores" value="{{$forTerceiroTMO_sel}}" fgroup-class="col-md-6"/>
+                                <x-adminlte-input name="forTerceiroTMO" label="Fornecedor Terceiro" type="search" list="fornecedores" autocomplete="off" value="{{$forTerceiroTMO_sel}}" fgroup-class="col-md-6"/>
                             </div>
 
                             <div class="row">
@@ -2468,7 +2468,7 @@ $locPrtSrv = '';
                                         echo $html;
                                     @endphp
                                     <!-- Prestador responsavel da TMO -->
-                                    <x-adminlte-input name="cliFatura" type="search" list="clientesFatura" fgroup-class="col-md-12">
+                                    <x-adminlte-input name="cliFatura" type="search" list="clientesFatura" autocomplete="off" fgroup-class="col-md-12">
                                         <x-slot name="label">
                                             Novo Cliente da Fatura <span style="color:red;">*</span>
                                         </x-slot>
