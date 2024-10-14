@@ -24,7 +24,6 @@
 @stop
 
 @section('content')
-{{$testre}}
 @php
     //Monta variaveis utilizadas no JS para verificações e validações dos campos de Permissão de Acesso
     $altera_permissoes_acesso = Auth::user()->usuario_altera_permissoes_acesso;
