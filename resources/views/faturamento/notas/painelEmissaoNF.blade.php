@@ -230,7 +230,7 @@
         Swal.fire({
             confirmButtonColor: "#007bff",
             title: "Erro!!!",
-            text: "{{ session('error') }}",
+            text: '{!! session("error") !!}',
             icon: "error"
         });
     @endif

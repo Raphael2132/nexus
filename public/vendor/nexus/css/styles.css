@@ -327,3 +327,17 @@
     border-color: #00abab !important;
     box-shadow: none !important;
 }
+
+/*
+|--------------------------------------------------------------------------------
+| Error Page
+|--------------------------------------------------------------------------------
+|
+| Alterações do tema das error page do sistema.
+|
+*/
+
+/* ******************** Tema dos x-slot (prependSlot, appendSlot etc...) dos campos input ******************** */
+.error-page {
+    width: 60% !important;
+}

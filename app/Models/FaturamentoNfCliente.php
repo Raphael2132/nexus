@@ -31,6 +31,7 @@ class FaturamentoNfCliente extends Model
         'nfcli_cid',
         'nfcli_uf',
         'nfcli_cod_mun_ibge',
+        'nfcli_cod_pais_ibge',
         'nfcli_ins_est',
         'nfcli_ins_mun',
         'nfcli_email',

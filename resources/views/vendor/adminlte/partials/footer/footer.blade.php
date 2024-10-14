@@ -1,5 +1,10 @@
-@php 
-$dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', Auth::user()->usuario_empresa)->get();
+@php
+    $dataEmp = null;
+
+    //Verificamos se o usuário está logado por que quando acontece o erro 404 não reconhece mais o usuário logado e talves outros erros aconteçam a mesma coisa
+    if (Auth::check()) {
+        $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', Auth::user()->usuario_empresa)->get();
+    }
 @endphp
 
 <footer class="main-footer" style="padding: .6rem; !important">
@@ -12,5 +17,8 @@ $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', Auth::user()-
             </a>. Todos os direitos reservados.
         </strong> 
     </div>
+    <!-- Verificamos se o usuário está logado por que quando acontece o erro 404 não reconhece mais o usuário logado e talves outros erros aconteçam a mesma coisa -->
+    @if(Auth::check())
     <strong>Usuário: </strong>{{ Auth::user()->usuario_codigo.' - '.Auth::user()->name }} <strong>Loja: </strong> {{ Auth::user()->usuario_empresa.' - '.$dataEmp[0]->empresa_nome }}
+    @endif
 </footer>
