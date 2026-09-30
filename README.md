@@ -1,6 +1,6 @@
 # Nexus ERP
 
-Sistema ERP web desenvolvido em **PHP e Laravel**, voltado para gestão empresarial.
+Sistema ERP web desenvolvido em **PHP e Laravel**, utilizando o **AdminLTE** como template da interface administrativa e voltado para gestão empresarial.
 
 O Nexus foi desenvolvido a partir de experiência prática com sistemas de gestão empresarial, concentrando regras de negócio e funcionalidades utilizadas em um ERP real, com desenvolvimento realizado do banco de dados à interface.
 
