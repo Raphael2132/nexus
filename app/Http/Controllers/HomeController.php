@@ -41,7 +41,7 @@ class HomeController extends Controller
     {
         //Vamos definir a empresa da visualização da Home
         $empresa = session('glo_empresa_exibicao_home');
-abort(405);
+
         /*
         |--------------------------------------------------------------------------
         | Small Box
