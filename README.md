@@ -1,68 +1,161 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Nexus ERP
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema ERP web desenvolvido em **PHP e Laravel**, voltado para gestão empresarial.
 
-## About Laravel
+O Nexus foi desenvolvido a partir de experiência prática com sistemas de gestão empresarial, concentrando regras de negócio e funcionalidades utilizadas em um ERP real, com desenvolvimento realizado do banco de dados à interface.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> **Projeto de portfólio:** este repositório contém o código-fonte do projeto utilizado para estudos, evolução arquitetural e demonstração das minhas habilidades de desenvolvimento. Não contém dados reais de clientes ou empresas.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Sobre o projeto
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+O Nexus é uma aplicação web desenvolvida para centralizar diferentes áreas da gestão empresarial em um único sistema.
 
-## Learning Laravel
+O projeto foi construído utilizando uma arquitetura web baseada em **Laravel, PHP, Blade, JavaScript e banco de dados relacional**, permitindo trabalhar tanto com as regras de negócio do backend quanto com a interface utilizada pelo usuário.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Entre os principais objetivos do projeto estão:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+* Desenvolvimento de aplicações web completas;
+* Organização de módulos e regras de negócio;
+* Controle de usuários e permissões;
+* Gestão de informações empresariais;
+* Processos financeiros;
+* Faturamento e documentos fiscais;
+* Ordens de serviço;
+* Integrações com serviços externos;
+* Desenvolvimento de interfaces administrativas.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Principais tecnologias
 
-## Laravel Sponsors
+### Backend
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+* PHP
+* Laravel
+* Composer
 
-### Premium Partners
+### Frontend
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+* Blade
+* HTML5
+* CSS3
+* JavaScript
+* jQuery
+* Bootstrap
+* AdminLTE
 
-## Contributing
+### Banco de dados
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* PostgreSQL
 
-## Code of Conduct
+### Ferramentas e bibliotecas
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+* Git / GitHub
+* DataTables
+* Font Awesome
+* Dompdf
 
-## Security Vulnerabilities
+## Funcionalidades
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+O projeto possui diferentes módulos voltados à operação de um sistema ERP, incluindo:
 
-## License
+* **Cadastros**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# nexus
-Sistema Nexus - Gestão Empresarial
+  * Empresas
+  * Clientes
+  * Fornecedores
+  * Produtos e informações relacionadas
+
+* **Financeiro**
+
+  * Processos financeiros
+  * Lançamentos
+  * Consultas e controles financeiros
+
+* **Faturamento**
+
+  * Documentos fiscais
+  * NFS-e
+  * Processos relacionados à emissão e consulta
+
+* **Ordens de serviço**
+
+  * Cadastro e acompanhamento de serviços
+  * Situação das ordens
+  * Agenda e processos relacionados
+
+* **Usuários e permissões**
+
+  * Autenticação
+  * Controle de acesso
+  * Permissões por módulo e funcionalidade
+
+## Desenvolvimento
+
+Uma das características do projeto é a implementação das funcionalidades considerando regras de negócio de um ERP real.
+
+Além da construção das telas, o desenvolvimento envolve:
+
+* Modelagem e consultas ao banco de dados;
+* Implementação das regras de negócio;
+* Desenvolvimento de controllers e models;
+* Criação de rotas;
+* Validação de dados;
+* Controle de autenticação e autorização;
+* Integração entre frontend e backend;
+* Integração com serviços externos;
+* Geração e processamento de documentos;
+* Organização dos módulos da aplicação.
+
+## Integrações
+
+Durante a evolução do projeto foram desenvolvidas integrações com serviços externos utilizados nos processos do ERP, incluindo serviços relacionados a:
+
+* Emissão de documentos fiscais;
+* NFS-e;
+* Comunicação com serviços de terceiros;
+* Processos de pagamento.
+
+## Arquitetura
+
+O projeto utiliza o framework Laravel como base e organiza a aplicação em módulos de acordo com as áreas do sistema.
+
+A estrutura do projeto foi sendo reorganizada ao longo do desenvolvimento para facilitar a manutenção e separar responsabilidades entre:
+
+* Controllers;
+* Models;
+* Views;
+* Rotas;
+* Helpers;
+* Serviços e componentes auxiliares.
+
+## Ambiente de desenvolvimento
+
+O projeto é destinado principalmente ao ambiente de desenvolvimento e demonstração.
+
+Para executar uma instalação local, é necessário configurar:
+
+* PHP;
+* Composer;
+* PostgreSQL;
+* Node.js / NPM, quando necessário;
+* Arquivo de configuração do ambiente;
+* Banco de dados compatível com a estrutura do projeto.
+
+As configurações específicas de ambiente e credenciais não fazem parte do repositório.
+
+## Evolução do projeto
+
+O Nexus teve início como um projeto piloto desenvolvido com o objetivo de aprofundar meus conhecimentos em **Laravel** e aplicar, em uma aplicação própria, conceitos e práticas que já faziam parte da minha experiência com desenvolvimento de sistemas ERP.
+
+Durante seu desenvolvimento, o projeto evoluiu para uma aplicação com diversos módulos e regras de negócio, permitindo experimentar diferentes abordagens de arquitetura, organização de código e integração entre frontend, backend e banco de dados.
+
+Atualmente, o Nexus encontra-se em uma nova etapa de desenvolvimento, com uma **reestruturação da arquitetura e organização do projeto**, buscando aplicar de forma mais adequada os recursos e padrões disponíveis nas versões atuais do Laravel e do ecossistema PHP.
+
+Essa evolução também inclui a adoção gradual de **tecnologias e recursos mais modernos**, com o objetivo de melhorar a manutenção, organização, desempenho e experiência de desenvolvimento da aplicação.
+
+## Autor
+
+**João Raphael**
+
+Desenvolvedor Web com experiência em desenvolvimento de sistemas ERP, PHP, Laravel, JavaScript e bancos de dados relacionais.
+
+GitHub: [Raphael2132](https://github.com/Raphael2132)
