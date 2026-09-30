@@ -100,6 +100,9 @@
     {{-- Extra Configured Plugins Scripts --}}
     @include('adminlte::plugins', ['type' => 'js'])
 
+    {{-- JS Customizado projeto Nexus --}}
+    <script src="{{ asset('vendor/nexus/js/nexus.js') }}" defer></script>
+
     {{-- Livewire Script --}}
     @if(config('adminlte.livewire'))
         @if(intval(app()->version()) >= 7)

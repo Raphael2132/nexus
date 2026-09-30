@@ -5,13 +5,13 @@
 @section('content_header')
 <div class="row mb-2">
     <div class="col-sm-6">
-        <h4 style="margin-bottom: 0px !important;">Lançamento de Serviços</h4>
+        <h4 style="margin-bottom: 0px !important;">Lançamento de OS</h4>
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">Situação de OS</li>
             @php   
-                $dadosEmp = Helper::buscaDadosEmpresa(session('glo_empresa_exibicao_home'));
+                $dadosEmp = HelperDataSelect::buscaDadosEmpresa(session('glo_empresa_exibicao_home'));
             @endphp
             <li class="breadcrumb-item active">{{ $dadosEmp->empresa_codigo.' - '.$dadosEmp->empresa_nome}}</li>
         </ol>

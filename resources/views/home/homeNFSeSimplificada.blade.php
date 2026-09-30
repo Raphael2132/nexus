@@ -229,13 +229,13 @@
                             <td>{{$nfsSimp->nfs_emp.' - '.$dataEmp[0]->empresa_nome}}</td>
                             <td>{{$nfsSimp->nfs_cli.' - '.$nfsSimp->nfs_nom_tom}}</td>
                             @if($nfsSimp->nfs_sts == 'G')
-                            <td style="text-align: center;"><span class="badge badge-success">NFS-e Gerada</span></td>
+                            <td><span class="badge badge-success">NFS-e Gerada</span></td>
                             @elseif($nfsSimp->nfs_sts == 'C')
-                            <td style="text-align: center;"><span class="badge badge-danger">NFS-e Cancelada</span></td>
+                            <td><span class="badge badge-danger">NFS-e Cancelada</span></td>
                             @elseif($nfsSimp->nfs_sts == 'E')
-                            <td style="text-align: center;"><span class="badge badge-warning" style="color: #fff !important;">NFS-e Erro</span></td>
+                            <td><span class="badge badge-warning" style="color: #fff !important;">NFS-e Erro</span></td>
                             @else
-                            <td style="text-align: center;"><span class="badge badge-info">NFS-e Iniciada</span></td>
+                            <td><span class="badge badge-info">NFS-e Iniciada</span></td>
                             @endif
                             <td style="text-align: right;">{{Helper::formataValorMonetario($nfsSimp->nfs_vlr_tot)}}</td>
                         </tr>
@@ -253,7 +253,7 @@
             </x-adminlte-card>
         </div>
         <div class="col-md-4">
-            <x-adminlte-small-box :title="$cliMes" text="Novos Clientes" icon="fas fa-user" theme="gradient-lightblue" url="{{ route('clientes',['tipo' => 'M']) }}" url-text="Novos Clientes no Mês"/>
+            <x-adminlte-small-box :title="$cliMes" text="Novos Clientes" icon="fas fa-user" theme="gradient-lightblue" url="{{ route('cadastroCliente.show',['cadastroCliente' => 'M']) }}" url-text="Novos Clientes no Mês"/>
             <div class="small-box bg-gradient-olive">
                 <div class="inner">
                     <h3>{{$nfsSimpMes}}</h3>
@@ -327,6 +327,47 @@
 @stop
 
 @section('js')
+<script>
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Eventos da Inicialização do Datatable
+    |----------------------------------------------------------------------------------------------------
+    |
+    | Adicionamos aqui todos os eventos relacionados a criação e manipulação de eventos do datatable
+    |
+    ***** */
+    $(() => {
+
+        /* ********** Inicializa o Datatable ********** */
+        var tableNFSSimp = $('#table-nfs-simp').DataTable({
+            language: dataTableLangPtBR,
+            lengthChange: false, 
+            paging: false,
+            searching: false,
+            pageLength: 5,
+            info: false,
+            order: [
+                [0, 'desc'],
+                [1, 'desc']
+            ],
+            columns: [
+                { orderable: false, visible: false }, // Esconder primeira coluna
+                { orderable: false, visible: false }, // Esconder segunda coluna
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+            ],
+        });
+
+    });
+
+    /* ------------------------------ Final da Inicialização do Datatable ------------------------------ */
+</script>
+
 <script>
     $(function () {
 

@@ -1,0 +1,57 @@
+/* ***** Inicio do CSS do bloco: PAGAMENTO ***** */
+.tabela-valores {
+margin-bottom: 0px !important;
+}
+
+.tabela-valores th{
+    padding: 5px 5px 5px 15px !important;
+}
+
+.table {
+    margin-top: 20px;
+}
+
+.tabela-resumo th{
+    padding: 5px 5px 5px 15px !important;
+}
+
+.tabela-resumo td{
+    padding: .25rem !important;
+}
+
+.tabela-forma-pgt th{
+    padding: 5px 5px 5px 15px !important;
+}
+
+.tabela-forma-pgt td {
+    vertical-align: middle; /* Centraliza verticalmente dentro da célula */
+    text-align: center; /* Centraliza horizontalmente dentro da célula */
+    border: none;
+}
+
+.icon-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%; /* Garante o alinhamento completo na célula */
+}
+
+.icon-text i {
+    margin-bottom: 5px; /* Espaço entre o ícone e o texto */
+}
+
+.tabela-forma-pgt {
+    width: 100%;
+    table-layout: fixed; /* Garante colunas de largura fixa */
+}
+
+.tabela-forma-pgt a {
+    text-decoration: none;
+    color: inherit; /* Mantém a cor padrão */
+}
+
+.tabela-resumo, .tabela-forma-pgt {
+    margin-bottom: 0 !important;
+}
+/* ***** Final do CSS do bloco: PAGAMENTO ***** */

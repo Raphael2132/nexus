@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\LancamentoSrvOsRequisicoes;
 use stdClass;
-use App\Http\Controllers\PainelAberturaOSController;
+use App\Http\Controllers\Lancamentos\Servico\PainelAberturaOSController;
 use App\Http\Helpers\Helper;
 
 class LancamentoSrvOsRequisicoesController extends Controller

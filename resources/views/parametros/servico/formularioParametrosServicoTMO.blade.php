@@ -10,7 +10,7 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">
-                <a href="{{route('home.parSrvTMO')}}">Tarefas Mão de Obra</a>
+                <a href="{{route('servicoTMO.index')}}">Tarefas Mão de Obra</a>
             </li>
             @if($acao == 'N')
                 <li class="breadcrumb-item active">Cadastro Tarefas Mão de Obra</li>
@@ -27,12 +27,15 @@
     <div class="col-md-8">
         <!-- Define se o formulario é edição ou novo -->
         @if($acao == 'N')
-        <form method="post" action="{{route('parametrosSrvTMO.insert')}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('servicoTMO.store')}}" id="quickForm" novalidate="novalidate">
+        @csrf 
+        @method('post')
         @else
-        <form method="post" action="{{route('parametrosSrvTMO.update')}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('servicoTMO.update', ['servicoTMO' => $dadosTMO])}}" id="quickForm" novalidate="novalidate">
+        @csrf 
+        @method('put')
         @endif
-            @csrf 
-            <x-adminlte-card title="Cadastro de Nova Tarefa de Mão de Obra" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
+            <x-adminlte-card title="{{ $acao == 'N' ? 'Cadastro de Nova' : 'Manutenção da' }} Tarefa de Mão de Obra" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 
                 </br>
                 <div class="post">
@@ -41,25 +44,16 @@
 
                 <div class="row"> 
                     @php
-                        $data = DB::table('cadastro_empresas')->selectRaw('empresa_codigo, empresa_nome')->orderBy('empresa_codigo', 'asc')->get();
+                        $array_opt = HelperArraySelect::arrayEmpresas(1,1);
 
-                        $new_array1 =[];
-                        $new_array2 =[];
-
-                        foreach ($data as $empresa) {
-                            $new_array1[] = $empresa->empresa_codigo;
-                            $new_array2[] = $empresa->empresa_codigo.' - '.$empresa->empresa_nome;
-                        }
-                        $array_opt = array_combine($new_array1, $new_array2);
-
-                        if(!empty($dadosTMO[0]['tmo_emp'])){
-                            $emp_sel = $dadosTMO[0]['tmo_emp'];
+                        if(!empty($dadosTMO->tmo_emp)){
+                            $emp_sel = $dadosTMO->tmo_emp;
                         }else{
                             $emp_sel = '';
                         }
 
-                        if(!empty($dadosTMO[0]['tmo_sts'])){
-                            $sts_sel = $dadosTMO[0]['tmo_sts'];
+                        if(!empty($dadosTMO->tmo_sts)){
+                            $sts_sel = $dadosTMO->tmo_sts;
                         }else{
                             $sts_sel = 'A';
                         }
@@ -83,38 +77,19 @@
 
                 <div class="row"> 
                     @php
+                        $array_opt_are = HelperArraySelect::arrayAreaSetCadastrado(1,1);
 
-                        $data_are = DB::table('parametros_sis_areas')->join('parametros_sis_setores', 'area_codigo', '=', 'setor_area')->orderBy('area_codigo', 'asc')->get();
-
-                        $new_array_are1 =[];
-                        $new_array_are2 =[];
-
-                        foreach ($data_are as $area) {
-                            $new_array_are1[] = $area->area_codigo;
-                            $new_array_are2[] = $area->area_codigo.' - '.$area->area_desc;
-                        }
-                        $array_opt_are = array_combine($new_array_are1, $new_array_are2);
-
-                        if(!empty($dadosTMO[0]['tmo_are'])){
-                            $are_sel = $dadosTMO[0]['tmo_are'];
+                        if(!empty($dadosTMO->tmo_are)){
+                            $are_sel = $dadosTMO->tmo_are;
                         }else{
                             $are_sel = '';
                         }
 
-                        if(!empty($dadosTMO[0]['tmo_set'])){
+                        if(!empty($dadosTMO->tmo_set)){
 
-                            $data_set = DB::table('parametros_sis_setores')->selectRaw('setor_codigo, setor_desc')->orderBy('setor_codigo', 'asc')->get();
+                            $array_opt_set = HelperArraySelect::arraySetorPorEmpArea($dadosTMO->tmo_emp, $dadosTMO->tmo_are, 1, 1);
 
-                            $new_array_set1 =[];
-                            $new_array_set2 =[];
-
-                            foreach ($data_set as $setor) {
-                                $new_array_set1[] = $setor->setor_codigo;
-                                $new_array_set2[] = $setor->setor_codigo.' - '.$setor->setor_desc;
-                            }
-                            $array_opt_set = array_combine($new_array_set1, $new_array_set2);
-
-                            $set_sel = $dadosTMO[0]['tmo_set'];
+                            $set_sel = $dadosTMO->tmo_set;
                         }else{
                             $set_sel = '';
                             $array_opt_set = null;
@@ -139,28 +114,22 @@
 
                 <div class="row">
                     @php
-                        if(!empty($dadosTMO[0]['tmo_cod'])){
-                            $codigo_sel = $dadosTMO[0]['tmo_cod'];
+                        if(!empty($dadosTMO->tmo_cod)){
+                            $codigo_sel = $dadosTMO->tmo_cod;
                         }else{
                             $codigo_sel = '';
                         }
 
-                        if(!empty($dadosTMO[0]['tmo_are']) && !empty($dadosTMO[0]['tmo_set'])){
+                        if(!empty($dadosTMO->tmo_are) && !empty($dadosTMO->tmo_set)){
 
-                            if(!empty($dadosTMO[0]['tmo_res'])){
-                                $prestador_nom = DB::table('cadastro_prestadores')->select('prestador_nome')->where('prestador_codigo', $dadosTMO[0]['tmo_res'])->get();
-                                $prestResp_sel = $dadosTMO[0]['tmo_res'].' - '.$prestador_nom[0]->prestador_nome;
+                            if(!empty($dadosTMO->tmo_res)){
+                                $prestador_nom = DB::table('cadastro_prestadores')->select('prestador_nome')->where('prestador_codigo', $dadosTMO->tmo_res)->get();
+                                $prestResp_sel = $dadosTMO->tmo_res.' - '.$prestador_nom[0]->prestador_nome;
                             }else{
                                 $prestResp_sel = '';
                             }
 
-                            //Faz o lookup do campo de fornecedores 
-                            $data_pres = DB::table('cadastro_prestadores')->where('prestador_set',$dadosTMO[0]['tmo_set'])->where('prestador_are',$dadosTMO[0]['tmo_are'])->where('prestador_status','A')->orderBy('prestador_codigo', 'asc')->get();
-                            $html = '<datalist id="prestadores">';
-                            foreach($data_pres as $prestador){
-                                $html .= '<option value="'.$prestador->prestador_codigo.' - '.$prestador->prestador_nome.'">'.$prestador->prestador_codigo.' - '.$prestador->prestador_nome.'</option>';
-                            }
-                            $html .='</datalist>';
+                            $html = HelperDataList::geraDatalistPrestadorEmpSet("prestadores", $dadosTMO->tmo_emp, $dadosTMO->tmo_are, $dadosTMO->tmo_set);
                             //Echo adiciona o html ao campo dos fornecedores
                             echo $html;
                         }else{
@@ -179,14 +148,14 @@
 
                 <div class="row">
                     @php
-                        if(!empty($dadosTMO[0]['tmo_dsc'])){
-                            $desc_sel = $dadosTMO[0]['tmo_dsc'];
+                        if(!empty($dadosTMO->tmo_dsc)){
+                            $desc_sel = $dadosTMO->tmo_dsc;
                         }else{
                             $desc_sel = '';
                         }
 
-                        if(!empty($dadosTMO[0]['tmo_cmp'])){
-                            $cmp_sel = $dadosTMO[0]['tmo_cmp'];
+                        if(!empty($dadosTMO->tmo_cmp)){
+                            $cmp_sel = $dadosTMO->tmo_cmp;
                         }else{
                             $cmp_sel = '';
                         }
@@ -209,8 +178,8 @@
 
                 <div class="row"> 
                     @php
-                        if(!empty($dadosTMO[0]['tmo_tip'])){
-                            $tipTMO_sel = $dadosTMO[0]['tmo_tip'];
+                        if(!empty($dadosTMO->tmo_tip)){
+                            $tipTMO_sel = $dadosTMO->tmo_tip;
                         }else{
                             $tipTMO_sel = 'P';
                         }
@@ -226,20 +195,20 @@
 
                 <div class="row"> 
                     @php
-                        if(!empty($dadosTMO[0]['tmo_qtd_hr'])){
-                            $qtdHr_sel = $dadosTMO[0]['tmo_qtd_hr'];
+                        if(!empty($dadosTMO->tmo_qtd_hr)){
+                            $qtdHr_sel = $dadosTMO->tmo_qtd_hr;
                         }else{
                             $qtdHr_sel = '';
                         }
 
-                        if(!empty($dadosTMO[0]['tmo_val_tot'])){
-                            $totTMO_sel = $dadosTMO[0]['tmo_val_tot'];
+                        if(!empty($dadosTMO->tmo_val_tot)){
+                            $totTMO_sel = $dadosTMO->tmo_val_tot;
                         }else{
                             $totTMO_sel = '';
                         }
 
-                        if(!empty($dadosTMO[0]['tmo_val_hr'])){
-                            $valHr_sel = $dadosTMO[0]['tmo_val_hr'];
+                        if(!empty($dadosTMO->tmo_val_hr)){
+                            $valHr_sel = $dadosTMO->tmo_val_hr;
                         }else{
                             $valHr_sel = '';
                         }
@@ -289,21 +258,16 @@
 
                     <div class="row"> 
                         @php
-                            if(!empty($dadosTMO[0]['tmo_for_cgt'])){
+                            if(!empty($dadosTMO->tmo_for_cgt)){
 
-                                $dadosCli = DB::table('cadastro_clientes')->where('cliente_tipo_cadastro','F')->where('cliente_codigo',$dadosTMO[0]['tmo_for_cgt'])->orderBy('cliente_codigo', 'asc')->get();
+                                $dadosCli = DB::table('cadastro_clientes')->where('cliente_tipo_cadastro','F')->where('cliente_codigo',$dadosTMO->tmo_for_cgt)->orderBy('cliente_codigo', 'asc')->first();
 
-                                $fornecedor_sel = $dadosTMO[0]['tmo_for_cgt'].' - '.$dadosCli[0]->cliente_nome;
+                                $fornecedor_sel = $dadosTMO->tmo_for_cgt.' - '.$dadosCli->cliente_nome;
                             }else{
                                 $fornecedor_sel = '';
                             }
 
-                            $data_cli = DB::table('cadastro_clientes')->selectRaw('cliente_codigo, cliente_nome')->where('cliente_tipo_cadastro','F')->orderBy('cliente_codigo', 'asc')->get();
-                            $html = '<datalist id="fornecedores">';
-                            foreach($data_cli as $cliente){
-                                $html .= '<option value="'.$cliente->cliente_codigo.' - '.$cliente->cliente_nome.'">'.$cliente->cliente_codigo.' - '.$cliente->cliente_nome.'</option>';
-                            }
-                            $html .='</datalist>';
+                            $html = HelperDataList::geraDatalistFornecedores("fornecedores");
                             echo $html;
                         @endphp
                         <!-- Fornecedor do serviço de terceiros -->
@@ -318,8 +282,8 @@
 
                 <div class="row"> 
                     @php
-                        if(!empty($dadosTMO[0]['tmo_tip_val_cgt'])){
-                            $tipValCgt_sel = $dadosTMO[0]['tmo_tip_val_cgt'];
+                        if(!empty($dadosTMO->tmo_tip_val_cgt)){
+                            $tipValCgt_sel = $dadosTMO->tmo_tip_val_cgt;
                         }else{
                             $tipValCgt_sel = '1';
                         }
@@ -332,14 +296,14 @@
 
                 <div class="row"> 
                     @php
-                        if(!empty($dadosTMO[0]['tmo_per_cgt'])){
-                            $perCGT_sel = $dadosTMO[0]['tmo_per_cgt'];
+                        if(!empty($dadosTMO->tmo_per_cgt)){
+                            $perCGT_sel = $dadosTMO->tmo_per_cgt;
                         }else{
                             $perCGT_sel = '';
                         }
 
-                        if(!empty($dadosTMO[0]['tmo_val_cgt'])){
-                            $valCGT_sel = $dadosTMO[0]['tmo_val_cgt'];
+                        if(!empty($dadosTMO->tmo_val_cgt)){
+                            $valCGT_sel = $dadosTMO->tmo_val_cgt;
                         }else{
                             $valCGT_sel = '';
                         }
@@ -365,25 +329,32 @@
                 <!-- /.card -->
                 <x-slot name="footerSlot">
                     @php
-                        if(!empty($dadosTMO[0])){
-                            $tarefa = $dadosTMO[0]->tmo_id;
+                        if(!empty($dadosTMO)){
+                            $tarefa = $dadosTMO->tmo_id;
                         }else{
                             $tarefa = '';
                         }
                     @endphp
                     <div class="d-flex justify-content-between w-100">
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-nexus mr-2 btn_novo" type="button" onclick="window.location='{{ route('parametrosSrvTMO.cadastro') }}'" label="Nova Tarefa" theme="" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_novo" type="button" onclick="window.location='{{ route('servicoTMO.create') }}'" label="Nova Tarefa" theme="" icon="fa-solid fa-plus"/>
                             <x-adminlte-button class="btn-nexus mr-2 btn_salvar" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
                             <x-adminlte-button class="btn-nexus mr-2 btn_excluir" type="button" data-id="{{$tarefa}}" data-token="{{ csrf_token() }}" label="Excluir" theme="" icon="fa-solid fa-trash"/>
                         </div>
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.parSrvTMO') }}'" label="Voltar" theme="" icon=""/>
+                            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('servicoTMO.index') }}'" label="Voltar" theme="" icon=""/>
                         </div>
                     </div>
                 </x-slot>
             </x-adminlte-card>
         </form>
+        @if($acao != 'N')
+        <!-- Formulário escondido para exclusão do registro -->
+        <form id="delete-form-{{ $tarefa }}" action="{{ route('servicoTMO.destroy', ['servicoTMO' => $dadosTMO]) }}" method="POST" style="display: none;">
+            @csrf
+            @method('DELETE')
+        </form>
+        @endif
     </div>
 </div>
 @stop
@@ -406,6 +377,17 @@
 -->
 
 <script>
+    //Capturar o clique no botão e submeter o formulário de exclusão                    
+    document.querySelectorAll('.btn_excluir').forEach(button => {
+        button.addEventListener('click', function() {
+            let setorId = this.getAttribute('data-id');
+            let token = this.getAttribute('data-token'); 
+            
+            // Submete o formulário oculto
+            document.getElementById('delete-form-' + setorId).submit();
+        });
+    });
+
     $(document).ready(function() {
 
         //Mascaras de campos float
@@ -666,40 +648,6 @@
             }
         });
 
-        //Evento de carregamento ajax dos dados dos códigos do serviço do grupo selecionado
-        $('#grpSrv').change(function(){
-
-            if( $(this).val() ) {
-                var id = $(this).val();
-
-                var url = "{{ route('parametrosSrvTMO.carregaCodSrvAjax', [':id']) }}";
-                url = url.replace(':id', id);
-
-                $.ajax({
-                    url: url,
-                    dataType: "JSON",
-                    type: 'GET',
-                    data: {
-                        '_token': $('meta[name=csrf-token]').attr("content"),
-                        '_method': 'GET',
-                        "id": id
-                    },
-                    success: function (data)
-                    {
-                        var options = '<option value="">Selecione...</option>';	
-
-						for (var i = 0; i < data.servicos_ajax.length; i++) {
-
-							options += '<option value="' + data.servicos_ajax[i].id + '">' + data.servicos_ajax[i].cod_servico + '</option>';
-						}	
-						$('#codSrv').html(options);
-                    }
-                });
-            } else {
-				$('#codSrv').html('<option value="">Selecione...</option>');
-			}
-        });
-
         //Evento de carregamento ajax dos dados dos setores
         $('#area').change(function(){
 
@@ -707,7 +655,7 @@
                 var are = $(this).val();
                 var emp = $('#empresa').val();
 
-                var url = "{{ route('parametrosSrvTMO.carregaSetAjax', [':are',':emp']) }}";
+                var url = "{{ route('ajax.carregaSetoresEmpAreAjax', [':are',':emp']) }}";
                 url = url.replace(':are', are);
                 url = url.replace(':emp', emp);
 
@@ -754,7 +702,7 @@
                 var are = $('#area').val();
                 var emp = $(this).val();
 
-                var url = "{{ route('parametrosSrvTMO.carregaSetAjax', [':are',':emp']) }}";
+                var url = "{{ route('ajax.carregaSetoresEmpAreAjax', [':are',':emp']) }}";
                 url = url.replace(':are', are);
                 url = url.replace(':emp', emp);
 
@@ -805,7 +753,7 @@
                 var emp = $('#empresa').val();
                 var are = $('#area').val();
 
-                var url = "{{ route('parametrosSrvTMO.carregaRespAjax', [':are',':set',':emp']) }}";
+                var url = "{{ route('ajax.carregaPrestadorSetorAjax', [':are',':set',':emp']) }}";
                 url = url.replace(':are', are);
                 url = url.replace(':set', set);
                 url = url.replace(':emp', emp);
@@ -845,39 +793,6 @@
                 $('#prestResp').val('');
                 $('#prestResp').html('<datalist id="prestadores"></datalist>');
             }
-        });
-    });
-</script>
-
-<!--
-|--------------------------------------------------------------------------
-| Eventos onClick da app
-|--------------------------------------------------------------------------
--->
-
-<script>
-    $(document).ready(function() {
-
-        $(".btn_excluir").click(function(){
-            var id = $(this).attr("data-id");
-
-            var url = "{{ route('parametrosSrvTMO.destroy', [':id', 'ajax']) }}";
-            url = url.replace(':id', id);
-
-            $.ajax({
-                url: url,
-                dataType: "JSON",
-                type: 'POST',
-                data: {
-                    '_token': $('meta[name=csrf-token]').attr("content"),
-                    '_method': 'DELETE',
-                    "id": id
-                },
-                success: function ()
-                {
-                    window.location = "{{ route('parametrosSrvTMO.homeAjax') }}";
-                }
-            });
         });
     });
 </script>
@@ -929,9 +844,6 @@ $(function () {
                     return tipoTMO === 'P' || tipoTMO === 'I' || tipoTMO === 'F';
                 },
                 maxqtdhr: true
-            }, 
-            grpSrv: {
-                required: true
             },
             codSrv: {
                 required: true
@@ -974,9 +886,6 @@ $(function () {
             codigo: {
                 required: "Por Favor informe o Código",
                 maxlength: "Infome no máximo 15 caracteres"
-            },
-            grpSrv: {
-                required: "Por Favor informe um Grupo de Serviço"
             },
             codSrv: {
                 required: "Por Favor informe um Código do Serviço"

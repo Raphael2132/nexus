@@ -10,7 +10,7 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">
-                <a href="{{route('home.lancSrvCategoria')}}">Categorias de Atendimento</a>
+                <a href="{{route('categAtendimento.index')}}">Categorias de Atendimento</a>
             </li>
             @if($acao == 'N')
                 <li class="breadcrumb-item active">Cadastro Categoria de Atendimento</li>
@@ -27,23 +27,26 @@
     <div class="col-md-8">
         <!-- Define se o formulario é edição ou novo -->
         @if($acao == 'N')
-        <form method="post" action="{{route('lancamentosSrvCategoria.insert')}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('categAtendimento.store')}}" id="quickForm" novalidate="novalidate">
+        @csrf 
+        @method('post')
         @else
-        <form method="post" action="{{route('lancamentosSrvCategoria.update')}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('categAtendimento.update', ['categAtendimento' => $dadosCat])}}" id="quickForm" novalidate="novalidate">
+        @csrf 
+        @method('put')
         @endif
-            @csrf 
-            <x-adminlte-card title="Cadastro de Nova Categoria de Atendimento" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
+            <x-adminlte-card title="{{ $acao == 'N' ? 'Cadastro de Nova' : 'Manutenção da' }} Categoria de Atendimento" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
                     @php
-                        if(!empty($dadosCat[0]['categoria_codigo'])){
-                            $codigo_sel = $dadosCat[0]['categoria_codigo'];
+                        if(!empty($dadosCat->categoria_codigo)){
+                            $codigo_sel = $dadosCat->categoria_codigo;
                         }else{
                             $codigo_sel = '';
                         }
 
-                        if(!empty($dadosCat[0]['categoria_desc'])){
-                            $descricao_sel = $dadosCat[0]['categoria_desc'];
+                        if(!empty($dadosCat->categoria_desc)){
+                            $descricao_sel = $dadosCat->categoria_desc;
                         }else{
                             $descricao_sel = '';
                         }
@@ -66,25 +69,32 @@
                 <!-- /.card -->
                 <x-slot name="footerSlot">
                     @php
-                        if(!empty($dadosCat[0])){
-                            $tipoCat = $dadosCat[0]->categoria_id;
+                        if(!empty($dadosCat)){
+                            $tipoCat = $dadosCat->categoria_id;
                         }else{
                             $tipoCat = '';
                         }
                     @endphp
                     <div class="d-flex justify-content-between w-100">
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-nexus mr-2 btn_novo" type="button" onclick="window.location='{{ route('lancamentosSrvCategoria.cadastro') }}'" label="Nova Categoria" theme="" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_novo" type="button" onclick="window.location='{{ route('categAtendimento.create') }}'" label="Nova Categoria" theme="" icon="fa-solid fa-plus"/>
                             <x-adminlte-button class="btn-nexus mr-2 btn_salvar" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
                             <x-adminlte-button class="btn-nexus mr-2 btn_excluir" type="button" data-id="{{$tipoCat}}" data-token="{{ csrf_token() }}" label="Excluir" theme="" icon="fa-solid fa-trash"/>
                         </div>
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.lancSrvCategoria') }}'" label="Voltar" theme="" icon=""/>
+                            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('categAtendimento.index') }}'" label="Voltar" theme="" icon=""/>
                         </div>
                     </div>
                 </x-slot>
             </x-adminlte-card>
         </form>
+        @if($acao != 'N')
+        <!-- Formulário escondido para exclusão do registro -->
+        <form id="delete-form-{{ $tipoCat }}" action="{{ route('categAtendimento.destroy', $dadosCat) }}" method="POST" style="display: none;">
+            @csrf
+            @method('DELETE')
+        </form>
+        @endif
     </div>
 </div>
 @stop
@@ -105,6 +115,18 @@
 |--------------------------------------------------------------------------
 -->
 <script>
+
+    //Capturar o clique no botão e submeter o formulário de exclusão                    
+    document.querySelectorAll('.btn_excluir').forEach(button => {
+        button.addEventListener('click', function() {
+            let setorId = this.getAttribute('data-id');
+            let token = this.getAttribute('data-token'); 
+            
+            // Submete o formulário oculto
+            document.getElementById('delete-form-' + setorId).submit();
+        });
+    });
+
     $(document).ready(function() {    
 
         //Verifica de onde veio a app, cadastro ou edição
@@ -116,40 +138,6 @@
             $(".btn_novo").hide();
             $(".btn_excluir").hide();
         }
-
-        //Ao clicar no botão salvar retira o disabled do campo para não ter problema no request do update do campo
-        $(".btn_salvar").click(function(){
-            $("#codigo").attr("disabled", false);
-        });
-    });
-</script>
-
-<!--
-|--------------------------------------------------------------------------
-| Eventos onClick da app
-|--------------------------------------------------------------------------
--->
-<script>
-    $(".btn_excluir").click(function(){
-        var id = $(this).attr("data-id");
-
-        var url = "{{ route('lancamentosSrvCategoria.destroy', [':id', 'ajax']) }}";
-        url = url.replace(':id', id);
-
-        $.ajax({
-            url: url,
-            dataType: "JSON",
-            type: 'POST',
-            data: {
-                '_token': $('meta[name=csrf-token]').attr("content"),
-                '_method': 'DELETE',
-                "id": id
-            },
-            success: function ()
-            {
-                window.location = "{{ route('lancamentosSrvCategoria.homeAjax') }}";
-            }
-        });
     });
 </script>
 

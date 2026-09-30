@@ -24,6 +24,7 @@
         "@fullcalendar/interaction": "^6.1.15",
         "@fullcalendar/resource-timeline": "^6.1.15",
         "@fullcalendar/timeline": "^6.1.15",
+        "bootstrap-select": "^1.13.18",
         "icheck-bootstrap": "^3.0.1",
         "toastr": "^2.1.4"
     }

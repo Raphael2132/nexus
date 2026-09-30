@@ -12,9 +12,9 @@
             <li class="breadcrumb-item active">
                 <a href="{{route('home.parFatNfs')}}">Parâmetros da NFS-e</a>
             </li>
-            @if($appOrigem == 'parametrosNfsConexao')
+            @if(session('glo_appOrigem') == 'parametrosNfsConexao')
                 <li class="breadcrumb-item active">
-                    <a href="{{route('parametrosNfsConexao')}}">Conexão da NFS-e</a>
+                    <a href="{{route('conexaoNFSe.index')}}">Conexão da NFS-e</a>
                 </li>
             @endif
             <li class="breadcrumb-item active">Manutenção Conexão da NFS-e</li>
@@ -26,15 +26,15 @@
 @section('content')
 <div class="d-flex justify-content-center">
     <div class="col-md-10">
-        <form method="post" action="{{route('parmetrosNfsCon.atualizar', [ 'empresa' => $dadosConexao[0]['conexao_empresa'] ] )}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('conexaoNFSe.update', [ 'conexaoNFSe' => $dadosConexao ] )}}" id="quickForm" novalidate="novalidate">
             @csrf 
-            @method('post')
+            @method('put')
             <x-adminlte-card title="Manutenção da Parametrização de Conexão da NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
-                    @php
-                        $nomeEmp = DB::table('cadastro_empresas')->selectRaw('empresa_nome')->where('empresa_codigo','=',$dadosConexao[0]->conexao_empresa)->get();
-                        $nomeEmpresa = $dadosConexao[0]->conexao_empresa.' - '.$nomeEmp[0]->empresa_nome;
+                    @php 
+                        $nomeEmp = DB::table('cadastro_empresas')->where('empresa_codigo',$dadosConexao->conexao_empresa)->first();
+                        $nomeEmpresa = $dadosConexao->conexao_empresa.' - '.$nomeEmp->empresa_nome;
                     @endphp
                     <!-- Nome -->
                     <x-adminlte-input name="empresa" type="text" value="{{$nomeEmpresa}}" fgroup-class="col-md-6" readonly>
@@ -44,9 +44,9 @@
                     </x-adminlte-input>
 
                     @php 
-                        if(!empty($dadosConexao[0]->conexao_provedor)){
-                          $nomePro = DB::table('parametros_fat_nfs_provedores')->selectRaw('provedor_desc')->where('provedor_id','=',$dadosConexao[0]->conexao_provedor)->get();
-                          $nomeProvedor = $dadosConexao[0]->conexao_provedor.' - '.$nomePro[0]->provedor_desc;
+                        if(!empty($dadosConexao->conexao_provedor)){
+                          $nomePro = DB::table('parametros_fat_nfs_provedores')->where('provedor_id',$dadosConexao->conexao_provedor)->first();
+                          $nomeProvedor = $dadosConexao->conexao_provedor.' - '.$nomePro->provedor_desc;
                         }else{
 							$nomeProvedor = '';
                         }
@@ -65,13 +65,13 @@
                         <x-slot name="label">
                             Ambiente <span style="color:red;">*</span>
                         </x-slot>
-                        <x-adminlte-options :options="['H' => 'Homologação', 'P' => 'Produção']" empty-option="Selecione..." selected="{{$dadosConexao[0]['conexao_ambiente']}}"/>
+                        <x-adminlte-options :options="['H' => 'Homologação', 'P' => 'Produção']" empty-option="Selecione..." selected="{{$dadosConexao->conexao_ambiente}}"/>
                     </x-adminlte-select>
                 </div>
 
                 <div class="row">
                     <!-- Inscrição Estadual -->
-                    <x-adminlte-input name="usuario" type="text" label="Usuario de Acesso" fgroup-class="col-md-6" value="{{$dadosConexao[0]['conexao_usuario']}}">
+                    <x-adminlte-input name="usuario" type="text" label="Usuario de Acesso" fgroup-class="col-md-6" value="{{$dadosConexao->conexao_usuario}}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text x-slot-nexus">
                                 <i class="fa-solid fa-user"></i>
@@ -80,7 +80,7 @@
                     </x-adminlte-input>
 
                     <!-- Inscrição Municipal -->
-                    <x-adminlte-input name="senha" type="text" label="Senha de Acesso" fgroup-class="col-md-6" value="{{$dadosConexao[0]['conexao_senha']}}">
+                    <x-adminlte-input name="senha" type="text" label="Senha de Acesso" fgroup-class="col-md-6" value="{{$dadosConexao->conexao_senha}}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text x-slot-nexus">
                                 <i class="fa-solid fa-key"></i>
@@ -91,7 +91,7 @@
 
                 <div class="row">
                     <!-- Inscrição Municipal -->
-                    <x-adminlte-input name="token" type="text" label="Token de Acesso" fgroup-class="col-md-6" value="{{$dadosConexao[0]['conexao_token']}}">
+                    <x-adminlte-input name="token" type="text" label="Token de Acesso" fgroup-class="col-md-6" value="{{$dadosConexao->conexao_token}}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text x-slot-nexus">
                                 <i class="fa-solid fa-unlock"></i>
@@ -100,7 +100,7 @@
                     </x-adminlte-input>
 
                     <!-- Inscrição Municipal -->
-                    <x-adminlte-input name="wsdl" type="text" label="Caminho URL / WSDL" fgroup-class="col-md-6" value="{{$dadosConexao[0]['conexao_wsdl']}}">
+                    <x-adminlte-input name="wsdl" type="text" label="Caminho URL / WSDL" fgroup-class="col-md-6" value="{{$dadosConexao->conexao_wsdl}}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text x-slot-nexus">
                                 <i class="fa-solid fa-route"></i>
@@ -113,8 +113,8 @@
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
                         <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                        @if($appOrigem == 'parametrosNfsConexao')
-                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('parametrosNfsConexao') }}'" label="Voltar" theme="info" icon=""/>
+                        @if(session('glo_appOrigem') == 'parametrosNfsConexao')
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('conexaoNFSe.index') }}'" label="Voltar" theme="info" icon=""/>
                         @else
                         <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.parFatNfs') }}'" label="Voltar" theme="info" icon=""/>
                         @endif

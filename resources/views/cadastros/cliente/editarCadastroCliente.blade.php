@@ -10,11 +10,11 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">
-                <a href="{{route('home.clientes')}}">Clientes</a>
+                <a href="{{route('cadastroCliente.index')}}">Clientes</a>
             </li>
-            @if($tipo != 'C')
+            @if($tipo != 'C' && $tipo != 'H')
             <li class="breadcrumb-item active">
-                <a href="{{route('clientes', ['tipo' => $tipo])}}">Clientes Cadastrados</a>
+                <a href="{{route('cadastroCliente.show', ['cadastroCliente' => $tipo])}}">Clientes Cadastrados</a>
             </li>
             @endif
             <li class="breadcrumb-item active">Manutenção do Cliente</li>
@@ -28,7 +28,7 @@
     <div class="card card-tabs">
         <div class="card-header card-nexus p-0 pt-1">
             <ul class="nav nav-tabs" id="custom-tabs-two-tab" role="tablist">
-                <li class="pt-2 px-3"><h3 class="card-title">Manutenção de Clientes</h3></li>
+                <li class="pt-2 px-3"><h3 class="card-title">Manutenção do Cliente</h3></li>
                 <li class="nav-item">
                     <a class="nav-link active" id="custom-tabs-two-dados-pessoais-tab" data-toggle="pill" href="#custom-tabs-two-dados-pessoais" role="tab" aria-controls="custom-tabs-two-dados-pessoais" aria-selected="true">Dados Pessoais</a>
                 </li>
@@ -53,9 +53,9 @@
 
                 <!-- Aba Dados Pessoais -->
                 <div class="tab-pane fade show active" id="custom-tabs-two-dados-pessoais" role="tabpanel" aria-labelledby="custom-tabs-two-dados-pessoais-tab">
-                    <form method="post" action="{{route('cliente.atualizar', ['cliente' => $dadosCliente[0]['cliente_id'], 'cliente_cod' => $dadosCliente[0]['cliente_codigo'], 'atualiza' => 'dados', 'tipo' => $tipo])}}" id="formulario-dados" novalidate="novalidate">
+                    <form method="post" action="{{route('cadastroCliente.update', ['cadastroCliente' => $dadosCliente, 'atualiza' => 'dados', 'tipo' => $tipo])}}" id="formulario-dados" novalidate="novalidate">
                     @csrf 
-                    @method('post')
+                    @method('put')
 
                         <div class="row">
                             <!-- Tipo de Cadastro -->
@@ -63,7 +63,7 @@
                                 <x-slot name="label">
                                     Tipo de Cadastro <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['C' => 'Cliente', 'F' => 'Fornecedor']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_tipo_cadastro'] }}"/>
+                                <x-adminlte-options :options="['C' => 'Cliente', 'F' => 'Fornecedor']" empty-option="Selecione..." selected="{{$dadosCliente->cliente_tipo_cadastro }}"/>
                             </x-adminlte-select>
 
                             <!-- Tipo de Pessoa -->
@@ -71,11 +71,11 @@
                                 <x-slot name="label">
                                     Tipo de Pessoa <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['F' => 'Física', 'J' => 'Jurídica']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_tipo_pessoa'] }}"/>
+                                <x-adminlte-options :options="['F' => 'Física', 'J' => 'Jurídica']" empty-option="Selecione..." selected="{{$dadosCliente->cliente_tipo_pessoa }}"/>
                             </x-adminlte-select>
 
                             <!-- Código do cliente -->
-                            <x-adminlte-input name="codCliente" type="text" placeholder="Nome Completo" fgroup-class="col-md-2" value="{{$dadosCliente[0]['cliente_codigo'] }}">
+                            <x-adminlte-input name="codCliente" type="text" placeholder="Nome Completo" fgroup-class="col-md-2" value="{{$dadosCliente->cliente_codigo }}">
                                 <x-slot name="label">
                                     Código do Cliente <span style="color:red;">*</span>
                                 </x-slot>
@@ -84,7 +84,7 @@
 
                         <div class="row">
                             <!-- Nome -->
-                            <x-adminlte-input name="nome" type="text" placeholder="Nome Completo" fgroup-class="col-md-8" value="{{$dadosCliente[0]['cliente_nome'] }}">
+                            <x-adminlte-input name="nome" type="text" placeholder="Nome Completo" fgroup-class="col-md-8" value="{{$dadosCliente->cliente_nome }}">
                                 <x-slot name="label">
                                     Nome <span style="color:red;">*</span>
                                 </x-slot>
@@ -96,7 +96,7 @@
                             </x-adminlte-input>
 
                             <!-- CPF / CNPJ -->
-                            <x-adminlte-input name="cpfCnpj" type="text" fgroup-class="col-md-4" value="{{$dadosCliente[0]['cliente_cpf_cnpj'] }}">
+                            <x-adminlte-input name="cpfCnpj" type="text" fgroup-class="col-md-4" value="{{$dadosCliente->cliente_cpf_cnpj }}">
                                 <x-slot name="label">
                                     CPF / CNPJ <span style="color:red;">*</span>
                                 </x-slot>
@@ -112,7 +112,7 @@
                         <div id="dadosPessoal">
                             <div class="row">
                                 <!-- RG -->
-                                <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosCliente[0]['cliente_rg'] }}">
+                                <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosCliente->cliente_rg }}">
                                     <x-slot name="prependSlot">
                                         <div class="input-group-text x-slot-nexus">
                                             <i class="fa-solid fa-id-card"></i>
@@ -123,8 +123,8 @@
                                 @php
                                     $config = Helper::dtRangeDataPtBR();
 
-                                    if(!empty($dadosCliente[0]['cliente_data_nascimento'])){
-                                        $data_nascimento = date('d/m/Y', strtotime($dadosCliente[0]['cliente_data_nascimento']));
+                                    if(!empty($dadosCliente->cliente_data_nascimento)){
+                                        $data_nascimento = date('d/m/Y', strtotime($dadosCliente->cliente_data_nascimento));
                                     }else{
                                         $data_nascimento = '';
                                     }
@@ -141,7 +141,7 @@
 
                                 <!-- Sexo -->
                                 <x-adminlte-select name="sexo" label="Sexo" fgroup-class="col-md-4">
-                                    <x-adminlte-options :options="['M' => 'Masculino', 'F' => 'Feminino']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_sexo'] }}" />
+                                    <x-adminlte-options :options="['M' => 'Masculino', 'F' => 'Feminino']" empty-option="Selecione..." selected="{{$dadosCliente->cliente_sexo }}" />
                                 </x-adminlte-select>
                             </div>
                         </div>
@@ -150,18 +150,18 @@
                         <div id="dadosJuridicos">
                             <div class="row">
                                 <!-- Inscrição Estadual -->
-                                <x-adminlte-input name="insEstadual" type="text" label="Inscrição Estadual" fgroup-class="col-md-6" value="{{$dadosCliente[0]['cliente_insc_estadual'] }}"></x-adminlte-input>
+                                <x-adminlte-input name="insEstadual" type="text" label="Inscrição Estadual" fgroup-class="col-md-6" value="{{$dadosCliente->cliente_insc_estadual }}"></x-adminlte-input>
 
                                 <!-- Inscrição Municipal -->
-                                <x-adminlte-input name="insMunicipal" type="number" label="Inscrição Municipal" fgroup-class="col-md-6" value="{{$dadosCliente[0]['cliente_insc_municipal'] }}"></x-adminlte-input>
+                                <x-adminlte-input name="insMunicipal" type="number" label="Inscrição Municipal" fgroup-class="col-md-6" value="{{$dadosCliente->cliente_insc_municipal }}"></x-adminlte-input>
                             </div>
 
                             <div class="row">
                                 @php
                                     $config = Helper::dtRangeDataPtBR();
                                     
-                                    if(!empty($dadosCliente[0]['cliente_dt_fundacao'])){
-                                        $data_fundacao = date('d/m/Y', strtotime($dadosCliente[0]['cliente_dt_fundacao']));
+                                    if(!empty($dadosCliente->cliente_dt_fundacao)){
+                                        $data_fundacao = date('d/m/Y', strtotime($dadosCliente->cliente_dt_fundacao));
                                     }else{
                                         $data_fundacao = '';
                                     }
@@ -177,57 +177,31 @@
                                 @push('js')<script>$(() => $("#dataFundacao").val('{{ $data_fundacao }}'))</script>@endpush
 
                                 <x-adminlte-select name="microEmp" label="Micro Empresa" fgroup-class="col-md-3">
-                                    <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_micro_emp'] }}" />
+                                    <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosCliente->cliente_micro_emp }}" />
                                 </x-adminlte-select>
 
                                 <x-adminlte-select name="ramoAtiv" label="Ramo de Atividade" fgroup-class="col-md-3">
-                                    <x-adminlte-options :options="['C' => 'Comércio', 'I' => 'Indústria', 'S' => 'Serviços', 'O' => 'Outros']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_ramo_atividade'] }}" />
+                                    <x-adminlte-options :options="['C' => 'Comércio', 'I' => 'Indústria', 'S' => 'Serviços', 'O' => 'Outros']" empty-option="Selecione..." selected="{{$dadosCliente->cliente_ramo_atividade }}" />
                                 </x-adminlte-select>
 
                                 <x-adminlte-select name="orgPub" label="Órgão Público" fgroup-class="col-md-3">
-                                    <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_org_publico'] }}" />
+                                    <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosCliente->cliente_org_publico }}" />
                                 </x-adminlte-select>
                             </div>
                             <div class="row">
                                 @php 
-                                    $cnaeDiv = DB::table('cnae_divisoes')->orderby('cnaediv_div', 'asc')->get();
+                                    $array_div = HelperArraySelect::arrayCNAEDivisoes(1,1);
 
-                                    $new_array1 =[];
-                                    $new_array2 =[];
+                                    if(!empty($dadosCliente->cliente_cnae)){
 
-                                    foreach ($cnaeDiv as $div) {
-                                        $new_array1[] = $div->cnaediv_div;
-                                        $new_array2[] = $div->cnaediv_div.' - '.$div->cnaediv_desc;
-                                    }
-                                    $array_div = array_combine($new_array1, $new_array2);
-
-
-                                    if(!empty($dadosCliente[0]['cliente_cnae'])){
-
-                                        $dados_cnaeCod = DB::table('cnae_codigos')->where('cnaesub_cod', $dadosCliente[0]['cliente_cnae'])->first();
+                                        $dados_cnaeCod = DB::table('cnae_codigos')->where('cnaesub_cod', $dadosCliente->cliente_cnae)->first();
                                         
-                                        $dados_cnaeGrp = DB::table('cnae_grupos')->where('cnaegrp_div', $dados_cnaeCod->cnaesub_div)->orderby('cnaegrp_grp', 'asc')->get();
-                                        $new_array1_grp =[];
-                                        $new_array2_grp =[];
-
-                                        foreach ($dados_cnaeGrp as $grp) {
-                                            $new_array1_grp[] = $grp->cnaegrp_grp;
-                                            $new_array2_grp[] = $grp->cnaegrp_grp.' - '.$grp->cnaegrp_desc;
-                                        }
-                                        $array_grp = array_combine($new_array1_grp, $new_array2_grp);
+                                        $array_grp = HelperArraySelect::arrayCNAEGrupos($dados_cnaeCod->cnaesub_div,1,1);
 
                                         $divCNAE = $dados_cnaeCod->cnaesub_div;
                                         $grpCNAE = $dados_cnaeCod->cnaesub_grp;
 
-                                        $dados_cnaeCod = DB::table('cnae_codigos')->where('cnaesub_div', $divCNAE)->where('cnaesub_grp', $grpCNAE)->orderby('cnaesub_cod', 'asc')->get();
-                                        $new_array1_cod =[];
-                                        $new_array2_cod =[];
-
-                                        foreach ($dados_cnaeCod as $sub) {
-                                            $new_array1_cod[] = $sub->cnaesub_cod;
-                                            $new_array2_cod[] = $sub->cnaesub_cod.' - '.$sub->cnaesub_desc;
-                                        }
-                                        $array_cod = array_combine($new_array1_cod, $new_array2_cod);
+                                        $array_cod = HelperArraySelect::arrayCNAECodigos($divCNAE, $grpCNAE, 1, 1);
 
                                     }else{
                                         $array_cod = null;
@@ -254,7 +228,7 @@
                                     <x-slot name="label">
                                         CNAE Código
                                     </x-slot>
-                                    <x-adminlte-options :options="$array_cod" empty-option="Selecione..." selected="{{ $dadosCliente[0]['cliente_cnae'] }}"/>
+                                    <x-adminlte-options :options="$array_cod" empty-option="Selecione..." selected="{{ $dadosCliente->cliente_cnae }}"/>
                                 </x-adminlte-select>
                             </div>
                         </div>
@@ -266,15 +240,15 @@
 
                 <!-- Aba dos dados do Contato do cliente -->
                 <div class="tab-pane fade" id="custom-tabs-two-contato" role="tabpanel" aria-labelledby="custom-tabs-two-contato-tab">
-                    <form method="post" action="{{route('cliente.atualizar', ['cliente' => $dadosCliente[0]['cliente_id'], 'cliente_cod' => $dadosCliente[0]['cliente_codigo'], 'atualiza' => 'contato', 'tipo' => $tipo])}}" id="quickForm2" novalidate="novalidate">
+                    <form method="post" action="{{route('cadastroCliente.update', ['cadastroCliente' => $dadosCliente, 'atualiza' => 'contato', 'tipo' => $tipo])}}" id="quickForm2" novalidate="novalidate">
                     @csrf 
-                    @method('post')
+                    @method('put')
                         <div class="row">
                             <x-adminlte-select name="prefContato" fgroup-class="col-md-4">
                                 <x-slot name="label">
                                     Preferência de Contato <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['EMA' => 'Email', 'TCO' => 'Telefone Comercial', 'TCE' => 'Telefone Celular', 'TRE' => 'Telefone Residencial', 'WTA' => 'WhatsApp']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_pref_contato']}}"/>
+                                <x-adminlte-options :options="['EMA' => 'Email', 'TCO' => 'Telefone Comercial', 'TCE' => 'Telefone Celular', 'TRE' => 'Telefone Residencial', 'WTA' => 'WhatsApp']" empty-option="Selecione..." selected="{{ $dadosCliente->cliente_pref_contato }}"/>
                             </x-adminlte-select>
 
                             <!-- Tipo do Email -->
@@ -282,11 +256,11 @@
                                 <x-slot name="label">
                                     Tipo do Email <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['P' => 'Pessoal', 'C' => 'Comercial']" empty-option="Selecione..." selected="{{$dadosCliente[0]['cliente_tipo_email']}}"/>
+                                <x-adminlte-options :options="['P' => 'Pessoal', 'C' => 'Comercial']" empty-option="Selecione..." selected="{{$dadosCliente->cliente_tipo_email}}"/>
                             </x-adminlte-select>
 
                             <!-- Email -->
-                            <x-adminlte-input name="email" type="email" placeholder="email@exemplo.com" fgroup-class="col-md-4" value="{{$dadosCliente[0]['cliente_email'] }}">
+                            <x-adminlte-input name="email" type="email" placeholder="email@exemplo.com" fgroup-class="col-md-4" value="{{$dadosCliente->cliente_email}}">
                                 <x-slot name="label">
                                     Email <span style="color:red;">*</span>
                                 </x-slot>
@@ -300,7 +274,7 @@
 
                         <div class="row">
                             <!-- Telefone Residencial -->
-                            <x-adminlte-input name="telResidencial" type="text" label="Telefone Residencial" fgroup-class="col-md-4" value="{{$dadosCliente[0]['cliente_tel_residencial'] }}">
+                            <x-adminlte-input name="telResidencial" type="text" label="Telefone Residencial" fgroup-class="col-md-4" value="{{ $dadosCliente->cliente_tel_residencial }}">
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text x-slot-nexus">
                                         <i class="fas fa-phone"></i>
@@ -309,7 +283,7 @@
                             </x-adminlte-input>
 
                             <!-- Telefone Celular -->
-                            <x-adminlte-input name="telCelular" type="text" label="Telefone Celular" fgroup-class="col-md-4" value="{{$dadosCliente[0]['cliente_tel_celular'] }}">
+                            <x-adminlte-input name="telCelular" type="text" label="Telefone Celular" fgroup-class="col-md-4" value="{{ $dadosCliente->cliente_tel_celular }}">
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-mobile-retro"></i>
@@ -318,7 +292,7 @@
                             </x-adminlte-input>
 
                             <!-- Telefone Comercial -->
-                            <x-adminlte-input name="telComercial" type="text" label="Telefone Comercial" fgroup-class="col-md-4" value="{{$dadosCliente[0]['cliente_tel_comercial'] }}">
+                            <x-adminlte-input name="telComercial" type="text" label="Telefone Comercial" fgroup-class="col-md-4" value="{{ $dadosCliente->cliente_tel_comercial }}">
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-shop"></i>
@@ -338,7 +312,7 @@
 
                         @php
                             //Busca os dados dos endereços cadastrados do cliente
-                            $data = DB::table('cadastro_cliente_enderecos')->where('endereco_cliente_codigo','=',$dadosCliente[0]['cliente_codigo'])->orderBy('endereco_seq', 'asc')->get();
+                            $data = DB::table('cadastro_cliente_enderecos')->where('endereco_cliente_codigo', $dadosCliente->cliente_codigo)->orderBy('endereco_seq', 'asc')->get();
                                 
                             if(empty($data[0])){
                         @endphp
@@ -387,7 +361,7 @@
                                         </i>
                                         <!-- Gera a div dos botões do card -->
                                         <div style="padding: 10px; height:30px;">
-                                            <form method="post" action="{{ route('enderecoCliente.destroy', ['endereco' => $endereco->endereco_id, 'tipo' => $tipo]) }}" style="float: left;" >
+                                            <form method="post" action="{{ route('clienteEndereco.destroy', ['clienteEndereco' => $endereco->endereco_id, 'tipo' => $tipo]) }}" style="float: left;" >
                                             @csrf 
                                             @method('delete')
                                                 <x-adminlte-button title="Excluir Endereço" class="btn-sm" theme="danger" icon="fa fa-lg fa-fw fa-trash" type="submit" style="margin-right: 5px;"/>
@@ -396,9 +370,9 @@
                                                 if($endereco->endereco_principal == "N"){
                                                     $endPrincipal = json_encode($endereco);
                                             @endphp
-                                            <form method="get" action="{{ route('enderecoCliente.principal', ['endereco' => $endereco->endereco_id, 'cliente_cod' => $endereco->endereco_cliente_codigo, 'tipo' => $tipo]) }}" style="float: left;">
+                                            <form method="post" action="{{ route('clienteEndereco.update', ['clienteEndereco' => $endereco->endereco_id, 'tipo' => $tipo]) }}" style="float: left;">
                                             @csrf 
-                                            @method('get')
+                                            @method('put')
                                                 <x-adminlte-button title="Tornar Principal" class="btn-sm" label="Tornar Principal" theme="success" icon="fa-solid fa-location-dot" type="submit"/>
                                             </form>
                                             @php 
@@ -416,15 +390,16 @@
                            
                         <!-- Gera o Modal com os campos da inserção dos dados do endereço do cliente -->
                         <div>
-                            <form method="post" action="{{route('enderecoCliente.inserir',['tipo' => $tipo])}}" id="formulario-endereco" novalidate="novalidate">
+                            <form method="post" action="{{route('clienteEndereco.store')}}" id="formulario-endereco" novalidate="novalidate">
                             @csrf 
                             @method('post')    
                                 <!-- Criação do Modal -->                           
                                 <x-adminlte-modal id="modalCustom" title="Novo Endereço" size="lg" theme="modal-nexus" icon="fa-solid fa-address-card" v-centered static-backdrop scrollable>
                                     <div style="height:400px;">
                                         <!-- Campos escondidoscom o id e codigo do cliente para o request -->  
-                                        <input id="cliente_codigo" type="hidden" value="{{ $dadosCliente[0]['cliente_codigo'] }}" name="cliente_codigo">
+                                        <input id="cliente_codigo" type="hidden" value="{{ $dadosCliente->cliente_codigo }}" name="cliente_codigo">
                                         <input id="ibgeCodMun" type="hidden" name="ibgeCodMun">
+                                        <input id="tipo" type="hidden" value="{{ $tipo }}" name="tipo">
                                     
                                         <!-- CEP -->
                                         <x-adminlte-input name="cep" type="text" fgroup-class="col-md-4">
@@ -490,27 +465,8 @@
                                             </x-adminlte-input>
 
                                             @php
-                                                $dados_ibge = DB::table('ibge_estados')->orderby('ibge_sigla')->get();
-
-                                                $new_array1 =[];
-                                                $new_array2 =[];
-
-                                                foreach ($dados_ibge as $ibge) {
-                                                    $new_array1[] = $ibge->ibge_sigla;
-                                                    $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
-                                                }
-                                                $array_opt = array_combine($new_array1, $new_array2);
-
-                                                $dadosPais = DB::table('ibge_paises')->orderby('ibge_pais_nome')->get();
-
-                                                $new_array_pais =[];
-                                                $new_array_pais2 =[];
-
-                                                foreach ($dadosPais as $pais) {
-                                                    $new_array_pais[] = $pais->ibge_pais_codigo;
-                                                    $new_array_pais2[] = $pais->ibge_pais_nome;
-                                                }
-                                                $array_opt_pais = array_combine($new_array_pais, $new_array_pais2);
+                                                $array_opt = HelperArraySelect::arrayEstados(1,1);
+                                                $array_opt_pais = HelperArraySelect::arrayPaises(1,2);
                                             @endphp
 
                                             <!-- Estado -->
@@ -549,11 +505,11 @@
         <div class="card-footer">
             <div class="d-flex justify-content-between w-100">
                 <div class="d-flex">
-                    <form method="get" action="{{ route('cliente.cadastro', ['tipo' => $tipo]) }}" style="float: left; margin-right: 2px;">
+                    <form method="get" action="{{ route('cadastroCliente.create') }}" style="float: left; margin-right: 2px;">
                     @csrf 
                         <x-adminlte-button class="btn-nexus" label="Novo Cliente" theme="" icon="fa-solid fa-plus" type="submit"/>
                     </form>
-                    <form method="post" action="{{ route('cliente.destroy', ['cliente' => $dadosCliente[0]]) }}" style="float: left;margin-left: 2px;">
+                    <form method="post" action="{{ route('cadastroCliente.destroy', ['cadastroCliente' => $dadosCliente]) }}" style="float: left;margin-left: 2px;">
                     @csrf 
                     @method('delete')
                         <x-adminlte-button class="btn-nexus" label="Excluir Cliente" theme="" icon="fa-solid fa-trash" type="submit"/>
@@ -561,9 +517,9 @@
                 </div>
                 <div class="d-flex">
                     @if($tipo != 'C')
-                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('clientes', ['tipo' => $tipo]) }}'" label="Voltar" theme="" icon=""/>
+                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('cadastroCliente.show', ['cadastroCliente' => $tipo]) }}'" label="Voltar" theme="" icon=""/>
                     @else
-                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.clientes') }}'" label="Voltar" theme="" icon=""/>
+                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('cadastroCliente.index') }}'" label="Voltar" theme="" icon=""/>
                     @endif
                 </div>
             </div>
@@ -701,7 +657,7 @@
             if( $(this).val() ) {
                 var cod = $(this).val();
 
-                var url = "{{ route('cliente.carregaCnaeGrpAjax', [':cod']) }}";
+                var url = "{{ route('ajax.carregaGruposCnaeAjax', [':cod']) }}";
                 url = url.replace(':cod', cod);
 
                 $.ajax({
@@ -738,7 +694,7 @@
                 var grp = $(this).val();
                 var div = $('#cnaeDiv').val();
 
-                var url = "{{ route('cliente.carregaCnaeCodAjax', [':div', ':grp']) }}";
+                var url = "{{ route('ajax.carregaCodigosCnaeAjax', [':div', ':grp']) }}";
                 url = url.replace(':grp', grp);
                 url = url.replace(':div', div);
 

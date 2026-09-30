@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Usuarios')
+@section('title', 'Cadastro de Usuários')
 
 @section('content_header')
 <div class="row mb-2">
@@ -10,11 +10,11 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">
-                <a href="{{route('home.usuarios')}}">Usuários</a>
+                <a href="{{route('cadastroUsuario.index')}}">Usuários</a>
             </li>
-            @if($tipo != 'newCad' && $tipo != 'editCad')
+            @if($tipo != 'newCad' && $tipo != 'homeEdit')
                 <li class="breadcrumb-item active">
-                    <a href="{{route('usuarios', ['tipo' => $tipo])}}">Usuários Cadastrados</a>
+                    <a href="{{route('cadastroUsuario.show', ['cadastroUsuario' => $tipo])}}">Usuários Cadastrados</a>
                 </li>
             @endif
             <li class="breadcrumb-item active">Manutenção do Usuário</li>
@@ -29,7 +29,7 @@
     $altera_permissoes_acesso = Auth::user()->usuario_altera_permissoes_acesso;
     $tipo_usuario = Auth::user()->usuario_tipo;
 
-    $dadosModulo = DB::table('parametros_sis_modulos')->where('modulo_empresa_codigo',$dadosUsuario[0]['usuario_empresa'])->first();
+    $dadosModulo = DB::table('parametros_sis_modulos')->where('modulo_empresa_codigo',$dadosUsuario->usuario_empresa)->first();
 
     $moduloServico = $dadosModulo->modulo_servico;
     $moduloConProd = $dadosModulo->modulo_controle_producao;
@@ -58,6 +58,9 @@
                 <li class="nav-item">
                     <a class="nav-link" id="custom-tabs-two-permissoes-tab" data-toggle="pill" href="#custom-tabs-two-permissoes" role="tab" aria-controls="custom-tabs-two-permissoes" aria-selected="false">Permissões</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="custom-tabs-two-financeiro-tab" data-toggle="pill" href="#custom-tabs-two-financeiro" role="tab" aria-controls="custom-tabs-two-financeiro" aria-selected="false">Financeiro</a>
+                </li>
                 <div class="card-tools ml-auto">          
                     <button type="button" class="btn btn-tool" data-card-widget="maximize">
                         <i class="fas fa-lg fa-expand"></i>     
@@ -73,28 +76,19 @@
 
                 <!-- Aba Dados Gerais -->
                 <div class="tab-pane fade show active" id="custom-tabs-two-dados-gerais" role="tabpanel" aria-labelledby="custom-tabs-two-dados-gerais-tab">
-                    <form method="post" action="{{route('usuario.atualizar', ['usuario' => $dadosUsuario[0]['id'], 'usuario_cod' => $dadosUsuario[0]['usuario_codigo'], 'atualiza' => 'dados', 'tipo' => $tipo])}}" id="formulario-dados" novalidate="novalidate">
+                    <form method="post" action="{{ route('cadastroUsuario.update', ['cadastroUsuario' => $dadosUsuario, 'atualiza' => 'dados', 'tipo' => $tipo]) }}" id="formulario-dados" novalidate="novalidate">
                     @csrf 
-                    @method('post')
+                    @method('put')
                         <div class="row">
                             @php 
-                                $data = DB::table('cadastro_empresas')->select('empresa_codigo', 'empresa_nome')->where('empresa_codigo', $dadosUsuario[0]['usuario_empresa'])->get();
-
-                                $new_array1 =[];
-                                $new_array2 =[];
-
-                                foreach ($data as $empresa) {
-                                    $new_array1[] = $empresa->empresa_codigo;
-                                    $new_array2[] = $empresa->empresa_codigo.' - '.$empresa->empresa_nome;
-                                }
-                                $array_opt = array_combine($new_array1, $new_array2);
+                                $array_opt = HelperArraySelect::arrayEmpresas(1,1);
                             @endphp
                             <!-- Empresa -->
                             <x-adminlte-select name="empUsuario" fgroup-class="col-md-4">
                                 <x-slot name="label">
                                     Empresa <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_empresa']}}"/>
+                                <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$dadosUsuario->usuario_empresa}}"/>
                             </x-adminlte-select>
 
                             <!-- Tipo Usuario -->
@@ -102,7 +96,7 @@
                                 <x-slot name="label">
                                     Tipo de Usuário <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['ADM' => 'Administrador', 'M' => 'Master', 'PR' => 'Prestador', 'CO' => 'Consultor', 'VE' => 'Vendedor', 'CX' => 'Caixa', 'TE' => 'Tesouraria']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_tipo']}}"/>
+                                <x-adminlte-options :options="['ADM' => 'Administrador', 'M' => 'Master', 'PR' => 'Prestador', 'CO' => 'Consultor', 'VE' => 'Vendedor', 'CX' => 'Caixa', 'TE' => 'Tesouraria']" empty-option="Selecione..." selected="{{$dadosUsuario->usuario_tipo}}"/>
                             </x-adminlte-select>
 
                             <!-- Status do Usuario -->
@@ -110,20 +104,20 @@
                                 <x-slot name="label">
                                     Status <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_status']}}"/>
+                                <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Desativado']" empty-option="Selecione..." selected="{{$dadosUsuario->usuario_status}}"/>
                             </x-adminlte-select>
                         </div>
 
                         <div class="row">
                             <!-- Código do Usuário -->
-                            <x-adminlte-input name="codigo" type="text" fgroup-class="col-md-4" value="{{$dadosUsuario[0]['usuario_codigo']}}" readonly>
+                            <x-adminlte-input name="codigo" type="text" fgroup-class="col-md-4" value="{{$dadosUsuario->usuario_codigo}}" readonly>
                                 <x-slot name="label">
                                     Código do Usuário <span style="color:red;">*</span>
                                 </x-slot>
                             </x-adminlte-input>
 
                             <!-- Nome -->
-                            <x-adminlte-input name="nome" type="text" placeholder="Nome do Usuário" fgroup-class="col-md-4" value="{{$dadosUsuario[0]['name']}}">
+                            <x-adminlte-input name="nome" type="text" placeholder="Nome do Usuário" fgroup-class="col-md-4" value="{{$dadosUsuario->name}}">
                                 <x-slot name="label">
                                     Nome do Usuário <span style="color:red;">*</span>
                                 </x-slot>
@@ -135,7 +129,7 @@
                             </x-adminlte-input>
 
                             <!-- CPF -->
-                            <x-adminlte-input name="cpf" type="text" fgroup-class="col-md-4" value="{{$dadosUsuario[0]['usuario_cpf'] }}">
+                            <x-adminlte-input name="cpf" type="text" fgroup-class="col-md-4" value="{{$dadosUsuario->usuario_cpf}}">
                                 <x-slot name="label">
                                     CPF <span style="color:red;">*</span>
                                 </x-slot>
@@ -150,7 +144,7 @@
                         <div class="row">
 
                             <!-- RG -->
-                            <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosUsuario[0]['usuario_rg'] }}">
+                            <x-adminlte-input name="rg" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosUsuario->usuario_rg}}">
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-id-card"></i>
@@ -161,8 +155,8 @@
                             @php
                                 $config = Helper::dtRangeDataPtBR();
                                 
-                                if(!empty($dadosUsuario[0]['usuario_data_nascimento'])){
-                                    $data_nascimento = date('d/m/Y', strtotime($dadosUsuario[0]['usuario_data_nascimento']));
+                                if(!empty($dadosUsuario->usuario_data_nascimento)){
+                                    $data_nascimento = date('d/m/Y', strtotime($dadosUsuario->usuario_data_nascimento));
                                 }else{
                                     $data_nascimento = '';
                                 }
@@ -179,7 +173,7 @@
 
                             <!-- Sexo -->
                             <x-adminlte-select name="sexo" label="Sexo" fgroup-class="col-md-4">
-                                <x-adminlte-options :options="['M' => 'Masculino', 'F' => 'Feminino']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_sexo'] }}" />
+                                <x-adminlte-options :options="['M' => 'Masculino', 'F' => 'Feminino']" empty-option="Selecione..." selected="{{$dadosUsuario->usuario_sexo}}" />
                             </x-adminlte-select>
                         </div>
 
@@ -191,9 +185,9 @@
 
                 <!-- Aba dos dados da senha do usuario -->
                 <div class="tab-pane fade" id="custom-tabs-two-senha" role="tabpanel" aria-labelledby="custom-tabs-two-senha">
-                    <form method="post" action="{{route('usuario.atualizar', ['usuario' => $dadosUsuario[0]['id'], 'usuario_cod' => $dadosUsuario[0]['usuario_codigo'], 'atualiza' => 'senha', 'tipo' => $tipo])}}" id="formulario-senha" novalidate="novalidate">
+                    <form method="post" action="{{route('cadastroUsuario.update', ['cadastroUsuario' => $dadosUsuario, 'atualiza' => 'senha', 'tipo' => $tipo])}}" id="formulario-senha" novalidate="novalidate">
                     @csrf 
-                    @method('post')
+                    @method('put')
                         <div class="row">
                             <div class="d-flex justify-content-center col-md-12">
                                 <div class="col-md-4">
@@ -201,10 +195,10 @@
                                         <div class="text-muted">
                                             <div class="row">
                                                 <p class="text-sm col-md-6">Usuário
-                                                    <b class="d-block">{{ $dadosUsuario[0]['usuario_codigo'].' - '.$dadosUsuario[0]['name'] }}</b>
+                                                    <b class="d-block">{{ $dadosUsuario->usuario_codigo.' - '.$dadosUsuario->name }}</b>
                                                 </p>
                                                 <p class="text-sm col-md-6">Email
-                                                    <b class="d-block">{{ $dadosUsuario[0]['email'] }}</b>
+                                                    <b class="d-block">{{ $dadosUsuario->email }}</b>
                                                 </p>
                                             </div>
                                         </div>
@@ -249,12 +243,12 @@
 
                 <!-- Aba dos dados do Contato do cliente -->
                 <div class="tab-pane fade" id="custom-tabs-two-contato" role="tabpanel" aria-labelledby="custom-tabs-two-contato-tab">
-                    <form method="post" action="{{route('usuario.atualizar', ['usuario' => $dadosUsuario[0]['id'], 'usuario_cod' => $dadosUsuario[0]['usuario_codigo'], 'atualiza' => 'contato', 'tipo' => $tipo])}}" id="formulario-contato" novalidate="novalidate">
+                    <form method="post" action="{{route('cadastroUsuario.update', ['cadastroUsuario' => $dadosUsuario, 'atualiza' => 'contato', 'tipo' => $tipo])}}" id="formulario-contato" novalidate="novalidate">
                     @csrf 
-                    @method('post')
+                    @method('put')
                         <div class="row">
                             <!-- Telefone Residencial -->
-                            <x-adminlte-input name="telResidencial" type="text" label="Telefone Residencial" fgroup-class="col-md-6" value="{{$dadosUsuario[0]['usuario_tel_residencial'] }}">
+                            <x-adminlte-input name="telResidencial" type="text" label="Telefone Residencial" fgroup-class="col-md-6" value="{{$dadosUsuario->usuario_tel_residencial}}">
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text x-slot-nexus">
                                         <i class="fas fa-phone"></i>
@@ -263,7 +257,7 @@
                             </x-adminlte-input>
 
                             <!-- Telefone Celular -->
-                            <x-adminlte-input name="telCelular" type="text" label="Telefone Celular" fgroup-class="col-md-6" value="{{$dadosUsuario[0]['usuario_tel_celular'] }}">
+                            <x-adminlte-input name="telCelular" type="text" label="Telefone Celular" fgroup-class="col-md-6" value="{{$dadosUsuario->usuario_tel_celular}}">
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-mobile-retro"></i>
@@ -278,11 +272,11 @@
                                 <x-slot name="label">
                                     Tipo do Email <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['P' => 'Pessoal', 'C' => 'Comercial']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_tipo_email']}}"/>
+                                <x-adminlte-options :options="['P' => 'Pessoal', 'C' => 'Comercial']" empty-option="Selecione..." selected="{{$dadosUsuario->usuario_tipo_email}}"/>
                             </x-adminlte-select>
 
                             <!-- Email -->
-                            <x-adminlte-input name="email" type="email" placeholder="email@exemplo.com" fgroup-class="col-md-8" value="{{$dadosUsuario[0]['email']}}">
+                            <x-adminlte-input name="email" type="email" placeholder="email@exemplo.com" fgroup-class="col-md-8" value="{{$dadosUsuario->email}}">
                                 <x-slot name="label">
                                     Email <span style="color:red;">*</span>
                                 </x-slot>
@@ -306,7 +300,7 @@
 
                         @php
                             //Busca os dados dos endereços cadastrados do usuario
-                            $data = DB::table('cadastro_usuario_enderecos')->where('endereco_usuario_codigo','=',$dadosUsuario[0]['usuario_codigo'])->orderBy('endereco_principal', 'desc')->orderBy('endereco_seq', 'asc')->get();
+                            $data = DB::table('cadastro_usuario_enderecos')->where('endereco_usuario_codigo',$dadosUsuario->usuario_codigo)->orderBy('endereco_principal', 'desc')->orderBy('endereco_seq', 'asc')->get();
 
                             if(empty($data[0])){
                         @endphp
@@ -361,7 +355,7 @@
                                         </i>
                                         <!-- Gera a div dos botões do card -->
                                         <div style="padding: 10px; height:30px;">
-                                            <form method="post" action="{{ route('enderecoUsuario.destroy', ['endereco' => $endereco->endereco_id, 'tipo' => $tipo]) }}" style="float: left;" >
+                                            <form method="post" action="{{ route('usuarioEndereco.destroy', ['usuarioEndereco' => $endereco->endereco_id, 'tipo' => $tipo]) }}" style="float: left;" >
                                             @csrf 
                                             @method('delete')
                                                 <x-adminlte-button class="btn-sm" theme="danger" icon="fa fa-lg fa-fw fa-trash" type="submit" title="Excluir Endereço" style="margin-right: 5px;"/>
@@ -370,9 +364,9 @@
                                                 if($endereco->endereco_principal == "N"){
                                                     $endPrincipal = json_encode($endereco);
                                             @endphp
-                                            <form method="get" action="{{ route('enderecoUsuario.principal', ['endereco' => $endereco->endereco_id, 'usuario_cod' => $endereco->endereco_usuario_codigo, 'tipo' => $tipo]) }}" style="float: left;">
+                                            <form method="post" action="{{ route('usuarioEndereco.update', ['usuarioEndereco' => $endereco->endereco_id, 'tipo' => $tipo]) }}" style="float: left;">
                                             @csrf 
-                                            @method('get')
+                                            @method('put')
                                                 <x-adminlte-button class="btn-sm" label="Tornar Principal" theme="success" icon="fa-solid fa-location-dot" type="submit" title="Tornar Principal"/>
                                             </form>
                                             @php 
@@ -390,15 +384,16 @@
                            
                         <!-- Gera o Modal com os campos da inserção dos dados do endereço do usuario -->
                         <div>
-                            <form method="post" action="{{route('enderecoUsuario.inserir', ['tipo' => $tipo])}}" id="formulario-endereco" novalidate="novalidate">
+                            <form method="post" action="{{route('usuarioEndereco.store')}}" id="formulario-endereco" novalidate="novalidate">
                             @csrf 
                             @method('post')    
                                 <!-- Criação do Modal -->                           
                                 <x-adminlte-modal id="modalCustom" title="Novo Endereço" size="lg" theme="modal-nexus" icon="fa-solid fa-address-book" v-centered static-backdrop scrollable>
                                     <div style="height:400px;">
                                         <!-- Campos escondidoscom o id e codigo do usuario para o request -->  
-                                        <input id="usuario_codigo" type="hidden" value="{{ $dadosUsuario[0]['usuario_codigo'] }}" name="usuario_codigo">
+                                        <input id="usuario_codigo" type="hidden" value="{{ $dadosUsuario->usuario_codigo }}" name="usuario_codigo">
                                         <input id="ibgeCodMun" type="hidden" name="ibgeCodMun">
+                                        <input id="tipo" type="hidden" value="{{$tipo}}" name="tipo">
                                     
                                         <!-- CEP -->
                                         <x-adminlte-input name="cep" type="text" fgroup-class="col-md-4">
@@ -464,27 +459,8 @@
                                             </x-adminlte-input>
 
                                             @php
-                                                $dados_ibge = DB::table('ibge_estados')->orderby('ibge_sigla')->get();
-
-                                                $new_array1 =[];
-                                                $new_array2 =[];
-
-                                                foreach ($dados_ibge as $ibge) {
-                                                    $new_array1[] = $ibge->ibge_sigla;
-                                                    $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
-                                                }
-                                                $array_opt = array_combine($new_array1, $new_array2);
-
-                                                $dadosPais = DB::table('ibge_paises')->orderby('ibge_pais_nome')->get();
-
-                                                $new_array_pais =[];
-                                                $new_array_pais2 =[];
-
-                                                foreach ($dadosPais as $pais) {
-                                                    $new_array_pais[] = $pais->ibge_pais_codigo;
-                                                    $new_array_pais2[] = $pais->ibge_pais_nome;
-                                                }
-                                                $array_opt_pais = array_combine($new_array_pais, $new_array_pais2);
+                                                $array_opt = HelperArraySelect::arrayEstados(1,1);
+                                                $array_opt_pais = HelperArraySelect::arrayPaises(1,2);
                                             @endphp
 
                                             <!-- Estado -->
@@ -521,9 +497,9 @@
 
                 <!-- Aba das permissões do usuario -->
                 <div class="tab-pane fade" id="custom-tabs-two-permissoes" role="tabpanel" aria-labelledby="custom-tabs-two-permissoes-tab">
-                    <form method="post" action="{{route('usuario.atualizar', ['usuario' => $dadosUsuario[0]['id'], 'usuario_cod' => $dadosUsuario[0]['usuario_codigo'], 'atualiza' => 'permissao', 'tipo' => $tipo])}}" id="formulario-permissao" novalidate="novalidate">
+                    <form method="post" action="{{route('cadastroUsuario.update', ['cadastroUsuario' => $dadosUsuario, 'atualiza' => 'permissao', 'tipo' => $tipo])}}" id="formulario-permissao" novalidate="novalidate">
                     @csrf 
-                    @method('post')
+                    @method('put')
 
                         <div class="post">
                             <h4 class="text-secondary font-weight-bold">Módulos do Sistema</h4>
@@ -535,7 +511,7 @@
                                 <x-slot name="label">
                                     Acessa Área de Parametrização Geral <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_pararametros']}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario->usuario_acesso_pararametros}}"/>
                             </x-adminlte-select>
 
                             <!-- Usuario tem acesso aos cadastros -->
@@ -543,7 +519,7 @@
                                 <x-slot name="label">
                                     Acessa Área de Cadastros <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_cadastros']}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario->usuario_acesso_cadastros}}"/>
                             </x-adminlte-select>
                         </div>
 
@@ -553,7 +529,7 @@
                                 <x-slot name="label">
                                     Acessa o Módulo de Serviços <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_mod_servicos']}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario->usuario_acesso_mod_servicos}}"/>
                             </x-adminlte-select>
 
                             <!-- Usuario tem acesso ao modulo de emissão de NF -->
@@ -561,7 +537,7 @@
                                 <x-slot name="label">
                                     Acessa o Módulo de Controle de Produção <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_mod_cont_prod']}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario->usuario_acesso_mod_cont_prod}}"/>
                             </x-adminlte-select>
                         </div>
 
@@ -571,7 +547,7 @@
                                 <x-slot name="label">
                                     Acessa o Módulo de Emissão de NFS-e <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_mod_nf']}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario->usuario_acesso_mod_nf}}"/>
                             </x-adminlte-select>
 
                             <!-- Usuario tem acesso ao modulo de emissão simplificada de NF -->
@@ -579,7 +555,7 @@
                                 <x-slot name="label">
                                     Acessa o Módulo de Emissão Simplificada de NFS-e <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_acesso_mod_nf_simp']}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario->usuario_acesso_mod_nf_simp}}"/>
                             </x-adminlte-select>
                         </div>
 
@@ -593,7 +569,7 @@
                                 <x-slot name="label">
                                     Permissão de Autorização de Desconto <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_aut_desc']}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario->usuario_aut_desc}}"/>
                             </x-adminlte-select>
 
                             <!-- Usuario tem permissão de alterar permissoes -->
@@ -601,7 +577,7 @@
                                 <x-slot name="label">
                                     Altera Permissões de Acesso dos Usuários <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario[0]['usuario_altera_permissoes_acesso']}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosUsuario->usuario_altera_permissoes_acesso}}"/>
                             </x-adminlte-select>
                         </div>
 
@@ -610,23 +586,73 @@
                         </div>
                     </form>
                 </div>
+
+                <!-- Aba dos dados financeiro do usuario -->
+                <div class="tab-pane fade" id="custom-tabs-two-financeiro" role="tabpanel" aria-labelledby="custom-tabs-two-financeiro-tab">
+                    <form method="post" action="{{route('cadastroUsuario.update', ['cadastroUsuario' => $dadosUsuario, 'atualiza' => 'financeiro', 'tipo' => $tipo])}}" id="formulario-financeiro" novalidate="novalidate">
+                    @csrf 
+                    @method('put')
+
+                        @php 
+                            $dadosFin = DB::table('financeiro_tab_usuarios')->where('tabusu_usuario', $dadosUsuario->usuario_codigo)->where('tabusu_empresa', $dadosUsuario->usuario_empresa)->first();
+
+                            if(!empty($dadosFin->tabusu_razao)){
+                                
+                                $tipoRaz = $dadosFin->tabusu_tipo_razao;
+                                $razao = $dadosFin->tabusu_razao;
+
+                                $array_raz = HelperArraySelect::arrayRazoesPorTipo(1, 1, $dadosUsuario->usuario_empresa, $dadosFin->tabusu_tipo_razao);
+
+                            }else{
+
+                                $tipoRaz = '';
+                                $razao = '';
+                                $array_raz = null;
+                            }
+                            $array_tipo_raz = HelperArraySelect::arrayTipoRazao(1,1);
+                        @endphp
+
+                        <div class="row">
+                            <!-- Usuario tem acesso aos parametros gerais -->
+                            <x-adminlte-select name="tipoRazao" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Tipo de Razão Associado <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-adminlte-options :options="$array_tipo_raz" empty-option="Selecione..." selected="{{$tipoRaz}}"/>
+                            </x-adminlte-select>
+
+                            <!-- Usuario tem acesso aos cadastros -->
+                            <x-adminlte-select name="razaoAssociado" fgroup-class="col-md-6">
+                                <x-slot name="label">
+                                    Razão Associado <span style="color:red;">*</span>
+                                </x-slot>
+                                <x-adminlte-options :options="$array_raz" empty-option="Selecione..." selected="{{$razao}}"/>
+                            </x-adminlte-select>
+                        </div>
+
+                        <div class="d-flex justify-content-center">
+                            <x-adminlte-button class="btn-nexus" id="btn-submit-permissao" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
         <div class="card-footer">
             <div class="d-flex justify-content-between w-100">
                 <div class="d-flex">
-                    <form method="get" action="{{ route('usuario.cadastro', ['tipo' => $tipo]) }}" style="float: left; margin-right: 2px;">
+                    <form method="get" action="{{ route('cadastroUsuario.create') }}" style="float: left; margin-right: 2px;">
                     @csrf 
                         <x-adminlte-button class="btn-nexus" label="Novo Usuário" theme="" icon="fas fa-user-plus" type="submit"/>
                     </form>
-                    <form method="post" action="{{ route('usuario.destroy', ['usuario' => $dadosUsuario[0]]) }}" style="float: left;margin-left: 2px;">
+                    <form method="post" action="{{ route('cadastroUsuario.destroy', ['cadastroUsuario' => $dadosUsuario]) }}" style="float: left;margin-left: 2px;">
                     @csrf 
                     @method('delete')
                         <x-adminlte-button class="btn-nexus" label="Excluir Usuário" theme="" icon="fa-solid fa-user-xmark" type="submit"/>
                     </form>
                 </div>
                 <div class="d-flex">
-                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.usuarios') }}'" label="Voltar" theme="" icon=""/>
+                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('cadastroUsuario.index') }}'" label="Voltar" theme="" icon=""/>
                 </div>
             </div>
         </div>
@@ -763,6 +789,49 @@
                     $("#numero").focus();
                 }catch(ex){}
             });
+        });
+
+        $("#tipoRazao").change(function(){
+
+            if( $(this).val() ) {
+                var empresa = $('#empUsuario').val();
+                var razao = $(this).val();
+
+                var url = "{{ route('ajax.carregaRazaoAjax', [':raz',':emp']) }}";
+                url = url.replace(':raz', razao);
+                url = url.replace(':emp', empresa);
+
+                $.ajax({
+                    url: url,
+                    dataType: "JSON",
+                    type: 'GET',
+                    data: {
+                        '_token': $('meta[name=csrf-token]').attr("content"),
+                        '_method': 'GET',
+                        "raz": razao,
+                        "emp": empresa
+                    },
+                    success: function (data)
+                    {
+                        if(data.razoes_ajax_existe == 'S'){
+
+                            var options = '<option value="">Selecione...</option>';	
+
+                            for (var i = 0; i < data.razoes_ajax.length; i++) {
+
+                                options += '<option value="' + data.razoes_ajax[i].cod + '">' + data.razoes_ajax[i].desc_razao + '</option>';
+                            }	
+
+                            $('#razaoAssociado').html(options);
+
+                        }else{
+                            $('#razaoAssociado').html('<option value="">Selecione...</option>');
+                        }
+                    }
+                });
+            } else {
+                $('#razaoAssociado').html('<option value="">Selecione...</option>');
+            }
         });
     });
 </script>
@@ -1073,6 +1142,47 @@ $(function () {
         form.submit();
     }
   });
+});
+
+
+$(function () {
+    $('#formulario-financeiro').validate({
+        rules: {
+            tipoRazao: {
+                required: true
+            },
+            razaoAssociado: {
+                required: true
+            },
+        },
+        messages: {
+            tipoRazao: {
+                required: "Por Favor informe o Tipo do Razão Associado"
+            },
+            razaoAssociado: {
+                required: "Por Favor informe o Razão Associado"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        },
+        // Ao submeter o formulário, reativar os campos desativados
+        submitHandler: function (form) {
+            // Ativar campos desativados antes de enviar
+            $(':disabled').each(function () {
+                $(this).removeAttr('disabled');
+            });
+            form.submit();
+        }
+    });
 });
 </script>
 

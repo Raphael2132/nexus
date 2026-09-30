@@ -256,6 +256,6 @@ class EmissaoSimplificadaNFSController extends Controller
             }
         }
         
-        return view('/faturamento/notas/controleGeracaoNF', ['empresa' => $empresa, 'where_hdr' => $where_hdr, 'origem' => 'EMISSAO_SIMP']);
+        return view('/faturamento/notas/fat_cnt001_GeracaoNF', ['empresa' => $empresa, 'where_hdr' => $where_hdr, 'origem' => 'EMISSAO_SIMP']);
     }
 }

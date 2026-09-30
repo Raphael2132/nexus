@@ -10,10 +10,6 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">Tarefas Mão de Obra</li>
-            @php   
-                $dadosEmp = Helper::buscaDadosEmpresa(session('glo_empresa_exibicao_home'));
-            @endphp
-            <li class="breadcrumb-item active">{{ $dadosEmp->empresa_codigo.' - '.$dadosEmp->empresa_nome}}</li>
         </ol>
     </div>
 </div>
@@ -21,54 +17,48 @@
 
 @section('content')
 <div class="col-md-4">
-    <x-adminlte-small-box title="Serviço" text="Tarefas de Mão de Obra" icon="fas fa-person-digging" theme="primary" url="{{route('parametrosSrvTMO.cadastro')}}" url-text="Cadastrar"/>
+    <x-adminlte-small-box title="Serviço" text="Tarefas de Mão de Obra" icon="fas fa-person-digging" theme="primary" url="{{route('servicoTMO.create')}}" url-text="Cadastrar"/>
 </div>
 <div class="col-md-12">
     {{-- Setup data for datatables --}}
     @php
-    $heads = [
-        ['label' => '', 'no-export' => true, 'width' => 5],
-        'Empresa',
-        'Setor',
-        'Tarefa',
-        'Tipo',
-        'Qtd. Horas',
-        'Valor Hora',
-        'Valor Total',
-        ['label' => 'Editar', 'no-export' => true, 'width' => 10],
-    ];
+        $heads = [
+            ['label' => '', 'no-export' => true, 'width' => 5],
+            'Empresa',
+            'Setor',
+            'Tarefa',
+            'Tipo',
+            'Responsável',
+            'Qtd. Horas',
+            'Valor Hora',
+            'Valor Total',
+            ['label' => 'Editar', 'no-export' => true, 'width' => 10],
+        ];
 
-    $config = [
-        'lengthMenu' => [ 5, 10, 25, 50],
-        'language' => Helper::dataTableLangPtBR(),
-        'pagingType' => 'full_numbers',
-        'order' => [[1, 'asc'],[2, 'asc'],[3, 'asc']],
-        'columns' => [['orderable' => false], null, null, null, null, null, null, null, ['orderable' => false]],
-    ];
+        //Variavel para o filtro
+        $arraySelEmp = HelperArraySelect::arrayEmpresas(2,1);
+        $arraySelSet = HelperArraySelect::arraySetor(2,1);
     @endphp
-    <x-adminlte-card title="Parametrização das Tarefas de Mão de Obra" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
-        <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
+    <x-adminlte-card title="Tarefas de Mão de Obra Cadastradas" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
+        <x-adminlte-datatable id="tabela-home" :heads="$heads" theme="light" striped hoverable compressed>
             @foreach ($tarefas as $tarefa)
                 @php
                     $data_emp = DB::table('cadastro_empresas')->where('empresa_codigo','=',$tarefa->tmo_emp)->get();
                     $empresa = $tarefa->tmo_emp.' - '.$data_emp[0]->empresa_nome;
+
+                    if(!empty($tarefa->tmo_res)){
+                        $dadosPrestador = HelperDataSelect::buscaDadosPrestador($tarefa->tmo_res);
+                        $prestador = $tarefa->tmo_res.' - '.$dadosPrestador->prestador_nome;
+                    }else{
+                        $prestador = '';
+                    }
 
                     $data_set = DB::table('parametros_sis_setores')->where('setor_codigo','=',$tarefa->tmo_set)->get();
                     $setor = $tarefa->tmo_set.' - '.$data_set[0]->setor_desc;
 
                     $tarefa_tmo = $tarefa->tmo_cod.' - '.$tarefa->tmo_dsc;
 
-                    if($tarefa->tmo_tip == 'P'){
-                        $tipo_tmo = 'Padrão';
-                    }elseif($tarefa->tmo_tip == 'I'){
-                        $tipo_tmo = 'Hora Informada';
-                    }elseif($tarefa->tmo_tip == 'R'){
-                        $tipo_tmo = 'Hora Real';
-                    }elseif($tarefa->tmo_tip == 'F'){
-                        $tipo_tmo = 'Valor Fixo';
-                    }else{
-                        $tipo_tmo = 'Terceiros';
-                    }
+                    $tipo_tmo = Helper::formataTipoHrTMO($tarefa->tmo_tip);
 
                     $qtd_hr = number_format($tarefa->tmo_qtd_hr,2,",",".");
                     $val_hr = 'R$'.number_format($tarefa->tmo_val_hr,2,",",".");
@@ -199,8 +189,8 @@
                                 </x-slot>
                             </x-adminlte-modal>
                             <!-- Gera o icone da lupa que abre o modal -->
-                            <a href="" class="text-muted" data-toggle="modal" title="Detalhes da TMO" data-target="#modalCustom_{{$tarefa->tmo_id}}">
-                                <i class="fa-solid fa-magnifying-glass" style="color: #74C0FC;"></i>
+                            <a href="" class="lupa-consulta" data-toggle="modal" title="Detalhes da TMO" data-target="#modalCustom_{{$tarefa->tmo_id}}">
+                                <i class="fa-solid fa-magnifying-glass"></i>
                             </a>
                         </nobr>
                     </td>
@@ -208,22 +198,23 @@
                     <td>{{ $setor }}</td>
                     <td>{{ $tarefa_tmo }}</td>
                     <td>{{ $tipo_tmo }}</td>
+                    <td>{{ $prestador }}</td>
                     <td>{{ $qtd_hr }}</td>
                     <td>{{ $val_hr }}</td>
                     <td>{{ $val_tot }}</td>
                     <td>
                         <nobr class="d-flex justify-content-center">
-                            <form method="get" action="{{ route('parametrosSrvTMO.editarCadastro',['empresa' => $tarefa->tmo_emp, 'setor' => $tarefa->tmo_set, 'codigo' => $tarefa->tmo_cod]) }}" style="float: left;">
+                            <form method="get" action="{{ route('servicoTMO.edit',['servicoTMO' => $tarefa]) }}" style="float: left;">
                                 @csrf
-                                <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Editar Registro" value="Edit" type="submit">
+                                <button class="btn btn-xs btn-outline-primary mx-1" title="Editar Registro" value="Edit" type="submit">
                                     <i class="fa fa-lg fa-fw fa-pen"></i>
                                 </button>
                             </form>
-                            <form method="post" action="{{ route('parametrosSrvTMO.destroy', ['tarefa'=>$tarefa, 'origem'=>'home']) }}" style="float: left;">
+                            <form method="post" action="{{ route('servicoTMO.destroy', ['servicoTMO' => $tarefa]) }}" style="float: left;">
                                 @csrf 
                                 @method('delete')
-                                <button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Excluir Registro" value="Delete" type="submit" >
-                                    <i class="fa fa-lg fa-fw fa-trash"></i>
+                                <button class="btn btn-xs btn-outline-danger mx-1" title="Excluir Registro" value="Delete" type="submit" >
+                                    <i class="fa fa-lg fa-fw fa-trash-can"></i>
                                 </button>
                             </form>
                         </nobr>
@@ -251,6 +242,257 @@
 @stop
 
 @section('js')
+<script>
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Eventos da Inicialização do Datatable
+    |----------------------------------------------------------------------------------------------------
+    |
+    | Adicionamos aqui todos os eventos relacionados a criação e manipulação de eventos do datatable
+    |
+    ***** */
+    $(() => {
+        
+        // Variavel do agrupamento inicial do Datatable
+        var groupColumns = [];
+
+        /* ********** Inicializa o Datatable ********** */
+        var table = $('#tabela-home').DataTable({
+            dom: getDatatableDom(),
+            buttons: getDatatableButtons(),
+            lengthMenu: [5, 10, 25, 50, 100],
+            pageLength: 10,
+            language: dataTableLangPtBR,
+            order: [
+                [1, 'asc'],
+                [2, 'asc'],
+                [3, 'asc']
+            ],
+            pagingType: 'full_numbers',
+            processing: true,
+            columns: [
+                { orderable: false },
+                null,
+                null,
+                null,
+                null,
+                { visible: false },
+                null,
+                null,
+                null,
+                { orderable: false },
+            ],
+            columnDefs: [
+                { visible: false, targets: groupColumns },
+            ],
+            drawCallback: function (settings) {
+
+                var api = this.api();
+                var colspan = 10; // Ou qualquer valor que você precise para o colspan
+                
+                applyRowGrouping(api, groupColumns, colspan); // Chama a função externa
+            },
+            initComplete: function() {
+
+                /* *****
+                |----------------------------------------------------------------------------------------------------
+                | Altera o Campo Searching Original
+                |----------------------------------------------------------------------------------------------------
+                |
+                | Alteramos a aparencia do input encapsulando ele dentro de input-group estilizado para o Nexus
+                |
+                ***** */
+
+                // Chama a função para customizar o filtro da tabela com base no ID
+                // #id = ID_TABELA_filter
+                customSearchingField('#tabela-home_filter');
+
+                /* ------------------------------ Final dos Eventos Altera o Campo Searching Original ------------------------------ */
+
+                /* *****
+                |----------------------------------------------------------------------------------------------------
+                | Cards e Botões da Barra de Ferramentas do Datatable
+                |----------------------------------------------------------------------------------------------------
+                |
+                | Adicionamos aqui a criação dos Cards e Botões utilizados na barra de ferramentas do datatable
+                |
+                ***** */
+
+                /* ******************** Botões Principais ******************** */
+
+                /* ********** Criação dos botões principais da barra de ferramentas ********** */
+                let buttonsTooBarHTML = getButtonsTollBar(['quebra','colunas','filtro']);
+
+                /* ********** Adicionando os botões na barra de ferramentas ********** */
+                // #id = ID_TABELA_wrapper
+                $('#tabela-home_wrapper .btn-datatable-dir .tool-bar').prepend(buttonsTooBarHTML);
+
+                /* ******************** Cards dos Botões Principais ******************** */
+
+                /* ********** Botões do Card da Quebra ********** */
+                let btnQuebraHTML = `
+                    <a class="btn btn-outline-nexus groupCol mr-2" data-column="1" href="#">Empresa</a>
+                    <a class="btn btn-outline-nexus groupCol mr-2" data-column="2" href="#">Setor</a>
+                    <a class="btn btn-outline-nexus groupCol mr-2" data-column="4" href="#">Tipo</a>
+                `;
+
+                /* ********** Monta o Card da Quebra ********** */
+                let cardQuebraHTML = getCardQuebras(btnQuebraHTML);
+
+                /* ********** Adiciona o Card da Quebra ********** */
+                // #id = ID_TABELA_wrapper
+                $('#tabela-home_wrapper .linha-cards-menu').append(cardQuebraHTML);
+
+                /* ********** Botões do Card da Coluna ********** */
+                let btnColunaHTML = `
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="1" href="#">Empresa</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="2" href="#">Setor</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="3" href="#">Tarefa</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="4" href="#">Tipo</a>
+                    <a class="btn btn-outline-nexus toggle-vis mr-2" data-column="5" href="#">Responsável</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="6" href="#">Qtd. Horas</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="7" href="#">Valor Hora</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="8" href="#">Valor Total</a>
+                `;
+
+                /* ********** Monta o Card da Coluna ********** */
+                let cardColunaHTML = getCardColunas(btnColunaHTML);
+
+                /* ********** Adiciona o Card da Coluna ********** */
+                // #id = ID_TABELA_wrapper
+                $('#tabela-home_wrapper .linha-cards-menu').append(cardColunaHTML);
+
+                /* ********** Campos do Card de Filtro ********** */
+                let fieldFiltroHTML = `
+                    <div class="row">
+                        <x-adminlte-select name="filterEmp" label="Empresa" igroup-size="sm" fgroup-class="col-md-3">
+                            <x-adminlte-options :options="$arraySelEmp" empty-option="Selecione..."/>
+                        </x-adminlte-select>
+                        <x-adminlte-select name="filterSet" label="Setor" igroup-size="sm" fgroup-class="col-md-3">
+                            <x-adminlte-options :options="$arraySelSet" empty-option="Selecione..."/>
+                        </x-adminlte-select>
+                        <x-adminlte-input name="filterTmo" type="text" label="Tarefa" class="form-control" placeholder="Filtrar Tarefa" igroup-size="sm" fgroup-class="col-md-3"></x-adminlte-input>
+                        <x-adminlte-select name="filterTip" label="Tipo" igroup-size="sm" fgroup-class="col-md-3">
+                            <x-adminlte-options :options="['Padrão' => 'Padrão', 'Hora Informada' => 'Hora Informada', 'Hora Real' => 'Hora Real', 'Valor Fixo' => 'Valor Fixo', 'Terceiros' => 'Terceiros']" empty-option="Selecione..."/>
+                        </x-adminlte-select>
+                    </div>
+                    <div class="row">
+                        <x-adminlte-input name="filterResp" type="text" label="Responsável" class="form-control" placeholder="Filtrar Responsável" igroup-size="sm" fgroup-class="col-md-3"></x-adminlte-input>
+                        <x-adminlte-input name="filterQtdHr" type="text" label="Qtd. Horas" class="form-control" placeholder="Filtrar Qtd. Horas" igroup-size="sm" fgroup-class="col-md-3"></x-adminlte-input>
+                        <x-adminlte-input name="filterVlrHr" type="text" label="Valor Hora" class="form-control" placeholder="Filtrar Valor Hora" igroup-size="sm" fgroup-class="col-md-3"></x-adminlte-input>
+                        <x-adminlte-input name="filterVlrTot" type="text" label="Valor Total" class="form-control" placeholder="Filtrar Valor Total" igroup-size="sm" fgroup-class="col-md-3"></x-adminlte-input>
+                    </div>
+                `;
+
+                /* ********** Monta o Card de Filtro ********** */
+                let cardFiltroHTML = getCardFiltros(fieldFiltroHTML);
+
+                /* ********** Adiciona o Card de Filtro ********** */
+                // #id = ID_TABELA_wrapper
+                $('#tabela-home_wrapper .linha-cards-menu').append(cardFiltroHTML);
+                /* ------------------------------ Final dos Eventos Cards e Botões da Barra de Ferramentas do Datatable ------------------------------ */
+                
+                /* *****
+                |----------------------------------------------------------------------------------------------------
+                | Eventos dos Filtros Individuais
+                |----------------------------------------------------------------------------------------------------
+                |
+                | Esses eventos devem ser feitos ao criar a tabela no "initComplete" para funcionar a busca dos dados
+                |
+                ***** */
+
+                // Escopo para a tabela trabalhada
+                // #id = ID_TABELA_wrapper
+                $('#tabela-home_wrapper').each(function() {
+                    var $wrapper = $(this);  // Armazena o contexto atual do wrapper
+
+                    $wrapper.find('#filterEmp').on('change', function() {
+                        var selectedValue = $(this).val();
+                        table.column(1).search(selectedValue).draw();
+                    });
+
+                    $wrapper.find('#filterSet').on('change', function() {
+                        var selectedValue = $(this).val();
+                        table.column(2).search(selectedValue).draw();
+                    });
+
+                    $wrapper.find('#filterTmo').on('keyup', function() {
+                        table.column(3).search(this.value).draw();
+                    });
+
+                    $wrapper.find('#filterTip').on('change', function() {
+                        var selectedValue = $(this).val();
+                        table.column(4).search(selectedValue).draw();
+                    });
+
+                    $wrapper.find('#filterResp').on('keyup', function() {
+                        table.column(5).search(this.value).draw();
+                    });
+
+                    $wrapper.find('#filterQtdHr').on('keyup', function() {
+                        table.column(6).search(this.value).draw();
+                    });
+
+                    $wrapper.find('#filterVlrHr').on('keyup', function() {
+                        table.column(7).search(this.value).draw();
+                    });
+
+                    $wrapper.find('#filterVlrTot').on('keyup', function() {
+                        table.column(8).search(this.value).draw();
+                    });
+                });
+                /* ------------------------------ Final dos Eventos dos Filtros Individuais ------------------------------ */
+                
+            }
+        });
+
+        /* ------------------------------ Final a Inicialização do Datatable ------------------------------ */
+
+        /* *****
+        |----------------------------------------------------------------------------------------------------
+        | Controle do Card de Quebra e Funcionalidades
+        |----------------------------------------------------------------------------------------------------
+        ***** */
+
+        // Ordenação original (Secundária além do agrupamento)
+        var originalOrder = [
+            [1, 'asc'],
+            [2, 'asc'],
+            [3, 'asc']
+        ];
+
+        // Chama a função e passa as variáveis
+        setupActionsQuebra(table, '#tabela-home_wrapper', '#tabela-home', originalOrder, groupColumns);
+
+        /* ------------------------------ Final dos Eventos de Controle do Card de Quebra e Funcionalidades ------------------------------ */
+
+        /* *****
+        |----------------------------------------------------------------------------------------------------
+        | Controle do Card de Colunas e Funcionalidades
+        |----------------------------------------------------------------------------------------------------
+        ***** */
+
+        // Chama a função para adicionar os eventos de visibilidade das colunas
+        setupActionsColuna(table, '#tabela-home_wrapper');
+
+        /* ------------------------------ Final dos Eventos de Controle do Card de Colunas e Funcionalidades ------------------------------ */
+
+        /* *****
+        |----------------------------------------------------------------------------------------------------
+        | Controle do Card de Filtro e Funcionalidades
+        |----------------------------------------------------------------------------------------------------
+        ***** */
+
+        // Chama a função de configuração de filtros
+        setupActionsFiltro(table, '#tabela-home_wrapper');
+
+        /* ------------------------------ Final dos Eventos de Controle do Card de Filtro e Funcionalidades ------------------------------ */
+
+    });
+
+    /* ------------------------------ Final da Inicialização do Datatable ------------------------------ */
+</script>
+
 <script>
     @if(Session::has('success'))
         const Toast = Swal.mixin({

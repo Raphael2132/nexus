@@ -420,19 +420,18 @@ return [
             'submenu' => [
                 [
                     'text' => 'Módulos do Sistema',
-                    'url'  => '/parametros/sistema/homeParametrosSistemaModulos',
+                    'url'  => '/parametros/sistema/modulosSistema',
                     'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                     'active' => [
-                        '/parametros/sistema/editarParametrosSistemaModulos*'
+                        '/parametros/sistema/modulosSistema*'
                     ],
                 ],
                 [
                     'text' => 'Áreas',
-                    'url'  => '/parametros/sistema/homeParametrosSistemaAreas',
+                    'url'  => '/parametros/sistema/areasSistema',
                     'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                     'active' => [
-                        '/parametros/sistema/cadastroParametrosSistemaAreas*',
-                        '/parametros/sistema/editarParametrosSistemaAreas*'
+                        '/parametros/sistema/areasSistema*'
                     ],
                 ],
                 [
@@ -440,10 +439,8 @@ return [
                     'url'  => '/parametros/sistema/homeParametrosSistemaServicos',
                     'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                     'active' => [
-                        '/parametros/sistema/cadastroGrpServicos*',
-                        '/parametros/sistema/cadastroServicos*', 
-                        '/parametros/sistema/editarParametrosSistemaGrpServicos*',
-                        '/parametros/sistema/editarParametrosSistemaServicos*'
+                        '/parametros/sistema/gruposServicosSistema*',
+                        '/parametros/sistema/servicosSistema*'
                     ],
                 ],
             ],
@@ -461,34 +458,34 @@ return [
                     'submenu' => [
                         [
                             'text' => 'Geral da Empresa',
-                            'url'  => '/parametros/gerencial/homeParametrosGerencialEmpresa',
+                            'url'  => '/parametros/gerencial/geralEmpresa',
                             'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                             'active' => [
-                                '/parametros/gerencial/formularioParametrosGerEmpresa*',
+                                '/parametros/gerencial/geralEmpresa*',
                             ],
                         ],
                         [
                             'text' => 'Setores',
-                            'url'  => '/parametros/servico/homeParametrosServicoSetor',
+                            'url'  => '/parametros/gerencial/setorEmpresa',
                             'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                             'active' => [
-                                '/parametros/servico/formularioParametrosServicoSetor*',
+                                '/parametros/gerencial/setorEmpresa*',
                             ],
                         ],
                         [
                             'text' => 'Motivos de Cancelamento',
-                            'url'  => '/parametros/sistema/homeParametrosSistemaMotivosCancelamento',
+                            'url'  => '/parametros/gerencial/motivoCancelamento',
                             'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                             'active' => [
-                                '/parametros/sistema/formularioParametrosSisMotCancelamento*',
+                                '/parametros/gerencial/motivoCancelamento*',
                             ],
                         ],
                         [
                             'text' => 'Motivos de Suspensão',
-                            'url'  => '/parametros/sistema/homeParametrosSistemaMotivosSuspensao',
+                            'url'  => '/parametros/gerencial/motivoSuspensao',
                             'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                             'active' => [
-                                '/parametros/sistema/formularioParametrosSisMotSuspensao*',
+                                '/parametros/gerencial/motivoSuspensao*',
                             ],
                         ],
                     ],
@@ -503,19 +500,32 @@ return [
                             'url'  => '/parametros/faturamento/nfs/homeParametroFatNfs',
                             'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                             'active' => [
-                                '/parametros/faturamento/nfs/editarParametrosNfsEmissao*',
-                                '/parametros/faturamento/nfs/editarParametrosNfsConexao*',
-                                '/parametros/faturamento/nfs/parametrosNfsEmissao*',
-                                '/parametros/faturamento/nfs/parametrosNfsConexao*',
-                                '/parametros/faturamento/nfs/parametrosNfsProvedor*',
+                                '/parametros/faturamento/nfs/emissaoNFSe*',
+                                '/parametros/faturamento/nfs/conexaoNFSe*',
+                                '/parametros/faturamento/nfs/provedorNFS*',
                             ],
                         ],
                         [
                             'text' => 'Geral da Empresa',
-                            'url'  => '/parametros/faturamento/homeParametrosFatEmpresa',
+                            'url'  => '/parametros/faturamento/faturamentoGeral',
                             'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                             'active' => [
-                                '/parametros/faturamento/formularioParametrosFatEmpresa*',
+                                '/parametros/faturamento/faturamentoGeral*',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'text' => 'Financeiro',
+                    'icon' => 'nav-icon bi bi-list',
+                    'can'  => 'is_par_faturamento',//aki ainda trem que fazer o parametro financeiro
+                    'submenu' => [
+                        [
+                            'text' => 'Cartão Corporativo',
+                            'url'  => '/parametros/financeiro/financeiroCorporativo',
+                            'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                            'active' => [
+                                '/parametros/financeiro/financeiroCorporativo*'
                             ],
                         ],
                     ],
@@ -527,46 +537,46 @@ return [
                     'submenu' => [
                         [
                             'text' => 'Geral da Empresa',
-                            'url'  => '/parametros/servico/homeParametrosServicoEmpresa',
+                            'url'  => '/parametros/servico/geralServico',
                             'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                             'active' => [
-                                '/parametros/servico/formularioParametrosServicoEmpresa*',
+                                '/parametros/servico/geralServico*',
                             ],
                         ],
                         [
                             'text' => 'Categorias de Atendimento',
-                            'url'  => '/parametros/servico/homeLancamentosServicoCategoria',
+                            'url'  => '/parametros/servico/categAtendimento',
                             'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                             'can' => 'is_mod_servico',
                             'active' => [
-                                '/parametros/servico/formularioLancamentosServicoCategoria*',
+                                '/parametros/servico/categAtendimento*',
                             ],
                         ],
                         [
                             'text' => 'Etapas de Atendimento',
-                            'url'  => '/parametros/servico/homeLancamentosServicoEtapas',
+                            'url'  => '/parametros/servico/etapaAtendimento',
                             'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                             'can' => 'is_mod_servico',
                             'active' => [
-                                '/parametros/servico/formularioLancamentosServicoEtapas*',
+                                '/parametros/servico/etapaAtendimento*',
                             ],
                         ],
                         [
                             'text' => 'Tarefas Mão de Obra',
-                            'url'  => '/parametros/servico/homeParametrosServicoTMO',
+                            'url'  => '/parametros/servico/servicoTMO',
                             'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                             'can' => 'is_mod_servico',
                             'active' => [
-                                '/parametros/servico/formularioParametrosServicoTMO*',
+                                '/parametros/servico/servicoTMO*',
                             ],
                         ],
                         [
                             'text' => 'Tipos de Serviço',
-                            'url'  => '/parametros/servico/homeLancamentosServicoTipo',
+                            'url'  => '/parametros/servico/tipoServico',
                             'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                             'can' => 'is_mod_servico',
                             'active' => [
-                                '/parametros/servico/formularioLancamentosServicoTipo*',
+                                '/parametros/servico/tipoServico*',
                             ],
                         ],
                     ],
@@ -581,45 +591,57 @@ return [
         ],
 
         [
-            'text' => 'Empresa',
-            'url'  => '/cadastros/empresa/homeEmpresa',
-            'icon' => 'nav-icon bi-icon bi bi-buildings',
+            'text' => 'Cliente',
+            'url'  => '/cadastros/cliente/cadastroCliente',
+            'icon' => 'nav-icon fa-icon fa-light fa-user-tie',
             'can'  => 'is_register',
             'active' => [
-                '/cadastros/empresa/cadastroEmpresa*',
-                '/cadastros/empresa/editarCadastroEmpresa*'
+                '/cadastros/cliente/cadastroCliente*'
             ],
         ],
         [
-            'text' => 'Usuario',
-            'url'  => '/cadastros/usuario/homeUsuarios',
-            'icon' => 'nav-icon fa-icon fa-light fa-user-shield',
+            'text' => 'Empresa',
+            'url'  => '/cadastros/empresa/cadastroEmpresa',
+            'icon' => 'nav-icon bi-icon bi bi-buildings',
             'can'  => 'is_register',
             'active' => [
-                '/cadastros/usuario/usuarios*',
-                '/cadastros/usuario/cadastroUsuario*',
-                '/cadastros/usuario/editarCadastroUsuario*'
+                '/cadastros/empresa/cadastroEmpresa*'
             ],
         ],
         [
             'text' => 'Prestador',
-            'url'  => '/cadastros/prestador/homePrestadores',
+            'url'  => '/cadastros/prestador/cadastroPrestador',
             'icon' => 'nav-icon fa-icon fa-light fa-user-helmet-safety',
             'can'  => 'is_register_prestador',
             'active' => [
-                '/cadastros/prestador/formularioPrestador*',
-                '/cadastros/prestador/consultaPrestador*'
+                '/cadastros/prestador/cadastroPrestador*'
             ],
         ],
         [
-            'text' => 'Cliente',
-            'url'  => 'cadastros/cliente/homeClientes',
-            'icon' => 'nav-icon fa-icon fa-light fa-user-tie',
+            'text' => 'Razão',
+            'url'  => 'cadastros/financeiro/cadastroRazao',
+            'icon' => 'nav-icon bi-icon bi bi-bank',
             'can'  => 'is_register',
             'active' => [
-                '/cadastros/cliente/cadastroCliente*',
-                '/cadastros/cliente/clientes*',
-                '/cadastros/cliente/editarCadastroCliente*'
+                '/cadastros/financeiro/cadastroRazao*'
+            ],
+        ],
+        [
+            'text' => 'Adm. Cartão',
+            'url'  => '/cadastros/cartao/cadastroCartao',
+            'icon' => 'nav-icon bi-icon bi bi-credit-card-2-back',
+            'can'  => 'is_register',
+            'active' => [
+                '/cadastros/cartao/cadastroCartao*'
+            ],
+        ],
+        [
+            'text' => 'Usuario',
+            'url'  => '/cadastros/usuario/cadastroUsuario',
+            'icon' => 'nav-icon fa-icon fa-light fa-user-shield',
+            'can'  => 'is_register',
+            'active' => [
+                '/cadastros/usuario/cadastroUsuario*'
             ],
         ],
 
@@ -724,7 +746,7 @@ return [
                     'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                     'active' => [
                         '/faturamento/notas/simplificada/consultaReemissaoSimpNF*',
-                        '/faturamento/notas/controleGeracaoNF/REEMISSAO_SIMP*'
+                        '/faturamento/notas/fat_cnt001_GeracaoNF/REEMISSAO_SIMP*'
                     ],
                 ],
             ],
@@ -738,12 +760,12 @@ return [
             'submenu' => [
                 [
                     'text' => 'Emissão de NFS-e',
-                    'url'  => 'faturamento/notas/controleEmissaoNF',
+                    'url'  => 'faturamento/notas/fat_cnt001_EmissaoNF',
                     'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                     'active' => [
-                        '/faturamento/notas/consultaEmissaoNF*',
-                        '/faturamento/notas/painelEmissaoNF*',
-                        '/faturamento/notas/controleGeracaoNF/EMISSAO/*'
+                        '/faturamento/notas/fat_cns001*',
+                        '/faturamento/notas/fat_pnl001*',
+                        '/faturamento/notas/fat_cnt001_GeracaoNF/EMISSAO/*'
                     ],
                 ],
                 [
@@ -751,8 +773,8 @@ return [
                     'url'  => 'faturamento/notas/controleReemissaoNF',
                     'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                     'active' => [
-                        '/faturamento/notas/consultaReemissaoNF*',
-                        '/faturamento/notas/controleGeracaoNF/REEMISSAO/*'
+                        '/faturamento/notas/fat_cns001_ReemissaoNF*',
+                        '/faturamento/notas/fat_cnt001_GeracaoNF/REEMISSAO/*'
                     ],
                 ],
             ],
@@ -775,6 +797,278 @@ return [
                 ],
                 [
                     'text' => 'Carta de Correção',
+                    'url'  => '',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                ],
+            ],
+        ],
+
+        /* ****************************** Header do Módulo Financeiro ****************************** */
+        [
+            'header' => 'Financeiro',
+            'can'  => '',
+        ],
+
+        /* ****************************** Itens de Menu do Módulo Financeiro - Pagamentos ****************************** */
+        [
+            'text' => 'Pagamentos',
+            'icon' => 'nav-icon bi-icon bi bi-wallet2',
+            'can'  => 'is_emissao_simp_nf',
+            'submenu' => [
+                [
+                    'text' => 'Conta Corrente',
+                    'url'  => '',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                    'submenu' => [
+                        [
+                            'text' => 'Individual em Dinheiro',
+                            'url'  => 'financeiro/pagamento/fin_cnt005_HomePCC_InDin',
+                            'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                            'active' => [
+                                '/financeiro/pagamento/fin_cns005_ContasPagamento*',
+                                '/financeiro/pagamento/fin_frm005_FormularioPagDin*'
+                            ],
+                        ],
+                        [
+                            'text' => 'Lote',
+                            'route'  => ['home.homePCCLote', ['appOrigem' => 'LOTE']],
+                            'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                            'active' => [
+                                '/financeiro/pagamento/fin_cns006_ContasPagamento/LOTE*',
+                                '/financeiro/pagamento/fin_pnl006_PainelLote/LOTE*'
+                            ],
+                        ],
+                        [
+                            'text' => 'Consulta de Lotes',
+                            'url'  => '/financeiro/pagamento/fin_cnt008_HomeLoteConsulta',
+                            'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                            'active' => [
+                                '/financeiro/pagamento/fin_cns008_ConsultaLote*',
+                            ],
+                        ],
+                        [
+                            'text' => 'Adiantamento de Fornecedor',
+                            'icon' => 'nav-icon bi bi-list',
+                            'submenu' => [
+                                [
+                                    'text' => 'Inclusão',
+                                    'url'  => '/financeiro/pagamento/fin_frm007_FormularioInclusaoAF',
+                                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                                ],
+                                [
+                                    'text' => 'Pagamento',
+                                    'route'  => ['home.homePCCLote', ['appOrigem' => 'PAG_AF']],
+                                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                                    'active' => [
+                                        '/financeiro/pagamento/fin_cns006_ContasPagamento/PAG_AF*',
+                                        '/financeiro/pagamento/fin_pnl006_PainelLote/PAG_AF*'
+                                    ],
+                                ]
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'text' => 'Pequenas Despesas',
+                    'url'  => 'financeiro/pagamento/fin_cnt004_HomePPD',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                    'active' => [
+                        '/financeiro/Pagamento/fin_frm004_FormularioPPD*',
+                    ],
+                ],
+            ],
+        ],
+
+        /* ****************************** Itens de Menu do Módulo Financeiro - Recebimentos ****************************** */
+        [
+            'text' => 'Recebimentos',
+            'icon' => 'nav-icon bi-icon bi bi-cash-stack',
+            'can'  => 'is_emissao_simp_nf',
+            'submenu' => [
+                [
+                    'text' => 'Contas Correntes',
+                    'url'  => 'financeiro/recebimento/fin_cnt001_HomeCCT',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                    'active' => [
+                        'financeiro/recebimento/fin_pnl001_PainelCCT*'
+                    ],
+                ],
+                [
+                    'text' => 'Duplicatas',
+                    'url'  => 'financeiro/recebimento/duplicata/fin_cnt002_HomeDUP',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                    'active' => [
+                        'financeiro/recebimento/duplicata/*',
+                        'financeiro/recebimento/duplicata/abertas/fin_cns002_DupAberta*'
+                    ],
+                ],
+                [
+                    'text' => 'Outros',
+                    'url'  => 'financeiro/recebimento/outros/fin_cnt003_HomeOUT',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                    'active' => [
+                        '/financeiro/recebimento/outros/*'
+                    ],
+                ],
+            ],
+        ],
+
+        /* ****************************** Itens de Menu do Módulo Financeiro - Transferências ****************************** */
+        [
+            'text' => 'Transferências',
+            'icon' => 'nav-icon bi-icon bi bi-arrow-left-right',
+            'can'  => 'is_emissao_simp_nf',
+            'submenu' => [
+                [
+                    'text' => 'Consulta',
+                    'url'  => 'financeiro/transferencia/fin_cnt011_HomeConsultaTransferencias',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                    'active' => [
+                        '/financeiro/transferencia/fin_cns011_RelatorioTransferencias*'
+                    ],
+                ],
+                [
+                    'text' => 'Reforço de Caixa',
+                    'url'  => 'financeiro/transferencia/fin_cnt009_HomeReforcoCaixa',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                    'active' => [
+                        '/financeiro/transferencia/fin_pnl009_PainelReforcoCaixa*'
+                    ],
+                ],
+                [
+                    'text' => 'Trasferência de Caixa',
+                    'url'  => '/financeiro/transferencia/fin_cnt010_HomeTransferenciaCaixa',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                    'active' => [
+                        '/financeiro/transferencia/fin_pnl010_PainelTransferenciaCaixa*'
+                    ],
+                ],
+            ],
+        ],
+
+        /* ****************************** Itens de Menu do Módulo Financeiro - Saldos Financeiros (BA,TE,CX) ****************************** */
+        [
+            'text' => 'Saldos',
+            'url'  => '',
+            'icon' => 'nav-icon bi-icon bi bi-clipboard-data',
+            'can'  => 'is_emissao_simp_nf',
+            'active' => [
+                ''
+            ],
+        ],
+
+        /* ****************************** Itens de Menu do Módulo Financeiro - Manutenção de contas correntes ****************************** */
+        [
+            'text' => 'Manutenção de Contas',
+            'icon' => 'nav-icon bi-icon bi bi-house-gear',
+            'can'  => 'is_emissao_simp_nf',
+            'submenu' => [
+                [
+                    'text' => 'Conta Corrente',
+                    'url'  => '',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                ],
+                [
+                    'text' => 'Duplicatas',
+                    'url'  => '',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                ],
+            ],
+        ],
+
+        /* ****************************** Itens de Menu do Módulo Financeiro - Transferências ****************************** */
+        [
+            'text' => 'Gerênciamento de Cartões',
+            'icon' => 'nav-icon bi-icon bi bi-credit-card-2-front',
+            'can'  => 'is_emissao_simp_nf',
+            'submenu' => [
+                [
+                    'text' => 'Baixa',
+                    'url'  => '',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                ],
+                [
+                    'text' => 'Consulta',
+                    'url'  => '',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                ],
+                [
+                    'text' => 'Manutenção',
+                    'url'  => '',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                ],
+                [
+                    'text' => 'Remessa',
+                    'url'  => '',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                ],
+            ],
+        ],
+
+        /* ****************************** Itens de Menu do Módulo Financeiro - Arquivo de Cobrança Bancária ****************************** */
+        [
+            'text' => 'Arquivo de Cobrança',
+            'icon' => 'nav-icon bi-icon bi bi-filetype-txt',
+            'can'  => 'is_emissao_simp_nf',
+            'submenu' => [
+                [
+                    'text' => 'Arquivos de Retorno',
+                    'url'  => '',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                ],
+                [
+                    'text' => 'Consultar Borderôs',
+                    'url'  => '',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                ],
+                [
+                    'text' => 'Gerar Borderô',
+                    'url'  => '',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                ],
+                [
+                    'text' => 'Importar Retorno',
+                    'url'  => '',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                ],
+            ],
+        ],
+
+        /* ****************************** Itens de Menu do Módulo Financeiro - Lançamento de Gastos ****************************** */
+        [
+            'text' => 'Lançamento de Gastos',
+            'icon' => 'nav-icon bi-icon bi bi-cash-coin',
+            'can'  => 'is_emissao_simp_nf',
+            'submenu' => [
+                [
+                    'text' => 'Gastos Diversos',
+                    'url'  => '',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                ],
+            ],
+        ],
+
+        /* ****************************** Itens de Menu do Módulo Financeiro - Conciliação Bancária Manual ****************************** */
+        [
+            'text' => 'Conciliação Bancária',
+            'url'  => '',
+            'icon' => 'nav-icon bi-icon bi bi-journal-bookmark',
+            'can'  => 'is_emissao_simp_nf',
+        ],
+
+        /* ****************************** Itens de Menu do Módulo Financeiro - Operações Financeiras ****************************** */
+        [
+            'text' => 'Operações Financeira',
+            'icon' => 'nav-icon bi-icon bi-gear-wide-connected',
+            'can'  => 'is_emissao_simp_nf',
+            'submenu' => [
+                [
+                    'text' => 'Consulta',
+                    'url'  => '',
+                    'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
+                ],
+                [
+                    'text' => 'Cancelamento',
                     'url'  => '',
                     'icon' => 'nav-icon nav-icon-chevron bi bi-chevron-right',
                 ],
@@ -872,6 +1166,21 @@ return [
                 ],
             ],
         ],
+        'BootstrapSelect' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/bootstrap-select/dist/js/bootstrap-select.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'vendor/bootstrap-select/dist/css/bootstrap-select.min.css',
+                ],
+            ],
+        ],
         'Datatables' => [
             'active' => false,
             'files' => [
@@ -905,12 +1214,22 @@ return [
                     'type' => 'css',
                     'asset' => true,
                     'location' => 'vendor/datatables/css/dataTables.bootstrap4.min.css',
-                ],/*
+                ],
                 [
                     'type' => 'css',
                     'asset' => true,
-                    'location' => '//cdn.datatables.net/2.1.8/css/dataTables.dataTables.css',
-                ],*/
+                    'location' => 'vendor/datatables-nexus/css/nexus.style.datatable.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/datatables-nexus/js/nexus.settings.datatable.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/datatables-nexus/js/dataTable.lang.pt-BR.js',
+                ],
             ],
         ],
         'DatatablesPlugins' => [
@@ -1135,6 +1454,16 @@ return [
                     'type' => 'css',
                     'asset' => true,
                     'location' => 'vendor/summernote/summernote-bs4.min.css',
+                ],
+            ],
+        ],
+        'BsCustomFileInput' => [
+            'active' => false,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => 'vendor/bs-custom-file-input/bs-custom-file-input.min.js',
                 ],
             ],
         ],

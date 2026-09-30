@@ -11,7 +11,7 @@ use DateTime;
 use DateTimeZone;
 use App\Http\Helpers\Helper;
 use App\Http\Helpers\HelperControleProducao;
-use App\Http\Controllers\PainelAberturaOSController;
+use App\Http\Controllers\Lancamentos\Servico\PainelAberturaOSController;
 use App\Http\Controllers\LancamentoSrvExeTarefaController;
 
 class LancamentoSrvOsServicoController extends Controller

@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use App\Models\ParametrosSisModulo;
+use App\Models\Parametros\Sistema\ParametrosSisModulo;
 
 class AuthServiceProvider extends ServiceProvider
 {

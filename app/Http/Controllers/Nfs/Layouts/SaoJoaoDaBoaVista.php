@@ -130,6 +130,7 @@ class SaoJoaoDaBoaVista{
 
         $descriminacao = '';
 
+        /*
         foreach($servico as $item){
 
             if($item->emiSimplificada == 'N'){
@@ -150,6 +151,16 @@ class SaoJoaoDaBoaVista{
                         $descriminacao .= ' | '.$item->infoComplementar;
                     }
                 }
+            }
+        }
+        */
+
+        foreach($servico as $item){
+
+            if(empty($descriminacao)){
+                $descriminacao = $item->discriminacaoServico;
+            }else{
+                $descriminacao .= ' | '.$item->discriminacaoServico;
             }
         }
 

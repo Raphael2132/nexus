@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\LancamentoSrvOs;
+use App\Models\Lancamentos\Servico\LancamentoSrvOs;
 use App\Models\LancamentoSrvOsRequisicoes;
 use Illuminate\Support\Facades\Auth;
 use stdClass;
 use App\Http\Helpers\Helper;
 use App\Http\Helpers\HelperControleProducao;
-use App\Http\Controllers\PainelAberturaOSController;
+use App\Http\Controllers\Lancamentos\Servico\PainelAberturaOSController;
 
 class LancamentoSrvOsController extends Controller
 {

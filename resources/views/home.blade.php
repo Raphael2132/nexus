@@ -18,7 +18,7 @@
             <li class="breadcrumb-item active">Resumo Geral</li>
             @endif
             @php   
-                $dadosEmp = Helper::buscaDadosEmpresa(session('glo_empresa_exibicao_home'));
+                $dadosEmp = HelperDataSelect::buscaDadosEmpresa(session('glo_empresa_exibicao_home'));
             @endphp
             <li class="breadcrumb-item active">{{ $dadosEmp->empresa_codigo.' - '.$dadosEmp->empresa_nome}}</li>
         </ol>
@@ -28,6 +28,7 @@
 
 @section('content')
 
+    <!-- Verifica qual a home irá ser exibida -->
     @if (session('glo_tipo_home') == 'homeNFSeSimplificada')
         @include('home.homeNFSeSimplificada')
     @elseif (session('glo_tipo_home') == 'homeNFSe')
@@ -39,6 +40,9 @@
 @stop
 
 @section('plugins.Sweetalert2', true)
+
+@section('plugins.Datatables', true)
+@section('plugins.DatatablesPlugins', true)
 
 @section('css')
 @stop

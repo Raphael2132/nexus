@@ -21,9 +21,10 @@
 @section('content')
 <div class="d-flex justify-content-center">
     <div class="col-md-8">
-        <form method="post" action="{{route('parametrosSistemaServico.inserir')}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('servicosSistema.store')}}" id="quickForm" novalidate="novalidate">
             @csrf 
-            <x-adminlte-card title="Cadastro de Novo Grupo de Serviço" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
+            @method('post')
+            <x-adminlte-card title="Cadastro de Novo Serviço" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 <div class="row">
                     @php
                         $data = DB::table('parametros_sis_servico_grupos')->orderBy('grupo_codigo', 'asc')->get();

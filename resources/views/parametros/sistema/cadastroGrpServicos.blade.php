@@ -21,8 +21,9 @@
 @section('content')
 <div class="d-flex justify-content-center">
     <div class="col-md-8">
-        <form method="post" action="{{route('parametrosSistemaGrpServico.inserir')}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('gruposServicosSistema.store')}}" id="quickForm" novalidate="novalidate">
             @csrf 
+            @method('post')
             <x-adminlte-card title="Cadastro de Novo Grupo de Serviço" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
                 <div class="row">
                     <!-- Código do Grupo do Serviço -->

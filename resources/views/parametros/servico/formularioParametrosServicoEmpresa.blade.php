@@ -10,7 +10,7 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">
-                <a href="{{route('home.parametrosSrvEmp')}}">Geral da Empresa</a>
+                <a href="{{route('geralServico.index')}}">Geral da Empresa</a>
             </li>
             <li class="breadcrumb-item active">Manutenção Geral da Empresa</li>
         </ol>
@@ -22,23 +22,14 @@
 <div class="d-flex justify-content-center">
     <div class="col-md-10">
         <!-- Define se o formulario é edição ou novo -->
-        <form method="post" action="{{route('parametrosSrvEmp.update')}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('geralServico.update', ['geralServico' => $parametrosEmp])}}" id="quickForm" novalidate="novalidate">
             @csrf 
-            <x-adminlte-card title="Manutenção dos Parâmetros Gerais de Serviço" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
+            @method('put')
+            <x-adminlte-card title="Manutenção da Empresa" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
                     @php
-                        $data = DB::table('cadastro_empresas')->where('empresa_codigo', $parametrosEmp[0]->parsrv_emp)->get();
-
-                        $new_array1 =[];
-                        $new_array2 =[];
-
-                        foreach ($data as $empresa) {
-                            $new_array1[] = $empresa->empresa_codigo;
-                            $new_array2[] = $empresa->empresa_codigo.' - '.$empresa->empresa_nome;
-                        }
-                        $array_opt = array_combine($new_array1, $new_array2);
-
+                        $array_opt = HelperArraySelect::arrayEmpresas(1,1);
                     @endphp
 
                     <!-- Empresa do Setor -->
@@ -46,20 +37,20 @@
                         <x-slot name="label">
                             Empresa <span style="color:red;">*</span>
                         </x-slot>
-                        <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parsrv_emp}}"/>
+                        <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$parametrosEmp->parsrv_emp}}"/>
                     </x-adminlte-select>
                 </div>
 
                 <div class="row">              
                     <!-- Aliquota ISS -->
-                    <x-adminlte-input name="aliqISS" type="text" placeholder="0,00" value="{{Helper::formataPorcentagem($parametrosEmp[0]->parsrv_alq_iss)}}" fgroup-class="col-md-6">
+                    <x-adminlte-input name="aliqISS" type="text" placeholder="0,00" value="{{Helper::formataPorcentagem($parametrosEmp->parsrv_alq_iss)}}" fgroup-class="col-md-6">
                         <x-slot name="label">
                             Aliq. ISS <span style="color:red;">*</span>
                         </x-slot>
                     </x-adminlte-input>
 
                     <!-- CFOP Serviço -->
-                    <x-adminlte-input name="srvCFOP" type="number" placeholder="Informe o CFOP" value="{{$parametrosEmp[0]->parsrv_cfop}}" fgroup-class="col-md-6">
+                    <x-adminlte-input name="srvCFOP" type="number" placeholder="Informe o CFOP" value="{{$parametrosEmp->parsrv_cfop}}" fgroup-class="col-md-6">
                         <x-slot name="label">
                             CFOP Serviço <span style="color:red;">*</span>
                         </x-slot>
@@ -67,18 +58,7 @@
                 </div>
 
                 @php
-                    $exISS = DB::table('parametros_sis_exi_iss')->get();
-
-                    $new_array1Iss =[];
-                    $new_array2Iss =[];
-
-                    foreach ($exISS as $iss) {
-                        $new_array1Iss[] = $iss->exiiss_codigo;
-                        $new_array2Iss[] = $iss->exiiss_codigo.' - '.$iss->exiiss_desc;
-                    }
-
-                    $array_opt_iss = array_combine($new_array1Iss, $new_array2Iss);
-
+                    $array_opt_iss = HelperArraySelect::arrayExigibilidadeISS(1,1);
                 @endphp
                 <div class="row">              
                     <!-- Exigibilidade do ISS -->
@@ -86,7 +66,7 @@
                         <x-slot name="label">
                             Exigibilidade do ISS <span style="color:red;">*</span>
                         </x-slot>
-                        <x-adminlte-options :options="$array_opt_iss" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parsrv_exg_iss}}"/>
+                        <x-adminlte-options :options="$array_opt_iss" empty-option="Selecione..." selected="{{$parametrosEmp->parsrv_exg_iss}}"/>
                     </x-adminlte-select>
 
                     <!--  ISS Retido -->
@@ -94,36 +74,19 @@
                         <x-slot name="label">
                             ISS Retido <span style="color:red;">*</span>
                         </x-slot>
-                        <x-adminlte-options :options="['1' => 'ISS Retido', '2' => 'Sem ISS Retido']" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parsrv_iss_ret}}"/>
+                        <x-adminlte-options :options="['1' => 'ISS Retido', '2' => 'Sem ISS Retido']" empty-option="Selecione..." selected="{{$parametrosEmp->parsrv_iss_ret}}"/>
                     </x-adminlte-select>
                 </div>  
 
                 @php
-                    $dadosGrupoSrv = DB::table('parametros_sis_servico_grupos')->orderBy('grupo_codigo', 'asc')->get();
+                    $array_opt_grp = HelperArraySelect::arrayGruposServico(1,1);
 
-                    $new_array1_grp =[];
-                    $new_array2_grp =[];
+                    if(!empty($parametrosEmp->parsrv_grp_srv)){
+                        
+                        $array_opt_srv = HelperArraySelect::arrayServicosNfs($parametrosEmp->parsrv_grp_srv,1,1);
 
-                    foreach ($dadosGrupoSrv as $grupoSrv) {
-                        $new_array1_grp[] = $grupoSrv->grupo_codigo;
-                        $new_array2_grp[] = $grupoSrv->grupo_codigo.' - '.$grupoSrv->grupo_desc;
-                    }
-                    $array_opt_grp = array_combine($new_array1_grp, $new_array2_grp);
-
-                    if(!empty($parametrosEmp[0]->parsrv_grp_srv)){
-                        $dadosCodSrv = DB::table('parametros_sis_servicos')->where('servico_grupo', $parametrosEmp[0]->parsrv_grp_srv)->orderBy('servico_codigo', 'asc')->get();
-
-                        $new_array1_srv =[];
-                        $new_array2_srv =[];
-
-                        foreach ($dadosCodSrv as $codSrv) {
-                            $new_array1_srv[] = $codSrv->servico_codigo;
-                            $new_array2_srv[] = $codSrv->servico_codigo.' - '.$codSrv->servico_desc;
-                        }
-                        $array_opt_srv = array_combine($new_array1_srv, $new_array2_srv);
-
-                        $grupo = $parametrosEmp[0]->parsrv_grp_srv;
-                        $codigo = $parametrosEmp[0]->parsrv_cod_srv;
+                        $grupo = $parametrosEmp->parsrv_grp_srv;
+                        $codigo = $parametrosEmp->parsrv_cod_srv;
                     }else{
                         $array_opt_srv = null;
                         $grupo = null;
@@ -154,7 +117,7 @@
                         <x-slot name="label">
                             Avisa Encerramento da OS <span style="color:red;">*</span>
                         </x-slot>
-                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parsrv_enc_os_email}}"/>
+                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$parametrosEmp->parsrv_enc_os_email}}"/>
                     </x-adminlte-select>
 
                     <!-- Envia RPS por Email -->
@@ -162,7 +125,7 @@
                         <x-slot name="label">
                             Envia RPS por Email <span style="color:red;">*</span>
                         </x-slot>
-                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parsrv_env_rps_email}}"/>
+                        <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$parametrosEmp->parsrv_env_rps_email}}"/>
                     </x-adminlte-select>
                 </div>
 
@@ -170,7 +133,7 @@
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
                         <x-adminlte-button class="btn-nexus btn_salvar" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.parametrosSrvEmp') }}'" label="Voltar" theme="info" icon=""/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('geralServico.index') }}'" label="Voltar" theme="info" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>
@@ -220,7 +183,7 @@
             if( $(this).val() ) {
                 var id = $(this).val();
 
-                var url = "{{ route('parametrosSrvTMO.carregaCodSrvAjax', [':id']) }}";
+                var url = "{{ route('ajax.carregaServicoNfsAjax', [':id']) }}";
                 url = url.replace(':id', id);
 
                 $.ajax({
@@ -259,7 +222,7 @@
 $(function () {
 
     jQuery.validator.addMethod("maxpercent", function(value, element) {
-        return this.optional(element) || /^(\d{1,2}|\d{1,2}\,\d{1,2}|100\,[0]{1,2}|100)$/i.test(value);
+        return this.optional(element) || /^(\d{1,2}|\d{1,2}\,\d{1,2}|100\,{1,2}|100)$/i.test(value);
     }, "Porcentagem máxima de 100,00 %");
 
     $('#quickForm').validate({

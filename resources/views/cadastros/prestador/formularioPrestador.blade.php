@@ -10,14 +10,14 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">
-                <a href="{{route('home.prestadores')}}">Prestadores</a>
+                <a href="{{route('cadastroPrestador.index')}}">Prestadores</a>
             </li>
             @if($acao == 'N')
                 <li class="breadcrumb-item active">Cadastro de Prestadores</li>
             @else
-                @if(!empty(trim($tipo)))
+                @if($tipo != 'H')
                 <li class="breadcrumb-item active">
-                    <a href="{{route('prestador.consulta', ['tipo' => $tipo])}}">Prestadores Cadastrados</a>
+                    <a href="{{route('cadastroPrestador.show', ['cadastroPrestador' => $tipo])}}">Prestadores Cadastrados</a>
                 </li>
                 @endif
                 <li class="breadcrumb-item active">Manutenção de Prestadores</li>
@@ -32,7 +32,7 @@
 @if($acao == 'N')
 <div class="d-flex justify-content-center">
     <div class="col-md-8">
-        <form method="post" action="{{route('prestador.inserir')}}" id="formulario-novo" novalidate="novalidate">
+        <form method="post" action="{{route('cadastroPrestador.store')}}" id="formulario-novo" novalidate="novalidate">
             @csrf 
             <x-adminlte-card title="Cadastro de Novo Prestador" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
@@ -42,16 +42,7 @@
                         //Variavel usada na edição do prestador nos eventos ini da app
                         $usuarioSis = '';
 
-                        $data = DB::table('cadastro_empresas')->selectRaw('empresa_codigo, empresa_nome')->orderBy('empresa_codigo', 'asc')->get();
-
-                        $new_array1 =[];
-                        $new_array2 =[];
-
-                        foreach ($data as $empresa) {
-                            $new_array1[] = $empresa->empresa_codigo;
-                            $new_array2[] = $empresa->empresa_codigo.' - '.$empresa->empresa_nome;
-                        }
-                        $array_opt = array_combine($new_array1, $new_array2);
+                        $array_opt = HelperArraySelect::arrayEmpresas(1,1);
                     @endphp
                     <!-- Empresa -->
                     <x-adminlte-select name="empresaPrestador" fgroup-class="col-md-4">
@@ -88,16 +79,7 @@
 
                 <div class="row">
                     @php 
-                        $data_are = DB::table('parametros_sis_areas')->select('area_codigo', 'area_desc')->orderBy('area_codigo', 'asc')->get();
-
-                        $new_array1_are =[];
-                        $new_array2_are =[];
-
-                        foreach ($data_are as $area) {
-                            $new_array1_are[] = $area->area_codigo;
-                            $new_array2_are[] = $area->area_codigo.' - '.$area->area_desc;
-                        }
-                        $array_opt_are = array_combine($new_array1_are, $new_array2_are);
+                        $array_opt_are = HelperArraySelect::arrayAreaSetCadastrado(1,1);
 
                         $array_opt_set = null;
                     @endphp
@@ -236,7 +218,7 @@
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
                         <x-adminlte-button class="btn-nexus vbtn_salvar" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
-                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.prestadores') }}'" label="Voltar" theme="" icon=""/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('cadastroPrestador.index') }}'" label="Voltar" theme="" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>
@@ -276,9 +258,9 @@
 
                 <!-- Aba Dados Pessoais -->
                 <div class="tab-pane fade show active" id="custom-tabs-two-dados-pessoais" role="tabpanel" aria-labelledby="custom-tabs-two-dados-pessoais-tab">
-                    <form method="post" action="{{route('prestador.atualizar', ['prestador' => $dadosPrestador[0]['prestador_id'], 'prestador_cod' => $dadosPrestador[0]['prestador_codigo'], 'atualiza' => 'dados', 'empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo])}}" id="formulario-dados" novalidate="novalidate">
+                    <form method="post" action="{{route('cadastroPrestador.update', ['cadastroPrestador' => $dadosPrestador, 'atualiza' => 'dados', 'tipo' => $tipo])}}" id="formulario-dados" novalidate="novalidate">
                     @csrf 
-                    @method('post')
+                    @method('put')
 
                         <div class="post">
                             <h5 class="text-secondary font-weight-bold">Dados do Pessoais</h5>
@@ -286,27 +268,18 @@
 
                         <div class="row">
                             @php
-                                $data = DB::table('cadastro_empresas')->selectRaw('empresa_codigo, empresa_nome')->orderBy('empresa_codigo', 'asc')->get();
-
-                                $new_array1 =[];
-                                $new_array2 =[];
-
-                                foreach ($data as $empresa) {
-                                    $new_array1[] = $empresa->empresa_codigo;
-                                    $new_array2[] = $empresa->empresa_codigo.' - '.$empresa->empresa_nome;
-                                }
-                                $array_opt = array_combine($new_array1, $new_array2);
+                                $array_opt = HelperArraySelect::arrayEmpresas(1,1);
                             @endphp
                             <!-- Empresa -->
                             <x-adminlte-select name="empresaPrestador" fgroup-class="col-md-4">
                                 <x-slot name="label">
                                     Empresa <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_empresa']}}"/>
+                                <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$dadosPrestador->prestador_empresa}}"/>
                             </x-adminlte-select>
 
                             <!-- Nome -->
-                            <x-adminlte-input name="nomePrestador" type="text" placeholder="Nome Completo" fgroup-class="col-md-6" value="{{$dadosPrestador[0]['prestador_nome'] }}">
+                            <x-adminlte-input name="nomePrestador" type="text" placeholder="Nome Completo" fgroup-class="col-md-6" value="{{$dadosPrestador->prestador_nome }}">
                                 <x-slot name="label">
                                     Nome <span style="color:red;">*</span>
                                 </x-slot>
@@ -318,7 +291,7 @@
                             </x-adminlte-input>
 
                             <!-- CPF / CNPJ -->
-                            <x-adminlte-input name="cpfPrestador" type="text" fgroup-class="col-md-2" value="{{$dadosPrestador[0]['prestador_cpf'] }}">
+                            <x-adminlte-input name="cpfPrestador" type="text" fgroup-class="col-md-2" value="{{$dadosPrestador->prestador_cpf }}">
                                 <x-slot name="label">
                                     CPF <span style="color:red;">*</span>
                                 </x-slot>
@@ -332,7 +305,7 @@
 
                         <div class="row">
                             <!-- RG -->
-                            <x-adminlte-input name="rgPrestador" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosPrestador[0]['prestador_rg'] }}">
+                            <x-adminlte-input name="rgPrestador" type="text" label="RG" fgroup-class="col-md-4" value="{{$dadosPrestador->prestador_rg }}">
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-id-card"></i>
@@ -343,8 +316,8 @@
                             @php
                                 $config = Helper::dtRangeDataPtBR();
 
-                                if(!empty($dadosPrestador[0]['prestador_data_nascimento'])){
-                                    $data_nascimento = date('d/m/Y', strtotime($dadosPrestador[0]['prestador_data_nascimento']));
+                                if(!empty($dadosPrestador->prestador_data_nascimento)){
+                                    $data_nascimento = date('d/m/Y', strtotime($dadosPrestador->prestador_data_nascimento));
                                 }else{
                                     $data_nascimento = '';
                                 }
@@ -361,7 +334,7 @@
 
                             <!-- Sexo -->
                             <x-adminlte-select name="sexoPrestador" label="Sexo" fgroup-class="col-md-4">
-                                <x-adminlte-options :options="['M' => 'Masculino', 'F' => 'Feminino']" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_sexo'] }}" />
+                                <x-adminlte-options :options="['M' => 'Masculino', 'F' => 'Feminino']" empty-option="Selecione..." selected="{{$dadosPrestador->prestador_sexo }}" />
                             </x-adminlte-select>
                         </div>
 
@@ -373,14 +346,14 @@
                             @php
                                 $config = Helper::dtRangeDataPtBR();
 
-                                if(!empty($dadosPrestador[0]['prestador_data_admissao'])){
-                                    $data_admissao = date('d/m/Y', strtotime($dadosPrestador[0]['prestador_data_admissao']));
+                                if(!empty($dadosPrestador->prestador_data_admissao)){
+                                    $data_admissao = date('d/m/Y', strtotime($dadosPrestador->prestador_data_admissao));
                                 }else{
                                     $data_admissao = '';
                                 }
 
-                                if(!empty($dadosPrestador[0]['prestador_data_demissao'])){
-                                    $data_demissao = date('d/m/Y', strtotime($dadosPrestador[0]['prestador_data_demissao']));
+                                if(!empty($dadosPrestador->prestador_data_demissao)){
+                                    $data_demissao = date('d/m/Y', strtotime($dadosPrestador->prestador_data_demissao));
                                 }else{
                                     $data_demissao = '';
                                 }
@@ -391,7 +364,7 @@
                                 <x-slot name="label">
                                     Situação <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Demitido']" selected="{{$dadosPrestador[0]['prestador_status']}}" />
+                                <x-adminlte-options :options="['A' => 'Ativo', 'D' => 'Demitido']" selected="{{$dadosPrestador->prestador_status}}" />
                             </x-adminlte-select>
 
                             <!-- Data de Admissão -->
@@ -424,25 +397,16 @@
 
                         <div class="row">
                             @php 
-                                if($dadosPrestador[0]['prestador_acesso_sis'] == 'S'){
-                                    $data_usu = DB::table('users')->select('usuario_codigo', 'name')->orderBy('usuario_codigo', 'asc')->get();
-
-                                    $new_array1_usu =[];
-                                    $new_array2_usu =[];
-
-                                    foreach ($data_usu as $usuario) {
-                                        $new_array1_usu[] = $usuario->usuario_codigo;
-                                        $new_array2_usu[] = $usuario->usuario_codigo.' - '.$usuario->name;
-                                    }
-                                    $array_opt_usu = array_combine($new_array1_usu, $new_array2_usu);
-                                    $usuario = $dadosPrestador[0]['prestador_usuario_cod'];
+                                if($dadosPrestador->prestador_acesso_sis == 'S'){
+                                    $array_opt_usu = HelperArraySelect::arrayUsuarios(1,1);
+                                    $usuario = $dadosPrestador->prestador_usuario_cod;
                                 }else{
                                     $array_opt_usu = null;
                                     $usuario = null;
                                 }
 
                                 //Variavel usada na edição do prestador nos eventos ini da app
-                                $usuarioSis = $dadosPrestador[0]['prestador_acesso_sis'];
+                                $usuarioSis = $dadosPrestador->prestador_acesso_sis;
                             @endphp
 
                             <!-- Prestador acessa o sistema -->
@@ -450,7 +414,7 @@
                                 <x-slot name="label">
                                     Usuário do Sistema <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_acesso_sis']}}" />
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" empty-option="Selecione..." selected="{{$dadosPrestador->prestador_acesso_sis}}" />
                             </x-adminlte-select>
                             
                             <!-- Codigo de Usuario -->
@@ -475,33 +439,14 @@
 
                 <!-- Aba dos dados do serviço do prestador -->
                 <div class="tab-pane fade" id="custom-tabs-two-servico" role="tabpanel" aria-labelledby="custom-tabs-two-servico-tab">
-                    <form method="post" action="{{route('prestador.atualizar', ['prestador' => $dadosPrestador[0]['prestador_id'], 'prestador_cod' => $dadosPrestador[0]['prestador_codigo'], 'atualiza' => 'servico', 'empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo])}}" id="formulario-servico" novalidate="novalidate">
+                    <form method="post" action="{{route('cadastroPrestador.update', ['cadastroPrestador' => $dadosPrestador, 'atualiza' => 'servico', 'tipo' => $tipo])}}" id="formulario-servico" novalidate="novalidate">
                     @csrf 
-                    @method('post')
+                    @method('put')
 
                         <div class="row">
                             @php 
-                                $data_are = DB::table('parametros_sis_areas')->select('area_codigo', 'area_desc')->orderBy('area_codigo', 'asc')->get();
-
-                                $new_array1_are =[];
-                                $new_array2_are =[];
-
-                                foreach ($data_are as $area) {
-                                    $new_array1_are[] = $area->area_codigo;
-                                    $new_array2_are[] = $area->area_codigo.' - '.$area->area_desc;
-                                }
-                                $array_opt_are = array_combine($new_array1_are, $new_array2_are);
-
-                                $data_set = DB::table('parametros_sis_setores')->select('setor_codigo', 'setor_desc')->where('setor_area', $dadosPrestador[0]['prestador_are'])->where('setor_empresa', $dadosPrestador[0]['prestador_empresa'])->orderby('setor_codigo', 'asc')->get();
-
-                                $new_array1_set =[];
-                                $new_array2_set =[];
-
-                                foreach ($data_set as $set) {
-                                    $new_array1_set[] = $set->setor_codigo;
-                                    $new_array2_set[] = $set->setor_codigo.' - '.$set->setor_desc;
-                                }
-                                $array_opt_set = array_combine($new_array1_set, $new_array2_set);
+                                $array_opt_are = HelperArraySelect::arrayAreaSetCadastrado(1,1);
+                                $array_opt_set = HelperArraySelect::arraySetorPorEmpArea($dadosPrestador->prestador_empresa,$dadosPrestador->prestador_are,1,1);
 
                                 $config = Helper::dtRangeHoraPtBR();
                             @endphp
@@ -510,28 +455,28 @@
                                 <x-slot name="label">
                                     Área <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="$array_opt_are" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_are']}}"/>
+                                <x-adminlte-options :options="$array_opt_are" empty-option="Selecione..." selected="{{$dadosPrestador->prestador_are}}"/>
                             </x-adminlte-select>
                             <!-- Setor -->
                             <x-adminlte-select name="setPrestador" fgroup-class="col-md-6">
                                 <x-slot name="label">
                                     Setor <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="$array_opt_set" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_set']}}" />
+                                <x-adminlte-options :options="$array_opt_set" empty-option="Selecione..." selected="{{$dadosPrestador->prestador_set}}" />
                             </x-adminlte-select>
                         </div>
 
                         <div class="row">
                             @php 
 
-                                $dataGerEmp = DB::table('parametros_ger_empresas')->where('parger_emp', $dadosPrestador[0]['prestador_empresa'])->get();
+                                $dataGerEmp = DB::table('parametros_ger_empresas')->where('parger_emp', $dadosPrestador->prestador_empresa)->get();
 
                                 $diaFunEmp = $dataGerEmp[0]->parger_dia_fun;
 
                                 if($dataGerEmp[0]->parger_tur_srv == 'N'){
-                                    $dataTur = DB::table('parametros_ger_turnos')->where('partur_emp', $dadosPrestador[0]['prestador_empresa'])->where('partur_cod', '1')->orderBy('partur_cod', 'asc')->get();
+                                    $dataTur = DB::table('parametros_ger_turnos')->where('partur_emp', $dadosPrestador->prestador_empresa)->where('partur_cod', '1')->orderBy('partur_cod', 'asc')->get();
                                 }else{
-                                    $dataTur = DB::table('parametros_ger_turnos')->where('partur_emp', $dadosPrestador[0]['prestador_empresa'])->orderBy('partur_cod', 'asc')->get();
+                                    $dataTur = DB::table('parametros_ger_turnos')->where('partur_emp', $dadosPrestador->prestador_empresa)->orderBy('partur_cod', 'asc')->get();
                                 }
 
                                 $new_array1_tur =[];
@@ -548,7 +493,7 @@
                                 <x-slot name="label">
                                     Turno de Serviço <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="$array_opt_tur" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_tur_cod']}}"/>
+                                <x-adminlte-options :options="$array_opt_tur" empty-option="Selecione..." selected="{{$dadosPrestador->prestador_tur_cod}}"/>
                             </x-adminlte-select>
                         </div>
                         <div class="row bloco-semana">
@@ -557,11 +502,11 @@
                                 <x-slot name="label">
                                     Intervalo Expediente <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$dadosPrestador[0]['prestador_int_ex']}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$dadosPrestador->prestador_int_ex}}"/>
                             </x-adminlte-select>
 
                             @php
-                                $horaIniInt = Helper::formataHoraMinuto($dadosPrestador[0]['prestador_hr_ini_int']);
+                                $horaIniInt = Helper::formataHoraMinuto($dadosPrestador->prestador_hr_ini_int);
                             @endphp
                             <x-adminlte-date-range name="horaIniInt" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
                                 <x-slot name="label">
@@ -576,7 +521,7 @@
                             @push('js')<script>$(() => $("#horaIniInt").val('{{ $horaIniInt }}'))</script>@endpush
 
                             @php
-                                $horaFinInt = Helper::formataHoraMinuto($dadosPrestador[0]['prestador_hr_fin_int']);
+                                $horaFinInt = Helper::formataHoraMinuto($dadosPrestador->prestador_hr_fin_int);
                             @endphp
                             <x-adminlte-date-range name="horaFinInt" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
                                 <x-slot name="label">
@@ -597,11 +542,11 @@
                                 <x-slot name="label">
                                     Intervalo de Sábado <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$dadosPrestador[0]['prestador_int_srv_sab']}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$dadosPrestador->prestador_int_srv_sab}}"/>
                             </x-adminlte-select>
 
                             @php
-                                $horaIniIntSab = Helper::formataHoraMinuto($dadosPrestador[0]['prestador_hr_ini_int_sab']);
+                                $horaIniIntSab = Helper::formataHoraMinuto($dadosPrestador->prestador_hr_ini_int_sab);
                             @endphp
                             <x-adminlte-date-range name="horaIniIntSab" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
                                 <x-slot name="label">
@@ -616,7 +561,7 @@
                             @push('js')<script>$(() => $("#horaIniIntSab").val('{{ $horaIniIntSab }}'))</script>@endpush
 
                             @php
-                                $horaFinIntSab = Helper::formataHoraMinuto($dadosPrestador[0]['prestador_hr_fin_int_sab']);
+                                $horaFinIntSab = Helper::formataHoraMinuto($dadosPrestador->prestador_hr_fin_int_sab);
                             @endphp
                             <x-adminlte-date-range name="horaFinIntSab" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
                                 <x-slot name="label">
@@ -636,11 +581,11 @@
                                 <x-slot name="label">
                                     Intervalo de Domingo <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$dadosPrestador[0]['prestador_int_srv_dom']}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$dadosPrestador->prestador_int_srv_dom}}"/>
                             </x-adminlte-select>
 
                             @php
-                                $horaIniIntDom = Helper::formataHoraMinuto($dadosPrestador[0]['prestador_hr_ini_int_dom']);
+                                $horaIniIntDom = Helper::formataHoraMinuto($dadosPrestador->prestador_hr_ini_int_dom);
                             @endphp
                             <x-adminlte-date-range name="horaIniIntDom" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
                                 <x-slot name="label">
@@ -655,7 +600,7 @@
                             @push('js')<script>$(() => $("#horaIniIntDom").val('{{ $horaIniIntDom }}'))</script>@endpush
 
                             @php
-                                $horaFinIntDom = Helper::formataHoraMinuto($dadosPrestador[0]['prestador_hr_fin_int_dom']);
+                                $horaFinIntDom = Helper::formataHoraMinuto($dadosPrestador->prestador_hr_fin_int_dom);
                             @endphp
                             <x-adminlte-date-range name="horaFinIntDom" :config="$config" placeholder="Formato Hora:Minuto" fgroup-class="col-md-4">
                                 <x-slot name="label">
@@ -677,20 +622,20 @@
 
                 <!-- Aba dos dados do Contato do prestador -->
                 <div class="tab-pane fade" id="custom-tabs-two-contato" role="tabpanel" aria-labelledby="custom-tabs-two-contato-tab">
-                    <form method="post" action="{{route('prestador.atualizar', ['prestador' => $dadosPrestador[0]['prestador_id'], 'prestador_cod' => $dadosPrestador[0]['prestador_codigo'], 'atualiza' => 'contato', 'empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo])}}" id="formulario-contato" novalidate="novalidate">
+                    <form method="post" action="{{route('cadastroPrestador.update', ['cadastroPrestador' => $dadosPrestador, 'atualiza' => 'contato', 'tipo' => $tipo])}}" id="formulario-contato" novalidate="novalidate">
                     @csrf 
-                    @method('post')
+                    @method('put')
                         <div class="row">
                             <!-- Tipo do Email -->
                             <x-adminlte-select name="tipoEmail" fgroup-class="col-md-4">
                                 <x-slot name="label">
                                     Tipo do Email <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['P' => 'Pessoal', 'C' => 'Comercial']" empty-option="Selecione..." selected="{{$dadosPrestador[0]['prestador_tipo_email']}}"/>
+                                <x-adminlte-options :options="['P' => 'Pessoal', 'C' => 'Comercial']" empty-option="Selecione..." selected="{{$dadosPrestador->prestador_tipo_email}}"/>
                             </x-adminlte-select>
 
                             <!-- Email -->
-                            <x-adminlte-input name="emailPrestador" type="email" placeholder="email@exemplo.com" fgroup-class="col-md-8" value="{{$dadosPrestador[0]['prestador_email'] }}">
+                            <x-adminlte-input name="emailPrestador" type="email" placeholder="email@exemplo.com" fgroup-class="col-md-8" value="{{$dadosPrestador->prestador_email }}">
                                 <x-slot name="label">
                                     Email <span style="color:red;">*</span>
                                 </x-slot>
@@ -704,7 +649,7 @@
 
                         <div class="row">
                             <!-- Telefone Residencial -->
-                            <x-adminlte-input name="telResidencial" type="text" label="Telefone Residencial" fgroup-class="col-md-4" value="{{$dadosPrestador[0]['prestador_tel_residencial'] }}">
+                            <x-adminlte-input name="telResidencial" type="text" label="Telefone Residencial" fgroup-class="col-md-4" value="{{$dadosPrestador->prestador_tel_residencial }}">
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text x-slot-nexus">
                                         <i class="fas fa-phone"></i>
@@ -713,7 +658,7 @@
                             </x-adminlte-input>
 
                             <!-- Telefone Celular -->
-                            <x-adminlte-input name="telCelular" type="text" label="Telefone Celular" fgroup-class="col-md-4" value="{{$dadosPrestador[0]['prestador_tel_celular'] }}">
+                            <x-adminlte-input name="telCelular" type="text" label="Telefone Celular" fgroup-class="col-md-4" value="{{$dadosPrestador->prestador_tel_celular }}">
                                 <x-slot name="prependSlot">
                                     <div class="input-group-text x-slot-nexus">
                                         <i class="fa-solid fa-mobile-retro"></i>
@@ -732,7 +677,7 @@
                     <div class="main col-md-12" style="display: flex;flex-direction: column;"> 
                         @php
                             //Busca os dados dos endereços cadastrados do prestador
-                            $data = DB::table('cadastro_prestadores_enderecos')->where('endereco_prestador_codigo','=',$dadosPrestador[0]['prestador_codigo'])->orderby('endereco_seq')->get();
+                            $data = DB::table('cadastro_prestadores_enderecos')->where('endereco_prestador_codigo','=',$dadosPrestador->prestador_codigo)->orderby('endereco_seq')->get();
                                 
                             if(empty($data[0])){
                         @endphp
@@ -781,7 +726,7 @@
                                         </i>
                                         <!-- Gera a div dos botões do card -->
                                         <div style="padding: 10px; height:30px;">
-                                            <form method="post" action="{{ route('enderecoPrestador.destroy', ['endereco' => $endereco->endereco_id, 'empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo]) }}" style="float: left;" >
+                                            <form method="post" action="{{ route('prestadorEndereco.destroy', ['prestadorEndereco' => $endereco->endereco_id, 'tipo' => $tipo]) }}" style="float: left;" >
                                             @csrf 
                                             @method('delete')
                                                 <x-adminlte-button title="Excluir Endereço" class="btn-sm" theme="danger" icon="fa fa-lg fa-fw fa-trash" type="submit" style="margin-right: 5px;"/>
@@ -790,9 +735,9 @@
                                                 if($endereco->endereco_principal == "N"){
                                                     $endPrincipal = json_encode($endereco);
                                             @endphp
-                                            <form method="get" action="{{ route('enderecoPrestador.principal', ['endereco' => $endereco->endereco_id, 'prestador_cod' => $endereco->endereco_prestador_codigo, 'empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo]) }}" style="float: left;">
+                                            <form method="post" action="{{ route('prestadorEndereco.update', ['prestadorEndereco' => $endereco->endereco_id, 'tipo' => $tipo]) }}" style="float: left;">
                                             @csrf 
-                                            @method('get')
+                                            @method('put')
                                                 <x-adminlte-button title="Tornar Principal" class="btn-sm" label="Tornar Principal" theme="success" icon="fa-solid fa-location-dot" type="submit"/>
                                             </form>
                                             @php 
@@ -810,15 +755,16 @@
                            
                         <!-- Gera o Modal com os campos da inserção dos dados do endereço do prestador -->
                         <div>
-                            <form method="post" action="{{route('enderecoPrestador.inserir',['empresa' => $dadosPrestador[0]['prestador_empresa'], 'tipo' => $tipo])}}" id="formularioEndereco" novalidate="novalidate">
+                            <form method="post" action="{{route('prestadorEndereco.store')}}" id="formularioEndereco" novalidate="novalidate">
                             @csrf 
                             @method('post')    
                                 <!-- Criação do Modal -->                           
                                 <x-adminlte-modal id="modalCustom" title="Novo Endereço" size="lg" theme="modal-nexus" icon="fa-solid fa-address-book" v-centered static-backdrop scrollable>
                                     <div style="height:400px;">
                                         <!-- Campos escondidos com o id e codigo do prestador para o request -->  
-                                        <input id="prestador_codigo" type="hidden" value="{{ $dadosPrestador[0]['prestador_codigo'] }}" name="prestador_codigo">
+                                        <input id="prestador_codigo" type="hidden" value="{{ $dadosPrestador->prestador_codigo }}" name="prestador_codigo">
                                         <input id="ibgeCodMun" type="hidden" name="ibgeCodMun">
+                                        <input id="tipo" type="hidden" value="{{$tipo}}" name="tipo">
                                     
                                         <!-- CEP -->
                                         <x-adminlte-input name="cep" type="text" fgroup-class="col-md-4">
@@ -944,21 +890,21 @@
         <div class="card-footer">
             <div class="d-flex justify-content-between w-100">
                 <div class="d-flex">
-                    <form method="get" action="{{ route('prestador.cadastro') }}" style="float: left; margin-right: 2px;">
+                    <form method="get" action="{{ route('cadastroPrestador.create') }}" style="float: left; margin-right: 2px;">
                     @csrf 
                         <x-adminlte-button class="btn-nexus" label="Novo Prestador" theme="" icon="fa-solid fa-plus" type="submit"/>
                     </form>
-                    <form method="post" action="{{ route('prestador.destroy', ['prestador' => $dadosPrestador[0]]) }}" style="float: left;margin-left: 2px;">
+                    <form method="post" action="{{ route('cadastroPrestador.destroy', ['cadastroPrestador' => $dadosPrestador]) }}" style="float: left;margin-left: 2px;">
                     @csrf 
                     @method('delete')
                         <x-adminlte-button class="btn-nexus" label="Excluir Prestador" theme="" icon="fa-solid fa-trash" type="submit"/>
                     </form>
                 </div>
                 <div class="d-flex">
-                    @if(!empty(trim($tipo)))
-                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('prestador.consulta', ['tipo' => $tipo]) }}'" label="Voltar" theme="" icon=""/>
+                    @if($tipo != "H")
+                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('cadastroPrestador.show', ['cadastroPrestador' => $tipo]) }}'" label="Voltar" theme="" icon=""/>
                     @else
-                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.prestadores') }}'" label="Voltar" theme="" icon=""/>
+                    <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('cadastroPrestador.index') }}'" label="Voltar" theme="" icon=""/>
                     @endif
                 </div>
             </div>
@@ -1184,7 +1130,7 @@
                 var area = $(this).val();
                 var empresa = $('#empresaPrestador').val();
 
-                var url = "{{ route('prestador.carregaSetAjax', [':area',':empresa']) }}";
+                var url = "{{ route('ajax.carregaSetoresEmpAreAjax', [':area',':empresa']) }}";
                 url = url.replace(':area', area);
                 url = url.replace(':empresa', empresa);
 
@@ -1200,13 +1146,19 @@
                     },
                     success: function (data)
                     {
-                        var options = '<option value="">Selecione...</option>';	
+                        if(data.setores_ajax_existe == 'S'){
 
-						for (var i = 0; i < data.setores_ajax.length; i++) {
+                            var options = '<option value="">Selecione...</option>';	
 
-							options += '<option value="' + data.setores_ajax[i].codigo + '">' + data.setores_ajax[i].descricao + '</option>';
-						}	
-						$('#setPrestador').html(options);
+                            for (var i = 0; i < data.setores_ajax.length; i++) {
+
+                                options += '<option value="' + data.setores_ajax[i].id + '">' + data.setores_ajax[i].cod_setor + '</option>';
+                            }	
+                            $('#setPrestador').html(options);
+
+                        }else{
+                            $('#setPrestador').html('<option value="">Selecione...</option>');
+                        }
                     }
                 });
             } else {
@@ -1219,7 +1171,7 @@
 
             if( $(this).val() == 'S') {
 
-                var url = "{{ route('prestador.carregaUsuAjax') }}";
+                var url = "{{ route('ajax.carregaUsuariosAjax') }}";
 
                 $.ajax({
                     url: url,
@@ -1258,7 +1210,7 @@
 
                     var empresa = $(this).val();
 
-                    var url = "{{ route('prestador.carregaTurAjax', [':empresa']) }}";
+                    var url = "{{ route('ajax.carregaTurnosEmpresaAjax', [':empresa']) }}";
                     url = url.replace(':empresa', empresa);
 
                     $.ajax({
@@ -1306,7 +1258,7 @@
 
                     var empresa = $('#empresaPrestador').val();
 
-                    var url = "{{ route('prestador.carregaTurSelAjax', [':empresa']) }}";
+                    var url = "{{ route('ajax.carregaDiaFunEmpresaAjax', [':empresa']) }}";
                     url = url.replace(':empresa', empresa);
 
                     $.ajax({

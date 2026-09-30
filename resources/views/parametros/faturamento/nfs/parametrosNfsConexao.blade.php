@@ -20,27 +20,23 @@
 
 @section('content')
 @php
-$heads = [
-    'Empresa',
-    'Provedor',
-    'Usuario',
-    'Senha',
-    'Token',
-    'URL / WSDL',
-    'Ambiente',
-    ['label' => 'Editar', 'no-export' => true, 'width' => 5],
-];
-$config = [
-    'lengthMenu' => [ 5, 10, 25, 50],
-    'pageLength' => 10,
-    'language' => Helper::dataTableLangPtBR(),
-    'pagingType' => 'full_numbers',
-    'order' => [[0, 'asc']],
-    'columns' => [null, null, null, null, null, null, null, ['orderable' => false]],
-];
+    $heads = [
+        'Empresa',
+        'Provedor',
+        'Ambiente',
+        'Usuario',
+        'Senha',
+        'Token',
+        'URL / WSDL',
+        ['label' => 'Editar', 'no-export' => true, 'width' => 5],
+    ];
+
+    //Variavel para o filtro
+    $arraySelEmp = HelperArraySelect::arrayEmpresas(2,1);
+    $arraySelPro = HelperArraySelect::arrayProvedores(2,1);
 @endphp
 <x-adminlte-card title="Parâmetros de Conexões da NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
-    <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
+    <x-adminlte-datatable id="tabela-conexao" :heads="$heads" theme="light" striped hoverable>
         @foreach ($conexoes as $conexao)
             @php
                 $data_emp = DB::table('cadastro_empresas')->where('empresa_codigo','=',$conexao->conexao_empresa)->get();
@@ -62,16 +58,16 @@ $config = [
             <tr>
                 <td>{{ $empresa }}</td>
                 <td>{{ $nomeProvedor }}</td>  
+                <td>{{ $ambiente }}</td> 
                 <td>{{ $conexao->conexao_usuario }}</td>  
                 <td>{{ $conexao->conexao_senha }}</td>  
                 <td>{{ $conexao->conexao_token }}</td>    
                 <td>{{ $conexao->conexao_wsdl }}</td>  
-                <td>{{ $ambiente }}</td> 
                 <td>
                     <nobr>
-                        <form method="get" action="{{ route('parmetrosNfsCon.editarCadastro', ['dadosConexao' => $conexao->conexao_empresa, 'appOrigem' => 'parametrosNfsConexao']) }}" style="float: left;">
+                        <form method="get" action="{{ route('conexaoNFSe.edit', ['conexaoNFSe' => $conexao->conexao_empresa]) }}" style="float: left;">
                             @csrf
-                            <button class="btn btn-xs btn-default text-primary mx-1 shadow" title="Editar Registro" value="Edit" type="submit">
+                            <button class="btn btn-xs btn-outline-primary mx-1" title="Editar Registro" value="Edit" type="submit">
                                 <i class="fa fa-lg fa-fw fa-pen"></i>
                             </button>
                         </form>
@@ -101,6 +97,180 @@ $config = [
 @stop
 
 @section('js')
+<script>
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Eventos da Inicialização do Datatable
+    |----------------------------------------------------------------------------------------------------
+    |
+    | Adicionamos aqui todos os eventos relacionados a criação e manipulação de eventos do datatable
+    |
+    ***** */
+    $(() => {
+
+        /* ********** Inicializa o Datatable ********** */
+        var table = $('#tabela-conexao').DataTable({
+            dom: getDatatableDom(),
+            buttons: getDatatableButtons(),
+            lengthMenu: [5, 10, 25, 50, 100],
+            pageLength: 10,
+            language: dataTableLangPtBR,
+            order: [
+                [0, 'asc']
+            ],
+            pagingType: 'full_numbers',
+            processing: true,
+            columns: [
+                null,
+                null,
+                null,
+                null,
+                { visible: false },
+                { visible: false },
+                null,
+                { orderable: false }
+            ],
+            initComplete: function() {
+
+                /* *****
+                |----------------------------------------------------------------------------------------------------
+                | Altera o Campo Searching Original
+                |----------------------------------------------------------------------------------------------------
+                |
+                | Alteramos a aparencia do input encapsulando ele dentro de input-group estilizado para o Nexus
+                |
+                ***** */
+
+                // Chama a função para customizar o filtro da tabela com base no ID
+                // #id = ID_TABELA_filter
+                customSearchingField('#tabela-conexao_filter');
+
+                /* ------------------------------ Final dos Eventos Altera o Campo Searching Original ------------------------------ */
+
+                /* *****
+                |----------------------------------------------------------------------------------------------------
+                | Cards e Botões da Barra de Ferramentas do Datatable
+                |----------------------------------------------------------------------------------------------------
+                |
+                | Adicionamos aqui a criação dos Cards e Botões utilizados na barra de ferramentas do datatable
+                |
+                ***** */
+
+                /* ******************** Botões Principais ******************** */
+
+                /* ********** Criação dos botões principais da barra de ferramentas ********** */
+                let buttonsTooBarHTML = getButtonsTollBar(['colunas','filtro']);
+
+                /* ********** Adicionando os botões na barra de ferramentas ********** */
+                // #id = ID_TABELA_wrapper
+                $('#tabela-conexao_wrapper .btn-datatable-dir .tool-bar').prepend(buttonsTooBarHTML);
+
+                /* ******************** Cards dos Botões Principais ******************** */
+
+                /* ********** Botões do Card da Coluna ********** */
+                let btnColunaHTML = `
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="0" href="#">Empresa</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="1" href="#">Provedor</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="2" href="#">Ambiente</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="3" href="#">Usuário</a>
+                    <a class="btn btn-outline-nexus toggle-vis mr-2" data-column="4" href="#">Senha</a>
+                    <a class="btn btn-outline-nexus toggle-vis mr-2" data-column="5" href="#">Token</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="6" href="#">URL / WSDL</a>
+                `;
+
+                /* ********** Monta o Card da Coluna ********** */
+                let cardColunaHTML = getCardColunas(btnColunaHTML);
+
+                /* ********** Adiciona o Card da Coluna ********** */
+                // #id = ID_TABELA_wrapper
+                $('#tabela-conexao_wrapper .linha-cards-menu').append(cardColunaHTML);
+
+                /* ********** Campos do Card de Filtro ********** */
+                let fieldFiltroHTML = `
+                    <div class="row">
+                        <x-adminlte-select name="filterEmp" label="Empresa" igroup-size="sm" fgroup-class="col-md-3">
+                            <x-adminlte-options :options="$arraySelEmp" empty-option="Selecione..."/>
+                        </x-adminlte-select>
+                        <x-adminlte-select name="filterPro" label="Provedor" igroup-size="sm" fgroup-class="col-md-3">
+                            <x-adminlte-options :options="$arraySelPro" empty-option="Selecione..."/>
+                        </x-adminlte-select>
+                        <x-adminlte-select name="filterAmb" label="Ambiente" igroup-size="sm" fgroup-class="col-md-3">
+                            <x-adminlte-options :options="['Homologação' => 'Homologação', 'Produção' => 'Produção']" empty-option="Selecione..."/>
+                        </x-adminlte-select>
+                    </div>
+                `;
+
+                /* ********** Monta o Card de Filtro ********** */
+                let cardFiltroHTML = getCardFiltros(fieldFiltroHTML);
+
+                /* ********** Adiciona o Card de Filtro ********** */
+                // #id = ID_TABELA_wrapper
+                $('#tabela-conexao_wrapper .linha-cards-menu').append(cardFiltroHTML);
+                /* ------------------------------ Final dos Eventos Cards e Botões da Barra de Ferramentas do Datatable ------------------------------ */
+                
+                /* *****
+                |----------------------------------------------------------------------------------------------------
+                | Eventos dos Filtros Individuais
+                |----------------------------------------------------------------------------------------------------
+                |
+                | Esses eventos devem ser feitos ao criar a tabela no "initComplete" para funcionar a busca dos dados
+                |
+                ***** */
+
+                // Escopo para a tabela trabalhada
+                // #id = ID_TABELA_wrapper
+                $('#tabela-conexao_wrapper').each(function() {
+                    var $wrapper = $(this);  // Armazena o contexto atual do wrapper
+
+                    $wrapper.find('#filterEmp').on('change', function() {
+                        var selectedValue = $(this).val();
+                        table.column(0).search(selectedValue).draw();
+                    });
+
+                    $wrapper.find('#filterPro').on('change', function() {
+                        var selectedValue = $(this).val();
+                        table.column(1).search(selectedValue).draw();
+                    });
+
+                    $wrapper.find('#filterAmb').on('change', function() {
+                        var selectedValue = $(this).val();
+                        table.column(2).search(selectedValue).draw();
+                    });
+                });
+                /* ------------------------------ Final dos Eventos dos Filtros Individuais ------------------------------ */
+                
+            }
+        });
+
+        /* ------------------------------ Final a Inicialização do Datatable ------------------------------ */
+
+        /* *****
+        |----------------------------------------------------------------------------------------------------
+        | Controle do Card de Colunas e Funcionalidades
+        |----------------------------------------------------------------------------------------------------
+        ***** */
+
+        // Chama a função para adicionar os eventos de visibilidade das colunas
+        setupActionsColuna(table, '#tabela-conexao_wrapper');
+
+        /* ------------------------------ Final dos Eventos de Controle do Card de Colunas e Funcionalidades ------------------------------ */
+
+        /* *****
+        |----------------------------------------------------------------------------------------------------
+        | Controle do Card de Filtro e Funcionalidades
+        |----------------------------------------------------------------------------------------------------
+        ***** */
+
+        // Chama a função de configuração de filtros
+        setupActionsFiltro(table, '#tabela-conexao_wrapper');
+
+        /* ------------------------------ Final dos Eventos de Controle do Card de Filtro e Funcionalidades ------------------------------ */
+
+    });
+
+    /* ------------------------------ Final da Inicialização do Datatable ------------------------------ */
+</script>
+
 <script>
     @if(Session::has('success'))
         const Toast = Swal.mixin({

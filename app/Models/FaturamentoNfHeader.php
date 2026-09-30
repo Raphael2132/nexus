@@ -49,7 +49,7 @@ class FaturamentoNfHeader extends Model
         'nfhdr_vlr_bc_icms',
         'nfhdr_vlr_alq_icms',
         'nfhdr_vlr_icms',
-        'nfhdr_vlr_qtd_ppg',
+        'nfhdr_qtd_ppg',
         'nfhdr_vlr_ent',
         'nfhdr_nfb',
         'nfhdr_sfb',

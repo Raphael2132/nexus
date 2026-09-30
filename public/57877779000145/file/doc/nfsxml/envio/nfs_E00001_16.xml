@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nfe>
+  <notaFiscal/>
+  <dadosPrestador>
+    <dataEmissao>12/07/2024</dataEmissao>
+    <im>123165100</im>
+    <numeroRps>000000016</numeroRps>
+  </dadosPrestador>
+  <dadosServico>
+    <bairro>PORTAO</bairro>
+    <cep>81070-000</cep>
+    <cidade>CURITIBA</cidade>
+    <complemento>ATE 1100/1101</complemento>
+    <logradouro>RUA JOAO BETTEGA</logradouro>
+    <numero>11223</numero>
+    <pais>BRASIL</pais>
+    <uf>PR</uf>
+  </dadosServico>
+  <dadosTomador>
+    <bairro>PORTAO</bairro>
+    <cep>81070-000</cep>
+    <cidade>CURITIBA</cidade>
+    <complemento>ATE 1100/1101</complemento>
+    <documento>64594641964794</documento>
+    <email>pichau@gmail.com</email>
+    <ie>1316461</ie>
+    <logradouro>RUA JOAO BETTEGA</logradouro>
+    <nomeTomador>PICHAU INFORMATICA</nomeTomador>
+    <numero>11223</numero>
+    <pais>BRASIL</pais>
+    <tipoDoc>J</tipoDoc>
+    <uf>PR</uf>
+  </dadosTomador>
+  <detalheServico>
+    <cofins>0.00</cofins>
+    <csll>0.00</csll>
+    <deducaoMaterial>0.00</deducaoMaterial>
+    <descontoIncondicional>0.00</descontoIncondicional>
+    <inss>0.00</inss>
+    <ir>0.00</ir>
+    <issRetido>0</issRetido>
+    <item>
+      <aliquota>4.00</aliquota>
+      <codigo>1402</codigo>
+      <descricao>ASISTENCIA EM OUTRO ESTADO</descricao>
+      <valor>115.41</valor>
+    </item>
+    <obs/>
+    <pisPasep>0.00</pisPasep>
+  </detalheServico>
+</nfe>

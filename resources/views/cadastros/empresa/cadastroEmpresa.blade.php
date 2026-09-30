@@ -10,7 +10,7 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">
-                <a href="{{route('home.empresa')}}">Empresas</a>
+                <a href="{{route('cadastroEmpresa.index')}}">Empresas</a>
             </li>
             <li class="breadcrumb-item active">Cadastro de Empresa</li>
         </ol>
@@ -20,7 +20,7 @@
 
 @section('content')
 
-<form method="post" action="{{route('empresa.inserir')}}" id="quickForm" novalidate="novalidate">
+<form method="post" action="{{route('cadastroEmpresa.store')}}" id="quickForm" novalidate="novalidate">
     @csrf 
     @method('post')
     <x-adminlte-card title="Cadastro de Nova Empresa" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
@@ -53,7 +53,7 @@
         <x-slot name="footerSlot">
             <div class="d-flex justify-content-between w-100">
                 <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
-                <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.empresa') }}'" label="Voltar" theme="" icon=""/>
+                <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('cadastroEmpresa.index') }}'" label="Voltar" theme="" icon=""/>
             </div>
         </x-slot>
     </x-adminlte-card>

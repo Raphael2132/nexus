@@ -1,26 +1,11 @@
 @php
     $headsOS = [
+        'OS',
         'OS / Data',
-        'empresa',
+        'Empresa',
         'Cliente',
         'Situação',
         'Valor',
-    ];
-    $configOS = [
-        'lengthChange' => 'false', 
-        'paging' => false,
-        'searching' => false,
-        'pageLength' => 5,
-        'info' => false, 
-        'language' => Helper::dataTableLangPtBR(),
-        'order' => [[0, 'desc']],
-        'columns' => [
-            ['orderable' => false], 
-            ['orderable' => false], 
-            ['orderable' => false], 
-            ['orderable' => false], 
-            ['orderable' => false]
-        ],
     ];
 
     $headsNFS = [
@@ -29,30 +14,10 @@
         'Data',
         'Ped. / OS',
         'RPS / Série',
-        'empresa',
+        'Empresa',
         'Cliente',
         'Situação',
         'Valor',
-    ];
-    $configNFS = [
-        'lengthChange' => 'false', 
-        'paging' => false,
-        'searching' => false,
-        'pageLength' => 5,
-        'info' => false, 
-        'language' => Helper::dataTableLangPtBR(),
-        'order' => [[0, 'desc']],
-        'columns' => [
-            ['orderable' => false, 'visible' => false], // Esconder primeira coluna
-            ['orderable' => false, 'visible' => false], // Esconder segunda coluna
-            ['orderable' => false], 
-            ['orderable' => false], 
-            ['orderable' => false], 
-            ['orderable' => false], 
-            ['orderable' => false], 
-            ['orderable' => false], 
-            ['orderable' => false]
-        ],
     ];
 
     $headsNFSSimp = [
@@ -61,33 +26,10 @@
         'Data',
         'ES',
         'RPS / Série',
-        'empresa',
+        'Empresa',
         'Cliente',
         'Situação',
         'Valor',
-    ];
-    $configNFSSimp = [
-        'lengthChange' => 'false', 
-        'paging' => false,
-        'searching' => false,
-        'pageLength' => 5,
-        'info' => false, 
-        'language' => Helper::dataTableLangPtBR(),
-        'order' => [
-            [0, 'desc'],
-            [1, 'desc']
-        ],
-        'columns' => [
-            ['orderable' => false, 'visible' => false], // Esconder primeira coluna
-            ['orderable' => false, 'visible' => false], // Esconder segunda coluna
-            ['orderable' => false], 
-            ['orderable' => false], 
-            ['orderable' => false], 
-            ['orderable' => false], 
-            ['orderable' => false], 
-            ['orderable' => false], 
-            ['orderable' => false]
-        ],
     ];
 
     //Vamos definir a empresa da visualização da Home
@@ -288,22 +230,23 @@
                 </div>
             </x-adminlte-card>
             <x-adminlte-card title="Últimas OS Abertas" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
-                <x-adminlte-datatable id="table-os" :heads="$headsOS" :config="$configOS" theme="light" striped hoverable compressed>
+                <x-adminlte-datatable id="table-os" :heads="$headsOS" theme="light" striped hoverable compressed>
                     @foreach($dadosOS as $os)
                         @php 
                             $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $os->os_emp)->get();
                             $dataCli = DB::table('cadastro_clientes')->where('cliente_codigo', $os->os_cli_fatura)->get();
                         @endphp
                         <tr>
+                            <td>{{$os->os_nos}}</td>
                             <td><a href="{{route('situacaoOS.carregaOS', ['empresa' => $os->os_emp, 'cliente' => $os->os_cli, 'nos' => $os->os_nos, 'estagioAPP' => 'PRINCIPAL'])}}">{{$os->os_nos.' - '.Helper::formataDataHoraParaData($os->os_dha)}}</a></td>
                             <td>{{$os->os_emp.' - '.$dataEmp[0]->empresa_nome}}</td>
                             <td>{{$os->os_cli_fatura.' - '.$dataCli[0]->cliente_nome}}</td>
                             @if($os->os_sts == 'F')
-                            <td style="text-align: center;"><span class="badge badge-success">Finalizada</span></td>
+                            <td><span class="badge badge-success">Finalizada</span></td>
                             @elseif($os->os_sts == 'C')
-                            <td style="text-align: center;"><span class="badge badge-danger">Cancelada</span></td>
+                            <td><span class="badge badge-danger">Cancelada</span></td>
                             @else
-                            <td style="text-align: center;"><span class="badge badge-info">Andamento</span></td>
+                            <td><span class="badge badge-info">Andamento</span></td>
                             @endif
                             <td style="text-align: right;">{{Helper::formataValorMonetario($os->os_vlt)}}</td>
                         </tr>
@@ -324,7 +267,7 @@
                 @endcan
             </x-adminlte-card>
             <x-adminlte-card title="Últimas NFS-e Geradas" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
-                <x-adminlte-datatable id="table-nfs" :heads="$headsNFS" :config="$configNFS" theme="light" striped hoverable compressed>
+                <x-adminlte-datatable id="table-nfs" :heads="$headsNFS" theme="light" striped hoverable compressed>
                     @foreach($dadosNFS as $nfs)
                         @php 
                             $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $nfs->nfs_emp)->get();
@@ -338,13 +281,13 @@
                             <td>{{$nfs->nfs_emp.' - '.$dataEmp[0]->empresa_nome}}</td>
                             <td>{{$nfs->nfs_cli.' - '.$nfs->nfs_nom_tom}}</td>
                             @if($nfs->nfs_sts == 'G')
-                            <td style="text-align: center;"><span class="badge badge-success">NFS-e Gerada</span></td>
+                            <td><span class="badge badge-success">NFS-e Gerada</span></td>
                             @elseif($nfs->nfs_sts == 'C')
-                            <td style="text-align: center;"><span class="badge badge-danger">NFS-e Cancelada</span></td>
+                            <td><span class="badge badge-danger">NFS-e Cancelada</span></td>
                             @elseif($nfs->nfs_sts == 'E')
-                            <td style="text-align: center;"><span class="badge badge-warning" style="color: #fff !important;">NFS-e Erro</span></td>
+                            <td><span class="badge badge-warning" style="color: #fff !important;">NFS-e Erro</span></td>
                             @else
-                            <td style="text-align: center;"><span class="badge badge-info">NFS-e Iniciada</span></td>
+                            <td><span class="badge badge-info">NFS-e Iniciada</span></td>
                             @endif
                             <td style="text-align: right;">{{Helper::formataValorMonetario($nfs->nfs_vlr_tot)}}</td>
                         </tr>
@@ -361,7 +304,7 @@
                 @endcan
             </x-adminlte-card>
             <x-adminlte-card title="Últimas NFS-e Simplificadas Geradas" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
-                <x-adminlte-datatable id="table-nfs-simp" :heads="$headsNFSSimp" :config="$configNFSSimp" theme="light" striped hoverable compressed>
+                <x-adminlte-datatable id="table-nfs-simp" :heads="$headsNFSSimp" theme="light" striped hoverable compressed>
                     @foreach($dadosNFSSimp as $nfsSimp)
                         @php 
                             $dataEmp = DB::table('cadastro_empresas')->where('empresa_codigo', $nfsSimp->nfs_emp)->get();
@@ -375,13 +318,13 @@
                             <td>{{$nfsSimp->nfs_emp.' - '.$dataEmp[0]->empresa_nome}}</td>
                             <td>{{$nfsSimp->nfs_cli.' - '.$nfsSimp->nfs_nom_tom}}</td>
                             @if($nfsSimp->nfs_sts == 'G')
-                            <td style="text-align: center;"><span class="badge badge-success">NFS-e Gerada</span></td>
+                            <td><span class="badge badge-success">NFS-e Gerada</span></td>
                             @elseif($nfsSimp->nfs_sts == 'C')
-                            <td style="text-align: center;"><span class="badge badge-danger">NFS-e Cancelada</span></td>
+                            <td><span class="badge badge-danger">NFS-e Cancelada</span></td>
                             @elseif($nfsSimp->nfs_sts == 'E')
-                            <td style="text-align: center;"><span class="badge badge-warning" style="color: #fff !important;">NFS-e Erro</span></td>
+                            <td><span class="badge badge-warning" style="color: #fff !important;">NFS-e Erro</span></td>
                             @else
-                            <td style="text-align: center;"><span class="badge badge-info">NFS-e Iniciada</span></td>
+                            <td><span class="badge badge-info">NFS-e Iniciada</span></td>
                             @endif
                             <td style="text-align: right;">{{Helper::formataValorMonetario($nfsSimp->nfs_vlr_tot)}}</td>
                         </tr>
@@ -399,7 +342,7 @@
             </x-adminlte-card>
         </div>
         <div class="col-md-4"> 
-            <x-adminlte-small-box :title="$cliMes" text="Novos Clientes" icon="fas fa-user" theme="gradient-lightblue" url="{{ route('clientes',['tipo' => 'M']) }}" url-text="Novos Clientes no Mês"/>
+            <x-adminlte-small-box :title="$cliMes" text="Novos Clientes" icon="fas fa-user" theme="gradient-lightblue" url="{{ route('cadastroCliente.show',['cadastroCliente' => 'M']) }}" url-text="Novos Clientes no Mês"/>
             <x-adminlte-small-box :title="$osMes" text="OS Emitidas" icon="fas fa-file-invoice" theme="gradient-info" url="{{ route('situacaoOS.consulta', ['statusOS' => 'M']) }}" url-text="OS Finalizadas no Mês"/>
             <div class="small-box bg-gradient-teal">
                 <div class="inner">
@@ -505,6 +448,93 @@
 @stop
 
 @section('js')
+<script>
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Eventos da Inicialização do Datatable
+    |----------------------------------------------------------------------------------------------------
+    |
+    | Adicionamos aqui todos os eventos relacionados a criação e manipulação de eventos do datatable
+    |
+    ***** */
+    $(() => {
+        
+        /* ********** Inicializa o Datatable ********** */
+        var tableOS = $('#table-os').DataTable({
+            language: dataTableLangPtBR,
+            lengthChange: false, 
+            paging: false,
+            searching: false,
+            pageLength: 5,
+            info: false,
+            order: [
+                [0, 'desc']
+            ],
+            columns: [
+                { orderable: false, visible: false }, // Esconder primeira coluna
+                { orderable: false }, 
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+            ],
+        });
+
+        /* ********** Inicializa o Datatable ********** */
+        var tableNFS = $('#table-nfs').DataTable({
+            language: dataTableLangPtBR,
+            lengthChange: false, 
+            paging: false,
+            searching: false,
+            pageLength: 5,
+            info: false,
+            order: [
+                [0, 'desc'],
+                [1, 'desc']
+            ],
+            columns: [
+                { orderable: false, visible: false }, // Esconder primeira coluna
+                { orderable: false, visible: false }, // Esconder segunda coluna
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+            ],
+        });
+
+        /* ********** Inicializa o Datatable ********** */
+        var tableNFSSimp = $('#table-nfs-simp').DataTable({
+            language: dataTableLangPtBR,
+            lengthChange: false, 
+            paging: false,
+            searching: false,
+            pageLength: 5,
+            info: false,
+            order: [
+                [0, 'desc'],
+                [1, 'desc']
+            ],
+            columns: [
+                { orderable: false, visible: false }, // Esconder primeira coluna
+                { orderable: false, visible: false }, // Esconder segunda coluna
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+            ],
+        });
+
+    });
+
+    /* ------------------------------ Final da Inicialização do Datatable ------------------------------ */
+</script>
+
 <script>
     $(function () {
 

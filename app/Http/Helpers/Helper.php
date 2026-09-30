@@ -8,6 +8,22 @@ use DateTimeZone;
 
 class Helper
 {
+    /* *****
+    |
+    |----------------------------------------------------------------------------------------------------
+    | Helper de Formatação Fixa
+    |----------------------------------------------------------------------------------------------------
+    |
+    | Helper destinado a formatação de valores fixos ou limpeza de dados comuns dentro de sistema.
+    | Aplicação e remoção de máscaras de dados, retornos de dafos fixos como Sim/Não, formatação de campos DataRange, tradução de dados para pt-BR, remoção de caracteres especiais entre outros.
+    |
+    ***** */
+
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Aplicação/Remoção de Máscara de Telefone Celular / (99) 9 9999-9999
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function mascaraTelCelular(string $telCelular)
     {
         $celularFormatado = "(".substr($telCelular,0,2).") ".substr($telCelular,2,1)." ".substr($telCelular,3,4)."-".substr($telCelular,-4,4);
@@ -21,12 +37,29 @@ class Helper
         return $celular;
     }
 
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Aplicação/Remoção de Máscara de Telefone Comercial / (99) 9999-9999
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function mascaraTelComercial(string $telComercial)
     {
         $comercialFormatado = "(".substr($telComercial,0,2).") ".substr($telComercial,2,4)."-".substr($telComercial,-4,4);
         return $comercialFormatado;
     }
 
+    public static function limpaTelComercial(string $telComercial)
+    {
+        $replace = array("_", "(", ")", "-", " ");
+        $comercial = str_replace($replace,"",$telComercial);
+        return $comercial;
+    }
+    
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Aplicação/Remoção de Máscara de Telefone Residencial / (99) 9999-9999
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function mascaraTelResidencial(string $telResidencial)
     {
         $residencialFormatado = "(".substr($telResidencial,0,2).") ".substr($telResidencial,2,4)."-".substr($telResidencial,-4,4);
@@ -40,6 +73,11 @@ class Helper
         return $residencial;
     }
 
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Aplicação/Remoção de Máscara de CPF/CNPJ / 999.999.999-99 - 99.999.999/9999-99
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function mascaraCNPJ(string $cnpj)
     {
         $cnpjFormatado = substr($cnpj,0,2).'.'.substr($cnpj,2,3).'.'.substr($cnpj,5,3).'/'.substr($cnpj,8,4).'-'.substr($cnpj,12,2);
@@ -59,6 +97,18 @@ class Helper
         return $cpf;
     }
 
+    public static function limpaCNPJ(string $cnpj)
+    {
+        $replace = array("_","/", "-", ".", " ");
+        $cnpj = str_replace($replace,"",$cnpj);
+        return $cnpj;
+    }
+
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Aplicação/Remoção de Máscara de RG / 99.999.999-7
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function mascaraRG(string $rg)
     {
         $rgFormatado = substr($rg,0,2).'.'.substr($rg,2,3).'.'.substr($rg,5,3).'-'.substr($rg,-1,1);
@@ -72,6 +122,11 @@ class Helper
         return $rg;
     }
 
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Aplicação/Remoção de Máscara de CEP / 99999-999
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function mascaraCEP(string $cep)
     {
         $cepFormatado = substr($cep,0,5).'-'.substr($cep,-3,3);
@@ -85,6 +140,11 @@ class Helper
         return $cep;
     }
 
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Formatação de Data Data/Hora e Hora
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function formataDataHora(string $dataHora)
     {
         $dataHoraFormatada = date('d/m/Y H:i:s', strtotime($dataHora));
@@ -122,9 +182,48 @@ class Helper
         return $horaLimpa;
     }
 
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Conversão de Hora Centesimal para Sexagesimal / 1.00 Hora => 01:00:00 Hora
+    |----------------------------------------------------------------------------------------------------
+    ***** */
+    public static function convertHrCentToHrSexa(string $horaCentesimal)
+    {
+        // Separar a parte inteira (horas) e a parte fracionária (minutos centesimais)
+        $horas = floor($horaCentesimal);
+        $minutosCentesimais = $horaCentesimal - $horas;
+
+        // Converter a parte fracionária de horas centesimais para minutos sexagesimais
+        $minutosSexagesimais = $minutosCentesimais * 60;
+
+        // Separar a parte inteira (minutos) e a parte fracionária (segundos)
+        $minutos = floor($minutosSexagesimais);
+        $segundos = ($minutosSexagesimais - $minutos) * 60;
+
+        // Formatar a saída para hh:mm:ss
+        return sprintf("%02d:%02d:%02d", $horas, $minutos, round($segundos));
+    }
+
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Conversão de Hora Centesimal para Minutos / 1.00 Hora => 60 minutos
+    |----------------------------------------------------------------------------------------------------
+    ***** */
+    public static function convertHrCentToMinutes($horaCentesimal)
+    {
+        $hours = floor($horaCentesimal);
+        $minutes = ($horaCentesimal - $hours) * 60;
+        return ($hours * 60) + $minutes;
+    }
+
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Formatação de Valores Monetários
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function formataValorMonetario(string $valor)
     {
-        $valorFormatado = number_format($valor,2,",",".");
+        $valorFormatado = number_format((float) $valor, 2, ",", ".");
         return $valorFormatado;
     }
 
@@ -136,6 +235,11 @@ class Helper
         return $valorLimpo;
     }
 
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Formatação de Valores de Porcentagem
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function limpaPorcentagem(string $valor)
     {
         $valorLimpo = str_replace(".","",$valor);
@@ -150,11 +254,14 @@ class Helper
         return $valorFormatado;
     }
 
-    /*
-    * Remover os acentos de uma string
-    * @param string $str
-    * @return string
-    */
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Remoção de Acentuação de Strings
+    |----------------------------------------------------------------------------------------------------
+    |
+    | Parametros: String a ser Formatada, Converte para Maiusculo
+    |
+    ***** */
     public static function removerAcento($str, $convertToUpper = 'N'){
 
         $com_acento = array(
@@ -183,49 +290,11 @@ class Helper
         return $str;
     }
 
-    public static function buscaEstadoUF(string $uf)
-    {
-        $estado = DB::table('ibge_estados')->where('ibge_sigla', $uf)->get();
-
-        $estadoFormatado = $uf.' - '.$estado[0]->ibge_nome;
-        return $estadoFormatado;
-    }
-
-    public static function formataSimNao(string $valor)
-    {
-        if($valor == 'S'){
-            $valorFormatado = 'Sim';
-        }else{
-            $valorFormatado = 'Não';
-        }
-        return $valorFormatado;
-    }
-
-    public static function convertHrCentToHrSexa(string $horaCentesimal)
-    {
-        // Separar a parte inteira (horas) e a parte fracionária (minutos centesimais)
-        $horas = floor($horaCentesimal);
-        $minutosCentesimais = $horaCentesimal - $horas;
-
-        // Converter a parte fracionária de horas centesimais para minutos sexagesimais
-        $minutosSexagesimais = $minutosCentesimais * 60;
-
-        // Separar a parte inteira (minutos) e a parte fracionária (segundos)
-        $minutos = floor($minutosSexagesimais);
-        $segundos = ($minutosSexagesimais - $minutos) * 60;
-
-        // Formatar a saída para hh:mm:ss
-        return sprintf("%02d:%02d:%02d", $horas, $minutos, round($segundos));
-    }
-
-    public static function convertHrCentToMinutes($horaCentesimal)
-    {
-        $hours = floor($horaCentesimal);
-        $minutes = ($horaCentesimal - $hours) * 60;
-        return ($hours * 60) + $minutes;
-    }
-
-    //Pega a hora de inicio de expediente do dia informado
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Busca a hora de inicio de expediente do dia informado
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function buscaHoraIniEx($data,$businessHours)
     {
         // Crie um objeto DateTime a partir da data fornecida
@@ -244,7 +313,11 @@ class Helper
         return $currentBusinessHours;
     }
 
-    //Pega a hora do final de expediente do dia informado
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Busca a hora do final de expediente do dia informado
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function buscaHoraFinEx($data,$businessHours)
     {
         // Crie um objeto DateTime a partir da data fornecida
@@ -263,7 +336,11 @@ class Helper
         return $currentBusinessHours;
     }
 
-    //Gera o array com a tradução para pt-BR do datatable
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Gera o array com a tradução para pt-BR do datatable (Inutilizado - Nova versão no arquivo JS)
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function dataTableLangPtBR()
     {
         $lang_pt_br = [
@@ -273,12 +350,14 @@ class Helper
             "infoThousands" => ".",
             "loadingRecords" => "Carregando...",
             "zeroRecords" => "Nenhum registro encontrado",
-            "search" => "Pesquisar",
+            "search" => "<div class='btn btn-nexus'>
+                Pesquisa Rápida <i class='fa-regular fa-magnifying-glass'></i></i>
+            </div>",
             "paginate" => [
-                "first" => "<i class='fas fa-angle-double-left'></i>",
-                "previous" => "<i class='fas fa-angle-left'></i>",
-                "next" => "<i class='fas fa-angle-right'></i>",
-                "last" => "<i class='fas fa-angle-double-right'></i>"
+                "first" => "<i class='fa-regular fa-angle-double-left'></i>",
+                "previous" => "<i class='fa-regular fa-angle-left'></i>",
+                "next" => "<i class='fa-regular fa-angle-right'></i>",
+                "last" => "<i class='fa-regular fa-angle-double-right'></i>"
             ],
             "aria" => [
                 "sortAscending" => " => Ordenar colunas de forma ascendente",
@@ -515,7 +594,11 @@ class Helper
         return $lang_pt_br;
     }
 
-    //Gera o array com a tradução de um campo hora com DateRangePicker em pt-BR
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Gera o array com a tradução de um campo hora com DateRangePicker em pt-BR
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function dtRangeHoraPtBR()
     {
         $configHR = [
@@ -537,7 +620,11 @@ class Helper
         return $configHR;
     }
 
-    //Gera o array com a tradução de um campo data com DateRangePicker em pt-BR
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Gera o array com a tradução de um campo data com DateRangePicker em pt-BR
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function dtRangeDataPtBR()
     {
         $configHR = [
@@ -569,7 +656,27 @@ class Helper
         return $configHR;
     }
 
-    //Gera o array com a tradução de um campo data com DateRangePicker em pt-BR
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Formata campos Sim/Não
+    |----------------------------------------------------------------------------------------------------
+    ***** */
+    public static function formataSimNao(string $valor)
+    {
+        if($valor == 'S'){
+            $valorFormatado = 'Sim';
+        }else{
+            $valorFormatado = 'Não';
+        }
+
+        return $valorFormatado;
+    }
+
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Formata o campo de Tipo de Usuario
+    |----------------------------------------------------------------------------------------------------
+    ***** */
     public static function formataTipoUsuario($tipo)
     {
         if($tipo == 'M'){
@@ -591,11 +698,137 @@ class Helper
         return $usuario;
     }
 
-    //Gera o array com a tradução de um campo data com DateRangePicker em pt-BR
-    public static function buscaDadosEmpresa($empresa)
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Formata o campo de Tipo de Hora da TMO
+    |----------------------------------------------------------------------------------------------------
+    ***** */
+    public static function formataTipoHrTMO(string $valor)
     {
-        $dadosEmpresa = DB::table('cadastro_empresas')->where('empresa_codigo',$empresa)->first();          
+        if($valor == 'P'){
+            $tipo_tmo = 'Padrão';
+        }elseif($valor == 'I'){
+            $tipo_tmo = 'Hora Informada';
+        }elseif($valor == 'R'){
+            $tipo_tmo = 'Hora Real';
+        }elseif($valor == 'F'){
+            $tipo_tmo = 'Valor Fixo';
+        }else{
+            $tipo_tmo = 'Terceiros';
+        }
 
-        return $dadosEmpresa;
+        return $tipo_tmo;
+    }
+
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Formata o campo de Status do Usuário
+    |----------------------------------------------------------------------------------------------------
+    ***** */
+    public static function formataUsuarioStatus($valor)
+    {
+        if($valor == 'A'){
+            $status = 'Ativo';
+        }else{
+            $status = 'Demitido';
+        }
+
+        return $status;
+    }
+
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Formata o campo de Dias de Funcionamento da Empresa
+    |----------------------------------------------------------------------------------------------------
+    ***** */
+    public static function formataDiaFuncionamentoEmpresa($valor)
+    {
+        if($valor == '1'){
+            $status = 'Segunda à Sexta';
+        }else if($valor == '2'){
+            $status = 'Segunda à Sábado';
+        }else{
+            $status = 'Segunda à Domingo';
+        }
+
+        return $status;
+    }
+
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Formata o campo de Tipo de Razão
+    |----------------------------------------------------------------------------------------------------
+    ***** */
+    public static function formataTipoRazao(string $valor)
+    {
+        if($valor == 'BA'){
+            $tipo_raz = 'Banco';
+        }elseif($valor == 'CX'){
+            $tipo_raz = 'Caixa';
+        }elseif($valor == 'TE'){ 
+            $tipo_raz = "Tesouraria";
+        }else{ 
+            $tipo_raz = "Cartão de Crédito";
+        }
+
+        return $tipo_raz;
+    }
+
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Formata o campo de Tipo de Valor do Recebimento do Financeiro
+    |----------------------------------------------------------------------------------------------------
+    ***** */
+    public static function formataTipoValRecebimento(string $valor)
+    {
+        if($valor == 'DIN'){
+            $desc = 'Dinheiro';
+        }elseif($valor == 'CHQ'){
+            $desc = 'Cheque';
+        }elseif($valor == 'CCR'){
+            $desc = 'Cartão de Crédito';
+        }elseif($valor == 'CDB'){
+            $desc = 'Cartão de Débito';
+        }elseif($valor == 'CCT'){
+            $desc = 'Conta Corrente';
+        }elseif($valor == 'TRC'){
+            $desc = 'Troco';
+        }elseif($valor == 'PIX'){
+            $desc = 'PIX';
+        }else{
+            $desc = 'Outros';
+        }
+
+        return $desc;
+    }
+
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Formata o campo de Tipo de Valor do Pagamento do Financeiro
+    |----------------------------------------------------------------------------------------------------
+    ***** */
+    public static function formataTipoValPagamento(string $valor)
+    {
+        if($valor == 'DIN'){
+            $desc = 'Dinheiro';
+        }elseif($valor == 'CHQ'){
+            $desc = 'Cheque';
+        }elseif($valor == 'CCR'){
+            $desc = 'Cartão de Crédito';
+        }elseif($valor == 'CDB'){
+            $desc = 'Cartão de Débito';
+        }elseif($valor == 'CCT'){
+            $desc = 'Conta Corrente';
+        }elseif($valor == 'TRC'){
+            $desc = 'Troco';
+        }elseif($valor == 'PIX'){
+            $desc = 'PIX';
+        }elseif($valor == 'CCO'){
+            $desc = 'Cartão Corporativo';
+        }else{
+            $desc = 'Outros';
+        }
+
+        return $desc;
     }
 }

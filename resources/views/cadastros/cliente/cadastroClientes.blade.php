@@ -10,7 +10,7 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">
-                <a href="{{route('home.clientes')}}">Clientes</a>
+                <a href="{{route('cadastroCliente.index')}}">Clientes</a>
             </li>
             <li class="breadcrumb-item active">Cadastro de Cliente</li>
         </ol>
@@ -20,7 +20,7 @@
 
 @section('content')
 
-<form method="post" action="{{route('cliente.inserir')}}" id="quickForm" novalidate="novalidate">
+<form method="post" action="{{route('cadastroCliente.store')}}" id="quickForm" novalidate="novalidate">
     @csrf 
     @method('post')
     <x-adminlte-card title="Cadastro de Novo Cliente" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
@@ -112,7 +112,7 @@
         <x-slot name="footerSlot">
             <div class="d-flex justify-content-between w-100">
                 <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
-                <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.clientes') }}'" label="Voltar" theme="" icon=""/>
+                <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('cadastroCliente.index') }}'" label="Voltar" theme="" icon=""/>
             </div>
         </x-slot>
     </x-adminlte-card>

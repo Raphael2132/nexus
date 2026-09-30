@@ -20,57 +20,38 @@
 
 @section('content')
 @php
-$heads = [
-    ['label' => 'Código', 'no-export' => true, 'width' => 10],
-    'Provedor',
-    'Estado'
-];
-$config = [
-    'lengthMenu' => [ 5, 10, 25, 50],
-    'pageLength' => 10,
-    'language' => Helper::dataTableLangPtBR(),
-    'pagingType' => 'full_numbers',
-    'order' => [[0, 'asc']],
-];
+    $heads = [
+        'Código',
+        'Provedor',
+        'Estado'
+    ];
+    $arraySelUF = HelperArraySelect::arrayEstados(2,1);
 @endphp
 <div class="row">
     <div class="esquerdo col-md-6">
-        <x-adminlte-card title="Provedores Cadastrados de Emissão da NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
-            <x-adminlte-datatable id="table1" :heads="$heads" :config="$config" theme="light" striped hoverable with-buttons>
+        <x-adminlte-card title="Provedores Cadastrados" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
+            <x-adminlte-datatable id="tabela-provedores" :heads="$heads" theme="light" striped hoverable>
                 @foreach ($provedores as $provedor)
                     <tr>
                         <td>{{ $provedor->provedor_codigo }}</td>
                         <td>{{ $provedor->provedor_desc }}</td>     
-                        <td>{{ Helper::buscaEstadoUF($provedor->provedor_uf) }}</td>            
+                        <td>{{ HelperFormatSelect::formataEstadoDesc($provedor->provedor_uf) }}</td>            
                     </tr>
                 @endforeach
             </x-adminlte-datatable>
         </x-adminlte-card>
     </div>
     <div class="direito col-md-6">
-        <form method="post" action="{{route('parametrosNfsProvedor.inserir')}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('provedorNFSe.store')}}" id="quickForm" novalidate="novalidate">
             @csrf 
             <x-adminlte-card title="Cadastrar Novo Provedor" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 @php
-                    $dados_ibge = DB::table('ibge_estados')->orderby('ibge_sigla')->get();
+                    $array_opt = HelperArraySelect::arrayEstados(1,1);
 
-                    $new_array1 =[];
-                    $new_array2 =[];
+                    //Faz o lookup do campo de cidades
+                    $html = HelperDataList::geraDatalistMunicipios('cidades');
 
-                    foreach ($dados_ibge as $ibge) {
-                        $new_array1[] = $ibge->ibge_sigla;
-                        $new_array2[] = $ibge->ibge_sigla.' - '.$ibge->ibge_nome;
-                    }
-                    $array_opt = array_combine($new_array1, $new_array2);
-
-                    //Faz o lookup do campo de cidades 
-                    $dataIBGE = DB::table('ibge_municipios')->select('ibge_mun_codigo', 'ibge_mun_nome')->orderBy('ibge_mun_uf_codigo', 'asc')->orderBy('ibge_mun_codigo', 'asc')->get();
-                    $html = '<datalist id="cidades">';
-                    foreach($dataIBGE as $cidade){
-                        $html .= '<option value="'.$cidade->ibge_mun_nome.'">'.$cidade->ibge_mun_nome.'</option>';
-                    }
-                    $html .='</datalist>';
                     //Echo adiciona o html ao campo das cidades
                     echo $html;
 
@@ -135,6 +116,168 @@ $config = [
 @stop
 
 @section('js')
+<script>
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Eventos da Inicialização do Datatable
+    |----------------------------------------------------------------------------------------------------
+    |
+    | Adicionamos aqui todos os eventos relacionados a criação e manipulação de eventos do datatable
+    |
+    ***** */
+    $(() => {
+        
+        // Variavel do agrupamento inicial do Datatable
+        var groupColumns = [];
+
+        /* ********** Inicializa o Datatable ********** */
+        var table = $('#tabela-provedores').DataTable({
+            dom: getDatatableDom(),
+            buttons: getDatatableButtons(),
+            lengthMenu: [5, 10, 25, 50, 100],
+            pageLength: 5,
+            language: dataTableLangPtBR,
+            order: [
+                [0, 'asc']
+            ],
+            pagingType: 'full_numbers',
+            processing: true,
+            columns: [
+                null,
+                null,
+                null
+            ],
+            initComplete: function() {
+
+                /* *****
+                |----------------------------------------------------------------------------------------------------
+                | Altera o Campo Searching Original
+                |----------------------------------------------------------------------------------------------------
+                |
+                | Alteramos a aparencia do input encapsulando ele dentro de input-group estilizado para o Nexus
+                |
+                ***** */
+
+                // Chama a função para customizar o filtro da tabela com base no ID
+                // #id = ID_TABELA_filter
+                customSearchingField('#tabela-provedores_filter');
+
+                /* ------------------------------ Final dos Eventos Altera o Campo Searching Original ------------------------------ */
+
+                /* *****
+                |----------------------------------------------------------------------------------------------------
+                | Cards e Botões da Barra de Ferramentas do Datatable
+                |----------------------------------------------------------------------------------------------------
+                |
+                | Adicionamos aqui a criação dos Cards e Botões utilizados na barra de ferramentas do datatable
+                |
+                ***** */
+
+                /* ******************** Botões Principais ******************** */
+
+                /* ********** Criação dos botões principais da barra de ferramentas ********** */
+                let buttonsTooBarHTML = getButtonsTollBar(['colunas','filtro']);
+
+                /* ********** Adicionando os botões na barra de ferramentas ********** */
+                // #id = ID_TABELA_wrapper
+                $('#tabela-provedores_wrapper .btn-datatable-dir .tool-bar').prepend(buttonsTooBarHTML);
+
+                /* ******************** Cards dos Botões Principais ******************** */
+
+                /* ********** Botões do Card da Coluna ********** */
+                let btnColunaHTML = `
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="0" href="#">Código</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="1" href="#">Provedor</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="2" href="#">Estado</a>
+                `;
+
+                /* ********** Monta o Card da Coluna ********** */
+                let cardColunaHTML = getCardColunas(btnColunaHTML);
+
+                /* ********** Adiciona o Card da Coluna ********** */
+                // #id = ID_TABELA_wrapper
+                $('#tabela-provedores_wrapper .linha-cards-menu').append(cardColunaHTML);
+
+                /* ********** Campos do Card de Filtro ********** */
+                let fieldFiltroHTML = `
+                    <div class="row">
+                        <x-adminlte-input name="filterCod" type="text" label="Código" class="form-control" placeholder="Filtrar Código" igroup-size="sm" fgroup-class="col-md-3"></x-adminlte-input>
+                        <x-adminlte-input name="filterPro" type="text" label="Provedor" class="form-control" placeholder="Filtrar Provedor" igroup-size="sm" fgroup-class="col-md-3"></x-adminlte-input>
+                        <x-adminlte-select name="filterEst" label="Estado" igroup-size="sm" fgroup-class="col-md-3">
+                            <x-adminlte-options :options="$arraySelUF" empty-option="Selecione..."/>
+                        </x-adminlte-select>
+                    </div>
+                `;
+
+                /* ********** Monta o Card de Filtro ********** */
+                let cardFiltroHTML = getCardFiltros(fieldFiltroHTML);
+
+                /* ********** Adiciona o Card de Filtro ********** */
+                // #id = ID_TABELA_wrapper
+                $('#tabela-provedores_wrapper .linha-cards-menu').append(cardFiltroHTML);
+                /* ------------------------------ Final dos Eventos Cards e Botões da Barra de Ferramentas do Datatable ------------------------------ */
+                
+                /* *****
+                |----------------------------------------------------------------------------------------------------
+                | Eventos dos Filtros Individuais
+                |----------------------------------------------------------------------------------------------------
+                |
+                | Esses eventos devem ser feitos ao criar a tabela no "initComplete" para funcionar a busca dos dados
+                |
+                ***** */
+
+                // Escopo para a tabela trabalhada
+                // #id = ID_TABELA_wrapper
+                $('#tabela-provedores_wrapper').each(function() {
+                    var $wrapper = $(this);  // Armazena o contexto atual do wrapper
+
+                    $wrapper.find('#filterCod').on('keyup', function() {
+                        table.column(0).search(this.value).draw();
+                    });
+
+                    $wrapper.find('#filterPro').on('keyup', function() {
+                        table.column(1).search(this.value).draw();
+                    });
+
+                    $wrapper.find('#filterEst').on('change', function() {
+                        var selectedValue = $(this).val();
+                        table.column(2).search(selectedValue).draw();
+                    });
+                });
+                /* ------------------------------ Final dos Eventos dos Filtros Individuais ------------------------------ */
+                
+            }
+        });
+
+        /* ------------------------------ Final a Inicialização do Datatable ------------------------------ */
+
+        /* *****
+        |----------------------------------------------------------------------------------------------------
+        | Controle do Card de Colunas e Funcionalidades
+        |----------------------------------------------------------------------------------------------------
+        ***** */
+
+        // Chama a função para adicionar os eventos de visibilidade das colunas
+        setupActionsColuna(table, '#tabela-provedores_wrapper');
+
+        /* ------------------------------ Final dos Eventos de Controle do Card de Colunas e Funcionalidades ------------------------------ */
+
+        /* *****
+        |----------------------------------------------------------------------------------------------------
+        | Controle do Card de Filtro e Funcionalidades
+        |----------------------------------------------------------------------------------------------------
+        ***** */
+
+        // Chama a função de configuração de filtros
+        setupActionsFiltro(table, '#tabela-provedores_wrapper');
+
+        /* ------------------------------ Final dos Eventos de Controle do Card de Filtro e Funcionalidades ------------------------------ */
+
+    });
+
+    /* ------------------------------ Final da Inicialização do Datatable ------------------------------ */
+</script>
+
 <!--
 |--------------------------------------------------------------------------
 | Eventos onChange da app
@@ -150,7 +293,7 @@ $config = [
                 
                 var uf = $(this).val();
 
-                var url = "{{ route('parametrosNfsProvedor.carregaCidAjax', [':uf']) }}";
+                var url = "{{ route('ajax.carregaCidAjax', [':uf']) }}";
                 url = url.replace(':uf', uf);
 
                 $.ajax({

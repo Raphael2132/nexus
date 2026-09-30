@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nfe>
+  <notaFiscal/>
+  <dadosPrestador>
+    <dataEmissao>21/04/2025</dataEmissao>
+    <im>123165100</im>
+    <numeroRps>000000204</numeroRps>
+  </dadosPrestador>
+  <dadosServico>
+    <bairro>CENTRO</bairro>
+    <cep>13870-110</cep>
+    <cidade>SAO JOAO DA BOA VISTA</cidade>
+    <complemento>LOJA AO LADO DO CHIQUINHO</complemento>
+    <logradouro>AVENIDA DONA GERTRUDES</logradouro>
+    <numero>S/N</numero>
+    <pais>BRASIL</pais>
+    <uf>SP</uf>
+  </dadosServico>
+  <dadosTomador>
+    <bairro>JARDIM ALMEIDA</bairro>
+    <cep>13876-341</cep>
+    <cidade>SAO JOAO DA BOA VISTA</cidade>
+    <complemento/>
+    <documento>37888788866</documento>
+    <email>joaoraphael2132@gmail.com</email>
+    <ie/>
+    <logradouro>RUA DAERCIO QUERO ROBLES</logradouro>
+    <nomeTomador>JOAO RAPHAEL ZANELLI DOS SANTOS</nomeTomador>
+    <numero>120</numero>
+    <pais>BRASIL</pais>
+    <tipoDoc>F</tipoDoc>
+    <uf>SP</uf>
+  </dadosTomador>
+  <detalheServico>
+    <cofins>0.00</cofins>
+    <csll>0.00</csll>
+    <deducaoMaterial>60.00</deducaoMaterial>
+    <descontoIncondicional>0.00</descontoIncondicional>
+    <inss>0.00</inss>
+    <ir>0.00</ir>
+    <issRetido>0</issRetido>
+    <item>
+      <aliquota>4.53</aliquota>
+      <codigo>1401</codigo>
+      <descricao>OS: 122 COND.PGTO.: 12X SEM JUROS | TROCA DE SO - QTD. HORAS: 2.50 - VALOR LIQUIDO: 540.00</descricao>
+      <valor>540.00</valor>
+    </item>
+    <obs/>
+    <pisPasep>0.00</pisPasep>
+  </detalheServico>
+</nfe>

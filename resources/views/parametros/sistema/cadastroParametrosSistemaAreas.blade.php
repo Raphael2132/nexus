@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Áreas')
+@section('title', 'Áreas do Sistema')
 
 @section('content_header')
 <div class="row mb-2">
@@ -10,7 +10,7 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">
-                <a href="{{route('home.parSisArea')}}">Áreas</a>
+                <a href="{{route('areasSistema.index')}}">Áreas</a>
             </li>
             <li class="breadcrumb-item active">Cadastro de Áreas</li>
         </ol>
@@ -21,8 +21,9 @@
 @section('content')
 <div class="d-flex justify-content-center">
     <div class="col-md-8">
-        <form method="post" action="{{route('parametrosSistemaAreas.inserir')}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('areasSistema.store')}}" id="quickForm" novalidate="novalidate">
             @csrf 
+            @method('post')
             <x-adminlte-card title="Cadastro de Nova Área" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
@@ -45,7 +46,10 @@
 
                 <!-- /.card -->
                 <x-slot name="footerSlot">
-                    <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                    <div class="d-flex justify-content-between w-100">
+                        <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('areasSistema.index') }}'" label="Voltar" theme="info" icon=""/>
+                    </div>
                 </x-slot>
             </x-adminlte-card>
         </form>

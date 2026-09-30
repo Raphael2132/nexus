@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<nfeResposta>
+                        <notaFiscal>
+                            <numeroNota>0</numeroNota>
+                            <numeroRps>5</numeroRps>
+                            <codigoVerificacao>45963RGOP0X</codigoVerificacao>
+                            <statusEmissao>200</statusEmissao>
+                            <messages code="200" message="NFSE emitida com sucesso"/>
+                        </notaFiscal>
+                    </nfeResposta>

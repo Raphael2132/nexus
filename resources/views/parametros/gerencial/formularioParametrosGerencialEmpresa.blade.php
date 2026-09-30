@@ -10,7 +10,7 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">
-                <a href="{{route('home.parametrosGerEmp')}}">Geral da Empresa</a>
+                <a href="{{route('geralEmpresa.index')}}">Geral da Empresa</a>
             </li>
             <li class="breadcrumb-item active">Manutenção Geral da Empresa</li>
         </ol>
@@ -47,22 +47,12 @@
                 <!-- Aba Horario Funcionamento -->
                 <div class="tab-pane fade show active" id="custom-tabs-two-horario-funcionamento" role="tabpanel" aria-labelledby="custom-tabs-two-horario-funcionamento-tab">
                     <!-- Define se o formulario é edição ou novo -->
-                    <form method="post" action="{{route('parametrosGerEmp.update', ['empresa' => $parametrosEmp[0]->parger_emp])}}" id="formulario-horario-funcionamento" novalidate="novalidate">
+                    <form method="post" action="{{route('geralEmpresa.update', ['geralEmpresa' => $parametrosEmp])}}" id="formulario-horario-funcionamento" novalidate="novalidate">
                         @csrf 
-                        @method('post')
+                        @method('put')
                         <div class="row">
                             @php
-                                $data = DB::table('cadastro_empresas')->where('empresa_codigo', $parametrosEmp[0]->parger_emp)->get();
-
-                                $new_array1 =[];
-                                $new_array2 =[];
-
-                                foreach ($data as $empresa) {
-                                    $new_array1[] = $empresa->empresa_codigo;
-                                    $new_array2[] = $empresa->empresa_codigo.' - '.$empresa->empresa_nome;
-                                }
-                                $array_opt = array_combine($new_array1, $new_array2);
-
+                                $array_opt = HelperArraySelect::arrayEmpresas(1,1);
                             @endphp
 
                             <!-- Empresa do Setor -->
@@ -70,28 +60,31 @@
                                 <x-slot name="label">
                                     Empresa <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$parametrosEmp[0]->parger_emp}}"/>
+                                <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$parametrosEmp->parger_emp}}"/>
                             </x-adminlte-select>
 
                             <x-adminlte-select name="turSrv" fgroup-class="col-md-6">
                                 <x-slot name="label">
                                     Realiza Turno Serviço <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$parametrosEmp[0]->parger_tur_srv}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$parametrosEmp->parger_tur_srv}}"/>
                             </x-adminlte-select>
                         </div>
 
+                        @php
+                            $array_funcionamento = HelperArrayFixo::arrayDiaFuncionamentoEmpresa(1,1);
+                        @endphp
                         <div class="row">
                             <!-- Dias de Funcionamento da empresa -->
                             <x-adminlte-select name="diaFuncionamento" fgroup-class="col-md-2">
                                 <x-slot name="label">
                                     Dias de Funcionamento <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['1' => 'Segunda à Sexta', '2' => 'Segunda à Sábado', '3' => 'Segunda à Domingo']" selected="{{$parametrosEmp[0]->parger_dia_fun}}"/>
+                                <x-adminlte-options :options="$array_funcionamento" selected="{{$parametrosEmp->parger_dia_fun}}"/>
                             </x-adminlte-select>
 
                             @php
-                                $horaIniFun = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_fun);
+                                $horaIniFun = Helper::formataHoraMinuto($parametrosEmp->parger_hr_ini_fun);
 
                                 $config = Helper::dtRangeHoraPtBR();
                             @endphp
@@ -108,7 +101,7 @@
                             @push('js')<script>$(() => $("#horaIniFun").val('{{ $horaIniFun }}'))</script>@endpush
 
                             @php
-                                $horaFinFun = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_fin_fun);
+                                $horaFinFun = Helper::formataHoraMinuto($parametrosEmp->parger_hr_fin_fun);
 
                                 $config = Helper::dtRangeHoraPtBR();
                             @endphp
@@ -129,11 +122,11 @@
                                 <x-slot name="label">
                                     Intervalo Funcionamento <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$parametrosEmp[0]->parger_int_fun}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$parametrosEmp->parger_int_fun}}"/>
                             </x-adminlte-select>
 
                             @php
-                                $horaIniInt = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_int);
+                                $horaIniInt = Helper::formataHoraMinuto($parametrosEmp->parger_hr_ini_int);
 
                                 $config = Helper::dtRangeHoraPtBR();
                             @endphp
@@ -150,7 +143,7 @@
                             @push('js')<script>$(() => $("#horaIniInt").val('{{ $horaIniInt }}'))</script>@endpush
 
                             @php
-                                $horaFinInt = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_fin_int);
+                                $horaFinInt = Helper::formataHoraMinuto($parametrosEmp->parger_hr_fin_int);
 
                                 $config = Helper::dtRangeHoraPtBR();
                             @endphp
@@ -173,11 +166,11 @@
                                 <x-slot name="label">
                                     Horario Alternativo Sábado <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$parametrosEmp[0]->parger_hr_alt_sab}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$parametrosEmp->parger_hr_alt_sab}}"/>
                             </x-adminlte-select>
 
                             @php
-                                $horaIniSab = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_sab);
+                                $horaIniSab = Helper::formataHoraMinuto($parametrosEmp->parger_hr_ini_sab);
 
                                 $config = Helper::dtRangeHoraPtBR();
                             @endphp
@@ -194,7 +187,7 @@
                             @push('js')<script>$(() => $("#horaIniSab").val('{{ $horaIniSab }}'))</script>@endpush
 
                             @php
-                                $horaFinSab = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_fin_sab);
+                                $horaFinSab = Helper::formataHoraMinuto($parametrosEmp->parger_hr_fin_sab);
 
                                 $config = Helper::dtRangeHoraPtBR();
                             @endphp
@@ -215,11 +208,11 @@
                                 <x-slot name="label">
                                     Intervalo de Sábado <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$parametrosEmp[0]->parger_int_sab}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$parametrosEmp->parger_int_sab}}"/>
                             </x-adminlte-select>
 
                             @php
-                                $horaIniIntSab = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_int_sab);
+                                $horaIniIntSab = Helper::formataHoraMinuto($parametrosEmp->parger_hr_ini_int_sab);
 
                                 $config = Helper::dtRangeHoraPtBR();
                             @endphp
@@ -236,7 +229,7 @@
                             @push('js')<script>$(() => $("#horaIniIntSab").val('{{ $horaIniIntSab }}'))</script>@endpush
 
                             @php
-                                $horaFinIntSab = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_fin_int_sab);
+                                $horaFinIntSab = Helper::formataHoraMinuto($parametrosEmp->parger_hr_fin_int_sab);
 
                                 $config = Helper::dtRangeHoraPtBR();
                             @endphp
@@ -259,11 +252,11 @@
                                 <x-slot name="label">
                                     Horario Alternativo Domingo <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$parametrosEmp[0]->parger_hr_alt_dom}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$parametrosEmp->parger_hr_alt_dom}}"/>
                             </x-adminlte-select>
 
                             @php
-                                $horaIniDom = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_dom);
+                                $horaIniDom = Helper::formataHoraMinuto($parametrosEmp->parger_hr_ini_dom);
                                 
                                 $config = Helper::dtRangeHoraPtBR();
                             @endphp
@@ -280,7 +273,7 @@
                             @push('js')<script>$(() => $("#horaIniDom").val('{{ $horaIniDom }}'))</script>@endpush
 
                             @php
-                                $horaFinDom = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_fin_dom);
+                                $horaFinDom = Helper::formataHoraMinuto($parametrosEmp->parger_hr_fin_dom);
 
                                 $config = Helper::dtRangeHoraPtBR();
                             @endphp
@@ -301,11 +294,11 @@
                                 <x-slot name="label">
                                     Intervalo no Domingo <span style="color:red;">*</span>
                                 </x-slot>
-                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$parametrosEmp[0]->parger_int_dom}}"/>
+                                <x-adminlte-options :options="['S' => 'Sim', 'N' => 'Não']" selected="{{$parametrosEmp->parger_int_dom}}"/>
                             </x-adminlte-select>
 
                             @php
-                                $horaIniIntDom = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_int_dom);
+                                $horaIniIntDom = Helper::formataHoraMinuto($parametrosEmp->parger_hr_ini_int_dom);
 
                                 $config = Helper::dtRangeHoraPtBR();
                             @endphp
@@ -322,7 +315,7 @@
                             @push('js')<script>$(() => $("#horaIniIntDom").val('{{ $horaIniIntDom }}'))</script>@endpush
 
                             @php
-                                $horaFinIntDom = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_fin_int_dom);
+                                $horaFinIntDom = Helper::formataHoraMinuto($parametrosEmp->parger_hr_fin_int_dom);
 
                                 $config = Helper::dtRangeHoraPtBR();
                             @endphp
@@ -349,18 +342,12 @@
                 <div class="tab-pane fade" id="custom-tabs-two-turnos" role="tabpanel" aria-labelledby="custom-tabs-two-turnos-tab">
                     <div class="row d-flex justify-content-center">
                         @php 
-                            $dadosTur = DB::table('parametros_ger_turnos')->where('partur_emp', $parametrosEmp[0]->parger_emp)->orderby('partur_cod', 'asc')->get();
+                            $dadosTur = DB::table('parametros_ger_turnos')->where('partur_emp', $parametrosEmp->parger_emp)->orderby('partur_cod', 'asc')->get();
                         @endphp
                         @foreach($dadosTur as $turno) 
 
                             @php 
-                                if($turno->partur_dia == 1){
-                                    $diaFun = 'Segunda à Sexta';
-                                }elseif($turno->partur_dia == 2){
-                                    $diaFun = 'Segunda à Sábado';
-                                }else{
-                                    $diaFun = 'Segunda à Domingo';
-                                }
+                                $diaFun = Helper::formataDiaFuncionamentoEmpresa($turno->partur_dia == 2);
                             @endphp
 
                             @if($turno->partur_cod == 1)
@@ -403,7 +390,7 @@
                                         </div>
 
                                         <div class="d-flex justify-content-center">
-                                            <form method="post" action="{{ route('parametrosGerEmp.destroy', ['turno' => $turno->partur_id, 'empresa' => $turno->partur_emp]) }}" style="float: left;" >
+                                            <form method="post" action="{{ route('turnoEmpresa.destroy', ['turnoEmpresa' => $turno->partur_id, 'empresa' => $turno->partur_emp]) }}" style="float: left;" >
                                                 @csrf 
                                                 @method('delete')
                                                 <x-adminlte-button class="btn-sm" theme="danger" icon="fa fa-lg fa-fw fa-trash" type="submit" style="margin-right: 5px;"/>
@@ -416,12 +403,14 @@
                     </div>
                     <!-- Gera o Modal com os campos da inserção dos dados do turno -->
                     <div class="row d-flex justify-content-center">
-                        <form method="post" action="{{route('parametrosGerEmp.insertTurno', ['empresa' => $parametrosEmp[0]->parger_emp])}}" id="formulario-turno" novalidate="novalidate">
+                        <form method="post" action="{{route('turnoEmpresa.store')}}" id="formulario-turno" novalidate="novalidate">
                         @csrf 
                         @method('post')    
                             <!-- Criação do Modal -->                           
                             <x-adminlte-modal id="modalCustom" title="Novo Turno" size="lg" theme="modal-nexus" icon="fa-solid fa-briefcase" v-centered static-backdrop scrollable>
                                 <div class="col-md-12">
+
+                                    <input type="hidden" name="empresa_turno" value="{{ $parametrosEmp->parger_emp }}">
 
                                     <div class="row">
                                         <x-adminlte-select name="diaTurno" fgroup-class="col-md-12">
@@ -442,7 +431,7 @@
 
                                     <div class="row">
                                         @php
-                                            $horaIniIntDom = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_int_dom);
+                                            $horaIniIntDom = Helper::formataHoraMinuto($parametrosEmp->parger_hr_ini_int_dom);
 
                                             $config = Helper::dtRangeHoraPtBR();
                                         @endphp
@@ -458,7 +447,7 @@
                                         </x-adminlte-date-range>
 
                                         @php
-                                            $horaIniIntDom = Helper::formataHoraMinuto($parametrosEmp[0]->parger_hr_ini_int_dom);
+                                            $horaIniIntDom = Helper::formataHoraMinuto($parametrosEmp->parger_hr_ini_int_dom);
 
                                             $config = Helper::dtRangeHoraPtBR();
                                         @endphp
@@ -485,7 +474,7 @@
                         </form>
                         <!-- Botão de chamada do Modal -->  
                         <div class="d-flex justify-content-center">
-                            @if($parametrosEmp[0]->parger_tur_srv == 'S')
+                            @if($parametrosEmp->parger_tur_srv == 'S')
                             <x-adminlte-button label="Novo Turno" data-toggle="modal" data-target="#modalCustom" class="btn-nexus" icon="fa-solid fa-briefcase"/>
                             @endif
                         </div>
@@ -495,7 +484,7 @@
         </div>
         <div class="card-footer">
             <div class="d-flex justify-content-between w-100">
-                <x-adminlte-button type="button" onclick="window.location='{{ route('home.parametrosGerEmp') }}'" label="Voltar" theme="" class="btn-nexus" icon=""/>
+                <x-adminlte-button type="button" onclick="window.location='{{ route('geralEmpresa.index') }}'" label="Voltar" theme="" class="btn-nexus" icon=""/>
             </div>
         </div>
     </div>
@@ -523,7 +512,7 @@
 
         $("#empresa").attr("disabled", true);
 
-        var diaFun = {!! json_encode($parametrosEmp[0]->parger_dia_fun) !!};
+        var diaFun = {!! json_encode($parametrosEmp->parger_dia_fun) !!};
 
         if(diaFun == 1){
             $(".hora-sabado").hide();

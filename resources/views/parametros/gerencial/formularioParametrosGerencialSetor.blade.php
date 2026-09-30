@@ -1,0 +1,281 @@
+@extends('adminlte::page')
+
+@section('title', 'Setores')
+
+@section('content_header')
+<div class="row mb-2">
+    <div class="col-sm-6">
+        <h4 style="margin-bottom: 0px !important;">Parâmetros Gerais</h4>
+    </div>
+    <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('setorEmpresa.index')}}">Setores</a>
+            </li>
+            @if($acao == 'N')
+                <li class="breadcrumb-item active">Cadastro de Setor</li>
+            @else
+                <li class="breadcrumb-item active">Manutenção do Setor</li>
+            @endif
+        </ol>
+    </div>
+</div>
+@stop
+
+@section('content')
+<div class="d-flex justify-content-center">
+    <div class="col-md-8">
+        <!-- Define se o formulario é edição ou novo -->
+        @if($acao == 'N')
+        <form method="post" action="{{route('setorEmpresa.store')}}" id="quickForm" novalidate="novalidate">
+        @csrf 
+        @method('post')
+        @else
+        <form method="post" action="{{route('setorEmpresa.update', ['setorEmpresa' => $dadosSetor])}}" id="quickForm" novalidate="novalidate">
+        @csrf 
+        @method('put')
+        @endif
+            <x-adminlte-card title="{{ $acao == 'N' ? 'Cadastro de Novo' : 'Manutenção do' }} Setor" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
+                <div class="row"> 
+                    @php
+                        $array_opt = HelperArraySelect::arrayEmpresas(1,1);
+
+                        if(!empty($dadosSetor->setor_empresa)){
+                            $emp_sel = $dadosSetor->setor_empresa;
+                        }else{
+                            $emp_sel = '';
+                        }
+                    @endphp
+                    <!-- Empresa do Setor -->
+                    <x-adminlte-select name="empresa" fgroup-class="col-md-12">
+                        <x-slot name="label">
+                            Empresa <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-adminlte-options :options="$array_opt" empty-option="Selecione..." selected="{{$emp_sel}}"/>
+                    </x-adminlte-select>
+                </div>
+
+                <div class="row">
+                    @php
+                        $array_opt2 = HelperArraySelect::arrayArea(1,1);
+
+                        if(!empty($dadosSetor->setor_area)){
+                            $area_sel = $dadosSetor->setor_area;
+                        }else{
+                            $area_sel = '';
+                        }
+                    @endphp
+                    <!-- Descrição -->
+                    <x-adminlte-select name="area" fgroup-class="col-md-12">
+                        <x-slot name="label">
+                            Área <span style="color:red;">*</span>
+                        </x-slot>
+                        <x-adminlte-options :options="$array_opt2" empty-option="Selecione..." selected="{{$area_sel}}"/>
+                    </x-adminlte-select>
+                </div>
+
+                <div class="row cod-set">
+                    @php
+                        if(!empty($dadosSetor->setor_codigo)){
+                            $codigo_sel = $dadosSetor->setor_codigo;
+                        }else{
+                            $codigo_sel = '';
+                        }
+                    @endphp
+                    <!-- Código -->
+                    <x-adminlte-input name="codigo" type="text" value="{{$codigo_sel}}" fgroup-class="col-md-12" readonly>
+                        <x-slot name="label">
+                            Código <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
+                </div>
+
+                <div class="row">
+                    @php
+                        if(!empty($dadosSetor->setor_desc)){
+                            $desc_sel = $dadosSetor->setor_desc;
+                        }else{
+                            $desc_sel = '';
+                        }
+                    @endphp
+                    <!-- Setor -->
+                    <x-adminlte-input name="descricao" type="text" placeholder="Informe a descrição do setor" value="{{$desc_sel}}" fgroup-class="col-md-12">
+                        <x-slot name="label">
+                            Setor <span style="color:red;">*</span>
+                        </x-slot>
+                    </x-adminlte-input>
+                </div>
+
+                <!-- /.card -->
+                <x-slot name="footerSlot">
+                    @php
+                        if(!empty($dadosSetor)){
+                            $setor = $dadosSetor->setor_id;;
+                        }else{
+                            $setor = '';
+                        }
+                    @endphp
+                    <div class="d-flex justify-content-between w-100">
+                        <div class="d-flex">
+                            <x-adminlte-button class="btn-nexus btn_novo mr-2" type="button" onclick="window.location='{{ route('setorEmpresa.create') }}'" label="Novo Setor" theme="" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-nexus btn_salvar mr-2" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
+                            <x-adminlte-button class="btn-nexus btn_excluir" type="button" data-id="{{$setor}}" data-token="{{ csrf_token() }}" label="Excluir" theme="" icon="fa-solid fa-trash-can"/>
+                        </div>
+                        <div class="d-flex">
+                            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('setorEmpresa.index') }}'" label="Voltar" theme="" icon=""/>
+                        </div>
+                    </div>
+                </x-slot>
+            </x-adminlte-card>
+        </form>
+    </div>
+    @if($acao != 'N')
+    <!-- Formulário escondido para exclusão do registro -->
+    <form id="delete-form-{{ $setor }}" action="{{ route('setorEmpresa.destroy', $setor) }}" method="POST" style="display: none;">
+        @csrf
+        @method('DELETE')
+    </form>
+    @endif
+</div>
+@stop
+
+<!-- Chamada dos Plugins usados na app -->
+@section('plugins.jqueryValidation', true)
+@section('plugins.Sweetalert2', true)
+@section('plugins.toastr', true)
+@section('plugins.Select2', true)
+
+@section('css')
+@stop
+
+@section('js')
+<script>
+
+    //Capturar o clique no botão e submeter o formulário de exclusão                    
+    document.querySelectorAll('.btn_excluir').forEach(button => {
+        button.addEventListener('click', function() {
+            let setorId = this.getAttribute('data-id');
+            let token = this.getAttribute('data-token'); 
+            
+            // Submete o formulário oculto
+            document.getElementById('delete-form-' + setorId).submit();
+        });
+    });
+
+    /* Código trocado pelo formulário oculto
+    $(".btn_excluir").click(function(){
+        var id = $(this).attr("data-id");
+
+        var url = "{{ route('setorEmpresa.destroy', [':id']) }}";
+        url = url.replace(':id', id);
+
+        $.ajax({
+            url: url,
+            dataType: "JSON",
+            type: 'POST',
+            data: {
+                '_token': $('meta[name=csrf-token]').attr("content"),
+                '_method': 'DELETE',
+                "id": id
+            },
+            success: function ()
+            {
+                window.location = "{{ route('setorEmpresa.index') }}";
+            }
+        });
+    });
+    */
+
+    $(document).ready(function() {
+
+        //Verifica de onde veio a app, cadastro ou edição
+        var acao = {!! json_encode($acao) !!};
+
+        if(acao == 'E'){
+            $("#area").attr("disabled", true);
+            $("#empresa").attr("disabled", true);
+        }else{
+            $(".btn_novo").hide();
+            $(".btn_excluir").hide();
+            $(".cod-set").hide();
+        }
+
+        //Ao clicar no botão salvar retira o disabled do campo para não ter problema no request do update do campo
+        $(".btn_salvar").click(function(){
+            $("#area").attr("disabled", false);
+            $("#empresa").attr("disabled", false);
+        });
+    });
+</script>
+
+<script>
+$(function () {
+    $('#quickForm').validate({
+        rules: {
+            empresa: {
+                required: true
+            },
+            area: {
+                required: true
+            },
+            descricao: {
+                required: true,
+                maxlength: 40
+            }, 
+        },
+        messages: {
+            empresa: {
+                required: "Por Favor informe uma Empresa"
+            },
+            area: {
+                required: "Por Favor informe uma Área"
+            },
+            descricao: {
+                required: "Por Favor informe a Descrição",
+                maxlength: "Infome no máximo 40 caracteres"
+            },
+        },
+        errorElement: 'span',
+        errorPlacement: function (error, element) {
+        error.addClass('invalid-feedback');
+        element.closest('.form-group').append(error);
+        },
+        highlight: function (element, errorClass, validClass) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+});
+</script>
+
+<script>
+    @if(Session::has('success'))
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "success",
+            title: "{{ session('success') }}"
+        });
+    @endif
+
+    @if(Session::has('error'))
+        Swal.fire({
+        confirmButtonColor: "#007bff",
+        title: "Erro!!!",
+        text: "{{ session('error') }}",
+        icon: "error"
+    });
+    @endif
+</script>
+@stop

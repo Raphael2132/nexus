@@ -51,7 +51,7 @@ return new class extends Migration
             $table->decimal('nfhdr_vlr_bc_icms',15,2)->default(0);// Valor da Base de ICMS
             $table->decimal('nfhdr_vlr_alq_icms',5,2)->default(0);// Valor da Aliquota de ICMS
             $table->decimal('nfhdr_vlr_icms',15,2)->default(0);// Valor de ICMS
-            $table->decimal('nfhdr_vlr_qtd_ppg',2,0)->default(0);// Quantidade de Parcelas do Pagamento
+            $table->decimal('nfhdr_qtd_ppg',2,0)->default(0);// Quantidade de Parcelas do Pagamento
             $table->decimal('nfhdr_vlr_ent',15,2)->default(0);// Valor da entrada do pagamento
             $table->integer('nfhdr_nfb')->default(0);// Numero da Fatura do Boleto
             $table->enum('nfhdr_sfb',['PG', 'AP', ''])->default('');// Situação da Fatura do boleto (PG - Pago, AP - Aguardando Pagamento)

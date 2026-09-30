@@ -9,6 +9,9 @@
     </div>
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item active">
+                <a href="{{route('home.painelOperador')}}">Filtro Painel de Operação</a>
+            </li>
             <li class="breadcrumb-item active">Painel de Operação</li>
         </ol>
     </div>
@@ -19,56 +22,19 @@
 
 @php 
 
-//Gera Cabeçalho e Config da Tabela Principal das OS
-$heads = [
-    ['label' => '', 'no-export' => true, 'width' => '3%'],
-    'Cliente',
-    'OS',
-    'Consultor',
-    'Agenda',
-    'Situação da Produção',
-    'Previsão Entrega'
-];
-$config = [
-    'lengthMenu' => [5, 10, 25, 50, 100],
-    'pageLength' => 10,
-    'language' => Helper::dataTableLangPtBR(),
-    'order' => [[2, 'desc']],
-    'columns' => [['orderable' => false],['orderable' => false],['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false], ['orderable' => false]],
-];
-
-$headsPrincipal = [
-    'OS',
-    ['label' => '', 'no-export' => true, 'width' => '5'],
-    ['label' => '', 'no-export' => true, 'width' => '5'],
-    'Agenda',
-    'OS',
-    'Data',
-    'Cliente',
-    'Consultor',
-    'Previsão Entrega'
-];
-$configPrincipal = [
-    'lengthMenu' => [5, 10, 25, 50, 100],
-    'pageLength' => 10,
-    'language' => Helper::dataTableLangPtBR(),
-    'order' => [
-        [0, 'desc']
-    ],
-    'pagingType' => 'full_numbers', // Adiciona os botões de "Primeiro" e "Último"
-    'columns' => [
-        ['orderable' => false, 'visible' => false], // Esconder primeira coluna
-        ['orderable' => false],
-        ['orderable' => false],
-        ['orderable' => false],
-        ['orderable' => false], 
-        ['orderable' => false], 
-        ['orderable' => false], 
-        ['orderable' => false], 
-        ['orderable' => false]
-    ],
-];
-
+    $headsPrincipal = [
+        ['label' => 'OS', 'no-export' => true],
+        ['label' => '', 'no-export' => true, 'width' => '5'],
+        ['label' => '', 'no-export' => true, 'width' => '5'],
+        ['label' => 'Agenda', 'no-export' => true, 'width' => '5'],
+        'Situação',
+        'OS',
+        'Data/Hora Abertura',
+        'Cliente',
+        'Consultor',
+        'Previsão Entrega',
+        'Situação Entrega'
+    ];
 
 //Define as variaveis de sessão aqui na view por que depois de 2 redirect elas são destruidas
 $_SESSION['where_consulta_painelOperador'] = $empresa_os;
@@ -77,21 +43,52 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
 
 <x-adminlte-card title="Painel de Operações da Produção" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
     <!-- Tabela Principal da OS -->
-    <x-adminlte-datatable id="tabela-principal" :heads="$headsPrincipal" :config="$configPrincipal" theme="light" striped hoverable beautify compressed with-buttons>
+    <x-adminlte-datatable id="tabela-principal" :heads="$headsPrincipal" theme="light" striped hoverable beautify compressed>
         @foreach ($dadosOS as $os)
             @php 
                 //Gera os Dados Sobre o Cliente e o Usuário da OS
                 $dadosCli =  DB::table('cadastro_clientes')->where('cliente_codigo', $os->os_cli)->get();
                 $dadosUsu =  DB::table('users')->where('usuario_codigo', $os->os_res_abr)->get();
+
+                if(!empty($os->os_dpe)){
+                    $dataHora = date('Y-m-d H:i:s');
+                    $prevEnt = 'S';
+
+                    if($os->os_sts == 'F' && $os->os_dpe.' '.Helper::formataHoraMinuto($os->os_hpe).':00' < $os->os_dhf){
+                        $sitPrevEnt = "AT";
+                    }elseif($os->os_sts == 'F' && $os->os_dpe.' '.Helper::formataHoraMinuto($os->os_hpe).':00' >= $os->os_dhf){
+                        $sitPrevEnt = "OK";
+                    }elseif($os->os_sts == 'A' && $os->os_dpe.' '.Helper::formataHoraMinuto($os->os_hpe).':00' < $dataHora){
+                        $sitPrevEnt = "AT";
+                    }elseif($os->os_sts == 'A' && $os->os_dpe.' '.Helper::formataHoraMinuto($os->os_hpe).':00' >= $dataHora){
+                        $sitPrevEnt = "OK";
+                    }else{
+                        $sitPrevEnt = "AT";
+                    }
+                }else{
+                    $prevEnt = 'N';
+                }
+
+                // Verifica se os valores estão definidos
+                if (!empty($os->os_dpe) && !empty($os->os_hpe)) {
+
+                    $dataHoraString = $os->os_dpe . ' ' . Helper::formataHoraMinuto($os->os_hpe) . ':00';
+                    $dataHora = new DateTime($dataHoraString);
+
+                    // Formata a data e hora para o formato ISO 8601
+                    $dataHoraFormatada = $dataHora->format(DateTime::ATOM); // Ex: 2024-10-15T14:30:00-03:00
+                } else {
+                    $dataHoraFormatada = null;
+                }
             @endphp
             <tr id="row_{{$os->os_id}}" data-os="{{ $os->os_nos }}" data-empresa="{{ $os->os_emp }}">
                 <td>{{ $os->os_nos }}</td>
                 <td class='icone-row-sub'>
-                    <i class="fas fa-chevron-right fa-lg"></i>
+                    <i class="fa-regular fa-chevron-right fa-xs" title="Detalhes do Registro" style="cursor: pointer;"></i>
                 </td>
                 <td>
                     <!-- Link para o Painel da OS -->
-                    <a href="{{route('situacaoOS.carregaOS', ['empresa' => $os->os_emp, 'cliente' => $os->os_cli, 'nos' => $os->os_nos, 'estagioAPP' => 'PRINCIPAL'])}}" class="text-muted" title="Detalhes da OS">
+                    <a href="{{route('situacaoOS.carregaOS', ['empresa' => $os->os_emp, 'cliente' => $os->os_cli, 'nos' => $os->os_nos, 'estagioAPP' => 'PRINCIPAL'])}}" class="lupa-consulta" title="Detalhes da OS">
                         <i class="fa-solid fa-magnifying-glass fa-lg" style="color: #74C0FC;"></i>
                     </a>
                 </td>
@@ -105,40 +102,31 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
                 <td>
                     <!-- Gera o Icone do Status da OS -->
                     @if($os->os_sts == 'A')
-                    <i class="fa-solid fa-screwdriver-wrench fa-xl text-info mx-2"></i>
+                        <i class="fa-solid fa-screwdriver-wrench fa-xl text-info mx-2" title="Aberta"></i>
+                        <span class="d-none">Aberta</span> <!-- Coluna Oculta -->
                     @elseif($os->os_sts == 'F')
-                    <i class="fa-solid fa-thumbs-up fa-xl text-success mx-2"></i>
+                        <i class="fa-solid fa-thumbs-up fa-xl text-success mx-2" title="Finalizada"></i>
+                        <span class="d-none">Finalizada</span> <!-- Coluna Oculta -->
                     @else
-                    <i class="fa-solid fa-ban fa-xl text-danger mx-2"></i>
+                        <i class="fa-solid fa-ban fa-xl text-danger mx-2" title="Cancelada"></i>
+                        <span class="d-none">Cancelada</span> <!-- Coluna Oculta -->
                     @endif
-                    <span class="mx-2">{{ $os->os_nos }}</span>
                 </td>
-                <td>{{ Helper::formataDataHora($os->os_dha) }}</td>
+                <td>{{ $os->os_nos }}</td>
+                <td>{{ $os->os_dha }}</td>
                 <td>{{ $os->os_cli.' - '.$dadosCli[0]->cliente_nome }}</td>
                 <td>{{ $os->os_res_abr.' - '.$dadosUsu[0]->name }}</td>
-                @php 
-                    if(!empty($os->os_dpe)){
-                        $dataHora = date('Y-m-d H:i:s');
-                        $prevEnt = 'S';
-
-                        if($os->os_sts == 'F' && $os->os_dpe.' '.Helper::formataHoraMinuto($os->os_hpe).':00' < $os->os_dhf){
-                            $cor = "danger";
-                        }elseif($os->os_sts == 'F' && $os->os_dpe.' '.Helper::formataHoraMinuto($os->os_hpe).':00' >= $os->os_dhf){
-                            $cor = "success";
-                        }elseif($os->os_sts == 'A' && $os->os_dpe.' '.Helper::formataHoraMinuto($os->os_hpe).':00' < $dataHora){
-                            $cor = "danger";
-                        }elseif($os->os_sts == 'A' && $os->os_dpe.' '.Helper::formataHoraMinuto($os->os_hpe).':00' >= $dataHora){
-                            $cor = "success";
-                        }else{
-                            $cor = "danger";
-                        }
-                    }else{
-                        $prevEnt = 'N';
-                    }
-                @endphp
+                <td>{{$dataHoraFormatada}}</td>
                 @if($prevEnt == 'S')
-                <td><span class="badge badge-pill badge-{{$cor}} badge-custom">{{Helper::formataData($os->os_dpe).' '.Helper::formataHoraMinuto($os->os_hpe)}}</span></td>
-                @else 
+                <td>
+                    <!-- Gera o Icone do Status da Prev Ent -->
+                    @if($sitPrevEnt == 'OK')
+                    <span class="badge badge-pill badge-success badge-custom">Dentro do Prazo</span>
+                    @else
+                    <span class="badge badge-pill badge-danger badge-custom">Atrazado</span>
+                    @endif
+                </td>
+                @else
                 <td></td>
                 @endif
             </tr>
@@ -281,17 +269,22 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
             </x-slot>
         </x-adminlte-modal>
     </form>
+    <x-slot name="footerSlot">
+        <div class="d-flex justify-content-end w-100">
+            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.painelOperador') }}'" label="Voltar" theme="" icon=""/>
+        </div>
+    </x-slot>
 </x-adminlte-card>
 @stop
 
 <!-- Chamada dos Plugins usados na app -->
 @section('plugins.Sweetalert2', true)
-@section('plugins.toastr', true)
 @section('plugins.jqueryValidation', true)
 @section('plugins.DateRangePicker', true)
 @section('plugins.Datatables', true)
 @section('plugins.DatatablesPlugins', true)
 @section('plugins.BootstrapSwitch', true)
+@section('plugins.Moment', true)
 
 @section('css')
 <style>
@@ -343,21 +336,264 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
 @stop
 
 @section('js')
-<!--
-|----------------------------------------------------------------------------------------------------
-| Eventos Iniciais da app
-|----------------------------------------------------------------------------------------------------
--->
 <script>
-    $(document).ready(function() { 
+    /* *****
+    |----------------------------------------------------------------------------------------------------
+    | Eventos da Inicialização do Datatable
+    |----------------------------------------------------------------------------------------------------
+    |
+    | Adicionamos aqui todos os eventos relacionados a criação e manipulação de eventos do datatable
+    |
+    ***** */
+    $(() => {
+        
+        // Variavel do agrupamento inicial do Datatable
+        var groupColumns = [];
+
+        /* ********** Inicializa o Datatable ********** */
+        var table = $('#tabela-principal').DataTable({
+            dom: getDatatableDom(),
+            buttons: getDatatableButtons(),
+            lengthMenu: [5, 10, 25, 50, 100],
+            pageLength: 10,
+            language: dataTableLangPtBR,
+            order: [
+                [0, 'desc']
+            ],
+            pagingType: 'full_numbers',
+            processing: true,
+            columns: [
+                { orderable: false, visible: false }, // Esconder primeira coluna
+                { orderable: false },
+                { orderable: false },
+                { orderable: false },
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ],
+            columnDefs: [
+                { visible: false, targets: groupColumns },
+                {
+                    targets: 6,
+                    render: getRenderDateFunction('DD/MM/YYYY HH:mm:ss')
+                },
+                {
+                    targets: 9,
+                    render: getRenderDateFunction('DD/MM/YYYY HH:mm')
+                }
+            ],
+            drawCallback: function (settings) {
+
+                var api = this.api();
+                var colspan = 10; // Ou qualquer valor que você precise para o colspan
+                
+                applyRowGrouping(api, groupColumns, colspan); // Chama a função externa
+            },
+            initComplete: function() {
+
+                /* *****
+                |----------------------------------------------------------------------------------------------------
+                | Altera o Campo Searching Original
+                |----------------------------------------------------------------------------------------------------
+                |
+                | Alteramos a aparencia do input encapsulando ele dentro de input-group estilizado para o Nexus
+                |
+                ***** */
+
+                // Chama a função para customizar o filtro da tabela com base no ID
+                // #id = ID_TABELA_filter
+                customSearchingField('#tabela-principal_filter');
+
+                /* ------------------------------ Final dos Eventos Altera o Campo Searching Original ------------------------------ */
+
+                /* *****
+                |----------------------------------------------------------------------------------------------------
+                | Cards e Botões da Barra de Ferramentas do Datatable
+                |----------------------------------------------------------------------------------------------------
+                |
+                | Adicionamos aqui a criação dos Cards e Botões utilizados na barra de ferramentas do datatable
+                |
+                ***** */
+
+                /* ******************** Botões Principais ******************** */
+
+                /* ********** Criação dos botões principais da barra de ferramentas ********** */
+                let buttonsTooBarHTML = getButtonsTollBar(['quebra','colunas','filtro']);
+
+                /* ********** Adicionando os botões na barra de ferramentas ********** */
+                // #id = ID_TABELA_wrapper
+                $('#tabela-principal_wrapper .btn-datatable-dir .tool-bar').prepend(buttonsTooBarHTML);
+
+                /* ******************** Cards dos Botões Principais ******************** */
+
+                /* ********** Botões do Card da Quebra ********** */
+                let btnQuebraHTML = `
+                    <a class="btn btn-outline-nexus groupCol mr-2" data-column="4" href="#">Situação</a>
+                    <a class="btn btn-outline-nexus groupCol mr-2" data-column="7" href="#">Cliente</a>
+                    <a class="btn btn-outline-nexus groupCol mr-2" data-column="8" href="#">Consultor</a>
+                    <a class="btn btn-outline-nexus groupCol mr-2" data-column="10" href="#">Situação Entrega</a>
+                `;
+
+                /* ********** Monta o Card da Quebra ********** */
+                let cardQuebraHTML = getCardQuebras(btnQuebraHTML);
+
+                /* ********** Adiciona o Card da Quebra ********** */
+                // #id = ID_TABELA_wrapper
+                $('#tabela-principal_wrapper .linha-cards-menu').append(cardQuebraHTML);
+
+                /* ********** Botões do Card da Coluna ********** */
+                let btnColunaHTML = `
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="4" href="#">Situação</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="5" href="#">OS</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="6" href="#">Data/Hora Abertura</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="7" href="#">Cliente</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="8" href="#">Consultor</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="9" href="#">Previsão Entrega</a>
+                    <a class="btn btn-nexus toggle-vis mr-2" data-column="10" href="#">Situação Entrega</a>
+                `;
+
+                /* ********** Monta o Card da Coluna ********** */
+                let cardColunaHTML = getCardColunas(btnColunaHTML);
+
+                /* ********** Adiciona o Card da Coluna ********** */
+                // #id = ID_TABELA_wrapper
+                $('#tabela-principal_wrapper .linha-cards-menu').append(cardColunaHTML);
+
+                /* ********** Campos do Card de Filtro ********** */
+                let fieldFiltroHTML = `
+                    <div class="row">
+                        <x-adminlte-select name="filterSts" label="Situação" igroup-size="sm" fgroup-class="col-md-3">
+                            <x-adminlte-options :options="['Aberta' => 'Aberta', 'Cancelada' => 'Cancelada', 'Finalizada' => 'Finalizada']" empty-option="Selecione..."/>
+                        </x-adminlte-select>
+                        <x-adminlte-input name="filterOS" type="text" label="OS" class="form-control" placeholder="Filtrar OS" igroup-size="sm" fgroup-class="col-md-3"></x-adminlte-input>
+                        <x-adminlte-input name="filterData" type="text" label="Data/Hora Abertura" class="form-control" placeholder="Filtrar Data/Hora Abertura" igroup-size="sm" fgroup-class="col-md-3"></x-adminlte-input>
+                        <x-adminlte-input name="filterCliente" type="text" label="Cliente" class="form-control" placeholder="Filtrar Cliente" igroup-size="sm" fgroup-class="col-md-3"></x-adminlte-input>
+                    </div>
+                    <div class="row">
+                        <x-adminlte-input name="filterConsultor" type="text" label="Consultor" class="form-control" placeholder="Filtrar Consultor" igroup-size="sm" fgroup-class="col-md-3"></x-adminlte-input>
+                        <x-adminlte-input name="filterPrevEnt" type="text" label="Previsão entrega" class="form-control" placeholder="Filtrar Previsão Entrega" igroup-size="sm" fgroup-class="col-md-3"></x-adminlte-input>
+                        <x-adminlte-select name="filterStsPreEnt" label="Situação Entrega" igroup-size="sm" fgroup-class="col-md-3">
+                            <x-adminlte-options :options="['Dentro do Prazo' => 'Dentro do Prazo', 'Atrazado' => 'Atrazado']" empty-option="Selecione..."/>
+                        </x-adminlte-select>
+                    </div>
+                `;
+
+                /* ********** Monta o Card de Filtro ********** */
+                let cardFiltroHTML = getCardFiltros(fieldFiltroHTML);
+
+                /* ********** Adiciona o Card de Filtro ********** */
+                // #id = ID_TABELA_wrapper
+                $('#tabela-principal_wrapper .linha-cards-menu').append(cardFiltroHTML);
+                /* ------------------------------ Final dos Eventos Cards e Botões da Barra de Ferramentas do Datatable ------------------------------ */
+                
+                /* *****
+                |----------------------------------------------------------------------------------------------------
+                | Eventos dos Filtros Individuais
+                |----------------------------------------------------------------------------------------------------
+                |
+                | Esses eventos devem ser feitos ao criar a tabela no "initComplete" para funcionar a busca dos dados
+                |
+                ***** */
+
+                // Escopo para a tabela trabalhada
+                // #id = ID_TABELA_wrapper
+                $('#tabela-principal_wrapper').each(function() {
+                    var $wrapper = $(this);  // Armazena o contexto atual do wrapper
+
+                    // Filtrando por Situação
+                    $wrapper.find('#filterSts').on('change', function() {
+                        var selectedValue = $(this).val();
+                        table.column(4).search(selectedValue).draw();
+                    });
+
+                    // Filtrando por OS
+                    $wrapper.find('#filterOS').on('keyup', function() {
+                        table.column(5).search(this.value).draw();
+                    });
+
+                    // Filtrando por Data
+                    $wrapper.find('#filterData').on('keyup', function() {
+                        table.column(6).search(this.value).draw();
+                    });
+
+                    // Filtrando por Cliente
+                    $wrapper.find('#filterCliente').on('keyup', function() {
+                        table.column(7).search(this.value).draw();
+                    });
+
+                    // Filtrando por Consultor
+                    $wrapper.find('#filterConsultor').on('keyup', function() {
+                        table.column(8).search(this.value).draw();
+                    });
+
+                    // Filtrando por Previsão de Entrega
+                    $wrapper.find('#filterPrevEnt').on('keyup', function() {
+                        table.column(9).search(this.value).draw();
+                    });
+
+                    // Filtrando por Situação da Previsão de Entrega
+                    $wrapper.find('#filterStsPreEnt').on('change', function() {
+                        var selectedValue = $(this).val();
+                        table.column(10).search(selectedValue).draw();
+                    });
+                });
+                /* ------------------------------ Final dos Eventos dos Filtros Individuais ------------------------------ */
+                
+            }
+        });
+
+        /* ------------------------------ Final a Inicialização do Datatable ------------------------------ */
 
         /* *****
         |----------------------------------------------------------------------------------------------------
-        | Eventos da Sub Consulta
+        | Controle do Card de Quebra e Funcionalidades
         |----------------------------------------------------------------------------------------------------
         ***** */
 
-        // Função para buscar a view via AJAX
+        // Ordenação original (Secundária além do agrupamento)
+        var originalOrder = [
+            [0, 'desc']
+        ];
+
+        // Chama a função e passa as variáveis
+        setupActionsQuebra(table, '#tabela-principal_wrapper', '#tabela-principal', originalOrder, groupColumns);
+
+        /* ------------------------------ Final dos Eventos de Controle do Card de Quebra e Funcionalidades ------------------------------ */
+
+        /* *****
+        |----------------------------------------------------------------------------------------------------
+        | Controle do Card de Colunas e Funcionalidades
+        |----------------------------------------------------------------------------------------------------
+        ***** */
+
+        // Chama a função para adicionar os eventos de visibilidade das colunas
+        setupActionsColuna(table, '#tabela-principal_wrapper');
+
+        /* ------------------------------ Final dos Eventos de Controle do Card de Colunas e Funcionalidades ------------------------------ */
+
+        /* *****
+        |----------------------------------------------------------------------------------------------------
+        | Controle do Card de Filtro e Funcionalidades
+        |----------------------------------------------------------------------------------------------------
+        ***** */
+
+        // Chama a função de configuração de filtros
+        setupActionsFiltro(table, '#tabela-principal_wrapper');
+
+        /* ------------------------------ Final dos Eventos de Controle do Card de Filtro e Funcionalidades ------------------------------ */
+
+        /* *****
+        |----------------------------------------------------------------------------------------------------
+        | Eventos da Sub Consulta (Linha de Detalhes)
+        |----------------------------------------------------------------------------------------------------
+        ***** */
+
+        // Função para preencher os dados da linha filha (Detalhes)
+        //Aqui é informado manualmente por ser o conteudo da linha que varia de tabela para tabela onde pode ser fixo ou por AJAX
         function format(tr) {
 
             // Obtendo os parâmetros da OS e da empresa a partir do 'tr' (linha da tabela)
@@ -368,7 +604,6 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
             var url = "{{ route('painelOperacao.carregarDadosSubConsultaPainelOperador', [':emp',':os']) }}";
             url = url.replace(':os', os);
             url = url.replace(':emp', empresa);
-
 
             // Evento AJAX para buscar o conteúdo da view através da rota
             return $.ajax({
@@ -392,58 +627,25 @@ $_SESSION['empresaOS_consulta_painelOperador'] = $where_app;
             });
         }
 
-        //Array com os dados da linha
-        const detailRows = [];
+        // Chama a função para configurar as linhas de detalhes
+        setupDetailRows(table, '#tabela-principal', format);
 
-        // Assumindo que a tabela já está inicializada
-        var table = $('#tabela-principal').DataTable();
-
-        // Event listener para expandir/recolher as linhas
-        $('#tabela-principal').on('click', 'tbody td.icone-row-sub', function (event) {
-            
-            let tr = $(this).closest('tr'); // Use jQuery para selecionar o 'tr'
-            let row = table.row(tr);
-            let icon = $(this).find('i'); // Buscando o ícone
-
-            if (row.child.isShown()) {
-
-                // Ocultar a linha filha
-                tr.removeClass('details');
-                row.child.hide();
-                icon.removeClass('fa-chevron-down').addClass('fa-chevron-right'); // Ícone de "fechado"
-
-                // Remover do array 'detailRows'
-                detailRows.splice(detailRows.indexOf(tr.attr('id')), 1);
-
-            } else {
-
-                // Mostrar a linha filha com o conteúdo da view via AJAX
-                format(tr).done(function(response) {
-
-                    tr.addClass('details');
-                    row.child(response).show();
-                    icon.removeClass('fa-chevron-right').addClass('fa-chevron-down'); // Ícone de "aberto"
-                });
-
-                // Adicionar ao array 'detailRows'
-                if (detailRows.indexOf(tr.attr('id')) === -1) {
-
-                    detailRows.push(tr.attr('id'));
-                }
-            }
-        });
-
-        // Em cada 'draw', mostre novamente as linhas filhas que estavam abertas
-        $('#tabela-principal').on('draw', () => {
-
-            detailRows.forEach((id) => {
-                let el = document.querySelector('#' + id + ' td.icone-row-sub');
-                if (el) {
-                    el.dispatchEvent(new Event('click', { bubbles: true }));
-                }
-            });
-        });
         /* ------------------------------ Final dos Eventos da Sub Consulta ------------------------------ */
+
+    });
+
+    /* ------------------------------ Final da Inicialização do Datatable ------------------------------ */
+</script>
+
+<!--
+    |
+    |----------------------------------------------------------------------------------------------------
+    | Eventos Iniciais da app
+    |----------------------------------------------------------------------------------------------------
+    |
+-->
+<script>
+    $(document).ready(function() { 
 
         /* *****
         |----------------------------------------------------------------------------------------------------
@@ -1187,6 +1389,18 @@ $(function () {
         text: "{{ session('error') }}",
         icon: "error"
     });
+    @endif
+
+    @if(Session::has('info'))
+        Swal.fire({
+            confirmButtonColor: "#007bff",
+            title: "Aviso!",
+            text: "{{ session('info') }}",
+            icon: "info",
+            customClass: {
+                icon: "no-before-icon",
+            }
+        });
     @endif
 </script>
 @stop

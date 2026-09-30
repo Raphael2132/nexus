@@ -21,15 +21,15 @@
 @section('content')
 <div class="d-flex justify-content-center">
     <div class="col-md-8">
-        <form method="post" action="{{route('parametrosSistemaServico.atualizar', [ 'grupo' => $dadosServico[0]['servico_grupo'],'servico' => $dadosServico[0]['servico_codigo'] ] )}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('servicosSistema.update', [ 'servicosSistema' => $dadosServico ] )}}" id="quickForm" novalidate="novalidate">
             @csrf 
-            @method('post')
+            @method('put')
             <x-adminlte-card title="Serviço da NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
                     @php
-                        $grupo_desc = DB::table('parametros_sis_servico_grupos')->select('grupo_desc')->where('grupo_codigo','=',$dadosServico[0]->servico_grupo)->get();
-                        $desc_drupo = $dadosServico[0]->servico_grupo.' - '.$grupo_desc[0]->grupo_desc;
+                        $grupo_desc = DB::table('parametros_sis_servico_grupos')->where('grupo_codigo', $dadosServico->servico_grupo)->first();
+                        $desc_drupo = $dadosServico->servico_grupo.' - '.$grupo_desc->grupo_desc;
                     @endphp
                     <!-- Grupo do serviço -->
                     <x-adminlte-input name="grupo" type="text" value="{{$desc_drupo}}" fgroup-class="col-md-10" disabled>
@@ -38,7 +38,7 @@
                         </x-slot>
                     </x-adminlte-input>
                     <!-- Código do Serviço -->
-                    <x-adminlte-input name="codigo" type="number" value="{{$dadosServico[0]->servico_codigo}}" fgroup-class="col-md-2" disabled>
+                    <x-adminlte-input name="codigo" type="number" value="{{$dadosServico->servico_codigo}}" fgroup-class="col-md-2" disabled>
                         <x-slot name="label">
                             Código <span style="color:red;">*</span>
                         </x-slot>
@@ -51,7 +51,7 @@
                         <x-slot name="label">
                             Descrição <span style="color:red;">*</span>
                         </x-slot>
-                        {{$dadosServico[0]->servico_desc}}
+                        {{$dadosServico->servico_desc}}
                         <x-slot name="prependSlot">
                             <div class="input-group-text x-slot-nexus">
                                 <i class="fas fa-lg fa-file-alt text-white"></i>

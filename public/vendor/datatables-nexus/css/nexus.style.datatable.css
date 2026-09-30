@@ -1,0 +1,144 @@
+/*
+|--------------------------------------------------------------------------------
+| Datatables
+|--------------------------------------------------------------------------------
+|
+| Alterações do tema do Datatable.
+|
+*/
+
+/* ******************** DIV Principal do Datatable ******************** */
+.table-responsive {
+    overflow-x: inherit;
+}
+
+.dataTables_wrapper .body-datatable {
+    overflow: auto;
+}
+
+/* ******************** Botões de Paginação ******************** */
+.pagination .page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #00abab;
+    border-color: #00abab;
+}
+
+.pagination  .page-link {
+    color: #00abab;
+}
+
+/* ******************** Registros por Página - Seleção Ativa ******************** */
+.dataTables_wrapper  .dropdown-item.active, .dropdown-item:active {
+    background-color: #00abab;
+}
+
+/* ******************** Botões da Barra de Ferramenta ******************** */
+.visualizar-colunas a {
+    text-decoration: none;
+}
+
+.visualizar-colunas .btn-outline-nexus {
+    color: #00abab;
+}
+
+.filtrar-registros label {
+    color: #00abab;
+}
+
+/* ******************** Cards da Barra de Ferramenta ******************** */
+.visualizar-quebras .card {
+    border-top: 3px solid #00abab !important;
+}
+
+.visualizar-colunas .card {
+    border-top: 3px solid #00abab !important;
+}
+
+.filtrar-registros .card {
+    border-top: 3px solid #00abab !important;
+}
+
+/* ******************** Alinhar campo pesquisa rápida ******************** */
+.btn-datatable-dir .form-group {
+    margin-bottom: 0rem !important;
+}
+  
+/* ******************** Linhas de Agrupamento ******************** */
+tr.group {
+    background-color: #00abab !important;
+    color: #fff !important;
+}
+
+tr.group:hover {
+    background-color: #008f8f !important;
+    color: #fff !important;
+}
+
+tr.group td {
+    text-align: left !important;
+    font-weight: bold;
+    font-size: .85rem;
+    padding: .5rem;
+}
+
+tr.group td i {
+    color: #fff !important;
+}
+
+tr.group td span {
+    background-color: #00abab !important;
+}
+
+/* ******************** Campo Pesquisa Rápida Original ******************** */
+div.dataTables_wrapper div.dataTables_filter input {
+    margin-left: 0rem !important;
+    border-top: 1px solid #00abab;
+    border-right: 1px solid #00abab;
+    border-bottom: 1px solid #00abab;
+    border-left: none;
+    width: 110px !important;
+    padding: inherit !important;
+    font-size: .85rem !important;
+}
+
+.pesquisa-slot-nexus{
+    color: #00abab !important;
+    background-color: #fff !important;
+    border-color: #00abab !important;
+    box-shadow: none !important;
+}
+
+
+
+/*
+|--------------------------------------------------------------------------------
+| Estilos Responsivos
+|--------------------------------------------------------------------------------
+|
+| Estilos para arrumar responsividade das telas
+|
+*/
+
+/* ******************** Dispositivos móveis (até 480px) ******************** */
+@media (max-width: 481px) {
+    .visualizar-colunas button, 
+    .visualizar-colunas a {
+        margin-bottom: .5rem !important;
+    }
+
+    .visualizar-quebras button, 
+    .visualizar-quebras a {
+        margin-bottom: .5rem !important;
+    }
+}
+
+/* Tablets (481px a 991px) */
+@media (min-width: 481px) and (max-width: 991px) {
+    /* Dados */
+}
+
+  /* Laptops e desktops pequenos (992px a 1440px) */
+@media (min-width: 992px) and (max-width: 1440px) {
+    /* estilos para laptops e desktops pequenos */
+}

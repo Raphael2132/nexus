@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Cadastro de Usuarios')
+@section('title', 'Cadastro de Usuários')
 
 @section('content_header')
 <div class="row mb-2">
@@ -10,13 +10,8 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">
-                <a href="{{route('home.usuarios')}}">Usuários</a>
+                <a href="{{route('cadastroUsuario.index')}}">Usuários</a>
             </li>
-            @if($tipo != 'newCad' && $tipo != 'editCad')
-                <li class="breadcrumb-item active">
-                    <a href="{{route('usuarios', ['tipo' => $tipo])}}">Usuários Cadastrados</a>
-                </li>
-            @endif
             <li class="breadcrumb-item active">Cadastro de Usuários</li>
         </ol>
     </div>
@@ -26,8 +21,8 @@
 @section('content')
 
 <div class="d-flex justify-content-center">
-    <div class="col-md-6">
-        <form method="post" action="{{route('usuario.inserir',['tipo' => $tipo])}}" id="quickForm" novalidate="novalidate">
+    <div class="col-md-8">
+        <form method="post" action="{{route('cadastroUsuario.store')}}" id="quickForm" novalidate="novalidate">
             @csrf 
             @method('post')
             <x-adminlte-card title="Cadastro de Usuário" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
@@ -135,7 +130,7 @@
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
                         <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
-                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.usuarios') }}'" label="Voltar" theme="" icon=""/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('cadastroUsuario.index') }}'" label="Voltar" theme="" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nfe>
+  <notaFiscal/>
+  <dadosPrestador>
+    <dataEmissao>06/10/2024</dataEmissao>
+    <im>123165100</im>
+    <numeroRps>000000101</numeroRps>
+  </dadosPrestador>
+  <dadosServico>
+    <bairro>CENTRO</bairro>
+    <cep>13870-110</cep>
+    <cidade>SAO JOAO DA BOA VISTA</cidade>
+    <complemento>LOJA AO LADO DO CHIQUINHO</complemento>
+    <logradouro>AVENIDA DONA GERTRUDES</logradouro>
+    <numero>S/N</numero>
+    <pais>BRASIL</pais>
+    <uf>SP</uf>
+  </dadosServico>
+  <dadosTomador>
+    <bairro>CENTRO</bairro>
+    <cep>13870-100</cep>
+    <cidade>SAO JOAO DA BOA VISTA</cidade>
+    <complemento/>
+    <documento>03130316346</documento>
+    <email>thiago@gmail.com</email>
+    <ie/>
+    <logradouro>RUA GETULIO VARGAS</logradouro>
+    <nomeTomador>THIAGO CARVALHO</nomeTomador>
+    <numero>12</numero>
+    <pais>BRASIL</pais>
+    <tipoDoc>F</tipoDoc>
+    <uf>SP</uf>
+  </dadosTomador>
+  <detalheServico>
+    <cofins>0.00</cofins>
+    <csll>0.00</csll>
+    <deducaoMaterial>0.00</deducaoMaterial>
+    <descontoIncondicional>0.00</descontoIncondicional>
+    <inss>0.00</inss>
+    <ir>0.00</ir>
+    <issRetido>0</issRetido>
+    <item>
+      <aliquota>4.53</aliquota>
+      <codigo>1404</codigo>
+      <descricao>TESTE</descricao>
+      <valor>80.00</valor>
+    </item>
+    <obs>TESTE DO TESTE</obs>
+    <pisPasep>0.00</pisPasep>
+  </detalheServico>
+</nfe>

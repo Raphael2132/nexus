@@ -10,7 +10,7 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">
-                <a href="{{route('home.lancSrvEtapas')}}">Etapas de Atendimento</a>
+                <a href="{{route('etapaAtendimento.index')}}">Etapas de Atendimento</a>
             </li>
             @if($acao == 'N')
                 <li class="breadcrumb-item active">Cadastro Etapas de Atendimento</li>
@@ -27,45 +27,30 @@
     <div class="col-md-8">
         <!-- Define se o formulario é edição ou novo -->
         @if($acao == 'N')
-        <form method="post" action="{{route('lancamentosSrvEtapas.insert')}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('etapaAtendimento.store')}}" id="quickForm" novalidate="novalidate">
+        @csrf 
+        @method('post')
         @else
-        <form method="post" action="{{route('lancamentosSrvEtapas.update')}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('etapaAtendimento.update', ['etapaAtendimento' => $dadosEAT])}}" id="quickForm" novalidate="novalidate">
+        @csrf 
+        @method('put')
         @endif
-            @csrf 
             <x-adminlte-card title="Cadastro de Nova Etapa de Atendimento" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
                     @php
-                        $data = DB::table('cadastro_empresas')->select('empresa_codigo', 'empresa_nome')->orderBy('empresa_codigo', 'asc')->get();
+                        $array_opt = HelperArraySelect::arrayEmpresas(1,1);
 
-                        $new_array1 =[];
-                        $new_array2 =[];
-
-                        foreach ($data as $empresa) {
-                            $new_array1[] = $empresa->empresa_codigo;
-                            $new_array2[] = $empresa->empresa_codigo.' - '.$empresa->empresa_nome;
-                        }
-                        $array_opt = array_combine($new_array1, $new_array2);
-
-                        if(!empty($dadosEAT[0]['eat_emp'])){
-                            $emp_sel = $dadosEAT[0]['eat_emp'];
+                        if(!empty($dadosEAT->eat_emp)){
+                            $emp_sel = $dadosEAT->eat_emp;
                         }else{
                             $emp_sel = '';
                         }
 
-                        $data_cat = DB::table('lancamento_srv_categorias')->select('categoria_codigo', 'categoria_desc')->orderBy('categoria_codigo', 'asc')->get();
+                        $array_opt_cat = HelperArraySelect::arrayCategoriaAtend(1,1);
 
-                        $new_array1_cat =[];
-                        $new_array2_cat =[];
-
-                        foreach ($data_cat as $categoria) {
-                            $new_array1_cat[] = $categoria->categoria_codigo;
-                            $new_array2_cat[] = $categoria->categoria_codigo.' - '.$categoria->categoria_desc;
-                        }
-                        $array_opt_cat = array_combine($new_array1_cat, $new_array2_cat);
-
-                        if(!empty($dadosEAT[0]['eat_cat'])){
-                            $cat_sel = $dadosEAT[0]['eat_cat'];
+                        if(!empty($dadosEAT->eat_cat)){
+                            $cat_sel = $dadosEAT->eat_cat;
                         }else{
                             $cat_sel = '';
                         }
@@ -90,20 +75,20 @@
 
                 <div class="row">
                     @php
-                        if(!empty($dadosEAT[0]['eat_cod'])){
-                            $codigo_sel = $dadosEAT[0]['eat_cod'];
+                        if(!empty($dadosEAT->eat_cod)){
+                            $codigo_sel = $dadosEAT->eat_cod;
                         }else{
                             $codigo_sel = '';
                         }
 
-                        if(!empty($dadosEAT[0]['eat_ord'])){
-                            $ordem_sel = $dadosEAT[0]['eat_ord'];
+                        if(!empty($dadosEAT->eat_ord)){
+                            $ordem_sel = $dadosEAT->eat_ord;
                         }else{
                             $ordem_sel = '';
                         }
 
-                        if(!empty($dadosEAT[0]['eat_nom'])){
-                            $descricao_sel = $dadosEAT[0]['eat_nom'];
+                        if(!empty($dadosEAT->eat_nom)){
+                            $descricao_sel = $dadosEAT->eat_nom;
                         }else{
                             $descricao_sel = '';
                         }
@@ -133,25 +118,32 @@
                 <!-- /.card -->
                 <x-slot name="footerSlot">
                     @php
-                        if(!empty($dadosEAT[0])){
-                            $tipoEAT = $dadosEAT[0]->eat_id;
+                        if(!empty($dadosEAT)){
+                            $tipoEAT = $dadosEAT->eat_id;
                         }else{
                             $tipoEAT = '';
                         }
                     @endphp
                     <div class="d-flex justify-content-between w-100">
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-nexus mr-2 btn_novo" type="button" onclick="window.location='{{ route('lancamentosSrvEtapas.cadastro') }}'" label="Nova Categoria" theme="" icon="fa-solid fa-plus"/>
+                            <x-adminlte-button class="btn-nexus mr-2 btn_novo" type="button" onclick="window.location='{{ route('etapaAtendimento.create') }}'" label="Nova Categoria" theme="" icon="fa-solid fa-plus"/>
                             <x-adminlte-button class="btn-nexus mr-2 btn_salvar" type="submit" label="Salvar" theme="" icon="fa-solid fa-share-from-square"/>
                             <x-adminlte-button class="btn-nexus mr-2 btn_excluir" type="button" data-id="{{$tipoEAT}}" data-token="{{ csrf_token() }}" label="Excluir" theme="" icon="fa-solid fa-trash"/>
                         </div>
                         <div class="d-flex">
-                            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.lancSrvEtapas') }}'" label="Voltar" theme="" icon=""/>
+                            <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('etapaAtendimento.index') }}'" label="Voltar" theme="" icon=""/>
                         </div>
                     </div>
                 </x-slot>
             </x-adminlte-card>
         </form>
+        @if($acao != 'N')
+        <!-- Formulário escondido para exclusão do registro -->
+        <form id="delete-form-{{ $tipoEAT }}" action="{{ route('etapaAtendimento.destroy', $dadosEAT) }}" method="POST" style="display: none;">
+            @csrf
+            @method('DELETE')
+        </form>
+        @endif
     </div>
 </div>
 @stop
@@ -172,6 +164,17 @@
 |--------------------------------------------------------------------------
 -->
 <script>
+    //Capturar o clique no botão e submeter o formulário de exclusão                    
+    document.querySelectorAll('.btn_excluir').forEach(button => {
+        button.addEventListener('click', function() {
+            let setorId = this.getAttribute('data-id');
+            let token = this.getAttribute('data-token'); 
+            
+            // Submete o formulário oculto
+            document.getElementById('delete-form-' + setorId).submit();
+        });
+    });
+
     $(document).ready(function() {    
 
         //Verifica de onde veio a app, cadastro ou edição
@@ -184,35 +187,6 @@
             $(".btn_novo").hide();
             $(".btn_excluir").hide();
         }
-    });
-</script>
-
-<!--
-|--------------------------------------------------------------------------
-| Eventos onClick da app
-|--------------------------------------------------------------------------
--->
-<script>
-    $(".btn_excluir").click(function(){
-        var id = $(this).attr("data-id");
-
-        var url = "{{ route('lancamentosSrvEtapas.destroy', [':id', 'ajax']) }}";
-        url = url.replace(':id', id);
-
-        $.ajax({
-            url: url,
-            dataType: "JSON",
-            type: 'POST',
-            data: {
-                '_token': $('meta[name=csrf-token]').attr("content"),
-                '_method': 'DELETE',
-                "id": id
-            },
-            success: function ()
-            {
-                window.location = "{{ route('lancamentosSrvEtapas.homeAjax') }}";
-            }
-        });
     });
 </script>
 

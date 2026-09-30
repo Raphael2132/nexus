@@ -2,28 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CadastroCliente;
-use App\Models\User;
 use App\Http\Helpers\Helper;
-use App\Models\CadastroEmpresa;
-use App\Models\ParametrosFatNfs;
-use App\Models\ParametrosFatNfsConexoes;
-use App\Models\ParametrosSisModulo;
-use App\Models\ParametrosSisServicoGrupo;
-use App\Models\ParametrosSisServico;
-use App\Models\ParametrosSisArea;
-use App\Models\ParametrosSisSetores;
-use App\Models\ParametrosSrvTmo;
-use App\Models\LancamentoSrvOs;
-use App\Models\LancamentoSrvCategorias;
-use App\Models\LancamentoSrvTipoServico;
-use App\Models\LancamentoSrvEtapaAtendimento;
-use App\Models\CadastroPrestadores;
-use App\Models\ParametrosSisCanMotivos;
-use App\Models\ParametrosSisSusMotivo;
-use App\Models\ParametrosSrvEmpresas;
-use App\Models\ParametrosFatEmpresas;
-use App\Models\ParametrosGerEmpresa;
+use App\Http\Helpers\HelperDataSelect;
+use App\Models\Lancamentos\Servico\LancamentoSrvOs;
 use Illuminate\Http\Request;
 use stdClass;
 use Illuminate\Support\Facades\DB;
@@ -39,50 +20,10 @@ class HomeController extends Controller
      * @return void
      */
 
-    public function __construct(CadastroCliente $cliente, 
-                                User $usuario, 
-                                CadastroEmpresa $empresa, 
-                                ParametrosFatNfs $parametrosNfs, 
-                                ParametrosFatNfsConexoes $parametrosNfsConexao,
-                                ParametrosSisModulo $parametrosSistemaModulo, 
-                                ParametrosSisServicoGrupo $parametrosGrpServico, 
-                                ParametrosSisServico $parametrosServico, 
-                                ParametrosSisArea $parametrosSistemaArea, 
-                                ParametrosSisSetores $parametrosServicoSetor,
-                                ParametrosSrvTmo $parametrosServicoTMO,
-                                LancamentoSrvOs $lancamentosOS, 
-                                LancamentoSrvCategorias $lancamentosServicoCategoria,
-                                LancamentoSrvTipoServico $lancamentoSrvTipoServico,
-                                LancamentoSrvEtapaAtendimento  $lancamentosServicoEtapas,
-                                CadastroPrestadores $prestador,
-                                ParametrosSisCanMotivos $motCan,
-                                ParametrosSisSusMotivo $motSus,
-                                ParametrosSrvEmpresas $parSrvEmp,
-                                ParametrosFatEmpresas $parFatEmp,
-                                ParametrosGerEmpresa $parGerEmp)
+    public function __construct(LancamentoSrvOs $lancamentosOS)
     {
         $this->middleware('auth');
-        $this->cliente = $cliente;
-        $this->usuario = $usuario;
-        $this->empresa = $empresa;
-        $this->parametrosNfs = $parametrosNfs;
-        $this->parametrosNfsConexao = $parametrosNfsConexao;
-        $this->parametrosSistemaModulo = $parametrosSistemaModulo;
-        $this->parametrosGrpServico = $parametrosGrpServico;
-        $this->parametrosServico = $parametrosServico;
-        $this->parametrosSistemaArea = $parametrosSistemaArea;
-        $this->parametrosServicoSetor = $parametrosServicoSetor;
-        $this->parametrosServicoTMO = $parametrosServicoTMO;
         $this->lancamentosOS = $lancamentosOS;
-        $this->lancamentosServicoCategoria = $lancamentosServicoCategoria;
-        $this->lancamentoSrvTipoServico = $lancamentoSrvTipoServico;
-        $this->lancamentosServicoEtapas = $lancamentosServicoEtapas;
-        $this->prestador = $prestador;
-        $this->motCan = $motCan;
-        $this->motSus = $motSus;
-        $this->parSrvEmp = $parSrvEmp;
-        $this->parFatEmp = $parFatEmp;
-        $this->parGerEmp = $parGerEmp;
     }
 
     /**
@@ -100,7 +41,7 @@ class HomeController extends Controller
     {
         //Vamos definir a empresa da visualização da Home
         $empresa = session('glo_empresa_exibicao_home');
-
+abort(405);
         /*
         |--------------------------------------------------------------------------
         | Small Box
@@ -158,7 +99,7 @@ class HomeController extends Controller
             
             //Vamos buscar a data da licença da empresa da exibição da Home
             $validade = DB::table('parametros_sis_modulos')->where('modulo_empresa_codigo', $empresa)->value('modulo_dt_validade');
-            $dadosEmpresa = Helper::buscaDadosEmpresa($empresa);
+            $dadosEmpresa = HelperDataSelect::buscaDadosEmpresa($empresa);
         
             $dataValidade = Carbon::parse($validade);
             $dataHoje = Carbon::today();
@@ -188,220 +129,6 @@ class HomeController extends Controller
     public function contato()
     {
         return view('contato');
-    }
-
-    public function homeClientes()
-    {
-        //Monta variaveis dos cards
-        $cliJuridico = $this->cliente->where('cliente_tipo_pessoa','=','J')->count();
-        $cliFisico = $this->cliente->where('cliente_tipo_pessoa','=','F')->count();
-        $cliTot = $this->cliente->count();
-        
-        //Seta a data para português
-        setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese'); 
-        //date_default_timezone_set('America/Sao_Paulo');
-
-        $meses = "[";
-        $grafJ = "[";
-        $grafF = "[";
-
-        // Monta as variáveis para o JS dos últimos seis meses do gráfico
-        for ($i = 5; $i >= 0; $i--) { // Ajustado para pegar 6 meses incluindo o mês atual
-            $dt_ini = date('Y-m-01', strtotime("-$i month"));
-            $dt_fin = date("Y-m-t", strtotime("-$i month"));
-            $mes_nom = ucfirst(strftime("%B", strtotime($dt_ini)));
-
-            // Adiciona o nome do mês no array
-            $meses .= "'".$mes_nom."',";
-
-            // Conta os clientes do tipo "J" para o mês
-            $cntJ = $this->cliente->where('cliente_tipo_pessoa', '=', 'J')
-                                ->whereBetween('cliente_dt_inc', [$dt_ini, $dt_fin])
-                                ->count();
-            $grafJ .= $cntJ.",";
-
-            // Conta os clientes do tipo "F" para o mês
-            $cntF = $this->cliente->where('cliente_tipo_pessoa', '=', 'F')
-                                ->whereBetween('cliente_dt_inc', [$dt_ini, $dt_fin])
-                                ->count();
-            $grafF .= $cntF.",";
-        }
-
-        // Fecha os arrays de meses e gráficos
-        $meses = rtrim($meses, ',') . "]"; // Remove a última vírgula e fecha o array
-        $grafJ = rtrim($grafJ, ',') . "]"; // Remove a última vírgula e fecha o array
-        $grafF = rtrim($grafF, ',') . "]"; // Remove a última vírgula e fecha o array
-
-        //Monta a data do mês atual e dos ultimos 5 mês 
-        // Data atual
-        $dataIni = new \DateTime();
-        // Subtrair 6 meses
-        $dataIni->modify('-5 months');
-        // Definir o dia como 01
-        $dataIni->modify('first day of this month');
-        $dataFinal = date('Y-m-d');
-        // Formatar as datas no formato correto (Y-m-d)
-        $dataIni = $dataIni->format('Y-m-d');
-
-        $clientes = $this->cliente->whereBetween('cliente_dt_inc', [$dataIni, $dataFinal])->get();
-      
-        return view('/cadastros/cliente/homeClientes',[
-            'cliJuridico'=>$cliJuridico,
-            'cliFisico'=>$cliFisico,
-            'cliTot'=>$cliTot,
-            'meses'=>$meses,
-            'grafJ'=>$grafJ,
-            'grafF'=>$grafF,
-            'clientes'=>$clientes
-        ]);
-    }
-
-    /*
-    |----------------------------------------------------------------------------------------------------
-    | Home do Cadstro de Usuários
-    |----------------------------------------------------------------------------------------------------
-    */
-    public function homeUsuarios()
-    {      
-        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
-        $empresa = session('glo_empresa_exibicao_home');
-
-        //O usuário MASTER é exibido apenas para ele
-        if(Auth::user()->usuario_codigo == "MASTER"){
-
-            //Monta variaveis dos cards
-            $usuAtivo = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_status', 'A')->count();
-            $usuDesat = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_status', 'D')->count();
-            $usuTot = $this->usuario->where('usuario_empresa', $empresa)->count();
-            $usuAdm = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'ADM')->count();
-            $usuPrt = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'PR')->count();
-            $usuCon = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'CO')->count();
-            $usuCaixa = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'CX')->count();
-
-            $usuarios = $this->usuario->where('usuario_empresa', $empresa)->reorder('usuario_codigo', 'asc')->get();
-
-        }else{
-
-            //Monta variaveis dos cards
-            $usuAtivo = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_status', 'A')->where('usuario_tipo','<>','M')->count();
-            $usuDesat = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_status', 'D')->where('usuario_tipo','<>','M')->count();
-            $usuTot = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo','<>','M')->count();
-            $usuAdm = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'ADM')->count();
-            $usuPrt = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'PR')->count();
-            $usuCon = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'CO')->count();
-            $usuCaixa = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_tipo', 'CX')->count();
-
-            $usuarios = $this->usuario->where('usuario_empresa', $empresa)->where('usuario_codigo','<>','MASTER')->reorder('usuario_codigo', 'asc')->get();
-        }
-
-        return view('/cadastros/usuario/homeUsuarios',[
-            'usuarios'=>$usuarios,
-            'usuAtivo'=>$usuAtivo,
-            'usuDesat'=>$usuDesat,
-            'usuTot'=>$usuTot,
-            'usuAdm'=>$usuAdm,
-            'usuPrt'=>$usuPrt,
-            'usuCon'=>$usuCon,
-            'usuCaixa'=>$usuCaixa
-        ]);
-    }
-
-    /*
-    |----------------------------------------------------------------------------------------------------
-    | Home do Cadstro de Prestadores
-    |----------------------------------------------------------------------------------------------------
-    */
-    public function homePrestadores()
-    {      
-
-        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
-        $empresa = session('glo_empresa_exibicao_home');
-
-        $totalPrestadores = $this->prestador->where('prestador_empresa', $empresa)->count();
-        $prestadoresAtivos = $this->prestador->where('prestador_empresa', $empresa)->where('prestador_status','=','A')->count();
-        $prestadoresDemitidos = $this->prestador->where('prestador_empresa', $empresa)->where('prestador_status','=','D')->count();
-
-        $prestadores = $this->prestador->where('prestador_empresa', $empresa)->where('prestador_status', 'A')->reorder('prestador_codigo', 'asc')->get();
-
-        return view('/cadastros/prestador/homePrestadores',['prestadores'=>$prestadores,'totalPrestadores'=>$totalPrestadores,'prestadoresAtivos'=>$prestadoresAtivos,'prestadoresDemitidos'=>$prestadoresDemitidos]);
-    }
-
-    //Redireciona a app para o home de cadastro de empresas
-    public function homeEmpresa()
-    {    
-        $empresas = $this->empresa->all();
-
-        return view('/cadastros/empresa/homeEmpresa', ['empresas'=>$empresas]);
-    }
-
-    //Redireciona a app para a parametrização do faturamento da NFS-e
-    public function homeParFatNfs()
-    {    
-        $emiNfs  = $this->parametrosNfs->all();
-        $conNfs  = $this->parametrosNfsConexao->all();
-
-        return view('/parametros/faturamento/nfs/homeParametroFatNfs', ['emiNfs'=>$emiNfs, 'conNfs'=>$conNfs]);
-    }
-
-    //Redireciona a app para a parametrização dos modulos do sistema
-    public function homeParSisModulo()
-    {    
-        $modulos  = $this->parametrosSistemaModulo->all();
-
-        return view('/parametros/sistema/homeParametrosSistemaModulos', ['modulos'=>$modulos]);
-    }
-
-    //Redireciona a app para a parametrização dos serviços do sistema
-    public function homeParSisServico()
-    {    
-        $grupos_srv = $this->parametrosGrpServico->reorder('grupo_codigo', 'asc')->get();
-        $servicos = $this->parametrosServico->reorder('servico_grupo', 'asc')->reorder('servico_codigo', 'asc')->get();
-
-        return view('/parametros/sistema/homeParametrosSistemaServicos', ['grupos'=>$grupos_srv, 'servicos'=>$servicos]);
-    }
-
-    //Redireciona a app para a parametrização das áreas do sistema
-    public function homeParSisArea()
-    {    
-        $areas = $this->parametrosSistemaArea->reorder('area_desc', 'asc')->get();
-
-        return view('/parametros/sistema/homeParametrosSistemaAreas', ['areas'=>$areas]);
-    }
-
-    /*
-    |----------------------------------------------------------------------------------------------------
-    | Home da Parametrização dos Setores das Empresas
-    |----------------------------------------------------------------------------------------------------
-    */
-    public function homeParSrvSetor()
-    {    
-        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
-        $empresa = session('glo_empresa_exibicao_home');
-
-        $setores = $this->parametrosServicoSetor->where('setor_empresa', $empresa)->reorder('setor_area', 'asc')->get();
-
-        return view('/parametros/servico/homeParametrosServicoSetor', ['setores'=>$setores]);
-    }
-
-    /*
-    |----------------------------------------------------------------------------------------------------
-    | Home da Parametrização das TMO
-    |----------------------------------------------------------------------------------------------------
-    */
-    public function homeParSrvTMO()
-    {    
-        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
-        $empresa = session('glo_empresa_exibicao_home');
-
-        $tarefas = $this->parametrosServicoTMO->where('tmo_emp', $empresa)->reorder('tmo_cod', 'asc')->get();
-
-        return view('/parametros/servico/homeParametrosServicoTMO', ['tarefas'=>$tarefas]);
-    }
-
-    //Redireciona a app para a lançamento de os
-    public function homeEmissaoOS()
-    {    
-        return view('/lancamentos/servico/homeEmissaoOS');
     }
 
     //Redireciona a app para a lançamento de os
@@ -641,50 +368,6 @@ class HomeController extends Controller
         ]);
     }
 
-    //Redireciona a app para a parametrização das categorias de atendimento do lançamento de serviços
-    public function homeLancSrvCategoria()
-    {    
-        $categorias = $this->lancamentosServicoCategoria->reorder('categoria_codigo', 'asc')->get();
-
-        return view('/parametros/servico/homeLancamentosServicoCategoria', ['categorias'=>$categorias]);
-    }
-
-    /*
-    |----------------------------------------------------------------------------------------------------
-    | Home da Parametrização dos Tipos de Serviço
-    |----------------------------------------------------------------------------------------------------
-    */
-    public function homeLancSrvTipo()
-    {
-        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
-        $empresa = session('glo_empresa_exibicao_home');
-
-        $tipos = $this->lancamentoSrvTipoServico->where('tipsrv_emp', $empresa)->reorder('tipsrv_emp', 'asc')->reorder('tipsrv_cod', 'asc')->get();
-
-        return view('/parametros/servico/homeLancamentosServicoTipo', ['tipos'=>$tipos]);
-    }
-
-    /*
-    |----------------------------------------------------------------------------------------------------
-    | Home da Parametrização das Etapas de Atendimento
-    |----------------------------------------------------------------------------------------------------
-    */
-    public function homeLancSrvEtapas()
-    {    
-        //Definimos a empresa que terá os dados exibidos pela selecionada para exibição
-        $empresa = session('glo_empresa_exibicao_home');
-
-        $etapas = $this->lancamentosServicoEtapas->where('eat_emp', $empresa)->reorder('eat_cod', 'asc')->reorder('eat_ord', 'asc')->get();
-
-        return view('/parametros/servico/homeLancamentosServicoEtapas', ['etapas'=>$etapas]);
-    }
-
-    //Redireciona a app para o faturamento da emissão de nf
-    public function emissaoNF()
-    {    
-        return view('/faturamento/notas/controleEmissaoNF');
-    }
-
     //Redireciona a app para o faturamento da reemissão de nf
     public function reemissaoNF()
     {    
@@ -695,46 +378,6 @@ class HomeController extends Controller
     public function reemissaoSimpNF()
     {    
         return view('/faturamento/notas/simplificada/controleReemissaoSimpNF');
-    }
-
-    //Redireciona a app para os motivos de cancelamento
-    public function homeParMotCan()
-    {    
-        $motivos = $this->motCan->reorder('canmot_codigo', 'asc')->get();
-
-        return view('/parametros/sistema/homeParametrosSistemaMotivosCancelamento', ['motivos' => $motivos]);
-    }
-
-    //Redireciona a app para os motivos de cancelamento
-    public function homeParMotSus()
-    {    
-        $motivos = $this->motSus->reorder('susmot_codigo', 'asc')->get();
-
-        return view('/parametros/sistema/homeParametrosSistemaMotivosSuspensao', ['motivos' => $motivos]);
-    }
-
-    //Redireciona a app para a parametrização geral de serviços
-    public function homeParametroSrvEmp()
-    {    
-        $parametros = $this->parSrvEmp->reorder('parsrv_emp', 'asc')->get();
-
-        return view('/parametros/servico/homeParametrosServicoEmpresa', ['dataParSrvEmp' => $parametros]);
-    }
-
-    //Redireciona a app para a parametrização gerencial da empresa
-    public function homeParametroGerEmp()
-    {    
-        $parametros = $this->parGerEmp->reorder('parger_emp', 'asc')->get();
-
-        return view('/parametros/gerencial/homeParametrosGerencialEmpresa', ['dataParGerEmp' => $parametros]);
-    }
-
-    //Redireciona a app para a parametrização geral de faturamento
-    public function homeParametroFatEmp()
-    {    
-        $parametros = $this->parFatEmp->reorder('parfat_emp', 'asc')->get();
-
-        return view('/parametros/faturamento/homeParametrosFatEmpresa', ['dataParFatEmp' => $parametros]);
     }
 
     //Redireciona a app para o home do painel de agendamento do prestador

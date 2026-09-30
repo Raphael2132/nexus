@@ -21,14 +21,14 @@
 @section('content')
 <div class="d-flex justify-content-center">
     <div class="col-md-8">
-        <form method="post" action="{{route('parametrosSistemaGrpServico.atualizar', [ 'grupo' => $dadosGrupo[0]['grupo_codigo'] ] )}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('gruposServicosSistema.update', [ 'gruposServicosSistema' => $dadosGrupo ] )}}" id="quickForm" novalidate="novalidate">
             @csrf 
-            @method('post')
+            @method('put')
             <x-adminlte-card title="Grupo do Serviço da NFS-e" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
                     <!-- Código do Grupo do Serviço -->
-                    <x-adminlte-input name="codigo" type="number" value="{{$dadosGrupo[0]->grupo_codigo}}" fgroup-class="col-md-6" disabled>
+                    <x-adminlte-input name="codigo" type="number" value="{{$dadosGrupo->grupo_codigo}}" fgroup-class="col-md-6" disabled>
                         <x-slot name="label">
                             Código <span style="color:red;">*</span>
                         </x-slot>
@@ -41,7 +41,7 @@
                         <x-slot name="label">
                             Descrição <span style="color:red;">*</span>
                         </x-slot>
-                        {{$dadosGrupo[0]->grupo_desc}}
+                        {{$dadosGrupo->grupo_desc}}
                         <x-slot name="prependSlot">
                             <div class="input-group-text x-slot-nexus">
                                 <i class="fas fa-lg fa-file-alt text-white"></i>

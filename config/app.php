@@ -199,7 +199,13 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         'Helper' => App\Http\Helpers\Helper::class,
+        'HelperFinanceiro' => App\Http\Helpers\HelperFinanceiro::class,
+        'HelperFormatSelect' => App\Http\Helpers\HelperFormatSelect::class,
+        'HelperDataSelect' => App\Http\Helpers\HelperDataSelect::class,
+        'HelperDataList' => App\Http\Helpers\HelperDataList::class,
         'HelperControleProducao' => App\Http\Helpers\HelperControleProducao::class,
+        'HelperArrayFixo' => App\Http\Helpers\HelperArrayFixo::class,
+        'HelperArraySelect' => App\Http\Helpers\HelperArraySelect::class,
         //'PDF' => Barryvdh\DomPDF\Facade::class,
         //'PDF' => Mpdf\MpdfFacade::class,
         'Empresa' => App\Facades\Empresa::class,

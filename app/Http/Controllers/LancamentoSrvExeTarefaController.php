@@ -11,7 +11,7 @@ use App\Http\Helpers\HelperControleProducao;
 use DateTime;
 use DateTimeZone;
 use App\Http\Controllers\LancamentoSrvPrtAuxiliaresController;
-use App\Http\Controllers\PainelAberturaOSController;
+use App\Http\Controllers\Lancamentos\Servico\PainelAberturaOSController;
 use Illuminate\Support\Facades\Auth;
 
 class LancamentoSrvExeTarefaController extends Controller
@@ -122,7 +122,7 @@ class LancamentoSrvExeTarefaController extends Controller
 
         if(empty($prtTMO->exetrf_prt)){
             return redirect()->route('painelOperacao.consultaPainelGET',['empresa' => $empresa, 'where' => $where])
-            ->with('error', 'TMO selecionada não tem Prestador alocado!');
+            ->with('error', 'TMO selecionada não tem Prestador alocado para ser iniciada!');
         }
         
         $data = date('Y-m-d');
@@ -171,6 +171,18 @@ class LancamentoSrvExeTarefaController extends Controller
         //Vamos passar como variavel no redirect por que depois de 2 redirect elas são destruidas
         $where = session('where_consulta_painelOperador'); 
         $empresa = session('empresaOS_consulta_painelOperador'); 
+
+        $prtTMO = DB::table('lancamento_srv_exe_tarefas')
+        ->where('exetrf_emp', $empresa)
+        ->where('exetrf_nos', $numOS)
+        ->where('exetrf_req', $requisicao)
+        ->where('exetrf_seq', $servico)
+        ->first();
+
+        if(empty($prtTMO->exetrf_prt)){
+            return redirect()->route('painelOperacao.consultaPainelGET',['empresa' => $empresa, 'where' => $where])
+            ->with('error', 'TMO selecionada não tem Prestador alocado para ser finalizada!');
+        }
 
         //Busca dados da tarefa finalizada
         $prtTMO = DB::table('lancamento_srv_exe_tarefas')
@@ -273,7 +285,7 @@ class LancamentoSrvExeTarefaController extends Controller
 
         // Redireciona de volta para a página principal
         return redirect()->route('painelOperacao.consultaPainelGET',['empresa' => $empresa, 'where' => $where])
-        ->with('success', 'TMO finalizada com sucesso!');
+        ->with('success', 'Prestador alocado com sucesso!');
     }
 
     public function addPrtAuxTMO(Request $request, $empresa, $numOS, $requisicao, $servico)
@@ -400,11 +412,29 @@ class LancamentoSrvExeTarefaController extends Controller
         ->with('success', 'TMO suspensa com sucesso!');
     }
 
+    /*
+    |----------------------------------------------------------------------------------------------------
+    | Reabrir TMO que já foi Finalizada / Cancelada / Suspensa
+    |----------------------------------------------------------------------------------------------------
+    */
     public function reabrirTMO(Request $request, $empresa, $numOS, $requisicao, $servico)
     {
         //Vamos passar como variavel no redirect por que depois de 2 redirect elas são destruidas
         $where = session('where_consulta_painelOperador'); 
         $empresa = session('empresaOS_consulta_painelOperador'); 
+
+        //Verifica se a OS já foi finalizada ou cancelada e não permite reabrir a TMO
+        $dadosOS = DB::table('lancamento_srv_os')->where('os_emp', $empresa)->where('os_nos', $numOS)->first();
+
+        if($dadosOS->os_sts == 'C'){
+            // Redireciona de volta para a página principal
+            return redirect()->route('painelOperacao.consultaPainelGET',['empresa' => $empresa, 'where' => $where])
+            ->with('info', 'Não é possível reabrir a TMO. A OS '.$numOS.' já foi cancelada!');
+        }else if($dadosOS->os_sts == 'F'){
+            // Redireciona de volta para a página principal
+            return redirect()->route('painelOperacao.consultaPainelGET',['empresa' => $empresa, 'where' => $where])
+            ->with('info', 'Não é possível reabrir a TMO. A OS '.$numOS.' já foi finalizada!');
+        }
 
         $dadosSrv = DB::table('lancamento_srv_os_servicos')
         ->where('srv_emp', $empresa)

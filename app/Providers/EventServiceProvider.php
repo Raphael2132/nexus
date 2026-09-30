@@ -8,6 +8,7 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Login;
 use App\Listeners\UpdateAfterLogin;
+use App\Listeners\InicializacaoFinanceiraAfterLogin;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,7 @@ class EventServiceProvider extends ServiceProvider
         // Evento de login do usuário
         Login::class => [
             UpdateAfterLogin::class,
+            InicializacaoFinanceiraAfterLogin::class,
         ],
     ];
 

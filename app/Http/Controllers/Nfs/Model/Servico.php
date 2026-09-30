@@ -8,14 +8,14 @@ use stdClass;
 class Servico {
 
     private $discriminacaoServico;
-    private $quantidade;
-    private $valorUnitario;
-    private $valorTotal;
-    private $valorDesconto;
-    private $valorTotalLiquido;
-    private $emiSimplificada;
-    private $descServico;
-    private $infoComplementar;
+    //private $quantidade;
+    //private $valorUnitario;
+    //private $valorTotal;
+    //private $valorDesconto;
+    //private $valorTotalLiquido;
+    //private $emiSimplificada;
+    //private $descServico;
+    //private $infoComplementar;
 
     public function carregaServicos($empresa, $numero, $numControle)
     {
@@ -24,15 +24,7 @@ class Servico {
         $itens = array();
 
         $sql = "SELECT 
-                    discriminacao_servico, 
-                    quantidade, 
-                    valor_unitario, 
-                    valor_total,
-                    valor_desconto,
-                    valor_total_liquido,
-                    emissao_simplificada,
-                    descricao_servico,
-                    informacoes_complementares
+                    discriminacao_servico
                 FROM vi_nfsxml_servicos 
                 WHERE 
                     empresa = '".$empresa."' and 
@@ -44,14 +36,14 @@ class Servico {
             $item = new Servico();
 
             $item->discriminacaoServico = $dados->discriminacao_servico;
-            $item->quantidade = $dados->quantidade;
-            $item->valorUnitario = $dados->valor_unitario;
-            $item->valorTotal= $dados->valor_total;
-            $item->valorDesconto= $dados->valor_desconto;
-            $item->valorTotalLiquido= $dados->valor_total_liquido;
-            $item->emiSimplificada= $dados->emissao_simplificada;
-            $item->descServico= $dados->descricao_servico;
-            $item->infoComplementar= $dados->informacoes_complementares;
+            //$item->quantidade = $dados->quantidade;
+            //$item->valorUnitario = $dados->valor_unitario;
+            //$item->valorTotal= $dados->valor_total;
+            //$item->valorDesconto= $dados->valor_desconto;
+            //$item->valorTotalLiquido= $dados->valor_total_liquido;
+            //$item->emiSimplificada= $dados->emissao_simplificada;
+            //$item->descServico= $dados->descricao_servico;
+            //$item->infoComplementar= $dados->informacoes_complementares;
 
             $itens[] = $item;
         }

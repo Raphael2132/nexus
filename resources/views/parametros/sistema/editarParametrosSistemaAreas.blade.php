@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Manutenção da Área')
+@section('title', 'Áreas do Sistema')
 
 @section('content_header')
 <div class="row mb-2">
@@ -10,7 +10,7 @@
     <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item active">
-                <a href="{{route('home.parSisArea')}}">Áreas</a>
+                <a href="{{route('areasSistema.index')}}">Áreas</a>
             </li>
             <li class="breadcrumb-item active">Manutenção da Área</li>
         </ol>
@@ -21,14 +21,14 @@
 @section('content')
 <div class="d-flex justify-content-center">
     <div class="col-md-8">
-        <form method="post" action="{{route('parametrosSistemaAreas.atualizar', [ 'area' => $dadosArea[0]['area_codigo'] ] )}}" id="quickForm" novalidate="novalidate">
+        <form method="post" action="{{route('areasSistema.update', [ 'areasSistema' => $dadosArea ] )}}" id="quickForm" novalidate="novalidate">
             @csrf 
-            @method('post')
+            @method('put')
             <x-adminlte-card title="Manutenção da Área do Sistema" theme="" theme-mode="" header-class="card-nexus" collapsible maximizable>
 
                 <div class="row">
                     <!-- Código -->
-                    <x-adminlte-input name="codigo" type="text" value="{{$dadosArea[0]['area_codigo']}}" fgroup-class="col-md-6" readonly>
+                    <x-adminlte-input name="codigo" type="text" value="{{$dadosArea->area_codigo}}" fgroup-class="col-md-6" readonly>
                         <x-slot name="label">
                             Código <span style="color:red;">*</span>
                         </x-slot>
@@ -37,7 +37,7 @@
 
                 <div class="row">
                     <!-- Descrição -->
-                    <x-adminlte-input name="descricao" type="text" value="{{$dadosArea[0]['area_desc']}}" fgroup-class="col-md-12">
+                    <x-adminlte-input name="descricao" type="text" value="{{$dadosArea->area_desc}}" fgroup-class="col-md-12">
                         <x-slot name="label">
                             Descrição <span style="color:red;">*</span>
                         </x-slot>
@@ -48,7 +48,7 @@
                 <x-slot name="footerSlot">
                     <div class="d-flex justify-content-between w-100">
                         <x-adminlte-button class="btn-nexus" type="submit" label="Salvar" theme="info" icon="fa-solid fa-share-from-square"/>
-                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('home.parSisArea') }}'" label="Voltar" theme="info" icon=""/>
+                        <x-adminlte-button class="btn-nexus" type="button" onclick="window.location='{{ route('areasSistema.index') }}'" label="Voltar" theme="info" icon=""/>
                     </div>
                 </x-slot>
             </x-adminlte-card>

@@ -203,6 +203,29 @@
     color: #06023e;
 }
 
+/* ******************** Ateração das cores do Callout ******************** */
+.callout-nexus-verde {
+    border-left-color: #00abab;
+}
+
+.callout-nexus-verde h5, .callout-nexus-verde h5 i {
+    color: #00abab;
+}
+
+/*
+|--------------------------------------------------------------------------------
+| Info Box
+|--------------------------------------------------------------------------------
+|
+| Alterações no estilo de tema das cores dos info-box.
+|
+*/
+
+/* ******************** Ateração do texto do link ******************** */
+.info-box .info-box-url u {
+    text-decoration: none;
+}
+
 /*
 |--------------------------------------------------------------------------------
 | Modal
@@ -340,4 +363,94 @@
 /* ******************** Tema dos x-slot (prependSlot, appendSlot etc...) dos campos input ******************** */
 .error-page {
     width: 60% !important;
+}
+
+/*
+|--------------------------------------------------------------------------------
+| Icone Consulta
+|--------------------------------------------------------------------------------
+|
+| Alterações do tema dos icones usados na consulta.
+|
+*/
+
+/* ******************** Icóne de Lupa ******************** */
+.lupa-consulta i {
+    color: #74C0FC !important; /* Cor padrão */
+}
+
+.lupa-consulta:hover i {
+    color: #007bff !important; /* Cor ao passar o mouse */
+}
+
+/*
+|--------------------------------------------------------------------------------
+| Badge
+|--------------------------------------------------------------------------------
+|
+| Alterações do tema dos badges usados nos sapn.
+|
+*/
+.badge {
+    font-size: .85rem;
+}
+
+/*
+|--------------------------------------------------------------------------------
+| H6 com Background
+|--------------------------------------------------------------------------------
+|
+| Alterações do tema dos H6.
+|
+*/
+.h6-nexus-b {
+    background: #06023e;
+    color: #fff;
+    font-weight: bold;
+    font-size: .85rem;
+    padding: 5px 5px 5px 15px !important;
+}
+
+/*
+|--------------------------------------------------------------------------------
+| Check
+|--------------------------------------------------------------------------------
+|
+| Alterações do tema dos checks usados nos sapn.
+|
+*/
+.check-nexus .check-nexus-wrapper {
+    height: 38px;
+    align-items: center;
+    gap: 10px;
+    padding-top: 2px;
+}
+
+.check-nexus .form-check {
+    margin-right: 6px;
+}
+
+/* ******************** Estado padrão (não selecionado) ******************** */
+.check-nexus .form-check-label {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid #00abab;
+    color: #00abab;
+    cursor: pointer;
+    display: inline-block;
+    line-height: 1.2;
+    background-color: #fff;
+    transition: all 0.2s ease-in-out;
+}
+
+/* ******************** Esconde o checkbox real ******************** */
+.check-nexus .form-check-input {
+    display: none;
+}
+
+/* ******************** Estado selecionado ******************** */
+.check-nexus .form-check-input:checked + .form-check-label {
+    background-color: #00abab;
+    color: #fff;
+    border-color: #00abab;
 }

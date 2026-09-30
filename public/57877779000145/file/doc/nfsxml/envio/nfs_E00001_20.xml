@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nfe>
+  <notaFiscal/>
+  <dadosPrestador>
+    <dataEmissao>15/07/2024</dataEmissao>
+    <im>123165100</im>
+    <numeroRps>000000020</numeroRps>
+  </dadosPrestador>
+  <dadosServico>
+    <bairro>PARQUE DOS RESEDAS</bairro>
+    <cep>13876-267</cep>
+    <cidade>SAO JOAO DA BOA VISTA</cidade>
+    <complemento/>
+    <logradouro>RUA OSVALDO ROSSI</logradouro>
+    <numero>110</numero>
+    <pais>BRASIL</pais>
+    <uf>SP</uf>
+  </dadosServico>
+  <dadosTomador>
+    <bairro>PARQUE DOS RESEDAS</bairro>
+    <cep>13876-267</cep>
+    <cidade>SAO JOAO DA BOA VISTA</cidade>
+    <complemento/>
+    <documento>03130316346</documento>
+    <email>thiago@gmail.com</email>
+    <ie/>
+    <logradouro>RUA OSVALDO ROSSI</logradouro>
+    <nomeTomador>THIAGO CARVALHO</nomeTomador>
+    <numero>110</numero>
+    <pais>BRASIL</pais>
+    <tipoDoc>F</tipoDoc>
+    <uf>SP</uf>
+  </dadosTomador>
+  <detalheServico>
+    <cofins>0.00</cofins>
+    <csll>0.00</csll>
+    <deducaoMaterial>0.00</deducaoMaterial>
+    <descontoIncondicional>0.00</descontoIncondicional>
+    <inss>0.00</inss>
+    <ir>0.00</ir>
+    <issRetido>0</issRetido>
+    <item>
+      <aliquota>4.00</aliquota>
+      <codigo>1401</codigo>
+      <descricao>TROCA DE SO - QTD. HORAS: 2.50 - VALOR LIQUIDO: 600.00</descricao>
+      <valor>600.00</valor>
+    </item>
+    <obs/>
+    <pisPasep>0.00</pisPasep>
+  </detalheServico>
+</nfe>
