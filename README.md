@@ -105,15 +105,6 @@ Além da construção das telas, o desenvolvimento envolve:
 * Geração e processamento de documentos;
 * Organização dos módulos da aplicação.
 
-## Integrações
-
-Durante a evolução do projeto foram desenvolvidas integrações com serviços externos utilizados nos processos do ERP, incluindo serviços relacionados a:
-
-* Emissão de documentos fiscais;
-* NFS-e;
-* Comunicação com serviços de terceiros;
-* Processos de pagamento.
-
 ## Arquitetura
 
 O projeto utiliza o framework Laravel como base e organiza a aplicação em módulos de acordo com as áreas do sistema.
